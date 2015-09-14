@@ -1,0 +1,88 @@
+{% load staticfiles%}
+{% load cache%}
+{% spaceless %}
+{% cache 21600 login1 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>Go Analytics | Voice of Clients Analytics</title>
+		<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+
+		<!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+		<!-- Custom CSS -->
+		<link href="{% static 'css/style-login.css' %}" rel="stylesheet">
+
+		<!-- Custom Fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700,800' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+</head>
+
+<body>
+
+  <div class="container">
+
+  <div class="row" id="pwd-container">
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+
+      <section class="login-form">
+          <img src="http://i.imgur.com/QuC6Dv3.png" class="img-responsive" alt="" />
+          {% endcache %}
+          {% ifequal 1 error %}
+          <p class="error"><strong>Su usuario se encuentra desactivado, contacte un administrador</strong></p>
+          {% endifequal %}
+          {% ifequal 2 error%}
+          <p class="error"><strong>Los datos ingresados no son válidos incorrectos</strong></p>
+          {% endifequal %}
+
+
+          <form id="formlog" role="form" action='.' method='post'>{% csrf_token %}
+          {% cache 21600 login2 %}
+            <fieldset>
+            <div class="form-group">
+            <input class="form-control" placeholder="Email" name="email" type="email" required autofocus>
+            </div>
+
+            <div class="form-group">
+            <input class="form-control" placeholder="Contraseña" name="clave" id="password" type="password" required >
+            </div>
+
+            <div class="form-group">
+            <input id="btnlogin" class="btn btn-lg btn-primary btn-block" type="submit" value="Entrar" />
+            </div>
+
+            </fieldset>
+
+          </form>
+{% endcache %}
+        <div class="form-links">
+          {% ifequal 2 error%}
+            <a href="/recuperar">¿Olvidó su contraseña?</a>
+          {% endifequal %}
+        </div>
+      </section>
+      </div>
+
+
+  </div>
+
+</body>
+</html>
+{% endspaceless %}

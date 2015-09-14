@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% load staticfiles %}
+		<link href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+		<link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+		{% block head2 %}
+		{% endblock %}
+{% endblock %}
+{% block contenido %}
+{% load cache %}
+
+{% cache 900 sidebar1 %}
+{% spaceless %}
+<div id="wrapper">
+
+<nav class="navbar-default navbar-static-side" role="navigation" style="z-index:999;">
+	<div class="sidebar-collapse">
+
+
+
+		<ul class="nav" id="side-menu">
+
+		<li class="nav-header">
+			<div class="dropdown profile-element">
+				<span><img alt="image" src="{% static 'img/GoChange.png' %}"/></span>
+			</div>
+		</li>
+{% endspaceless %}{% endcache %}
+		{% if user.is_staff %}
+{% cache 900 sidebar2 %}
+{% spaceless %}
+		<li id="1">
+			<a href="#"><i class="fa fa-th-large fa-fw"></i><span class="nav-label">Administrar GoChange</span></a>
+			<ul class="nav nav-second-level">
+				<li id="biblio"><a href="/go/biblio"><i class="fa fa-book"></i>Bibliotecas</a></li>
+				<li id="proyectos"><a href="/go/menubp/"><i class="fa fa-group"></i>Proyectos</a></li>
+				<li id="usu"><a href="/go/susu/"><i class="fa fa-user"></i>Usuarios</a></li>
+				{%if user.is_superuser%}<li id="empresas"><a href="/go/empresas/"><i class="fa fa-briefcase"></i>Empresas</a></li>{%endif%}
+				{%if user.is_superuser%}<li id="usuarios"><a href="/go/adminusu/"><i class="fa fa-user"></i>Users Admin</a></li>{%endif%}
+			</ul>
+		</li>
+
+		<li id="survey"><a href="/go/igsurvey/"><i class="fa fa-file-text-o fa-fw"></i><span class="nav-label">GoSurvey &reg;</span></a></li>
+
+		<li id="2">
+			<a href="#"><i class="fa fa-calendar fa-fw"></i><span class="nav-label">Eventos</span></a>
+			<ul class="nav nav-second-level">
+				<li id="eventosf"><a href="/go/eventos/"><i class="fa fa-clock-o"></i>Añadir eventos</a></li>
+				<li id="eventosp"><a href="/go/vencidos/"><i class="fa fa-calendar-o"></i>Eventos pasados</a></li>
+			</ul>
+		</li>
+{% endspaceless %}{% endcache %}
+		{% endif %}
+{% cache 900 sidebar3 %}
+{% spaceless %}
+		<li id="3">
+			<a href="#"><i class="fa fa-line-chart fa-fw"></i><span class="nav-label">Visualizaciones</span></a>
+			<ul class="nav nav-second-level">
+				<li id="resultados"><a href="/go/resultados"><i class="fa fa-bar-chart fa-fw"></i> General</a></li>
+				<li id="resultados2"><a href="/go/resultados2"><i class="fa fa-bar-chart fa-fw"></i> Género</a></li>
+				<li id="resultados3"><a href="/go/resultados3"><i class="fa fa-bar-chart fa-fw"></i> Radar</a></li>
+				<li id="resultados4"><a href="/go/resultados4"><i class="fa fa-bar-chart fa-fw"></i> Burbujas</a></li>
+				<li id="resultados5"><a href="/go/resultados5"><i class="fa fa-bar-chart fa-fw"></i> Bullet</a></li>
+				<li id="filtros"><a href="/go/filtros"><i class="fa fa-bar-chart fa-fw"></i> Filtros</a></li>
+				<li id="grafos"><a href="/go/grafos"><i class="fa fa-bar-chart fa-fw"></i> Grafos</a></li>
+				<!--<li id="resultados6"><a href="/go/resultados6"><i class="fa fa-bar-chart fa-fw"></i> Senkey</a></li> -->
+			</ul>
+		</li>
+
+
+		<li id="cuenta"><a href="/cuenta/"><i class="fa fa-gear fa-fw"></i><span class="nav-label">Cambio de contraseña</span></a></li>
+		<li ><a href="/cerrar/"><i class="fa fa-user fa-sign-out"></i><span class="nav-label">Logout</span></a></li>
+
+
+		</ul>
+	</div>
+
+	<!-- Fin Barra de Navegación Lateral -->
+
+		</nav>
+
+		<div id="page-wrapper" class="gray-bg animated fadeInRight">
+
+<style>#BC{position:absolute;margin:8px 0 0 -26px;-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);transform:rotate(90deg);background:#27A9E1;border:1px solid #27A9E1}#BC:hover{margin-left:-20px;-moz-transition-property:margin-left;-moz-transition-duration:.6s;-webkit-transition-property:margin-left;-webkit-transition-duration:.6s;-o-transition-property:margin-left;-o-transition-duration:.6s}}</style>
+
+	<a id="BC" class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+{% endspaceless %}{% endcache %}
+{% block contenido2%}{% endblock %}
+{% cache 900 sidebar4 %}{% spaceless %}
+<div class="footer">
+	<div class="pull-right">
+		<strong>Copyright Networks Lab</strong> &copy; 2015-2020
+	</div>
+</div>
+
+<!-- MENU -->
+<script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+<script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="{% static 'js/inspinia.js' %}"></script>
+<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+<script>{% endspaceless %}{% endcache %}$('#{{activar}}').addClass('active');$('#{{activarG}}').addClass('active');
+</script>
+{% block scripts%}{% endblock %}
+</div>
+</div>
+{% endblock %}
