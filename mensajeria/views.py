@@ -106,21 +106,18 @@ def encuesta(request,key):
 
 	if request.method == 'POST':
 		for i in cuestionario:
-			R = Streaming.objects.get(id =i.id)
-			R.fecharespuesta = timezone.now()
-			R.respuesta = request.POST[str(i.id)] ### falta hacerlo para todos los tipos de pregunta
-			R.save()
-			R = Streaming.objects.filter(colaborador = encuestado).update(fec_controlenvio=timezone.now())
+			streaming = Streaming.objects.get(id =i.id)
+			streaming.fecharespuesta = timezone.now()
+			streaming.save()
+            for i in xrange(request.POST['repuestas de esta pregunta']):### falta acoplarlo para las vistas
+                respuesta = StreamingRespuestas(request.POST[str(i)], streaming = R )
+			Streaming.objects.filter(colaborador = encuestado).update(fec_controlenvio=timezone.now())
         try:
             return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
         except:
             return HttpResponseRedirect('http://networkslab.co')
 
 
-	up = len(auxvar)+1
-	lenu = range(1,up)
-
 	return render_to_response('encuesta2.html',{
-	'EMA': C.nombre,'up':up,'lenu':lenu,'Preguntas':pregparalaencuesta,
-	'variables':auxvar,'Proyecto':pro
+    ###aqui van las variables
 	},	context_instance=RequestContext(request))

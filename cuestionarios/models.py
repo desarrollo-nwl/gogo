@@ -9,7 +9,7 @@ class Variables( models.Model ):
 	id = models.AutoField( primary_key = True )
 	descripcion = models.TextField( blank = True, null = True , max_length = 255 )
 	estado = models.BooleanField( default = True )
-	max_preguntas = models.SmallIntegerField( default = 0 )
+	max_preguntas = models.SmallPositiveIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	posicion = models.IntegerField( blank = True, null = True )
 	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )

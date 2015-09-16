@@ -59,7 +59,22 @@ class ColaboradoresSalud( models.Model ):
 		verbose_name_plural = 'Colaboradores salud'
 
 
-class MColaboradores( models.Model ):
+class RespuestasSalud( models.Model ):
+	id = models.AutoField( primary_key = True )
+	colaborador = models.ForeignKey( Colaboradores )
+	fec_respuesta = models.DateTimeField( blank = True, null = True )
+	#otros datos relevantes que son medibles
+
+	def __unicode__(self):
+		return '%s' % (self.colaborador)
+
+	class Meta:
+		managed = True
+		db_table = 'colaboradores_respuestassalud'
+		verbose_name_plural = 'Respuestas salud colaboradores'
+
+
+class ColaboradoresMetricas( models.Model ):
 	id = models.AutoField( primary_key = True )
 	colaborador = models.ForeignKey( Colaboradores )
 	fec_envio = models.DateTimeField( auto_now_add = True )
@@ -71,4 +86,4 @@ class MColaboradores( models.Model ):
 	class Meta:
 		managed = True
 		db_table = 'colaboradores_metricas'
-		verbose_name_plural = 'Metricas colaboradores'
+		verbose_name_plural = 'Metricas envio-repuesta'

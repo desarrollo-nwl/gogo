@@ -41,6 +41,8 @@ INSTALLED_APPS = (
 	'cuestionarios',
 	'mensajeria',
 	'usuarios',
+	'mptt',
+	'debug_toolbar',
 
 )
 
