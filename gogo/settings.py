@@ -30,30 +30,29 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'administrar',
-    'analisis',
-    'colaboradores',
-    'cuestionarios',
-    'mensajeria',
-    'usuarios',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'analisis',
+	'colaboradores',
+	'cuestionarios',
+	'mensajeria',
+	'usuarios',
 
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'gogo.urls'
@@ -62,11 +61,11 @@ TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
 		'DIRS':[BASE_DIR+'/administrar/plantillas/',
-                BASE_DIR+'/analisis/plantillas/',
+				BASE_DIR+'/analisis/plantillas/',
 				BASE_DIR+'/colaboradores/plantillas/',
 				BASE_DIR+'/cuestionarios/plantillas/',
-                BASE_DIR+'/mensajeria/plantillas/',
-                BASE_DIR+'/usuarios/plantillas/'],
+				BASE_DIR+'/mensajeria/plantillas/',
+				BASE_DIR+'/usuarios/plantillas/'],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -86,16 +85,16 @@ WSGI_APPLICATION = 'gogo.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-            'ENGINE':'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-            # 'ENGINE': 'django.db.backends.mysql',
-            # 'NAME': 'nwl',
-            # 'USER': 'suidi',
-            # 'PASSWORD':'Su1357*-',
-            # 'HOST':'nwl.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
-            # 'PORT':'3306',
-    }
+	'default': {
+			'ENGINE':'django.db.backends.sqlite3',
+			'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+			# 'ENGINE': 'django.db.backends.mysql',
+			# 'NAME': 'nwl',
+			# 'USER': 'suidi',
+			# 'PASSWORD':'Su1357*-',
+			# 'HOST':'nwl.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
+			# 'PORT':'3306',
+	}
 }
 
 
@@ -134,10 +133,10 @@ MEDIAFILES_DIRS = (
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 #
 # CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-#         'LOCATION': BASE_DIR,
-#     }
+#	 'default': {
+#		 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#		 'LOCATION': BASE_DIR,
+#	 }
 # }
 # CACHES = {
 # 	'default':{

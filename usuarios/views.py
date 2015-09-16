@@ -3,22 +3,66 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+# from django.db import connection
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
 from usuarios.models import *
-from django.db import connection
+import random
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import email.utils
+import smtplib
 #===============================================================================
 # Front end
 #===============================================================================
 
 @cache_control(no_store=True)
 def index(request):
+
+	chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+	captcha = ''.join(random.sample(chars, 5))
+
 	if not request.user.is_anonymous():
 		return HttpResponseRedirect('/menu/')
-	else:
-		return render_to_response('index.html',context_instance=RequestContext(request))
+
+	if request.method == 'POST':
+		try:
+			if( request.POST['variable'] == request.POST['captcha']):
+				server=smtplib.SMTP('smtp.mandrillapp.com',587)
+				server.ehlo()
+				server.starttls()
+				server.login('no-reply@gochangeanalytics.com','anVgUmTPhGyqT8J9D5yM1A')
+
+				destinatario = ['ilgaleanos@gmail.com','ricardo.montoya@networkslab.co']
+				msg=MIMEMultipart()
+				msg["subject"]=  'Persona interesada Go Salud xD.'
+				msg['To'] = email.utils.formataddr(('Respetado', destinatario))
+				msg['From'] = email.utils.formataddr(('Go salud', 'no-reply@gochangeanalytics.com'))
+
+				n = (request.POST['nombre']).encode('ascii','ignore')
+				e = (request.POST['email']).encode('ascii','ignore')
+				t = (request.POST['telefono']).encode('ascii','ignore')
+				m = (request.POST['mensaje']).encode('ascii','ignore')
+				html = '<b>NOMBRE:</b> '+ n +'<br>'
+				html = html+'  <b>EMAIL:</b> '+str(e)+'<br>'
+				html = html+'  <b>TELEFONO: </b>'+str(t)+'<br>'
+				html = html+'  <b>MENSAJE: </b><br> '+ m
+
+				parte2=MIMEText(html,"html")
+				msg.attach(parte2)
+
+				server.sendmail('no-reply@gochangeanalytics.com',destinatario,msg.as_string())
+				server.quit()
+				return HttpResponseRedirect('/index/')
+		except:
+			return HttpResponseRedirect('/index/#contact/')
+
+	return render_to_response('index.html',{
+	'captcha':captcha
+	}, context_instance=RequestContext(request))
 
 #===============================================================================
 # login - logout
@@ -53,39 +97,29 @@ def acceder(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def menu(request):
-	try:
-		empresas = request.user.usuario.empresas.all()
-		if len(empresas) == 1:
-			if empresas[0].activa:
 
-				cache.set(request.user.username,empresas[0],86400)
-				return HttpResponseRedirect('/home/')
-			else:
-				error = empresas[0].nombre +' se encuentra desactivada.'
-				return render_to_response('menu.html',{
-				'Empresas':empresas,'Error':error
-				}, context_instance=RequestContext(request))
-		else:
-			return render_to_response('menu.html',{
-			'Empresas':empresas,
-			}, context_instance=RequestContext(request))
-	except:
-		Errores.objects.create(
-			usuario=request.user,
-			registro='No tiene empresas asociadas y no se pudo loguear!')
-		return render_to_response('500.html')
+	if request.user.is_superuser:
+		proyectos = Proyectos.objects.all()
+	else:
+		proyectos = Proyectos.objects.filter( usuarios = user.request)
+
+	return render_to_response('menu.html',{
+	'Proyectos':proyectos
+	}, context_instance=RequestContext(request))
 
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def menu2(request,id_empresa):
+def menu2(request,id_proyecto):
 	try:
-		empresa = request.user.usuario.empresas.get(id=int(id_empresa))
-		if empresa.activa:
-			cache.set(request.user.username,empresa,86400)
-			return HttpResponseRedirect('/home/')
+		if request.user.is_superuser:
+			proyecto = Proyectos.objects.get(id=int(id_proyecto))
 		else:
-			return render_to_response('403.html')
+			proyecto = Proyectos.objects.filter(
+			usuarios = user.request).get(
+			id=int(id_proyecto))
+		cache.set(request.user.username,proyecto,86400)
+		return HttpResponseRedirect('/home/')
 	except:
 			return render_to_response('403.html')
 
@@ -93,9 +127,11 @@ def menu2(request,id_empresa):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def home(request):
-	empresa = cache.get(request.user)
+	proyecto = cache.get(request.user.username)
+	#en el home deberian ir unas metricas
+	permisos = request.user.permisos
 	return render_to_response('home.html',{
-	'Empresa':empresa,
+	'Empresa':empresa,'Permisos':permisos
 	}, context_instance=RequestContext(request))
 
 
@@ -105,6 +141,64 @@ def salir(request):
 	cache.delete(request.user)
 	logout(request)
 	return HttpResponseRedirect('/acceder/')
+
+
+#===============================================================================
+#    Páginas de administración
+#===============================================================================
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def cuenta(request):
+	acceso = None
+	cambio = None
+	if request.method == 'POST':
+		usuario = request.user
+		P = request.POST['cpassword']
+		clave = request.POST['password']
+		clave2 = request.POST['password2']
+		acceso = authenticate(username=usuario, password=P)
+		if ((acceso is not None) and (clave == clave2)):
+			usuario.set_password(clave)
+			usuario.save()
+			cambio= "Se ha cambiado la contraseña exitosamente."
+		else:
+			cambio= "credenciales incorrectas, intente nuevamente."
+
+	return render_to_response('cuenta.html',{
+	'activar':'cuenta','cambio':cambio
+	}, context_instance=RequestContext(request))
+
+
+@cache_control(no_store=True)
+def recuperar(request):
+	aviso = None
+	if request.method == 'POST':
+		ema = request.POST['email']
+		try:
+			u = User.objects.get(email = ema)
+			envio,_ = Envio.objects.get_or_create( email = ema )
+			hora_local = timezone.now()
+			hora_envio = envio.fregistro
+			delta = hora_local - hora_envio
+
+			if(delta.days >= 1 or (delta.seconds>=3600 or 2 >= delta.seconds)):
+				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+				serie = ''.join(random.sample(chars, 32))
+				u.set_password(serie)
+				u.save()
+				aviso = enviar2(ema,serie)
+			else:
+				aviso = 'Ya se ha enviado el correo, verifique su correo.'
+
+		except:
+			aviso = 'Error en el requerimiento'
+
+	return render_to_response('recuperar.html',{
+	'Aviso':aviso
+	}, context_instance=RequestContext(request))
+
 
 #===============================================================================
 #    Páginas de errores

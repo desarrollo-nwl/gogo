@@ -13,9 +13,9 @@ urlpatterns = patterns('usuarios.views',
     url(r'^index/$', 'index'),
     url(r'^home/$', 'home'),
     url(r'^acceder/$', 'acceder'),
-    # url(r'^salir/$', 'salir'),
-    # url(r'^menu/$', 'menu'),
-    # url(r'^menu2/(?P<id_empresa>[0-9]{1,10})/$', 'menu2'),
+    url(r'^salir/$', 'salir'),
+    url(r'^menu/$', 'menu'),
+    url(r'^menu2/(?P<id_proyecto>[0-9]{1,10})/$', 'menu2'),
 
 )
 
