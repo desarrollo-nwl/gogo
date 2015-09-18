@@ -26,7 +26,7 @@ def index(request):
 	captcha = ''.join(random.sample(chars, 5))
 
 	if not request.user.is_anonymous():
-		return HttpResponseRedirect('/menu/')
+		return HttpResponseRedirect('/home/')
 
 	if request.method == 'POST':
 		try:
@@ -71,7 +71,7 @@ def index(request):
 @cache_control(no_store=True)
 def acceder(request):
 	if not request.user.is_anonymous():
-		return HttpResponseRedirect('/menu/')
+		return HttpResponseRedirect('/home/')
 	error = None
 	if request.method == 'POST':
 		acceso = False
@@ -84,7 +84,7 @@ def acceder(request):
 			else:
 				if acceso.is_active:
 					login(request,acceso)
-					return HttpResponseRedirect('/menu/')
+					return HttpResponseRedirect('/home/')
 				else:
 					error = 'Su usuario se encuentra desactivado'
 		except:
@@ -96,43 +96,33 @@ def acceder(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def menu(request):
-
+def home(request):
 	if request.user.is_superuser:
 		proyectos = Proyectos.objects.all()
 	else:
 		proyectos = Proyectos.objects.filter( usuarios = user.request)
-
-	return render_to_response('menu.html',{
-	'Proyectos':proyectos
+	return render_to_response('home.html',{
+	'Activar':'MisProyectos','Proyectos':proyectos
 	}, context_instance=RequestContext(request))
 
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def menu2(request,id_proyecto):
+def home2(request,id_proyecto):
 	try:
 		if request.user.is_superuser:
-			proyecto = Proyectos.objects.get(id=int(id_proyecto))
+			proyecto = Proyectos.objects.get(id=int(id_proyecto)
+						).select_related('empresa__nombre')
 		else:
 			proyecto = Proyectos.objects.filter(
-			usuarios = user.request).get(
-			id=int(id_proyecto))
+			usuarios = user.request).select_related('empresa__nombre'
+			).get(id=int(id_proyecto))
 		cache.set(request.user.username,proyecto,86400)
-		return HttpResponseRedirect('/home/')
+		return render_to_response('home2.html',{
+		'Empresa':empresa,'Permisos':permisos
+		}, context_instance=RequestContext(request))
 	except:
 			return render_to_response('403.html')
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def home(request):
-	proyecto = cache.get(request.user.username)
-	#en el home deberian ir unas metricas
-	permisos = request.user.permisos
-	return render_to_response('home.html',{
-	'Empresa':empresa,'Permisos':permisos
-	}, context_instance=RequestContext(request))
 
 
 @cache_control(no_store=True)

@@ -3,13 +3,14 @@ from django.db import models
 from django.contrib import admin
 from cuestionarios.models import Proyectos
 
+
 class Colaboradores( models.Model ):
 	id = models.AutoField( primary_key = True )
 	apellido = models.CharField( max_length = 45 )
 	email = models.EmailField( )
 	nombre = models.CharField( max_length = 45 )
 	proyecto = models.ForeignKey( Proyectos )
-	key = models.Charfield( max_length = 64 )
+	key = models.CharField( max_length = 64 )
 	def __unicode__(self):
 		return '%s %s ' % (self.nombre,self.apellido)
 

@@ -12,7 +12,7 @@
 				<span><img alt="image" src="{% static 'img/GoChange.png' %}"/></span>
 			</div>
 		</li>
-		<li id="MisProyectos"><a href="/home/"><i class="fa fa-th fa-fw"></i><span class="nav-label"> Mis proyectos</span></a></li>
+		<li id="MisProyectos"><a href="#"><i class="fa fa-th fa-fw"></i><span class="nav-label"> Mis proyectos</span></a></li>
 		<li id="Configuracion">
 			<a href="#"><i class="fa fa-gear fa-fw"></i><span class="nav-label"> Configuración</span></a>
 			<ul class="nav nav-second-level">
@@ -53,8 +53,8 @@
 <!-- MENU -->
 <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.min.js' %}"></script>
 <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+<!-- Custom and plugin javascript -->
 <script src="{% static 'js/dash.min.js' %}"></script>
-<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
-{%endspaceless%}{%endcache%}
-<script>$('#{{Activar}}').addClass('active');$('#{{activar}}').addClass('active');</script>
+<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>{%endspaceless%}{%endcache%}
+<script>$('#{{activar}}').addClass('active');$('#{{activarG}}').addClass('active');</script>
 {% block scripts%}{% endblock %}</div></div>{% endblock %}

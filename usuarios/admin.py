@@ -1,3 +1,4 @@
 from django.contrib import admin
-
-# Register your models here.
+from usuarios.models import *
+admin.site.register(IndiceUsuarios)
+admin.site.register(Permisos)

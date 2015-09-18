@@ -1,0 +1,30 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Home | {{Proyecto.nombre | escape}}{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+
+{% block contenido2 %}
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+	<div class="col-lg-12">
+		<h2>Proyecto {{user.first_name | capfirst | escape}}</h2>
+		<ol class="breadcrumb">
+			<li class="active">
+				<a href="#"><i class="fa fa-home"></i> Home</a>
+			</li>
+		</ol>
+	</div>
+</div>
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">Métricas:</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+			</div>
+			<p>Hola soy una métrica.</p>
+		</div>
+		<div class="ibox-content"></div>
+	</div>
+</div>
+</div>
+{% endblock %}

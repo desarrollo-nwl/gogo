@@ -37,7 +37,7 @@ class Proyectos( models.Model ):
 	nombre =  models.CharField( max_length = 255 )
 	prudenciamax = models.IntegerField( default = 2 )
 	prudenciamin = models.IntegerField( default = 1 )
-	max_variables = models.SmallPositiveIntegerField( default = 0 )
+	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	usuarios = models.ManyToManyField( User )
 
 	def __unicode__(self):
@@ -96,7 +96,7 @@ class Permisos( models.Model ):
 	var_see = models.BooleanField( default = True )
 
 	def __unicode__(self):
-		return self.nombre
+		return '%s'%(self.id)
 
 	class Meta:
 		managed = True

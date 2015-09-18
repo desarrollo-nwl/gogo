@@ -30,6 +30,32 @@ def biblio(request):
 # indices
 #===============================================================================
 
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def indicevariables(request):
+    proyecto = cache.get(request.user.username)
+    permisos = request.user.permisos
+    if permisos.consultor and permisos.var_see:
+        variables = proyecto.variables_set.all()
+        return render_to_response('varadd.html',{
+    	'activarG':'1','activar':'biblio'
+    	}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def indicepreguntas(request,id_variable):
+    proyecto = cache.get(request.user.username)
+    permisos = request.user.permisos
+    if permisos.consultor and permisos.per_see:
+        preguntas = Preguntas.objects.filter(id=int(id_variable))
+        return render_to_response('varadd.html',{
+    	'activarG':'1','activar':'biblio'
+    	}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('403.html')
 
 
 #===============================================================================
