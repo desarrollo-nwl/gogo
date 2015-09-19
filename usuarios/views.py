@@ -98,9 +98,9 @@ def acceder(request):
 @login_required(login_url='/acceder/')
 def home(request):
 	if request.user.is_superuser:
-		proyectos = Proyectos.objects.all()
+		proyectos = Proyectos.objects.all().select_related('empresa__nombre')
 	else:
-		proyectos = Proyectos.objects.filter( usuarios = user.request)
+		proyectos = Proyectos.objects.filter( usuarios = user.request).select_related('empresa__nombre')
 	return render_to_response('home.html',{
 	'Activar':'MisProyectos','Proyectos':proyectos
 	}, context_instance=RequestContext(request))
@@ -108,7 +108,7 @@ def home(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def home2(request,id_proyecto):
+def menu(request,id_proyecto):
 	try:
 		if request.user.is_superuser:
 			proyecto = Proyectos.objects.get(id=int(id_proyecto)
@@ -118,11 +118,22 @@ def home2(request,id_proyecto):
 			usuarios = user.request).select_related('empresa__nombre'
 			).get(id=int(id_proyecto))
 		cache.set(request.user.username,proyecto,86400)
-		return render_to_response('home2.html',{
-		'Empresa':empresa,'Permisos':permisos
-		}, context_instance=RequestContext(request))
+		return HttpResponseRedirect('/home2/')
 	except:
 			return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def home2(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		proyecto = cache.get(request.user.username)
+		return render_to_response('home2.html',{
+		'Activar':'home2','Permisos':permisos,'Proyecto':proyecto
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
@@ -134,7 +145,7 @@ def salir(request):
 
 
 #===============================================================================
-#    Páginas de administración
+#    Páginas de administración de cuentas usuario
 #===============================================================================
 
 
@@ -189,6 +200,60 @@ def recuperar(request):
 	'Aviso':aviso
 	}, context_instance=RequestContext(request))
 
+#===============================================================================
+#   Empresas
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def empresas(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('empresas.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def empresaseditar(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('empresas.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def empresaseliminar(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('empresas.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def empresasnueva(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('empresas.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
 
 #===============================================================================
 #    Páginas de errores

@@ -14,15 +14,20 @@ urlpatterns = patterns('usuarios.views',
     url(r'^index/$', 'index'),
     url(r'^acceder/$', 'acceder'),
     url(r'^home/$', 'home'),
-    url(r'^home2/(?P<id_proyecto>[0-9]{1,10})/$', 'home2'),
-    url(r'^salir/$', 'salir'),
+    url(r'^menu/(?P<id_proyecto>[0-9]{1,10})/$', 'menu'),
+    url(r'^home2/$', 'home2'),
+    url(r'^salir/$', 'salir')
 )
 
 #===============================================================================
-# urls de usuarios y varias
+# urls de proyectos, empresas y usuarios
 #===============================================================================
 
-
+urlpatterns += patterns('usuarios.views',
+    url(r'^proyecto/editar/', 'proyectoeditar'),
+    url(r'^proyecto/eliminar/', 'proyectoeliminar'),
+    url(r'^proyectos/nuevo/', 'proyectosnuevo'),
+)
 
 #===============================================================================
 # urls de errores

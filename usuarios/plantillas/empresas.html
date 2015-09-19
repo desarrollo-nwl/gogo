@@ -1,0 +1,59 @@
+{% extends "dash.html" %}{% load staticfiles%}
+{% block title %} Home | Empresas {% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block contenido2 %}
+<style>.chosen-container-single .chosen-single {border-radius:0%;}</style>
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+	<div class="col-lg-12">
+		<h2>Administrar Empresas</h2>
+		<ol class="breadcrumb">
+			<li >
+				<a href="/home/"><i class="fa fa-home"></i> Home</a>
+			</li>
+			<li>Empresas</li>
+		</ol>
+	</div>
+</div>
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">{{user.first_name | capfirst | escape }} añada edite o elimine empresas para que estén disponibles en sus empresas.</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link">
+					<i class="fa fa-chevron-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content">
+            <table id="emp" class="table table-striped table-bordered" cellspacing="0" width="99%">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Número de empleados</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in Empresas %}
+                    <tr>
+                        <td><a href="/empresas/editar/{{i.id}}">{{i.nombre | capfirst | escape}}</a></td>
+                        <td>{{i.num_empleados | escape}}</td>
+                        <td><a href="/empresas/editar/{{i.id}}"><i class="fa fa-edit m-r"></i></a><a href="/empresas/borrar/{{i.id}}"><i class="fa fa-trash m-r"></i></a></td>
+                    </tr>{% endfor %}
+                </tbody>
+            </table>
+            <div class="container-fluid"><a href="/empresa/nueva/" class="btn btn-primary pull-right m-t">Agregar Empresa</a></div>
+        </div>
+	</div>
+</div>
+</div>
+
+
+{%endblock%}
+
+{% block scripts%}
+<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script>$("#emp").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ empresas",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ninguna empresa creada.",sInfo:"Empresas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Empresas del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ empresas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%endblock%}

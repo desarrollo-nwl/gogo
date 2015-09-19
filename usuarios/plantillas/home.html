@@ -34,14 +34,14 @@
 				<tbody>
 					{% for i in Proyectos %}
 					<tr>
-						<td><a href="/inventario/editar/bodega/{{i.id | escape}}/">{{i.nombre | capfirst | escape}}</a></td>
+						<td><a href="/proyectos/editar/{{i.id | escape}}/">{{i.nombre | capfirst | escape}}</a></td>
 						<td>{{i.empresas.nombre | capfirst | escape}}</td>
 						<td>{%if i.activo%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>
 
-			<div class="container-fluid"><a href="/nuevo/proyecto/" class="btn btn-primary pull-right m-t">Agregar Proyecto</a></div>
+			<div class="container-fluid"><a href="/proyectos/nuevo" class="btn btn-primary pull-right m-t">Agregar Proyecto</a></div>
 		</div>
 	</div>
 </div>
@@ -50,5 +50,5 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ registros",sZeroRecords:"No se encontraron resultados",sEmptyTable:"Ningún dato disponible en esta tabla",sInfo:"Registros del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Registros del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ registros)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ proyectos",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ningún proyecto creado o asociado.",sInfo:"Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Proyectos del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ proyectos)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {%endblock%}

@@ -7,7 +7,6 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 class Empresas( models.Model ):
 	id = models.AutoField( primary_key = True )
-	activa = models.BooleanField( default = True )
 	departamento =  models.CharField(  max_length = 100 , blank = True, null = True )
 	nit = models.CharField(  max_length = 20 , blank = True, null = True )
 	nombre = models.CharField( max_length = 100 )
