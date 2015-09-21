@@ -24,9 +24,19 @@ urlpatterns = patterns('usuarios.views',
 #===============================================================================
 
 urlpatterns += patterns('usuarios.views',
-    url(r'^proyecto/editar/', 'proyectoeditar'),
-    url(r'^proyecto/eliminar/', 'proyectoeliminar'),
-    url(r'^proyectos/nuevo/', 'proyectosnuevo'),
+    url(r'^cuenta/$', 'cuenta'),
+    url(r'^empresas/$', 'empresas'),
+    url(r'^empresa/editar/(?P<id_empresa>[0-9]{1,10})/$', 'empresaeditar'),
+    url(r'^empresa/eliminar/(?P<id_empresa>[0-9]{1,10})/$', 'empresaeliminar'),
+    url(r'^empresa/nueva/$', 'empresanueva'),
+    url(r'^licencia/$', 'licencia'),
+    url(r'^proyecto/editar/$', 'proyectoeditar'),
+    url(r'^proyecto/eliminar/$', 'proyectoeliminar'),
+    url(r'^proyecto/nuevo/$', 'proyectonuevo'),
+    url(r'^usuarios/$', 'usuarios'),
+    url(r'^usuario/editar/(?P<id_usuario>[0-9]{1,10})/$', 'usuarioeditar'),
+    url(r'^usuario/eliminar/(?P<id_usuario>[0-9]{1,10})/$', 'usuarioeliminar'),
+    url(r'^usuario/nuevo/$', 'usuarionuevo'),
 )
 
 #===============================================================================

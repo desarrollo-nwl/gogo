@@ -20,8 +20,8 @@
 				<li id="Usuarios"><a href="/usuarios/"><i class="fa fa-group"></i> Usuarios</a></li>
 				<li id="GestionarCuenta"><a href="#"><i class="fa fa-gears"></i> Gestionar cuenta</a>
 					<ul class="nav nav-third-level">
-						<li id="InformacionDeLicencia"><a href="/licencia/"><i class="fa fa-key"></i> Información de licencia</a></li>
-						<li id="CambiarContrasena"><a href="/cuenta/"><i class="fa fa-expeditedssl"></i> Cambiar contraseña</a></li>
+						<li id="Licencia"><a href="/licencia/"><i class="fa fa-key"></i> Información de licencia</a></li>
+						<li id="Cuenta"><a href="/cuenta/"><i class="fa fa-expeditedssl"></i> Cambiar contraseña</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -56,5 +56,5 @@
 <script src="{% static 'js/dash.min.js' %}"></script>
 <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
 {%endspaceless%}{%endcache%}
-<script>$('#{{Activar}}').addClass('active');$('#{{activar}}').addClass('active');</script>
+<script>$('#{{Activar}}').addClass('active');{%if activar%}$('#{{activar}}').addClass('active');{%endif%}{%if activarp%}$('#{{activarp}}').addClass('active');{%endif%}</script>
 {% block scripts%}{% endblock %}</div></div>{% endblock %}

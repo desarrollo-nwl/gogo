@@ -13,6 +13,7 @@ class Empresas( models.Model ):
 	num_empleados =  models.IntegerField( blank= True, null = True )
 	pagina = models.CharField( max_length=1000, blank= True, null = True )
 	pais =  models.CharField(  max_length = 100 , blank = True, null = True )
+	ciudad = models.CharField(  max_length = 100 , blank = True, null = True )
 	sector = models.CharField(  max_length = 100, blank = True, null = True )
 	usuario = models.ForeignKey( User )
 
@@ -37,6 +38,7 @@ class Proyectos( models.Model ):
 	prudenciamax = models.IntegerField( default = 2 )
 	prudenciamin = models.IntegerField( default = 1 )
 	max_variables = models.PositiveSmallIntegerField( default = 0 )
+	tipo = models.CharField( max_length = 15, default = "Completa" )
 	usuarios = models.ManyToManyField( User )
 
 	def __unicode__(self):
@@ -58,6 +60,11 @@ class ProyectosDatos( models.Model ):
 	senso = models.BooleanField( default = False )
 	tipo = models.IntegerField( blank = True, null = True )
 	tit_encuesta = models.CharField( max_length = 255, blank = True, null = True )
+	opcional1 = models.CharField( max_length=100, blank=True, null=True )
+	opcional2 = models.CharField( max_length=100, blank=True, null=True )
+	opcional3 = models.CharField( max_length=100, blank=True, null=True )
+	opcional4 = models.CharField( max_length=100, blank=True, null=True )
+	opcional5 = models.CharField( max_length=100, blank=True, null=True )
 
 	def __unicode__(self):
 		return self.nombre
@@ -79,6 +86,7 @@ class Permisos( models.Model ):
 	col_edit = models.BooleanField( default = True )
 	col_see = models.BooleanField( default = True )
 	det_see = models.BooleanField( default = True )#respuestas detalladas
+	max_proyectos = models.PositiveSmallIntegerField( default = 0 )
 	pre_add = models.BooleanField( default = True )#preguntas
 	pre_del = models.BooleanField( default = True )
 	pre_edit = models.BooleanField( default = True )

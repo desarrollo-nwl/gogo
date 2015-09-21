@@ -1,0 +1,111 @@
+{%extends "dash.html" %}{% load staticfiles%}
+{%block title%} Home | Usuarios {%endblock%}
+{%block head2%}<link href="{% static 'css/plugins/chosen/chosen.min.css' %}" rel="stylesheet">{%endblock%}
+{%block contenido2%}
+<style>.chosen-container-single .chosen-single {border-radius:0%;}</style>
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+	<div class="col-lg-12">
+		<h2>Agregar usuarios</h2>
+		<ol class="breadcrumb">
+			<li >
+				<a href="/home/"><i class="fa fa-home"></i> Home</a>
+			</li>
+			<li>Usuarios</li>
+		</ol>
+	</div>
+</div>
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">Complete los siguientes campos para agregar uno.</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link">
+					<i class="fa fa-chevron-up"></i>
+				</a>
+			</div>
+		</div>
+
+		<div class="ibox-content">
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nit:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  required type="text" name="nit" class="form-control" maxlength="20" placeholder="Nit de la empresa a registrar">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Página web:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  required type="text" name="pagina" class="form-control" maxlength="1000" placeholder="Página de redicrección al terminar una encuesta">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Número de empleados:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  required type="number" name="numero_empleados" class="form-control" min="1" max="99999999" placeholder="Número aproximado de empleados">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Sector económico:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<select class="chosen-select form-control" name="sector_economico">
+							<option  value="">Sector económico </option>
+							<option  value="Administración">Administración</option>
+							<option  value="Agrícola">Agrícola</option>
+							<option  value="Comercial">Comercial</option>
+							<option  value="Comunicaciones">Comunicaciones</option>
+							<option  value="Construcción">Construcción</option>
+							<option  value="Consultoría">Consultoría</option>
+							<option  value="Educativo">Educativo</option>
+							<option  value="Energético">Energético</option>
+							<option  value="Entidad Estatal">Entidad Estatal</option>
+							<option  value="Financiero">Financiero</option>
+							<option  value="Forestal">Forestal</option>
+							<option  value="Ganadero">Ganadero</option>
+							<option  value="Industrial">Industrial</option>
+							<option  value="Minero">Minero</option>
+							<option  value="Pesquero">Pesquero</option>
+							<option  value="Sanitario">Sanitario</option>
+							<option  value="Servicios">Servicios</option>
+							<option  value="Software y tecnologías de la información">Software y tecnologías de la información</option>
+							<option  value="Solidario">Solidario</option>
+							<option  value="Transportes">Transportes</option>
+							<option  value="Turístico">Turístico</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">País:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8">
+						<select id="country" name="pais" class="chosen-select form-control" required></select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Departamento:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8">
+						<select  id="state" name="departamento" class="chosen-select form-control" required></select>
+					</div>
+				</div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Grabar Empresa</button></div>
+			</form>
+        </div>
+	</div>
+</div>
+</div>
+
+
+{%endblock%}
+
+{% block scripts%}
+<script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
+<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);}</script>
+<script type="text/javascript" src="{% static 'js/plugins/ciudades/ciudades.min.js' %}"></script>
+<script >populateCountries("country", "state");</script>
+{% endblock %}

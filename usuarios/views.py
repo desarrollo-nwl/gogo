@@ -145,31 +145,8 @@ def salir(request):
 
 
 #===============================================================================
-#    Páginas de administración de cuentas usuario
+#    Páginas de recuperar usuario
 #===============================================================================
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def cuenta(request):
-	acceso = None
-	cambio = None
-	if request.method == 'POST':
-		usuario = request.user
-		P = request.POST['cpassword']
-		clave = request.POST['password']
-		clave2 = request.POST['password2']
-		acceso = authenticate(username=usuario, password=P)
-		if ((acceso is not None) and (clave == clave2)):
-			usuario.set_password(clave)
-			usuario.save()
-			cambio= "Se ha cambiado la contraseña exitosamente."
-		else:
-			cambio= "credenciales incorrectas, intente nuevamente."
-
-	return render_to_response('cuenta.html',{
-	'activar':'cuenta','cambio':cambio
-	}, context_instance=RequestContext(request))
 
 
 @cache_control(no_store=True)
@@ -219,7 +196,20 @@ def empresas(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def empresaseditar(request):
+def empresaeditar(request,id_empresa):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('empresaeditar.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def empresaeliminar(request,id_empresa):
 	permisos = request.user.permisos
 	if permisos.consultor:
 		empresas = Empresas.objects.filter(usuario=request.user)
@@ -232,7 +222,36 @@ def empresaseditar(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def empresaseliminar(request):
+def empresanueva(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('empresanueva.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+#===============================================================================
+#   Proyecto
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def proyectonuevo(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('proyectonuevo.html',{
+		'Activar':'MisProyectos'
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def proyectoeditar(request,id_proyecto):
 	permisos = request.user.permisos
 	if permisos.consultor:
 		empresas = Empresas.objects.filter(usuario=request.user)
@@ -245,7 +264,7 @@ def empresaseliminar(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def empresasnueva(request):
+def proyectoeliminar(request,id_proyecto):
 	permisos = request.user.permisos
 	if permisos.consultor:
 		empresas = Empresas.objects.filter(usuario=request.user)
@@ -254,6 +273,102 @@ def empresasnueva(request):
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
+
+
+#===============================================================================
+#   Usuarios
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def usuarios(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('usuarios.html',{
+		'Activar':'Configuracion','activar':'Usuarios','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def usuarioeditar(request,id_usuario):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		usuarios = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('usuarioeditar.html',{
+		'Activar':'Configuracion','activar':'Usuarios','Empresas':empresas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def usuarioeliminar(request,id_usuario):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		usuarios = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('usuarios.html',{
+		'Activar':'Configuracion','activar':'Usuarios','Empresas':usuarios
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def usuarionuevo(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		usuarios = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('usuarionuevo.html',{
+		'Activar':'Configuracion','activar':'Usuarios','Empresas':usuarios
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+#===============================================================================
+#   Usuarios
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def licencia(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		empresas = Empresas.objects.filter(usuario=request.user)
+		return render_to_response('licencia.html',{
+		'Activar':'Configuracion','activar':'GestionarCuenta','activarp':'Licencia'
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def cuenta(request):
+	acceso = None
+	cambio = None
+	if request.method == 'POST':
+		usuario = request.user
+		P = request.POST['cpassword']
+		clave = request.POST['password']
+		clave2 = request.POST['password2']
+		acceso = authenticate(username=usuario, password=P)
+		if ((acceso is not None) and (clave == clave2)):
+			usuario.set_password(clave)
+			usuario.save()
+			cambio= "Se ha cambiado la contraseña exitosamente."
+		else:
+			cambio= "credenciales incorrectas, intente nuevamente."
+
+	return render_to_response('cuenta.html',{
+	'Activar':'Configuracion','activar':'GestionarCuenta','activarp':'Cuenta',
+	'cambio':cambio
+	}, context_instance=RequestContext(request))
 
 #===============================================================================
 #    Páginas de errores

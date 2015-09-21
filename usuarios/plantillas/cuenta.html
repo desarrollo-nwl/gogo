@@ -1,0 +1,57 @@
+{% extends 'dash.html'%}{% load staticfiles%}
+{%block title%} Home | Contraseña{%endblock%}
+{%block contenido2%}
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+
+	<div class="col-lg-12">
+		<h2>Cambio de contraseña</h2>
+		<ol class="breadcrumb">
+			<li>
+				<a href="/home/"><i class="fa fa-home"></i> Home</a>
+			</li>
+			<li class="active">Contraseña</li>
+		</ol>
+	</div>
+</div>
+
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">{{user.first_name | capfirst | escape }}, aquí puedes cambiar tu contraseña.</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link">
+					<i class="fa fa-chevron-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content">
+			<form class="form-horizontal" method="POST" action=".">{%csrf_token%}
+				<div class="row">
+					<div class="form-group">
+						 <div class="col-xs-1"></div>
+						<label class="col-xs-2 control-label">Contraseña actual:</label>
+						<div class="col-xs-5"><input name="cpass" type="password" class="form-control" maxlength="255" required></div>
+						<div class="col-xs-4 control-label m-t" ></div>
+					</div>
+					<div class="form-group">
+						 <div class="col-xs-1"></div>
+						<label class="col-xs-2 control-label">Nueva contraseña:</label>
+						<div class="col-xs-5"><input name="pass" type="password" class="form-control" maxlength="255" pattern=".{8,}" required title="8 caracteres mínimo"></div>
+						<div class="col-xs-4 control-label m-t" ></div>
+					</div>
+					<div class="form-group">
+						 <div class="col-xs-1"></div>
+						<label class="col-xs-2 control-label">Repita la nueva contraseña:</label>
+						<div class="col-xs-5"><input name="pass2" type="password" class="form-control" maxlength="255" pattern=".{8,}" required title="8 caracteres mínimo"></div>
+						<div class="col-xs-4 control-label m-t" ></div>
+					</div>
+				{%ifequal error 1%}<p class="m-l" style="color:#008000">{{Cambio}}{%endifequal%}
+				<button type="submit" class="btn btn-primary pull-right m-r">Cambiar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+{%endblock%}

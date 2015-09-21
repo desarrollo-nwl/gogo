@@ -3118,3 +3118,7 @@ dd.project-people {
 .center{
     text-align: center
 }
+
+li a:focus{
+    outline: 0;
+}
