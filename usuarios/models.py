@@ -87,6 +87,7 @@ class Permisos( models.Model ):
 	col_see = models.BooleanField( default = True )
 	det_see = models.BooleanField( default = True )#respuestas detalladas
 	max_proyectos = models.PositiveSmallIntegerField( default = 0 )
+	max_pro_usados = models.PositiveSmallIntegerField( default = 0 )
 	pre_add = models.BooleanField( default = True )#preguntas
 	pre_del = models.BooleanField( default = True )
 	pre_edit = models.BooleanField( default = True )
