@@ -25,25 +25,15 @@
 				</a>
 			</div>
 		</div>
-
-		<!-- class Empresas( models.Model ):
-			id = models.AutoField( primary_key = True )
-			departamento =  models.CharField(  max_length = 100 , blank = True, null = True )
-			nit = models.CharField(  max_length = 20 , blank = True, null = True )
-			nombre = models.CharField( max_length = 100 )
-			num_empleados =  models.IntegerField( blank= True, null = True )
-			pagina = models.CharField( max_length=1000, blank= True, null = True )
-			pais =  models.CharField(  max_length = 100 , blank = True, null = True )
-			ciudad = models.CharField(  max_length = 100 , blank = True, null = True )
-			sector = models.CharField(  max_length = 100, blank = True, null = True ) -->
-
 		<div class="ibox-content">
 			<form class="form-horizontal" method="POST">{%csrf_token%}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar">
+						<input  id="nombre" required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar">
+						<div id="error"></div>
 					</div>
+
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nit:</label>
@@ -110,13 +100,29 @@
 	</div>
 </div>
 </div>
-
-
 {%endblock%}
 
 {% block scripts%}
 <script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
-<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);}</script>
 <script type="text/javascript" src="{% static 'js/plugins/ciudades/ciudades.min.js' %}"></script>
 <script >populateCountries("country", "state");</script>
+<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
+<script>
+$(document).ready(function(){
+	var nombres =[],$nombre = $("#nombre"),$error=$('#error');
+	{% for i in Empresas%}nombres.push('{{i.nombre |escape|safe}}');{% endfor %}
+	nnombres=nombres.length;
+	$nombre.keyup(function(){
+		ban = false;
+		for (var i = 0; i < nnombres; i++) {
+			if($nombre.val() == nombres[i]){
+				$error.html('<span style="color:#cd1e21">Este nombre ya se encuentra registrado.</span>');
+				ban = true;
+			}
+			if(! ban){$error.html('');}
+		}
+		$nombre.val
+	});
+});
+</script>
 {% endblock %}

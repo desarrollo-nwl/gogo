@@ -11,7 +11,7 @@ class Streaming( models.Model ):
 	id = models.AutoField( primary_key = True)
 	colaborador = models.ForeignKey( Colaboradores )
 	pregunta = models.ForeignKey( Preguntas )
-	proyecto = models.ForeignKey( Proyectos, db_index = True)
+	proyecto = models.ForeignKey( Proyectos )
 	fec_controlenvio = models.DateTimeField( blank = True, null = True  )
 	fecharespuesta = models.DateTimeField( blank = True, null = True  )
 
@@ -38,7 +38,7 @@ class StreamingRespuestas( models.Model ):
 
 class SRS( models.Model ):
 	id = models.AutoField( primary_key = True)
-	usuario = models.ForeignKey( User )
+	usuario = models.ForeignKey( Colaboradores )
 	fecharespuesta =  models.DateTimeField( auto_now_add = True )
 	respuesta = models.CharField( max_length = 350, blank = True, null = True )
 

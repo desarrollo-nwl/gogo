@@ -225,7 +225,16 @@ def empresaeliminar(request,id_empresa):
 def empresanueva(request):
 	permisos = request.user.permisos
 	if permisos.consultor:
-		empresas = Empresas.objects.filter(usuario=request.user)
+		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
+		if request.method == 'POST':
+			Empresas.objects.create(
+				nombre = request.POST['nombre'],
+				nit  = request.POST['nit'],
+				pagina = request.POST['pagina'],
+				num_empleados  = int(request.POST['num_empleados']),
+				sector  = request.POST['sector'],
+				pais  = request.POST['pais'],
+				departamento  = request.POST['departamento'])
 		return render_to_response('empresanueva.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
 		}, context_instance=RequestContext(request))
