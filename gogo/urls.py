@@ -16,6 +16,7 @@ urlpatterns = patterns('usuarios.views',
     url(r'^home/$', 'home'),
     url(r'^menu/(?P<id_proyecto>[0-9]{1,10})/$', 'menu'),
     url(r'^home2/$', 'home2'),
+    url(r'^logs/$', 'logs'),    
     url(r'^salir/$', 'salir')
 )
 

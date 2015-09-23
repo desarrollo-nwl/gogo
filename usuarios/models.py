@@ -13,7 +13,6 @@ class Empresas( models.Model ):
 	num_empleados =  models.IntegerField( blank= True, null = True )
 	pagina = models.CharField( max_length=1000, blank= True, null = True )
 	pais =  models.CharField(  max_length = 100 , blank = True, null = True )
-	ciudad = models.CharField(  max_length = 100 , blank = True, null = True )
 	sector = models.CharField(  max_length = 100, blank = True, null = True )
 	usuario = models.ForeignKey( User )
 
@@ -30,14 +29,14 @@ class Proyectos( models.Model ):
 	id = models.AutoField( primary_key=True )
 	activo = models.BooleanField( default = False )
 	can_envio = models.IntegerField( default = 5 )
-	descripcion = models.TextField( blank = True, null = True )
 	empresa = models.ForeignKey( Empresas )
 	fec_registro =  models.DateTimeField( auto_now_add = True )
 	iniciable = models.BooleanField( default = False )
+	interna = models.BooleanField( default = True )
+	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	prudenciamax = models.IntegerField( default = 2 )
 	prudenciamin = models.IntegerField( default = 1 )
-	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	tipo = models.CharField( max_length = 15, default = "Completa" )
 	usuarios = models.ManyToManyField( User )
 
@@ -57,7 +56,7 @@ class ProyectosDatos( models.Model ):
 	int_encuesta = models.TextField( blank = True, null = True )
 	logo = models.ImageField( upload_to = 'logos' )
 	logoenc = models.ImageField( upload_to = 'logos', blank = True, null = True )
-	senso = models.BooleanField( default = False )
+	senso = models.BooleanField( default = True )
 	tipo = models.IntegerField( blank = True, null = True )
 	tit_encuesta = models.CharField( max_length = 255, blank = True, null = True )
 	opcional1 = models.CharField( max_length=100, blank=True, null=True )
@@ -130,8 +129,24 @@ class IndiceUsuarios( MPTTModel ):
 		verbose_name_plural = "Indice de usuarios"
 
 
+class Logs( models.Model ):
+	id = models.AutoField( primary_key=True )
+	usuario = models.ForeignKey( User )
+	accion = models.TextField( )
+	descripcion = models.TextField( )
+	fregistro = models.DateTimeField( auto_now_add = True )
+
+	def __unicode__(self):
+		return '%s %s %s'%(self.usuario,self.accion,self.descripcion )
+
+	class Meta:
+		managed = True
+		db_table = 'usuarios_logs'
+		verbose_name_plural = 'Logs'
+
+
 class Recuperar( models.Model ):
-	id_envio = models.AutoField( primary_key=True )
+	id = models.AutoField( primary_key=True )
 	usuario = models.ForeignKey( User )
 	link = models.CharField( max_length = 96 )
 	fregistro = models.DateTimeField( auto_now_add = True )

@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
+from django.db import transaction
 from usuarios.models import *
 import random
 
@@ -199,9 +200,25 @@ def empresas(request):
 def empresaeditar(request,id_empresa):
 	permisos = request.user.permisos
 	if permisos.consultor:
-		empresas = Empresas.objects.filter(usuario=request.user)
+		try:
+			empresas = Empresas.objects.filter(usuario=request.user).exclude(id=int(id_empresa))
+			empresa = Empresas.objects.filter(usuario=request.user).get(id=int(id_empresa))
+		except:return render_to_response('404.html')
+		if request.method == 'POST':
+			empresa.nombre = request.POST['nombre']
+			empresa.nit  = request.POST['nit']
+			empresa.pagina = request.POST['pagina']
+			empresa.num_empleados  = int(request.POST['num_empleados'])
+			empresa.sector  = request.POST['sector']
+			empresa.pais  = request.POST['pais']
+			empresa.departamento  = request.POST['departamento']
+			with transaction.atomic():
+				empresa.save()
+				Logs.objects.create(usuario=request.user,accion="Editó la empresa",descripcion=empresa.nombre)
+			return HttpResponseRedirect('/empresas/')
 		return render_to_response('empresaeditar.html',{
-		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		'Activar':'Configuracion','activar':'Empresas','Empresa':empresa,
+		'Empresas':empresas
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -212,9 +229,21 @@ def empresaeditar(request,id_empresa):
 def empresaeliminar(request,id_empresa):
 	permisos = request.user.permisos
 	if permisos.consultor:
-		empresas = Empresas.objects.filter(usuario=request.user)
-		return render_to_response('empresas.html',{
-		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
+		try:
+			empresa = Empresas.objects.filter(usuario=request.user
+			).prefetch_related('proyectos_set').get(id=int(id_empresa))
+		except:return render_to_response('403.html')
+		if request.method == 'POST':
+			empresa.usuario =  User.objects.get(id=1)
+			with transaction.atomic():
+				empresa.save()
+				for i in empresa.proyectos_set.all():
+					i.usuarios.clear()
+				Logs.objects.create(usuario=request.user,accion="Eliminó la empresa",descripcion=empresa.nombre)
+			return HttpResponseRedirect('/empresas/')
+		return render_to_response('eliminar.html',{
+		'Activar':'Configuracion','activar':'Empresas','Empresa':empresa,
+		'objeto':'Empresa'
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -225,7 +254,7 @@ def empresaeliminar(request,id_empresa):
 def empresanueva(request):
 	permisos = request.user.permisos
 	if permisos.consultor:
-		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
+		empresas = Empresas.objects.only('nombre','nit').filter(usuario=request.user)
 		if request.method == 'POST':
 			Empresas.objects.create(
 				nombre = request.POST['nombre'],
@@ -234,7 +263,10 @@ def empresanueva(request):
 				num_empleados  = int(request.POST['num_empleados']),
 				sector  = request.POST['sector'],
 				pais  = request.POST['pais'],
-				departamento  = request.POST['departamento'])
+				departamento  = request.POST['departamento'],
+				usuario = request.user)
+			Logs.objects.create(usuario=request.user,accion="Creó la empresa",descripcion=request.POST['nombre'])
+			return HttpResponseRedirect('/empresas/')
 		return render_to_response('empresanueva.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas
 		}, context_instance=RequestContext(request))
@@ -250,9 +282,23 @@ def empresanueva(request):
 def proyectonuevo(request):
 	permisos = request.user.permisos
 	if permisos.consultor:
-		empresas = Empresas.objects.filter(usuario=request.user)
+		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
+		proyectos = Proyectos.objects.only('nombre').filter(usuarios=request.user)
+		usuarios = IndiceUsuarios.objects.filter(usuario=request.user
+					).select_related('usuario__first_name','usuario__last_name'
+					).get_descendants(include_self=False)
+		if request.method == 'POST':
+			with transaction.atomic():
+				proyecto = Proyecto.objects.create(
+							empresa = Empresas.objects.get(id=int(request.POST['empresa'])),
+							nombre = request.POST['nombre'],
+							tipo = request.POST['tipo'])
+				proyecto.usuarios.add(request.user)
+				for i in request.POST.getlist('usuarios'):
+					proyecto.usuarios.add(User.objects.filter(id=int(i)))
 		return render_to_response('proyectonuevo.html',{
-		'Activar':'MisProyectos'
+		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
+		'Usuarios':usuarios
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -360,7 +406,7 @@ def licencia(request):
 @login_required(login_url='/acceder/')
 def cuenta(request):
 	acceso = None
-	cambio = None
+	cambio = ''
 	if request.method == 'POST':
 		usuario = request.user
 		P = request.POST['cpassword']
@@ -372,12 +418,32 @@ def cuenta(request):
 			usuario.save()
 			cambio= "Se ha cambiado la contraseña exitosamente."
 		else:
-			cambio= "credenciales incorrectas, intente nuevamente."
+			cambio= "Credenciales incorrectas, intente nuevamente."
 
 	return render_to_response('cuenta.html',{
 	'Activar':'Configuracion','activar':'GestionarCuenta','activarp':'Cuenta',
-	'cambio':cambio
+	'Cambio':cambio
 	}, context_instance=RequestContext(request))
+
+#===============================================================================
+#   Usuarios
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def logs(request):
+	permisos = request.user.permisos
+	if permisos.consultor:
+		usuarios_creados = IndiceUsuarios.objects.filter(usuario=request.user).get_descendants(include_self=True)
+		aux = []
+		for  i in usuarios_creados:
+			aux.append(i.usuario_id)
+		logs = Logs.objects.filter(usuario__in=aux).select_related('usuario')
+		return render_to_response('logs.html',{
+		'Activar':'Configuracion','activar':'Logs','Logs':logs
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
 
 #===============================================================================
 #    Páginas de errores

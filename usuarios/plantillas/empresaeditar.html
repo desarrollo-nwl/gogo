@@ -30,53 +30,54 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar">
+						<input id="nombre" required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar" value="{{Empresa.nombre |escape}}">
+						<div id="errornombre"></div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nit:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="nit" class="form-control" maxlength="20" placeholder="Nit de la empresa a registrar">
+						<input id="nit" required type="text" name="nit" class="form-control" maxlength="20" placeholder="Nit de la empresa a registrar" value="{{Empresa.nit |escape}}">
+						<div id="errornit"></div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Página web:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="pagina" class="form-control" maxlength="1000" placeholder="Página de redicrección al terminar una encuesta">
+						<input  required type="text" name="pagina" class="form-control" maxlength="1000" placeholder="Página de redicrección al terminar una encuesta" value="{{Empresa.pagina |escape}}">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Número de empleados:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="number" name="numero_empleados" class="form-control" min="1" max="99999999" placeholder="Número aproximado de empleados">
+						<input  required type="number" name="num_empleados" class="form-control" min="1" max="99999999" placeholder="Número aproximado de empleados" value="{{Empresa.num_empleados |escape}}">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Sector económico:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<select class="chosen-select form-control" name="sector_economico">
-							<option  value="">Sector económico </option>
-							<option  value="Administración">Administración</option>
-							<option  value="Agrícola">Agrícola</option>
-							<option  value="Comercial">Comercial</option>
-							<option  value="Comunicaciones">Comunicaciones</option>
-							<option  value="Construcción">Construcción</option>
-							<option  value="Consultoría">Consultoría</option>
-							<option  value="Educativo">Educativo</option>
-							<option  value="Energético">Energético</option>
-							<option  value="Entidad Estatal">Entidad Estatal</option>
-							<option  value="Financiero">Financiero</option>
-							<option  value="Forestal">Forestal</option>
-							<option  value="Ganadero">Ganadero</option>
-							<option  value="Industrial">Industrial</option>
-							<option  value="Minero">Minero</option>
-							<option  value="Pesquero">Pesquero</option>
-							<option  value="Sanitario">Sanitario</option>
-							<option  value="Servicios">Servicios</option>
-							<option  value="Software y tecnologías de la información">Software y tecnologías de la información</option>
-							<option  value="Solidario">Solidario</option>
-							<option  value="Transportes">Transportes</option>
-							<option  value="Turístico">Turístico</option>
+						<select class="chosen-select form-control" name="sector">
+							<option {%ifequal "Administración" Empresa.sector %}selected{%endifequal%} value="Administración">Administración</option>
+							<option {%ifequal "Agrícola" Empresa.sector %}selected{%endifequal%} value="Agrícola">Agrícola</option>
+							<option {%ifequal "Comercial" Empresa.sector %}selected{%endifequal%} value="Comercial">Comercial</option>
+							<option {%ifequal "Comunicaciones" Empresa.sector %}selected{%endifequal%} value="Comunicaciones">Comunicaciones</option>
+							<option {%ifequal "Construcción" Empresa.sector %}selected{%endifequal%} value="Construcción">Construcción</option>
+							<option {%ifequal "Consultoría" Empresa.sector %}selected{%endifequal%} value="Consultoría">Consultoría</option>
+							<option {%ifequal "Educativo" Empresa.sector %}selected{%endifequal%} value="Educativo">Educativo</option>
+							<option {%ifequal "Energético" Empresa.sector %}selected{%endifequal%} value="Energético">Energético</option>
+							<option {%ifequal "Entidad Estatal" Empresa.sector %}selected{%endifequal%} value="Entidad Estatal">Entidad Estatal</option>
+							<option {%ifequal "Financiero" Empresa.sector %}selected{%endifequal%} value="Financiero">Financiero</option>
+							<option {%ifequal "Forestal" Empresa.sector %}selected{%endifequal%} value="Forestal">Forestal</option>
+							<option {%ifequal "Ganadero" Empresa.sector %}selected{%endifequal%} value="Ganadero">Ganadero</option>
+							<option {%ifequal "Industrial" Empresa.sector %}selected{%endifequal%} value="Industrial">Industrial</option>
+							<option {%ifequal "Minero" Empresa.sector %}selected{%endifequal%} value="Minero">Minero</option>
+							<option {%ifequal "Pesquero" Empresa.sector %}selected{%endifequal%} value="Pesquero">Pesquero</option>
+							<option {%ifequal "Sanitario" Empresa.sector %}selected{%endifequal%} value="Sanitario">Sanitario</option>
+							<option {%ifequal "Servicios" Empresa.sector %}selected{%endifequal%} value="Servicios">Servicios</option>
+							<option {%ifequal "Software y tecnologías de la información" Empresa.sector %}selected{%endifequal%} value="Software y tecnologías de la información">Software y tecnologías de la información</option>
+							<option {%ifequal "Solidario" Empresa.sector %}selected{%endifequal%} value="Solidario">Solidario</option>
+							<option {%ifequal "Transportes" Empresa.sector %}selected{%endifequal%} value="Transportes">Transportes</option>
+							<option {%ifequal "Turístico" Empresa.sector %}selected{%endifequal%} value="Turístico">Turístico</option>
 						</select>
 					</div>
 				</div>
@@ -92,19 +93,80 @@
 						<select  id="state" name="departamento" class="chosen-select form-control" required></select>
 					</div>
 				</div>
-				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Grabar Empresa</button></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Actualizar Empresa</button></div>
 			</form>
         </div>
 	</div>
 </div>
 </div>
-
-
 {%endblock%}
-
 {% block scripts%}
 <script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
-<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);}</script>
 <script type="text/javascript" src="{% static 'js/plugins/ciudades/ciudades.min.js' %}"></script>
-<script >populateCountries("country", "state");</script>
+<script >
+function populateStates2(countryElementId, stateElementId) {
+	var selectedCountryIndex = document.getElementById(countryElementId).selectedIndex;
+    var stateElement = document.getElementById(stateElementId);
+    stateElement.length = 0;
+    var state_arr = s_a[selectedCountryIndex+1].split("|");
+    for (var i = 0; i <= state_arr.length; i++) {
+        stateElement.options[stateElement.length] = new Option(state_arr[i], state_arr[i]);
+		if('{{Empresa.departamento}}'==state_arr[i]){
+			stateElement.selectedIndex = i;
+		}
+    }
+}
+
+function populateCountries2(countryElementId, stateElementId) {
+	var countryElement = document.getElementById(countryElementId);
+	countryElement.length = 0;
+	countryElement.options[0] = new Option('Seleccione el pais', '0');
+    for (var i = 1; i <= country_arr.length +1; i++) {
+        countryElement.options[countryElement.length] = new Option(country_arr[i], country_arr[i]);
+		if('{{Empresa.pais}}'==country_arr[i]){
+			countryElement.selectedIndex = i;
+		}
+    }
+	populateStates2("country", "state");
+    if (stateElementId) {
+        countryElement.onchange = function () {
+            populateStates2(countryElementId, stateElementId);
+			$("#state").trigger("chosen:updated");
+        };
+    }
+}
+populateCountries2("country", "state");
+</script>
+<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
+<script>
+$(document).ready(function(){
+	var nombres =[],$nombre = $("#nombre"),	nits =[],$nit = $("#nit"),
+	$errornombre=$('#errornombre'),	$errornit=$('#errornit');
+	{% for i in Empresas%}nombres.push('{{i.nombre |escape|safe}}');nits.push('{{i.nit |escape|safe}}');{% endfor %}
+	nnombres=nombres.length;
+	$nombre.keyup(function(){
+		ban = false;
+		for (var i = 0; i < nnombres; i++) {
+			if($nombre.val() == nombres[i]){
+				$errornombre.html('<span style="color:#cd1e21">Este nombre ya se encuentra registrado.</span>');
+				ban = true;
+			}
+			if(! ban){$errornombre.html('');}
+		}
+		$nombre.val
+	});
+	nnits=nits.length;
+	$nit.keyup(function(){
+		ban2 = false;
+		for (var i = 0; i < nnits; i++) {
+			if($nit.val() == nits[i]){
+				$errornit.html('<span style="color:#cd1e21">Este nit ya se encuentra registrado.</span>');
+				ban2 = true;
+			}
+			if(! ban2){$errornit.html('');}
+		}
+		$nombre.val
+	});
+});
+</script>
 {% endblock %}
