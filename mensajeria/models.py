@@ -14,6 +14,7 @@ class Streaming( models.Model ):
 	proyecto = models.ForeignKey( Proyectos )
 	fec_controlenvio = models.DateTimeField( blank = True, null = True  )
 	fecharespuesta = models.DateTimeField( blank = True, null = True  )
+	respuesta = models.TextField( blank = True, null = True )
 
 	def __unicode__(self):
 		return '%s || Q: %s A: %s' %( self.colaborador, self.pregunta, self.respuesta )
@@ -23,24 +24,11 @@ class Streaming( models.Model ):
 		db_table = 'mensajeria_streaming'
 
 
-class StreamingRespuestas( models.Model ):
-	id = models.AutoField( primary_key = True)
-	streaming = models.ForeignKey( Streaming )
-	respuesta = models.CharField( max_length = 350, blank = True, null = True )
-
-	def __unicode__(self):
-		return '%s'%( self.respuesta )
-
-	class Meta:
-		managed = True
-		db_table = 'mensajeria_streamingrespuestas'
-
-
 class SRS( models.Model ):
 	id = models.AutoField( primary_key = True)
 	usuario = models.ForeignKey( Colaboradores )
-	fecharespuesta =  models.DateTimeField( auto_now_add = True )
-	respuesta = models.CharField( max_length = 350, blank = True, null = True )
+	fecharespuesta = models.DateTimeField( auto_now_add = True  )
+	respuesta = models.TextField( blank = True, null = True )
 
 	def __unicode__(self):
 		return '%s %s'%( self.usuario,self.respuesta )

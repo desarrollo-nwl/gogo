@@ -138,35 +138,5 @@ function populateCountries2(countryElementId, stateElementId) {
 populateCountries2("country", "state");
 </script>
 <script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
-<script>
-$(document).ready(function(){
-	var nombres =[],$nombre = $("#nombre"),	nits =[],$nit = $("#nit"),
-	$errornombre=$('#errornombre'),	$errornit=$('#errornit');
-	{% for i in Empresas%}nombres.push('{{i.nombre |escape|safe}}');nits.push('{{i.nit |escape|safe}}');{% endfor %}
-	nnombres=nombres.length;
-	$nombre.keyup(function(){
-		ban = false;
-		for (var i = 0; i < nnombres; i++) {
-			if($nombre.val() == nombres[i]){
-				$errornombre.html('<span style="color:#cd1e21">Este nombre ya se encuentra registrado.</span>');
-				ban = true;
-			}
-			if(! ban){$errornombre.html('');}
-		}
-		$nombre.val
-	});
-	nnits=nits.length;
-	$nit.keyup(function(){
-		ban2 = false;
-		for (var i = 0; i < nnits; i++) {
-			if($nit.val() == nits[i]){
-				$errornit.html('<span style="color:#cd1e21">Este nit ya se encuentra registrado.</span>');
-				ban2 = true;
-			}
-			if(! ban2){$errornit.html('');}
-		}
-		$nombre.val
-	});
-});
-</script>
+<script>$(document).ready(function(){var nombres =[],$nombre = $("#nombre"),nits =[],$nit = $("#nit"),$errornombre=$('#errornombre'),	$errornit=$('#errornit');{% for i in Empresas%}nombres.push('{{i.nombre |escape|safe}}');nits.push('{{i.nit |escape|safe}}');{% endfor %}nnombres=nombres.length;$nombre.keyup(function(){ban = false;for (var i = 0; i < nnombres; i++) {if($nombre.val() == nombres[i]){$errornombre.html('<span style="color:#cd1e21">Este nombre ya se encuentra registrado.</span>');ban = true;}if(! ban){$errornombre.html('');}}$nombre.val});nnits=nits.length;$nit.keyup(function(){ban2 = false;for (var i = 0; i < nnits; i++) {if($nit.val() == nits[i]){$errornit.html('<span style="color:#cd1e21">Este nit ya se encuentra registrado.</span>');ban2 = true;}if(! ban2){$errornit.html('');}}$nombre.val});});</script>
 {% endblock %}

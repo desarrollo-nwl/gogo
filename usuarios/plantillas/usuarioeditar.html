@@ -1,8 +1,6 @@
 {%extends "dash.html" %}{% load staticfiles%}
 {%block title%} Home | Usuarios {%endblock%}
-{%block head2%}<link href="{% static 'css/plugins/chosen/chosen.min.css' %}" rel="stylesheet">{%endblock%}
 {%block contenido2%}
-<style>.chosen-container-single .chosen-single {border-radius:0%;}</style>
 <div class="row">
 <div class="m-l m-r row wrapper border-bottom white-bg page-heading">
 	<div class="col-lg-12">
@@ -18,7 +16,7 @@
 <div class="m-t col-lg-12">
 	<div class="ibox float-e-margins">
 		<div class="ibox-title">
-			<h5 class="m-r-xs">Edite con cuidado al usuario.</h5>
+			<h5 class="m-r-xs">Complete los siguientes campos editar el usuario.</h5>
 			<div class="ibox-tools">
 				<a class="collapse-link">
 					<i class="fa fa-chevron-up"></i>
@@ -27,84 +25,120 @@
 		</div>
 		<div class="ibox-content">
 			<form class="form-horizontal" method="POST">{%csrf_token%}
+				{%if Error%}<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required"></label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<span style="color:#cd1e21">{{Error}}</span>
+					</div>
+				</div>{%endif%}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar">
+						<input id="nombre" required type="text" name="nombre" class="form-control" maxlength="30" placeholder="Nombre del usuario para editar" value="{{Usuario.first_name}}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nit:</label>
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Apellido</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="nit" class="form-control" maxlength="20" placeholder="Nit de la empresa a registrar">
+						<input id="apellido" required type="text" name="apellido" class="form-control" maxlength="30" placeholder="Apellido del usuario para editar" value="{{Usuario.last_name}}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Página web:</label>
-					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="pagina" class="form-control" maxlength="1000" placeholder="Página de redicrección al terminar una encuesta">
+					<h4 class="m-l-xl">Permisos principales</h4>
+					<div class="col-lg-1 col-md-1 col-xs-1 col-sm-1"></div>
+					<div class="col-lg-10 col-md-10 col-xs-10 col-sm-10">
+						<table class="table table-striped table-bordered" cellspacing="0" width="99%">
+			                <tbody>
+								<tr>
+									<td class="center">Activo:</td>
+									<td class="center"><input id="activo" {%if Usuario.is_active %}checked{%endif%} type="checkbox" name="activo" class="switch" ></td>
+								</tr>
+								<tr>
+									<td class="center">Es un usuario Consultor</td>
+									<td class="center"><input id="consultor" {%if Usuario.permisos.consultor%}checked{%endif%} type="checkbox" name="consultor" class="switch" ></td>
+								</tr>
+								<tr>
+									<td class="center">Puede crear usuarios</td>
+									<td class="center"><input {%if Permisos.cre_usuarios%}{%else%}disabled{%endif%} {%if Usuario.permisos.cre_usuariosr%}checked{%endif%} id="crear" type="checkbox" name="cre_usuarios" class="switch" ></td>
+								</tr>
+								<tr>
+									<td class="center">Puede activar variables</td>
+									<td class="center"><input {%if Permisos.act_variables%}{%else%}disabled{%endif%} {%if Usuario.permisos.act_variables%}checked{%endif%} id="variables" type="checkbox" name="act_variables" class="switch" ></td>
+								</tr>
+								<tr>
+									<td class="center">Puede ver respuestas detalladas</td>
+									<td class="center"><input {%if Permisos.det_see%}{%else%}disabled{%endif%} {%if Usuario.permisos.det_see%}checked{%endif%} id="detalles" type="checkbox" name="det_see" class="switch" ></td>
+								</tr>
+								<tr>
+									<td class="center">Puede exportar respuestas</td>
+									<td class="center"><input {%if Permisos.res_exp%}{%else%}disabled{%endif%} {%if Usuario.permisos.res_exp%}checked{%endif%} id="exportar" type="checkbox" name="res_exp" class="switch" ></td>
+								</tr>
+								<tr>
+									<td class="center">Puede visualizar resultados</td>
+									<td class="center"><input {%if Permisos.res_see%}checked{%endif%} {%if Usuario.permisos.res_see%}checked{%endif%} id="visualizar" type="checkbox" name="res_see" class="switch" ></td>
+								</tr>
+			                </tbody>
+			            </table>
 					</div>
+					<div class="col-lg-1 col-md-1 col-xs-1 col-sm-1"></div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Número de empleados:</label>
-					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="number" name="numero_empleados" class="form-control" min="1" max="99999999" placeholder="Número aproximado de empleados">
-					</div>
+					<h4 class="m-l-xl">Otros Permisos</h4>
+					<div class="col-lg-1 col-md-1 col-xs-1 col-sm-1"></div>
+					<div class="col-lg-10 col-md-10 col-xs-10 col-sm-10 m-r">
+					<table class="table table-striped table-bordered" cellspacing="0" width="100%">
+		                <thead>
+		                    <tr>
+								<th class="center">Permiso/acción</th>
+		                        <th class="center">Visualizar <i class="fa fa-eye"></i></th>
+								<th class="center">Agregar <i class="fa fa-save"></i></th>
+		                        <th class="center">Editar <i class="fa fa-edit"></i></th>
+		                        <th class="center">Eliminar <i class="fa fa-trash"></i></th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+							<tr>
+								<td class="center">Proyectos</td>
+								<td class="center"><input {%if Permisos.pro_see%}{%else%}disabled{%endif%} {%if Usuario.permisos.pro_see%}checked{%endif%} id="visualizar1" type="checkbox" name="pro_see" class="switch" ></td>
+								<td class="center"><input {%if Permisos.pro_add%}{%else%}disabled{%endif%} {%if Usuario.permisos.pro_add%}checked{%endif%} id="agregar1" type="checkbox" name="pro_add" class="switch" ></td>
+								<td class="center"><input {%if Permisos.pro_edit%}{%else%}disabled{%endif%} {%if Usuario.permisos.pro_edit%}checked{%endif%} id="editar1" type="checkbox" name="pro_edit" class="switch" ></td>
+								<td class="center"><input {%if Permisos.pro_del%}{%else%}disabled{%endif%} {%if Usuario.permisos.pro_del%}checked{%endif%} id="eliminar1" type="checkbox" name="pro_del" class="switch" ></td>
+							</tr>
+							<tr>
+								<td class="center">Colaboradores</td>
+								<td class="center"><input {%if Permisos.col_see%}{%else%}disabled{%endif%} {%if Usuario.permisos.col_see%}checked{%endif%}  id="visualizar2" type="checkbox" name="col_see" class="switch" ></td>
+								<td class="center"><input {%if Permisos.col_add%}{%else%}disabled{%endif%} {%if Usuario.permisos.col_add%}checked{%endif%}  id="agregar2" type="checkbox" name="col_add" class="switch" ></td>
+								<td class="center"><input {%if Permisos.col_edit%}{%else%}disabled{%endif%} {%if Usuario.permisos.col_edit%}checked{%endif%} id="editar2" type="checkbox" name="col_edit" class="switch" ></td>
+								<td class="center"><input {%if Permisos.col_del%}{%else%}disabled{%endif%} {%if Usuario.permisos.col_del%}checked{%endif%}  id="eliminar2" type="checkbox" name="col_del" class="switch"></td>
+							</tr>
+							<tr>
+								<td class="center">Variables</td>
+								<td class="center"><input {%if Permisos.var_see%}{%else%}disabled{%endif%} {%if Usuario.permisos.var_see%}checked{%endif%}  id="visualizar3" type="checkbox" name="var_see" class="switch" ></td>
+								<td class="center"><input {%if Permisos.var_add%}{%else%}disabled{%endif%} {%if Usuario.permisos.var_add%}checked{%endif%}  id="agregar3" type="checkbox" name="var_add" class="switch" ></td>
+								<td class="center"><input {%if Permisos.var_edit%}{%else%}disabled{%endif%} {%if Usuario.permisos.var_edit%}checked{%endif%} id="editar3" type="checkbox" name="var_edit" class="switch" ></td>
+								<td class="center"><input {%if Permisos.var_del%}{%else%}disabled{%endif%} {%if Usuario.permisos.var_del%}checked{%endif%}  id="eliminar3" type="checkbox" name="var_del" class="switch" ></td>
+							</tr>
+							<tr>
+								<td class="center">Preguntas</td>
+								<td class="center"><input {%if Permisos.pre_see%}{%else%}disabled{%endif%} {%if Usuario.permisos.pre_see%}checked{%endif%}  id="visualizar4" type="checkbox" name="pre_see" class="switch" ></td>
+								<td class="center"><input {%if Permisos.pre_add%}{%else%}disabled{%endif%} {%if Usuario.permisos.pre_add%}checked{%endif%}  id="agregar4" type="checkbox" name="pre_add" class="switch" ></td>
+								<td class="center"><input {%if Permisos.pre_edit%}{%else%}disabled{%endif%} {%if Usuario.permisos.pre_edit%}checked{%endif%} id="editar4" type="checkbox" name="pre_edit" class="switch" ></td>
+								<td class="center"><input {%if Permisos.pre_del%}{%else%}disabled{%endif%} {%if Usuario.permisos.pre_del%}checked{%endif%}  id="eliminar4" type="checkbox" name="pre_del" class="switch" ></td>
+							</tr>
+		                </tbody>
+		            </table>
+					<div class="col-lg-1 col-md-1 col-xs-1 col-sm-1"></div>
 				</div>
-				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Sector económico:</label>
-					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<select class="chosen-select form-control" name="sector_economico">
-							<option  value="">Sector económico </option>
-							<option  value="Administración">Administración</option>
-							<option  value="Agrícola">Agrícola</option>
-							<option  value="Comercial">Comercial</option>
-							<option  value="Comunicaciones">Comunicaciones</option>
-							<option  value="Construcción">Construcción</option>
-							<option  value="Consultoría">Consultoría</option>
-							<option  value="Educativo">Educativo</option>
-							<option  value="Energético">Energético</option>
-							<option  value="Entidad Estatal">Entidad Estatal</option>
-							<option  value="Financiero">Financiero</option>
-							<option  value="Forestal">Forestal</option>
-							<option  value="Ganadero">Ganadero</option>
-							<option  value="Industrial">Industrial</option>
-							<option  value="Minero">Minero</option>
-							<option  value="Pesquero">Pesquero</option>
-							<option  value="Sanitario">Sanitario</option>
-							<option  value="Servicios">Servicios</option>
-							<option  value="Software y tecnologías de la información">Software y tecnologías de la información</option>
-							<option  value="Solidario">Solidario</option>
-							<option  value="Transportes">Transportes</option>
-							<option  value="Turístico">Turístico</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">País:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8">
-						<select id="country" name="pais" class="chosen-select form-control" required></select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Departamento:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8">
-						<select  id="state" name="departamento" class="chosen-select form-control" required></select>
-					</div>
-				</div>
-				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Grabar Empresa</button></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Editar Usuario</button></div>
 			</form>
         </div>
 	</div>
 </div>
 </div>
-
-
 {%endblock%}
-
 {% block scripts%}
-<script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
-<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);}</script>
-<script type="text/javascript" src="{% static 'js/plugins/ciudades/ciudades.min.js' %}"></script>
-<script >populateCountries("country", "state");</script>
+<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+{%if 0%}<script>$(document).ready(function(){var $consultor=$("#consultor"),$visualizar=$("#visualizar"),$input=$("input.switch"),$crear=$("#crear"),$variables=$("#variables"),$detalles=$("#detalles"),$exportar=$("#exportar"),$visualizar1=$("#visualizar1"),$visualizar2=$("#visualizar2"),$visualizar3=$("#visualizar3"),$visualizar4=$("#visualizar4"),$agregar1=$("#agregar1"),$agregar2=$("#agregar2"),$agregar3=$("#agregar3"),$agregar4=$("#agregar4"),$editar1=$("#editar1"),$editar2=$("#editar2"),$editar3=$("#editar3"),$editar4=$("#editar4"),$eliminar1=$("#eliminar1"),$eliminar2=$("#eliminar2"),$eliminar3=$("#eliminar3"),$eliminar4=$("#eliminar4");$consultor.change(function(){if($consultor.is(':checked')!=true){for(var i=0;i<$input.length;i++){if($input[i].checked==true){$input[i].click();}}$visualizar.click();}else{if($visualizar1.is(':checked')!=true){$visualizar1.click();}if($visualizar2.is(':checked')!=true){$visualizar2.click();}if($visualizar3.is(':checked')!=true){$visualizar3.click();}if($visualizar4.is(':checked')!=true){$visualizar4.click();}}});$crear.change(function(){if($crear.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$variables.change(function(){if($variables.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$detalles.change(function(){if($detalles.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$exportar.change(function(){if($exportar.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$editar1.change(function(){if($editar1.is(':checked')){if($visualizar1.is(':checked')!=true){$visualizar1.click();}}});$editar2.change(function(){if($editar2.is(':checked')){if($visualizar2.is(':checked')!=true){$visualizar2.click();}}});$editar3.change(function(){if($editar3.is(':checked')){if($visualizar3.is(':checked')!=true){$visualizar3.click();}}});$editar4.change(function(){if($editar4.is(':checked')){if($visualizar4.is(':checked')!=true){$visualizar4.click();}}});$eliminar1.change(function(){if($eliminar1.is(':checked')){if($visualizar1.is(':checked')!=true){$visualizar1.click();}}});$eliminar2.change(function(){if($eliminar2.is(':checked')){if($visualizar2.is(':checked')!=true){$visualizar2.click();}}});$eliminar3.change(function(){if($eliminar3.is(':checked')){if($visualizar3.is(':checked')!=true){$visualizar3.click();}}});$eliminar4.change(function(){if($eliminar4.is(':checked')){if($visualizar4.is(':checked')!=true){$visualizar4.click();}}});$visualizar1.change(function(){if($visualizar1.is(':checked')!=true){if($editar1.is(':checked')){$editar1.click();}if($eliminar1.is(':checked')){$eliminar1.click();}}else{if($consultor.is(':checked')!=true){$consultor.click();}}});$visualizar2.change(function(){if($visualizar2.is(':checked')!=true){if($editar2.is(':checked')){$editar2.click();}if($eliminar2.is(':checked')){$eliminar2.click();}}else{if($consultor.is(':checked')!=true){$consultor.click();}}});$visualizar3.change(function(){if($visualizar3.is(':checked')!=true){if($editar3.is(':checked')){$editar3.click();}if($eliminar3.is(':checked')){$eliminar3.click();}}else{if($consultor.is(':checked')!=true){$consultor.click();}}});$visualizar4.change(function(){if($visualizar4.is(':checked')!=true){if($editar4.is(':checked')){$editar4.click();}if($eliminar4.is(':checked')){$eliminar4.click();}}else{if($consultor.is(':checked')!=true){$consultor.click();}}});$agregar1.change(function(){if($agregar1.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$agregar2.change(function(){if($agregar2.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$agregar3.change(function(){if($agregar3.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});$agregar4.change(function(){if($agregar4.is(':checked')){if($consultor.is(':checked')!=true){$consultor.click();}}});});</script>{%endif%}
+<script type="text/javascript">$(document).ready(function(){var c=$("#consultor"),e=$("#visualizar"),i=$("input.switch"),k=$("#crear"),h=$("#variables"),n=$("#detalles"),s=$("#exportar"),d=$("#visualizar1"),a=$("#visualizar2"),l=$("#visualizar3"),t=$("#visualizar4"),r=$("#agregar1"),g=$("#agregar2"),u=$("#agregar3"),o=$("#agregar4"),f=$("#editar1"),v=$("#editar2"),m=$("#editar3"),z=$("#editar4"),p=$("#eliminar1"),b=$("#eliminar2"),w=$("#eliminar3"),x=$("#eliminar4");c.change(function(){if(1!=c.is(":checked")){for(var k=0;k<i.length;k++)1==i[k].checked&&i[k].click();e.click()}else 1!=d.is(":checked")&&d.click(),1!=a.is(":checked")&&a.click(),1!=l.is(":checked")&&l.click(),1!=t.is(":checked")&&t.click()}),k.change(function(){k.is(":checked")&&1!=c.is(":checked")&&c.click()}),h.change(function(){h.is(":checked")&&1!=c.is(":checked")&&c.click()}),n.change(function(){n.is(":checked")&&1!=c.is(":checked")&&c.click()}),s.change(function(){s.is(":checked")&&1!=c.is(":checked")&&c.click()}),f.change(function(){f.is(":checked")&&1!=d.is(":checked")&&d.click()}),v.change(function(){v.is(":checked")&&1!=a.is(":checked")&&a.click()}),m.change(function(){m.is(":checked")&&1!=l.is(":checked")&&l.click()}),z.change(function(){z.is(":checked")&&1!=t.is(":checked")&&t.click()}),p.change(function(){p.is(":checked")&&1!=d.is(":checked")&&d.click()}),b.change(function(){b.is(":checked")&&1!=a.is(":checked")&&a.click()}),w.change(function(){w.is(":checked")&&1!=l.is(":checked")&&l.click()}),x.change(function(){x.is(":checked")&&1!=t.is(":checked")&&t.click()}),d.change(function(){1!=d.is(":checked")?(f.is(":checked")&&f.click(),p.is(":checked")&&p.click()):1!=c.is(":checked")&&c.click()}),a.change(function(){1!=a.is(":checked")?(v.is(":checked")&&v.click(),b.is(":checked")&&b.click()):1!=c.is(":checked")&&c.click()}),l.change(function(){1!=l.is(":checked")?(m.is(":checked")&&m.click(),w.is(":checked")&&w.click()):1!=c.is(":checked")&&c.click()}),t.change(function(){1!=t.is(":checked")?(z.is(":checked")&&z.click(),x.is(":checked")&&x.click()):1!=c.is(":checked")&&c.click()}),r.change(function(){r.is(":checked")&&1!=c.is(":checked")&&c.click()}),g.change(function(){g.is(":checked")&&1!=c.is(":checked")&&c.click()}),u.change(function(){u.is(":checked")&&1!=c.is(":checked")&&c.click()}),o.change(function(){o.is(":checked")&&1!=c.is(":checked")&&c.click()})});</script>
 {% endblock %}

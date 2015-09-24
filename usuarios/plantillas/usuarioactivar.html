@@ -1,0 +1,97 @@
+{%extends "base.html" %}{% load staticfiles%}
+{%block title%} Activar | Usuarios {%endblock%}
+{%block head%}
+<link href="{% static 'css/estilo.min.css' %}" rel="stylesheet">
+<style media="screen">body{background-color: #F3F3F4;}</style>
+{%endblock%}
+{%block contenido%}
+<div class="container m-t-xl">
+	<div class="ibox float-e-margins">
+		<div class="container-fluid wrapper border-bottom white-bg page-heading">
+			<div class="col-lg-12">
+				<h2>Bienvenido {{Usuario.first_name | escape}}</h2>
+				<ol class="breadcrumb">
+					<li>
+						<a href="/home/"><i class="fa fa-home"></i> Activar cuenta</a>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class="ibox-title m-t">
+			<h5 class="m-r-xs">Actualice los siguientes campos para comenzar a utilizar la herramienta.</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link">
+					<i class="fa fa-chevron-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content">
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				{%if Error%}<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required"></label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<span style="color:#cd1e21">{{Error}}</span>
+					</div>
+				</div>{%endif%}
+				<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required">Nombre:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="nombre" required type="text" name="nombre" class="form-control" maxlength="30" placeholder="Nombre del usuario a crear" value="{{Usuario.first_name |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required">Apellido</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="apellido" required type="text" name="apellido" class="form-control" maxlength="30" placeholder="Apellido del usuario a crear" value="{{Usuario.last_name |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required">Nueva contraseña:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="password" name="password" type="password" class="form-control" maxlength="30" pattern=".{8,}" required title="8 caracteres mínimo">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required">Repita la contraseña:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="password2" name="password2" type="password" class="form-control" maxlength="30" pattern=".{8,}" required title="8 caracteres mínimo">
+						<div id="errorpassword"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required">Acepto los <a href="/terminos/">términos y condiciones</a>:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input type="checkbox" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-4 col-md-4 col-xs-4 col-sm-4 control-label required"></label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<button type="submit" class="btn btn-primary pull-right"> Activar </button>
+					</div>
+				</div>
+			</form>
+        </div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	var $password = $('#password'),$password2 = $('#password2'),
+	$errorpassword=$('#errorpassword');
+	$password2.keyup(function(){
+		if($password.val() != $password2.val()){
+			$errorpassword.html('<span style="color:#cd1e21">Las contraseñas no coinciden.</span>');
+		}else{
+			$errorpassword.html('');
+		}
+	});
+	$password.keyup(function(){
+		if($password.val() != $password2.val()){
+			$errorpassword.html('<span style="color:#cd1e21">Las contraseñas no coinciden.</span>');
+		}else{
+			$errorpassword.html('');
+		}
+	});
+});
+</script>
+{%endblock%}

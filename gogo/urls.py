@@ -16,7 +16,7 @@ urlpatterns = patterns('usuarios.views',
     url(r'^home/$', 'home'),
     url(r'^menu/(?P<id_proyecto>[0-9]{1,10})/$', 'menu'),
     url(r'^home2/$', 'home2'),
-    url(r'^logs/$', 'logs'),    
+    url(r'^logs/$', 'logs'),
     url(r'^salir/$', 'salir')
 )
 
@@ -35,6 +35,8 @@ urlpatterns += patterns('usuarios.views',
     url(r'^proyecto/eliminar/$', 'proyectoeliminar'),
     url(r'^proyecto/nuevo/$', 'proyectonuevo'),
     url(r'^usuarios/$', 'usuarios'),
+    url(r'^activar/([A-Za-z0-9]{1,97})','usuarioactivar'),
+    url(r'^usuario/reenviar/(?P<id_usuario>[0-9]{1,10})/$','usuarioreenviar'),
     url(r'^usuario/editar/(?P<id_usuario>[0-9]{1,10})/$', 'usuarioeditar'),
     url(r'^usuario/eliminar/(?P<id_usuario>[0-9]{1,10})/$', 'usuarioeliminar'),
     url(r'^usuario/nuevo/$', 'usuarionuevo'),

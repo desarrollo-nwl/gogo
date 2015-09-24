@@ -1,23 +1,23 @@
 {% extends "dash.html" %}{% load staticfiles%}
-{% block title %} Home | Eliminar {% endblock %}
+{% block title %} Home | Usuarios {% endblock %}
 {% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
 {% block contenido2 %}
 <div class="row">
 <div class="m-l m-r row wrapper border-bottom white-bg page-heading">
 	<div class="col-lg-12">
-		<h2>Eliminar {{objeto}}</h2>
+		<h2>Reenviar correo de activación</h2>
 		<ol class="breadcrumb">
 			<li >
 				<a href="/home/"><i class="fa fa-home"></i> Home</a>
 			</li>
-			<li>Eliminar</li>
+			<li>Reenvío</li>
 		</ol>
 	</div>
 </div>
 <div class="m-t col-lg-12">
 	<div class="ibox float-e-margins">
 		<div class="ibox-title">
-			<h5 class="m-r-xs">{{user.first_name | capfirst | escape }}, favor proceda con precaución.</h5>
+			<h5 class="m-r-xs">{{user.first_name | capfirst | escape }}, Confirme el reenvío.</h5>
 			<div class="ibox-tools">
 				<a class="collapse-link">
 					<i class="fa fa-chevron-up"></i>
@@ -25,13 +25,11 @@
 			</div>
 		</div>
 		<div class="ibox-content">
-			{%ifequal objeto "Empresa"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una empresa ocasiona que los siguientes elementos asociados:<br><br><ul><li>Proyectos <ul>{%for i in Empresa.proyectos_set.all%}<li>{{i.nombre | escape}}</li>{%endfor%}</ul></li><li>Variables</li><li>Preguntas</li><li>Colaboradores</li><li>Respuestas de los colaboradores</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la empresa <strong>{{Empresa}}</strong>?</div>{%endifequal%}
-			{%ifequal objeto "Usuario"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una usuario ocaciona que los siguientes elementos asociados:<br><br><ul><li>Empresas</li><li>Usuarios creados por el  <ul>{%for i in Usuarios %}<li>{{i.usuario.first_name | escape}} {{i.usuario.last_name | escape}}</li>{%endfor%}</ul></li><li>TODOS los proyectos creados por él</li><li>TODAS las respuestas de dichos proyectos</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar al usuario <strong>{{Usuario.first_name |escape}} {{Usuario.last_name |escape}}</strong>?</div>{%endifequal%}
-			<form  method="POST">{%csrf_token%}
+			<div class="m" style="text-rendering: optimizeLegibility;">El correo de confirmación puede tardar un máximo de 10 minutos en llegar.<br><br><br> ¿Está seguro de querer reenviar el link de activación a <strong>{{Usuario.email |escape}}</strong>?</div>
+            <form  method="POST">{%csrf_token%}
             	<div class="container-fluid">
-					{%ifequal objeto "Empresa"%}<a href="/empresas/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
-					{%ifequal objeto "Usuario"%}<a href="/usuarios/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
-					<button type="submit" class="btn btn-danger pull-right m-t"><i class="fa fa-trash"></i> Eliminar definitivamente</button>
+					<a href="/usuarios/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Cancelar</a>
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-envelope-o"></i> Enviar</button>
 				</div>
             </form>
 
