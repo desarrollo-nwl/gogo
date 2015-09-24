@@ -31,7 +31,7 @@
                     <tr>
                         <th>Nombre y apellido</th>
                         <th>email</th>
-						<th>empresas</th>
+						<th class="center">empresas</th>
                         <th>Activo</th>
 						<th>Reenviar</th>
 						<th>Acciones</th>
@@ -44,7 +44,7 @@
 						<td><ul>{% for j in i.usuario.empresas_set.all %}<li>{{j.nombre | escape}}</li>{%endfor%}</ul></td>
                         <td>{%if i.usuario.is_active%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</td>
 						<td>{%if i.usuario.is_active%}<i style="color:#1d9d73" class="fa fa-check-circle-o m-r"></i>{%else%}<a href="/usuario/reenviar/{{i.usuario.id}}/"><i class="fa fa-envelope-o m-r"></i></a>{%endif%}</td>
-						<td><a href="/usuario/editar/{{i.usuario.id}}/"><i class="fa fa-edit m-r"></i></a><a href="/usuario/eliminar/{{i.usuario.id}}/"><i class="fa fa-trash m-r"></i></a></td>
+						<td><a href="/usuario/editar/{{i.usuario.id}}/"><i class="fa fa-edit m-r"></i></a>{%if user.is_staff%}<a href="/usuario/eliminar/{{i.usuario.id}}/"><i class="fa fa-trash m-r"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
                 </tbody>
             </table>
@@ -57,5 +57,5 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#emp").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ usuarios",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ningun usuario creado.",sInfo:"Usuarios del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Usuarios del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ usuarios)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>$("#emp").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "ninguna" },{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ usuarios",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ningun usuario creado.",sInfo:"Usuarios del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Usuarios del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ usuarios)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {%endblock%}

@@ -99,15 +99,16 @@ def acceder(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def home(request):
+	permisos = request.user.permisos
 	if request.user.is_superuser:
 		proyectos = Proyectos.objects.all().select_related('empresa__nombre')
 	else:
-		if request.user.permisos.pro_see:
+		if permisos.pro_see or permisos.res_see:
 			proyectos = Proyectos.objects.select_related('empresa__nombre').filter( usuarios = request.user)
 		else:
 			proyectos = []
 	return render_to_response('home.html',{
-	'Activar':'MisProyectos','Proyectos':proyectos
+	'Activar':'MisProyectos','Proyectos':proyectos,'Permisos':permisos
 	}, context_instance=RequestContext(request))
 
 
@@ -162,18 +163,34 @@ def recuperar(request):
 	if request.method == 'POST':
 		ema = request.POST['email']
 		try:
-			u = User.objects.get(email = ema)
-			envio,_ = Envio.objects.get_or_create( email = ema )
+			usuario = User.objects.get(email = ema)
+			envio,_ = Recuperar.objects.get_or_create(usuario=usuario)
 			hora_local = timezone.now()
 			hora_envio = envio.fregistro
 			delta = hora_local - hora_envio
 
 			if(delta.days >= 1 or (delta.seconds>=3600 or 2 >= delta.seconds)):
-				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-				serie = ''.join(random.sample(chars, 32))
-				u.set_password(serie)
-				u.save()
-				aviso = enviar2(ema,serie)
+				from strings import recuperar_cuenta
+				server=smtplib.SMTP('smtp.mandrillapp.com',587)
+				server.ehlo()
+				server.starttls()
+				server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+				key = ''.join(random.sample(chars, 96))
+				Recuperar.objects.filter(usuario=usuario).delete()
+				Recuperar.objects.create(usuario=usuario,link=key)
+				Logs.objects.create(usuario=usuario,accion="Olvido de contraseña",descripcion=usuario.first_name+" "+usuario.last_name)
+				destinatario = [usuario.email]
+				msg=MIMEMultipart()
+				msg["subject"]=  'Cambio de clave.'
+				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
+				url = 'http://127.0.0.1:8000/recuperar/'+key
+				html = recuperar_cuenta(url)
+				mensaje = MIMEText(html,"html")
+				msg.attach(mensaje)
+				server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+				server.quit()
+				return HttpResponseRedirect('/acceder/')
 			else:
 				aviso = 'Ya se ha enviado el correo, verifique su correo.'
 
@@ -183,6 +200,32 @@ def recuperar(request):
 	return render_to_response('recuperar.html',{
 	'Aviso':aviso
 	}, context_instance=RequestContext(request))
+
+
+@cache_control(no_store=True)
+def usuariorecuperar(request,key):
+	try:
+		error = ''
+		registro = Recuperar.objects.select_related('usuario').get(link=key)
+		usuario = registro.usuario
+		if not registro.usuario.is_active:
+			return HttpResponseRedirect('/acceder/')
+		else:
+			if request.method == 'POST':
+				if(request.POST['password'] == request.POST['password2']):
+					usuario.set_password(request.POST['password'])
+					with transaction.atomic():
+						usuario.save()
+						registro.delete()
+					return HttpResponseRedirect('/acceder/')
+				else:
+					error = 'Ocurrió un error al procesar la solicitud, las contraseñas no coinciden.'
+		return render_to_response('usuariorecuperar.html',{
+		'Error':error
+		}, context_instance=RequestContext(request))
+	except:
+		return render_to_response('404.html')
+
 
 #===============================================================================
 #   Empresas
@@ -293,18 +336,43 @@ def proyectonuevo(request):
 	if permisos.consultor and permisos.pro_add:
 		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
 		proyectos = Proyectos.objects.only('nombre').filter(usuarios=request.user)
-		usuarios = IndiceUsuarios.objects.filter(usuario=request.user
-					).select_related('usuario__first_name','usuario__last_name'
-					).get_descendants(include_self=False)
+		usuarios = IndiceUsuarios.objects.get(usuario=request.user
+					).get_descendants(include_self=False).select_related(
+					'usuario__first_name','usuario__last_name','parent')
 		if request.method == 'POST':
 			with transaction.atomic():
-				proyecto = Proyecto.objects.create(
+				proyecto = Proyectos.objects.create(
 							empresa = Empresas.objects.get(id=int(request.POST['empresa'])),
 							nombre = request.POST['nombre'],
 							tipo = request.POST['tipo'])
 				proyecto.usuarios.add(request.user)
 				for i in request.POST.getlist('usuarios'):
-					proyecto.usuarios.add(User.objects.filter(id=int(i)))
+					proyecto.usuarios.add(i)
+					print request.POST['int_encuesta']
+				datos =ProyectosDatos(
+						id = proyecto,
+						tit_encuesta = request.POST['tit_encuesta'],
+						int_encuesta = request.POST['int_encuesta'],
+						cue_correo = request.POST['cue_correo'],
+						logo = request.FILES['logo'],
+						)
+				try:datos.logoenc = request.FILES['logoenc']
+				except:pass
+				try:datos.opcional1 = request.POST['opcional1']
+				except:pass
+				try:datos.opcional2 = request.POST['opcional2']
+				except:pass
+				try:datos.opcional3 = request.POST['opcional3']
+				except:pass
+				try:datos.opcional4 = request.POST['opcional4']
+				except:pass
+				try:datos.opcional5 = request.POST['opcional5']
+				except:pass
+				try:
+					if(request.POST['censo']):datos.censo = True
+				except:
+					pass
+				datos.save()
 		return render_to_response('proyectonuevo.html',{
 		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
 		'Usuarios':usuarios,'Permisos':permisos,
@@ -366,120 +434,142 @@ def usuarios(request):
 def usuarioeditar(request,id_usuario):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.cre_usuarios:
-		# try:
-		usuarios = IndiceUsuarios.objects.select_related('usuario','parent'
-				).get(usuario=request.user).get_descendants(include_self=False)
-		usuario = User.objects.select_related('permisos').get(id=int(id_usuario))
-		if usuario.indiceusuarios in usuarios:
-			if request.method == 'POST':
-				usuario.first_name = request.POST['nombre']
-				usuario.last_name = request.POST['apellido']
-				with transaction.atomic():
-					try:
-						if(request.POST['activo']):usuario.is_active = True
-					except:
-						usuario.is_active = False
-					usuario.save()
-					usu_perm = usuario.permisos
-					try:
-						if(request.POST['consultor']):usu_perm.consultor=True
-					except:
-						usu_perm.consultor = False
-					try:
-						if(request.POST['cre_usuarios']):usu_perm.cre_usuarios = True
-					except:
-						usu_perm.cre_usuarios = False
-					try:
-						if(request.POST['act_variables']):usu_perm.act_variables = True
-					except:
-						usu_perm.act_variables = False
-					try:
-						if(request.POST['det_see']):usu_perm.det_see = True
-					except:
-						usu_perm.det_see = False
-					try:
-						if(request.POST['res_exp']):usu_perm.res_exp = True
-					except:
-						usu_perm.res_exp = False
-					try:
-						if(request.POST['res_see']):usu_perm.res_see = True
-					except:
-						usu_perm.res_see = False
-					try:
-						if(request.POST['pro_see']):usu_perm.pro_see = True
-					except:
-						usu_perm.pro_see = False
-					try:
-						if(request.POST['pro_add']):usu_perm.pro_add = True
-					except:
-						usu_perm.pro_add = False
-					try:
-						if(request.POST['pro_edit']):usu_perm.pro_edit = True
-					except:
-						usu_perm.pro_edit = False
-					try:
-						if(request.POST['pro_del']):usu_perm.pro_del = True
-					except:
-						usu_perm.pro_del = False
-					try:
-						if(request.POST['col_see']):usu_perm.col_see = True
-					except:
-						usu_perm.col_see = False
-					try:
-						if(request.POST['col_add']):usu_perm.col_add = True
-					except:
-						usu_perm.col_add = False
-					try:
-						if(request.POST['col_edit']):usu_perm.col_edit = True
-					except:
-						usu_perm.col_edit = False
-					try:
-						if(request.POST['col_del']):usu_perm.col_del = True
-					except:
-						usu_perm.col_del = False
-					try:
-						if(request.POST['var_see']):usu_perm.var_see = True
-					except:
-						usu_perm.var_see = False
-					try:
-						if(request.POST['var_add']):usu_perm.var_add = True
-					except:
-						usu_perm.var_add = False
-					try:
-						if(request.POST['var_edit']):usu_perm.var_edit = True
-					except:
-						usu_perm.var_edit = False
-					try:
-						if(request.POST['var_del']):usu_perm.var_del = True
-					except:
-						usu_perm.var_del = False
-					try:
-						if(request.POST['pre_see']):usu_perm.pre_see = True
-					except:
-						usu_perm.pre_see = False
-					try:
-						if(request.POST['pre_add']):usu_perm.pre_add = True
-					except:
-						usu_perm.pre_add = False
-					try:
-						if(request.POST['pre_edit']):usu_perm.pre_edit = True
-					except:
-						usu_perm.pre_edit = False
-					try:
-						if(request.POST['pre_del']):usu_perm.pre_del = True
-					except:
-						usu_perm.pre_del = False
-					usu_perm.save()
-					Logs.objects.create(usuario=request.user,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
-				return HttpResponseRedirect('/usuarios/')
-			return render_to_response('usuarioeditar.html',{
-			'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,
-			'Usuario':usuario
-			}, context_instance=RequestContext(request))
-		else:
-			return render_to_response('403.html')
-		# except:
-			# return render_to_response('404.html')
+		try:
+			usuarios = IndiceUsuarios.objects.select_related('usuario','parent'
+					).get(usuario=request.user).get_descendants(include_self=False)
+			usuario = User.objects.select_related('permisos').get(id=int(id_usuario))
+			if usuario.indiceusuarios in usuarios:
+				if request.method == 'POST':
+					usuario.first_name = request.POST['nombre']
+					usuario.last_name = request.POST['apellido']
+					with transaction.atomic():
+						try:
+							if(request.POST['activo']):usuario.is_active = True
+						except:
+							usuario.is_active = False
+						usuario.save()
+						usu_perm = usuario.permisos
+
+						try:
+							if(request.POST['consultor']):usu_perm.consultor=True
+						except:
+							usu_perm.consultor = False
+						if permisos.cre_usuarios:
+							try:
+								if(request.POST['cre_usuarios']):usu_perm.cre_usuarios = True
+							except:
+								usu_perm.cre_usuarios = False
+						if permisos.act_variables:
+							try:
+								if(request.POST['act_variables']):usu_perm.act_variables = True
+							except:
+								usu_perm.act_variables = False
+						if permisos.det_see:
+							try:
+								if(request.POST['det_see']):usu_perm.det_see = True
+							except:
+								usu_perm.det_see = False
+						if permisos.res_exp:
+							try:
+								if(request.POST['res_exp']):usu_perm.res_exp = True
+							except:
+								usu_perm.res_exp = False
+						if permisos.res_see:
+							try:
+								if(request.POST['res_see']):usu_perm.res_see = True
+							except:
+								usu_perm.res_see = False
+						if permisos.pro_see:
+							try:
+								if(request.POST['pro_see']):usu_perm.pro_see = True
+							except:
+								usu_perm.pro_see = False
+						if permisos.pro_add:
+							try:
+								if(request.POST['pro_add']):usu_perm.pro_add = True
+							except:
+								usu_perm.pro_add = False
+						if permisos.pro_edit:
+							try:
+								if(request.POST['pro_edit']):usu_perm.pro_edit = True
+							except:
+								usu_perm.pro_edit = False
+						if permisos.pro_del:
+							try:
+								if(request.POST['pro_del']):usu_perm.pro_del = True
+							except:
+								usu_perm.pro_del = False
+						if permisos.col_see:
+							try:
+								if(request.POST['col_see']):usu_perm.col_see = True
+							except:
+								usu_perm.col_see = False
+						if permisos.col_add:
+							try:
+								if(request.POST['col_add']):usu_perm.col_add = True
+							except:
+								usu_perm.col_add = False
+						if permisos.col_edit:
+							try:
+								if(request.POST['col_edit']):usu_perm.col_edit = True
+							except:
+								usu_perm.col_edit = False
+						if permisos.col_del:
+							try:
+								if(request.POST['col_del']):usu_perm.col_del = True
+							except:
+								usu_perm.col_del = False
+						if permisos.var_see:
+							try:
+								if(request.POST['var_see']):usu_perm.var_see = True
+							except:
+								usu_perm.var_see = False
+						if permisos.var_add:
+							try:
+								if(request.POST['var_add']):usu_perm.var_add = True
+							except:
+								usu_perm.var_add = False
+						if permisos.var_edit:
+							try:
+								if(request.POST['var_edit']):usu_perm.var_edit = True
+							except:
+								usu_perm.var_edit = False
+						if permisos.var_del:
+							try:
+								if(request.POST['var_del']):usu_perm.var_del = True
+							except:
+								usu_perm.var_del = False
+						if permisos.pre_see:
+							try:
+								if(request.POST['pre_see']):usu_perm.pre_see = True
+							except:
+								usu_perm.pre_see = False
+						if permisos.pre_add:
+							try:
+								if(request.POST['pre_add']):usu_perm.pre_add = True
+							except:
+								usu_perm.pre_add = False
+						if permisos.pre_edit:
+							try:
+								if(request.POST['pre_edit']):usu_perm.pre_edit = True
+							except:
+								usu_perm.pre_edit = False
+						if permisos.pre_del:
+							try:
+								if(request.POST['pre_del']):usu_perm.pre_del = True
+							except:
+								usu_perm.pre_del = False
+						usu_perm.save()
+						Logs.objects.create(usuario=request.user,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
+					return HttpResponseRedirect('/usuarios/')
+				return render_to_response('usuarioeditar.html',{
+				'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,
+				'Usuario':usuario
+				}, context_instance=RequestContext(request))
+			else:
+				return render_to_response('403.html')
+		except:
+			return render_to_response('404.html')
 	else:
 		return render_to_response('403.html')
 
@@ -488,7 +578,7 @@ def usuarioeditar(request,id_usuario):
 @login_required(login_url='/acceder/')
 def usuarioeliminar(request,id_usuario):
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.cre_usuarios:
+	if permisos.consultor and request.user.is_staff:
 		try:
 			usuarios = IndiceUsuarios.objects.select_related('usuario','parent'
 					).get(usuario=request.user).get_descendants(include_self=False)
@@ -583,7 +673,7 @@ def usuarioactivar(request,key):
 				else:
 					error = 'Ocurrió un error al procesar la solicitud, las contraseñas no coinciden.'
 		return render_to_response('usuarioactivar.html',{
-		'Activar':'Configuracion','activar':'Usuarios','Usuario':usuario,'Error':error
+		'Usuario':usuario,'Error':error
 		}, context_instance=RequestContext(request))
 	except:
 		return render_to_response('404.html')
@@ -712,7 +802,7 @@ def usuarionuevo(request):
 		return render_to_response('403.html')
 
 #===============================================================================
-#   Usuarios
+#   Licencia y cuenta
 #===============================================================================
 
 @cache_control(no_store=True)
@@ -722,7 +812,8 @@ def licencia(request):
 	if permisos.consultor:
 		empresas = Empresas.objects.filter(usuario=request.user)
 		return render_to_response('licencia.html',{
-		'Activar':'Configuracion','activar':'GestionarCuenta','activarp':'Licencia'
+		'Activar':'Configuracion','activar':'GestionarCuenta','activarp':'Licencia',
+		'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -733,6 +824,7 @@ def licencia(request):
 def cuenta(request):
 	acceso = None
 	cambio = ''
+	permisos = request.user.permisos
 	if request.method == 'POST':
 		usuario = request.user
 		P = request.POST['cpassword']
@@ -748,11 +840,11 @@ def cuenta(request):
 
 	return render_to_response('cuenta.html',{
 	'Activar':'Configuracion','activar':'GestionarCuenta','activarp':'Cuenta',
-	'Cambio':cambio
+	'Cambio':cambio,'Permisos':permisos
 	}, context_instance=RequestContext(request))
 
 #===============================================================================
-#   Usuarios
+#   Logs
 #===============================================================================
 
 @cache_control(no_store=True)
@@ -766,7 +858,7 @@ def logs(request):
 			aux.append(i.usuario_id)
 		logs = Logs.objects.filter(usuario__in=aux).select_related('usuario')
 		return render_to_response('logs.html',{
-		'Activar':'Configuracion','activar':'Logs','Logs':logs
+		'Activar':'Configuracion','activar':'Logs','Logs':logs,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')

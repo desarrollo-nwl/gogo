@@ -28,19 +28,19 @@
             <table id="emp" class="table table-striped table-bordered" cellspacing="0" width="99%">
                 <thead>
                     <tr>
+						<th class="sorting_desc">Fecha</th>
                         <th>Usuario</th>
 						<th>Acción</th>
                         <th>Nombre</th>
-                        <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for i in Logs %}
                     <tr>
+						<td>{{i.fregistro | date:'d/m/Y H:i'}}</td>
                         <td><a href="/usuario/editar/{{i.usuario.id}}/">{{i.usuario.first_name | capfirst | escape}} {{i.usuario.last_name | capfirst | escape}}</a></td>
 						<td>{{i.accion | escape}}</td>
 						<td>{{i.descripcion | escape}}</td>
-                        <td>{{i.fregistro | date:'d/m/Y H:i'}}</td>
                     </tr>{% endfor %}
                 </tbody>
             </table>
@@ -52,5 +52,5 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#emp").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ registros",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No existe ningún registro.",sInfo:"Registross del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Registros del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ registros)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>$("#emp").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ]],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ registros",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No existe ningún registro.",sInfo:"Registross del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Registros del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ registros)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {%endblock%}

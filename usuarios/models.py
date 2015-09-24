@@ -38,6 +38,11 @@ class Proyectos( models.Model ):
 	prudenciamax = models.IntegerField( default = 2 )
 	prudenciamin = models.IntegerField( default = 1 )
 	tipo = models.CharField( max_length = 15, default = "Completa" )
+	tot_preguntas = models.PositiveSmallIntegerField( default = 0)
+	tot_participantes = models.PositiveIntegerField(default = 0)
+	tot_aresponder = models.IntegerField( default = 0)
+	tot_respuestas = models.IntegerField( default = 0)
+	total = models.FloatField( default = 0 )
 	usuarios = models.ManyToManyField( User )
 
 	def __unicode__(self):
@@ -56,17 +61,18 @@ class ProyectosDatos( models.Model ):
 	int_encuesta = models.TextField( blank = True, null = True )
 	logo = models.ImageField( upload_to = 'logos' )
 	logoenc = models.ImageField( upload_to = 'logos', blank = True, null = True )
-	senso = models.BooleanField( default = True )
-	tipo = models.IntegerField( blank = True, null = True )
+	censo = models.BooleanField( default = True )
 	tit_encuesta = models.CharField( max_length = 255, blank = True, null = True )
 	opcional1 = models.CharField( max_length=100, blank=True, null=True )
 	opcional2 = models.CharField( max_length=100, blank=True, null=True )
 	opcional3 = models.CharField( max_length=100, blank=True, null=True )
 	opcional4 = models.CharField( max_length=100, blank=True, null=True )
 	opcional5 = models.CharField( max_length=100, blank=True, null=True )
+	finicio = models.DateField( blank = True, null = True)
+	ffin = models.DateField( blank = True, null = True)
 
 	def __unicode__(self):
-		return self.nombre
+		return  "%s"%(self.id)
 
 	class Meta:
 		managed = True

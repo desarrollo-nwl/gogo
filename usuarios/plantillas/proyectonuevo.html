@@ -35,7 +35,7 @@ div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom
 			<div class="row">
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-xs-3 col-sm-3 control-label required">Empresa:</label>
-					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+					<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
 						<select class="chosen-select form-control" name="empresa" required>
 							<option value="">Seleccione una empresa</option>
 							{%for i in Empresas%}<option value="{{i.id}}">{{i}}</option>{%endfor%}
@@ -43,9 +43,9 @@ div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre:</label>
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre de proyecto:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input id="nombre" class="form-control" placeholder="Nombre del Proyecto" name="proyecto"  type="text" required>
+						<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" required>
 						<div id="error"></div>
 					</div>
 				</div>
@@ -63,23 +63,23 @@ div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Título de la encuesta:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Título de la encuesta" name="titulo_encuesta"  type="text" required maxlength="255">
+						<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" required maxlength="255">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Introducción a la encuesta:</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<div id="summernote1" class="summernote"><i>Introducción a la encuesta </i><b>(requerido)</b></div>
+						<div id="summernote1" class="summernote"><i>Este texto aparecerá en la introducción de la encuesta web </i><b>(requerido)</b></div>
 					</div>
 				</div>
-				<input type="hidden" value="" name="intro_encuesta"/>
+				<input type="hidden" value="" name="int_encuesta"/>
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<div id="summernote3" class="summernote"><i>Cuerpo del correo </i><b>(requerido)</b></div>
+						<div id="summernote3" class="summernote"><i>Este es el texto que llegará al correo para seguir a la encuesta </i><b>(requerido)</b></div>
 					</div>
 				</div>
-				<input type="hidden" value="" name="cuerpo_correo" />
+				<input type="hidden" value="" name="cue_correo" />
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo para correo:</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
@@ -93,11 +93,41 @@ div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usuarios asociados:</label>
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Usuarios asociados:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<select class="chosen-select form-control" multiple name="usuarios">
 							{%for i in Usuarios%}<option value="{{i.usuario.id}}">{{i.usuario.first_name|capfirst|escape}} {{i.usuario.last_name|capfirst|escape}}</option>{%endfor%}
 						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100">
 					</div>
 				</div>
 				<div class="form-group">
@@ -122,6 +152,7 @@ div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom
 <script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
 <script src="{% static 'js/plugins/summernote/summernote.min.js' %}"></script>
+{% if 0%}
 <script>
 $(document).ready(function(){
 	$('.summernote').summernote({height: 150,
@@ -139,14 +170,8 @@ var edit = function() {
 	$('.click3edit').summernote({focus: true});
 };
 $( "form" ).submit(function( event ) {
-	if($('#Dm').val().length < 1){
-		$('#Dm').attr('value',$('#DM').val());
-	}
-	if($('#Ppe').val().length < 1){
-		$('#Ppe').attr('value',100);
-	}
-	$('input[name="intro_encuesta"]').attr('value',$('#summernote1').code());
-	$('input[name="cuerpo_correo"]').attr('value',$('#summernote3').code());
+	$('input[name="int_encuesta"]').attr('value',$('#summernote1').code());
+	$('input[name="cue_correo"]').attr('value',$('#summernote3').code());
 	return true;
 });
 $("#logo").change(function() {
@@ -187,5 +212,6 @@ $nombre.keyup(function(){
 	}
 	$nombre.val
 });
-</script>
+</script>{%endif%}
+<script>$(document).ready(function(){$(".summernote").summernote({height:150,minHeight:null,maxHeight:null}),$("div .note-insert.btn-group").hide(),$("div .note-view.btn-group").hide(),$("div .note-help.btn-group").hide(),$("div .note-table.btn-group").hide(),$("div .note-height.btn-group").hide(),$("#Dm").hide(),$("#Ppe").hide()});var edit=function(){$(".click3edit").summernote({focus:!0})};$("form").submit(function(){return $('input[name="int_encuesta"]').attr("value",$("#summernote1").code()),$('input[name="cue_correo"]').attr("value",$("#summernote3").code()),!0}),$("#logo").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen"),$("#Go").hide()}}),$("#logoenc").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen"),$("#Go").hide()}});var nombres=[],$nombre=$("#nombre"),$error=$("#error");{% for i in Proyectos%}nombres.push('{{i.nombre |escape|safe}}');{%endfor%}nnombres=nombres.length,$nombre.keyup(function(){ban=!1;for(var e=0;nnombres>e;e++)$nombre.val()==nombres[e]&&($error.html('<p id="error" style="color:red">Este nombre ya existe. Favor elegir otro.</p>'),ban=!0),ban||$error.html("");$nombre.val});</script>
 {% endblock %}

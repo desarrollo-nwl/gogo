@@ -29,14 +29,24 @@
 						<th>Proyecto</th>
 						<th>Empresa</th>
 						<th>Estado</th>
+						{%if Permisos.consultor%}<th>Acciones</th>{%endif%}
 					</tr>
 				</thead>
 				<tbody>
 					{% for i in Proyectos %}
 					<tr>
 						<td><a href="/proyectos/editar/{{i.id | escape}}/">{{i.nombre | capfirst | escape}}</a></td>
-						<td>{{i.empresas.nombre | capfirst | escape}}</td>
-						<td>{%if i.activo%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</td>
+						<td>{{i.empresa.nombre | capfirst | escape}}</td>
+						<td>
+							<span class="pull-center text-muted " >{{i.tot_respuestas}} de {{i.tot_aresponder}} | {{ i.total |floatformat:"-2" }}% Completo</span>
+							<a href="/respuestas/detalladas/{{i.0.id_proyecto}}">
+							<div class="pull-middle progress {% if  i.activo %}{% ifnotequal 100 i.1 %} progress-striped{% endifnotequal %}{% endif %} active" style="width: 250px;margin: 0 auto;">
+									<div class="progress-bar {% if i.activo %}  progress-bar-primary {%else%} progress-bar-success {% endif %}" role="progressbar" aria-valuenow="{{i.total |floatformat:"0"}}" aria-valuemin="0" aria-valuemax="100" style="width: {{i.total |floatformat:"0"}}%">
+									<span class="sr-only">{{ i.total |floatformat:"-2" }}% Completado. {% ifequal i.total 100 %}(success){% endifequal %}</span>
+								</div>
+							</div></a>
+						</td>
+						{%if Permisos.consultor%}<td><a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r"></i></a>{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r"></i></a>{%endif%}</td>{%endif%}
 					</tr>{% endfor %}
 				</tbody>
 			</table>
@@ -50,5 +60,5 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ proyectos",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ningún proyecto creado o asociado.",sInfo:"Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Proyectos del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ proyectos)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }{%if Permisos.consultor%},{ className: "center" }{%endif%}],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ proyectos",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ningún proyecto creado o asociado.",sInfo:"Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Proyectos del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ proyectos)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {%endblock%}
