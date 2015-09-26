@@ -35,7 +35,7 @@
 				<tbody>
 					{% for i in Proyectos %}
 					<tr>
-						<td><a href="/proyectos/editar/{{i.id | escape}}/">{{i.nombre | capfirst | escape}}</a></td>
+						<td><a href="/menu/{{i.id | escape}}/">{{i.nombre | capfirst | escape}}</a></td>
 						<td>{{i.empresa.nombre | capfirst | escape}}</td>
 						<td>
 							<span class="pull-center text-muted " >{{i.tot_respuestas}} de {{i.tot_aresponder}} | {{ i.total |floatformat:"-2" }}% Completo</span>
@@ -46,7 +46,7 @@
 								</div>
 							</div></a>
 						</td>
-						{%if Permisos.consultor%}<td><a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r"></i></a>{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r"></i></a>{%endif%}</td>{%endif%}
+						{%if Permisos.consultor%}<td><a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>{%endif%}
 					</tr>{% endfor %}
 				</tbody>
 			</table>

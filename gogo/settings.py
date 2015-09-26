@@ -133,13 +133,13 @@ MEDIAFILES_DIRS = (
 
 # session expire at browser close
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-#
-# CACHES = {
-#	 'default': {
-#		 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-#		 'LOCATION': BASE_DIR,
-#	 }
-# }
+
+CACHES = {
+	 'default': {
+		 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+		 'LOCATION': BASE_DIR,
+	 }
+}
 # CACHES = {
 # 	'default':{
 # 		'BACKEND':'redis_cache.RedisCache',

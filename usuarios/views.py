@@ -100,6 +100,7 @@ def acceder(request):
 @login_required(login_url='/acceder/')
 def home(request):
 	permisos = request.user.permisos
+	cache.delete(request.user)
 	if request.user.is_superuser:
 		proyectos = Proyectos.objects.all().select_related('empresa__nombre')
 	else:
@@ -116,30 +117,34 @@ def home(request):
 @login_required(login_url='/acceder/')
 def menu(request,id_proyecto):
 	try:
+		permisos = request.user.permisos
 		if request.user.is_superuser:
-			proyecto = Proyectos.objects.get(id=int(id_proyecto)
-						).select_related('empresa__nombre')
-		elif request.user.permisos.pro_see:
+			proyecto = Proyectos.objects.select_related('empresa__nombre'
+						).get(id=int(id_proyecto))
+		elif permisos.pro_see or permisos.res_see:
 			proyecto = Proyectos.objects.filter(
-			usuarios = user.request).select_related('empresa__nombre'
+			usuarios = request.user).select_related('empresa__nombre'
 			).get(id=int(id_proyecto))
 		else:
 			return render_to_response('403.html')
 		cache.set(request.user.username,proyecto,86400)
 		return HttpResponseRedirect('/home2/')
 	except:
-			return render_to_response('403.html')
+		return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def home2(request):
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pro_see:
+	if permisos.consultor or permisos.pro_see:
 		proyecto = cache.get(request.user.username)
-		return render_to_response('home2.html',{
-		'Activar':'home2','Permisos':permisos,'Proyecto':proyecto
-		}, context_instance=RequestContext(request))
+		if(proyecto):
+			return render_to_response('home2.html',{
+			'Activar':'Configuracion','Permisos':permisos,'Proyecto':proyecto
+			}, context_instance=RequestContext(request))
+		else:
+			return render_to_response('423.html')
 	else:
 		return render_to_response('403.html')
 
@@ -216,7 +221,7 @@ def usuariorecuperar(request,key):
 					usuario.set_password(request.POST['password'])
 					with transaction.atomic():
 						usuario.save()
-						registro.delete()
+						Recuperar.objects.filter(usuario=usuario).delete()
 					return HttpResponseRedirect('/acceder/')
 				else:
 					error = 'Ocurrió un error al procesar la solicitud, las contraseñas no coinciden.'
@@ -234,6 +239,7 @@ def usuariorecuperar(request,key):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def empresas(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
 		empresas = Empresas.objects.filter(usuario=request.user)
@@ -248,6 +254,7 @@ def empresas(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def empresaeditar(request,id_empresa):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
 		try:
@@ -277,6 +284,7 @@ def empresaeditar(request,id_empresa):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def empresaeliminar(request,id_empresa):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
 		try:
@@ -302,6 +310,7 @@ def empresaeliminar(request,id_empresa):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def empresanueva(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
 		empresas = Empresas.objects.only('nombre','nit').filter(usuario=request.user)
@@ -332,6 +341,7 @@ def empresanueva(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def proyectonuevo(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pro_add:
 		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
@@ -341,14 +351,18 @@ def proyectonuevo(request):
 					'usuario__first_name','usuario__last_name','parent')
 		if request.method == 'POST':
 			with transaction.atomic():
-				proyecto = Proyectos.objects.create(
-							empresa = Empresas.objects.get(id=int(request.POST['empresa'])),
+				proyecto = Proyectos(
+							empresa_id = request.POST['empresa'],
 							nombre = request.POST['nombre'],
 							tipo = request.POST['tipo'])
+				try:
+					if(request.POST['interna']):proyecto.interna = True
+				except:
+					pass
+				proyecto.save()
 				proyecto.usuarios.add(request.user)
 				for i in request.POST.getlist('usuarios'):
 					proyecto.usuarios.add(i)
-					print request.POST['int_encuesta']
 				datos =ProyectosDatos(
 						id = proyecto,
 						tit_encuesta = request.POST['tit_encuesta'],
@@ -369,10 +383,13 @@ def proyectonuevo(request):
 				try:datos.opcional5 = request.POST['opcional5']
 				except:pass
 				try:
-					if(request.POST['censo']):datos.censo = True
+					if(request.POST['censo']):datos.censo = False
 				except:
-					pass
+					datos.censo = True
 				datos.save()
+				Logs.objects.create(usuario=request.user,accion="Creó el proyecto",descripcion=proyecto.nombre)
+			cache.set(request.user.username,proyecto,86400)
+			return HttpResponseRedirect('/variable/nueva/')
 		return render_to_response('proyectonuevo.html',{
 		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
 		'Usuarios':usuarios,'Permisos':permisos,
@@ -384,12 +401,59 @@ def proyectonuevo(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def proyectoeditar(request,id_proyecto):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pro_edit:
-		empresas = Empresas.objects.filter(usuario=request.user)
-		return render_to_response('empresas.html',{
-		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas,
-		'Permisos':permisos,
+		try:
+			proyecto = Proyectos.objects.filter(usuarios=request.user
+						).prefetch_related('usuarios'
+						).select_related('proyectosdatos'
+						).get(id=int(id_proyecto))
+		except:
+			return render_to_response('403.html')
+		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
+		proyectos = Proyectos.objects.only('nombre').filter(usuarios=request.user)
+		usuarios = IndiceUsuarios.objects.get(usuario=request.user
+					).get_descendants(include_self=False).select_related(
+					'usuario__first_name','usuario__last_name','parent')
+		if request.method == 'POST':
+			with transaction.atomic():
+				proyecto.empresa_id = request.POST['empresa']
+				proyecto.nombre = request.POST['nombre']
+				proyecto.tipo = request.POST['tipo']
+				proyecto.save()
+				proyecto.usuarios.clear()
+				usuarios_add = [i for i in request.POST.getlist('usuarios')]
+				usuarios.add = usuarios_add.append(str(request.user.id))
+				proyecto.usuarios.add(*usuarios_add)
+				datos = proyecto.proyectosdatos
+				datos.tit_encuesta = request.POST['tit_encuesta']
+				datos.int_encuesta = request.POST['int_encuesta']
+				datos.cue_correo = request.POST['cue_correo']
+				try:datos.logo = request.FILES['logo']
+				except:pass
+				try:datos.logoenc = request.FILES['logoenc']
+				except:pass
+				try:datos.opcional1 = request.POST['opcional1']
+				except:pass
+				try:datos.opcional2 = request.POST['opcional2']
+				except:pass
+				try:datos.opcional3 = request.POST['opcional3']
+				except:pass
+				try:datos.opcional4 = request.POST['opcional4']
+				except:pass
+				try:datos.opcional5 = request.POST['opcional5']
+				except:pass
+				try:
+					if(request.POST['censo']):datos.censo = False
+				except:
+					datos.censo = True
+				datos.save()
+				Logs.objects.create(usuario=request.user,accion="Editó el proyecto",descripcion=proyecto.nombre)
+			return HttpResponseRedirect('/home/')
+		return render_to_response('proyectoeditar.html',{
+		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
+		'Usuarios':usuarios,'Permisos':permisos,'Proyecto':proyecto
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -398,15 +462,25 @@ def proyectoeditar(request,id_proyecto):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def proyectoeliminar(request,id_proyecto):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pro_del:
-		empresas = Empresas.objects.filter(usuario=request.user)
-		return render_to_response('empresas.html',{
-		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas,
-		'Permisos':permisos,
+		try:
+			proyecto = Proyectos.objects.filter(usuarios=request.user
+			).select_related('empresa__nombre').get(id=int(id_proyecto))
+		except:return render_to_response('403.html')
+		if request.method == 'POST':
+			with transaction.atomic():
+				proyecto.usuarios.clear()
+				Logs.objects.create(usuario=request.user,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
+			return HttpResponseRedirect('/home/')
+		return render_to_response('eliminar.html',{
+		'Activar':'MisProyectos','objeto':'Proyecto','Permisos':permisos,
+		'Proyecto':proyecto
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
+
 
 
 #===============================================================================
@@ -416,6 +490,7 @@ def proyectoeliminar(request,id_proyecto):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def usuarios(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.cre_usuarios:
 		usuarios = IndiceUsuarios.objects.select_related('usuario','parent'
@@ -432,6 +507,7 @@ def usuarios(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def usuarioeditar(request,id_usuario):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.cre_usuarios:
 		try:
@@ -577,6 +653,7 @@ def usuarioeditar(request,id_usuario):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def usuarioeliminar(request,id_usuario):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and request.user.is_staff:
 		try:
@@ -610,6 +687,7 @@ def usuarioeliminar(request,id_usuario):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def usuarioreenviar(request,id_usuario):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.cre_usuarios:
 		usuarios = IndiceUsuarios.objects.select_related('usuario','parent'
@@ -655,6 +733,7 @@ def usuarioreenviar(request,id_usuario):
 def usuarioactivar(request,key):
 	try:
 		error = ''
+		cache.delete(request.user)
 		registro = Recuperar.objects.select_related('usuario').get(link=key)
 		usuario = registro.usuario
 		if registro.usuario.is_active:
@@ -682,6 +761,7 @@ def usuarioactivar(request,key):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def usuarionuevo(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.cre_usuarios:
 		if request.method == 'POST':
@@ -808,6 +888,7 @@ def usuarionuevo(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def licencia(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
 		empresas = Empresas.objects.filter(usuario=request.user)
@@ -824,6 +905,7 @@ def licencia(request):
 def cuenta(request):
 	acceso = None
 	cambio = ''
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if request.method == 'POST':
 		usuario = request.user
@@ -850,6 +932,7 @@ def cuenta(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def logs(request):
+	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
 		usuarios_creados = IndiceUsuarios.objects.filter(usuario=request.user).get_descendants(include_self=True)

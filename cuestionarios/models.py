@@ -11,9 +11,9 @@ class Variables( models.Model ):
 	estado = models.BooleanField( default = True )
 	max_preguntas = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
-	posicion = models.IntegerField( blank = True, null = True )
+	posicion = models.PositiveSmallIntegerField( blank = True, null = True )
 	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
-	rol = models.CharField( max_length = 100, blank = True, null = True )
+	rol = models.CharField( max_length = 255, blank = True, null = True )
 
 	def __unicode__(self):
 		return self.nombre

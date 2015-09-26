@@ -1,0 +1,68 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Variables{% endblock %}
+{% block contenido2 %}
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+	<div class="col-lg-12">
+		<h2>Proyecto {{Proyecto.nombre |capfirst | escape}}</h2>
+		<ol class="breadcrumb">
+			<li class="active">
+				<a href="/home/"><i class="fa fa-cubes"></i> Mis proyectos</a>
+			</li>
+			<li>
+				<a href="/variables/">Variables</a>
+			</li>
+			<li>
+				Editar
+			</li>
+		</ol>
+	</div>
+</div>
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">Complete los siguientes campos para editar la variable.</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link">
+					<i class="fa fa-chevron-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content">
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  id="nombre" required type="text" name="nombre" class="form-control" maxlength="254" placeholder="Nombre privado de la variable a registrar" value="{{Variable.nombre |escape}}">
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Descripción:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  id="nombre" required type="text" name="descripcion" class="form-control" maxlength="254" placeholder="Texto que aparecerá en la encuesta" value="{{Variable.descripcion |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  required type="number" name="posicion" class="form-control" maxlength="30" min="1" max="999" placeholder="Posición dentro del proyecto" value="{{Variable.posicion |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activa:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="consultor" {%if Variable.estado%}checked{%endif%} {%if not Permisos.act_variables%}disabled{%endif%} type="checkbox" name="estado" class="switch" >
+					</div>
+				</div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Actualizar variable</button></div>
+			</form>
+        </div>
+	</div>
+</div>
+</div>
+{%endblock%}
+{% block scripts%}
+<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+{%endblock%}

@@ -32,8 +32,8 @@ urlpatterns += patterns('usuarios.views',
     url(r'^empresa/eliminar/(?P<id_empresa>[0-9]{1,10})/$', 'empresaeliminar'),
     url(r'^empresa/nueva/$', 'empresanueva'),
     url(r'^licencia/$', 'licencia'),
-    url(r'^proyecto/editar/$', 'proyectoeditar'),
-    url(r'^proyecto/eliminar/$', 'proyectoeliminar'),
+    url(r'^proyecto/editar/(?P<id_proyecto>[0-9]{1,10})/$', 'proyectoeditar'),
+    url(r'^proyecto/eliminar/(?P<id_proyecto>[0-9]{1,10})/$', 'proyectoeliminar'),
     url(r'^proyecto/nuevo/$', 'proyectonuevo'),
     url(r'^usuarios/$', 'usuarios'),
     url(r'^activar/([A-Za-z0-9]{1,97})','usuarioactivar'),
@@ -43,6 +43,21 @@ urlpatterns += patterns('usuarios.views',
     url(r'^usuario/eliminar/(?P<id_usuario>[0-9]{1,10})/$', 'usuarioeliminar'),
     url(r'^usuario/nuevo/$', 'usuarionuevo'),
 )
+
+#===============================================================================
+# urls de errores
+#===============================================================================
+
+urlpatterns += patterns('cuestionarios.views',
+    url(r'^variables/$', 'variables'),
+    url(r'^variable/nueva/$', 'variablenueva'),
+    url(r'^variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar'),
+    url(r'^variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar'),
+    url(r'^variable/activar/(?P<id_variable>[0-9]{1,10})/$', 'variableactivar'),
+
+)
+
+
 
 #===============================================================================
 # urls de errores

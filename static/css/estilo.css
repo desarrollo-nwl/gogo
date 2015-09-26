@@ -3180,7 +3180,7 @@ dd.project-people {
     text-align: center
 }
 
-li a:focus{
+a:focus{
     outline: 0;
 }
 
@@ -3190,4 +3190,11 @@ li a:focus{
 
 .norequired{
     font-weight: 400 !important;
+}
+.logos{
+    max-width: 600px;
+    max-height: 300px;
+}
+.LINK{
+    text-decoration: underline !important;
 }

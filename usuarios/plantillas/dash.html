@@ -18,7 +18,7 @@
 			<ul class="nav nav-second-level">
 				{%if Permisos.consultor%}<li id="Empresas"><a href="/empresas/"><i class="fa fa-building-o"></i> Empresas</a></li>
 				{%if Permisos.cre_usuarios%}<li id="Usuarios"><a href="/usuarios/"><i class="fa fa-group"></i> Usuarios</a></li>{%endif%}
-				<li id="Logs"><a href="/logs/"><i class="fa fa-group"></i> Registro histórico</a></li>{%endif%}
+				<li id="Logs"><a href="/logs/"><i class="fa fa-history"></i> Registro histórico</a></li>{%endif%}
 				<li id="GestionarCuenta"><a href="#"><i class="fa fa-gears"></i> Gestionar cuenta</a>
 					<ul class="nav nav-third-level">
 						<li id="Licencia"><a href="/licencia/"><i class="fa fa-key"></i> Información de licencia</a></li>
@@ -47,7 +47,7 @@
 	<!-- Fin Barra de Navegación Lateral -->
 </nav>
 <div id="page-wrapper" class="gray-bg animated fadeInRight">
-<style>#BC{position:absolute;margin:8px 0 0 -26px;-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);transform:rotate(90deg);background:#27A9E1;border:1px solid #27A9E1}#BC:hover{margin-left:-20px;-moz-transition-property:margin-left;-moz-transition-duration:.6s;-webkit-transition-property:margin-left;-webkit-transition-duration:.6s;-o-transition-property:margin-left;-o-transition-duration:.6s}}</style>
+<style>#BC{position:absolute;margin:8px 0 0 -26px;-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);transform:rotate(90deg);background:#27A9E1;border:1px solid #27A9E1;outline: 0}#BC:hover{margin-left:-20px;-moz-transition-property:margin-left;-moz-transition-duration:.6s;-webkit-transition-property:margin-left;-webkit-transition-duration:.6s;-o-transition-property:margin-left;-o-transition-duration:.6s}}</style>
 <a id="BC" class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 {%block contenido2%}{%endblock%}
 <br><br><div class="footer"><div class="pull-right"><strong>Copyright Networks Lab</strong> &copy; 2015-2020</div></div>

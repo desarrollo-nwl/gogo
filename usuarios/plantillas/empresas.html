@@ -40,7 +40,7 @@
                         <td><a href="/empresa/editar/{{i.id}}">{{i.nombre | capfirst | escape}}</a></td>
 						<td>{{i.sector | escape}}</td>
 						<td>{{i.num_empleados | escape}}</td>
-                        <td><a href="/empresa/editar/{{i.id}}"><i class="fa fa-edit m-r"></i></a><a href="/empresa/eliminar/{{i.id}}"><i class="fa fa-trash m-r"></i></a></td>
+                        <td><a href="/empresa/editar/{{i.id}}"><i class="fa fa-edit m-r" title="editar"></i></a><a href="/empresa/eliminar/{{i.id}}"><i class="fa fa-trash m-r" title="eliminar"></i></a></td>
                     </tr>{% endfor %}
                 </tbody>
             </table>

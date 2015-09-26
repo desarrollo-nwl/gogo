@@ -43,8 +43,8 @@
 						<td>{{i.usuario.email | escape}}</td>
 						<td><ul>{% for j in i.usuario.empresas_set.all %}<li>{{j.nombre | escape}}</li>{%endfor%}</ul></td>
                         <td>{%if i.usuario.is_active%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</td>
-						<td>{%if i.usuario.is_active%}<i style="color:#1d9d73" class="fa fa-check-circle-o m-r"></i>{%else%}<a href="/usuario/reenviar/{{i.usuario.id}}/"><i class="fa fa-envelope-o m-r"></i></a>{%endif%}</td>
-						<td><a href="/usuario/editar/{{i.usuario.id}}/"><i class="fa fa-edit m-r"></i></a>{%if user.is_staff%}<a href="/usuario/eliminar/{{i.usuario.id}}/"><i class="fa fa-trash m-r"></i></a>{%endif%}</td>
+						<td>{%if i.usuario.is_active%}<i style="color:#1d9d73" class="fa fa-check-circle-o m-r" title="activado"></i>{%else%}<a href="/usuario/reenviar/{{i.usuario.id}}/"><i class="fa fa-envelope-o m-r" title="reenviar"></i></a>{%endif%}</td>
+						<td><a href="/usuario/editar/{{i.usuario.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%if user.is_staff%}<a href="/usuario/eliminar/{{i.usuario.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
                 </tbody>
             </table>

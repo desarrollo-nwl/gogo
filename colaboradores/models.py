@@ -11,6 +11,11 @@ class Colaboradores( models.Model ):
 	nombre = models.CharField( max_length = 45 )
 	proyecto = models.ForeignKey( Proyectos )
 	key = models.CharField( max_length = 64 )
+	enviados = models.PositiveSmallIntegerField( default = 0 )
+	repuestas = models.PositiveSmallIntegerField( default = 0 )
+	res_salud = models.PositiveSmallIntegerField( default = 0 )
+	propension = models.IntegerField( default = 0 )
+
 	def __unicode__(self):
 		return '%s %s ' % (self.nombre,self.apellido)
 
@@ -29,13 +34,14 @@ class ColaboradoresDatos( models.Model ):
 	fec_nacimiento = models.DateField( blank = True, null = True )
 	genero = models.CharField( max_length = 10, blank = True, null = True)
 	niv_academico = models.CharField( max_length = 50, blank = True, null = True )
+	rol = models.CharField( max_length=100, blank=True, null=True )
 	opcional1 = models.CharField( max_length=100, blank=True, null=True )
 	opcional2 = models.CharField( max_length=100, blank=True, null=True )
 	opcional3 = models.CharField( max_length=100, blank=True, null=True )
 	opcional4 = models.CharField( max_length=100, blank=True, null=True )
 	opcional5 = models.CharField( max_length=100, blank=True, null=True )
 	pais = models.CharField( max_length = 100, blank = True, null = True)
-	ciudad = models.CharField( max_length = 100, blank = True, null = True)	
+	ciudad = models.CharField( max_length = 100, blank = True, null = True)
 	profesion = models.CharField( max_length = 200, blank = True, null = True  )
 	regional = models.CharField( max_length = 50, blank = True, null = True )
 

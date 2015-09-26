@@ -1,10 +1,10 @@
 {% extends "base.html" %}{% block head %}{% load staticfiles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href='https://fonts.googleapis.com/css?family=Merriweather' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link href="{% static 'css/estilo.min.css' %}" rel="stylesheet">
-{%block head2%}{%endblock%}{%endblock%}{%block contenido%}{%load cache%}{%cache 3600 dash%}{%spaceless%}
+{%block head2%}{%endblock%}{%endblock%}{%block contenido%}
 <div id="wrapper">
-<nav class="navbar-default navbar-static-side" role="navigation" style="z-index:999;font-family:'Merriweather'">
+<nav class="navbar-default navbar-static-side" role="navigation" style="z-index:999">
 	<div class="sidebar-collapse">
 		<ul class="nav" id="side-menu">
 		<li class="nav-header">
@@ -12,32 +12,35 @@
 				<span><img alt="image" src="{% static 'img/GoChange.png' %}"/></span>
 			</div>
 		</li>
-		<li id="MisProyectos"><a href="#"><i class="fa fa-th fa-fw"></i><span class="nav-label"> Mis proyectos</span></a></li>
 		<li id="Configuracion">
-			<a href="#"><i class="fa fa-gear fa-fw"></i><span class="nav-label"> Configuración</span></a>
+			<a href="#"><i class="fa fa-cube"></i><span class="nav-label"> Configuración </span></a>
 			<ul class="nav nav-second-level">
-				<li id="Empresas"><a href="/empresas/"><i class="fa fa-building-o"></i> Empresas</a></li>
-				<li id="Usuarios"><a href="/usuarios/"><i class="fa fa-group"></i> Usuarios</a></li>
-				<li id="GestionarCuenta"><a href="#"><i class="fa fa-gears"></i> Gestionar cuenta</a>
+				{%if Permisos.var_see%}<li id="Variables"><a href="/variables/"><i class="fa fa-sitemap"></i>Variables y preguntas</a></li>{%endif%}
+				{%if Permisos.col_see%}<li id="Participantes">
+					<a href="#"><i class="fa fa-group"></i>Participantes</a>
 					<ul class="nav nav-third-level">
-						<li id="InformacionDeLicencia"><a href="/licencia/"><i class="fa fa-key"></i> Información de licencia</a></li>
-						<li id="CambiarContrasena"><a href="/cuenta/"><i class="fa fa-expeditedssl"></i> Cambiar contraseña</a></li>
+						{%if Permisos.col_add%}<li id="AcrhivoPlano"><a href="/empresas/"><i class="fa fa-file-excel-o"></i> Archivo plano</a></li>
+						<li id="Individualmente"><a href="/usuarios/"><i class="fa fa-male"></i> Individualmente</a></li>{%endif%}
+						<li id="Individualmente"><a href="/usuarios/"><i class="fa fa-see"></i> Ver Participantes</a></li>
 					</ul>
-				</li>
+				</li>{%endif%}
+				<li id="IniciarDetener"><a href="#"><i class="fa fa-power-off"></i> Iniciar | detener</a></li>
 			</ul>
 		</li>
-		<li id="CentroDeAyuda">
-			<a href="#"><i class="fa fa-support fa-fw"></i><span class="nav-label"> Centro de ayuda</span></a>
+		<li id="EstadoAvance">
+			<a href="#"><i class="fa fa-road"></i><span class="nav-label"> Estado de avance </span></a>
 			<ul class="nav nav-second-level">
-				<li id="CitaAsesoria"><a href="/asesoria/"><i class="fa fa-tty fa-fw"></i> Cita asesoría</a></li>
-				<li id="ReportarError"><a href="/reportar/"><i class="fa fa-warning fa-fw"></i> Reportar error</a></li>
-				<li id="Entrenamiento"><a href="#"><i class="fa fa-graduation-cap fa-fw"></i> Entrenamiento</a>
-					<ul class="nav nav-third-level">
-						<li id="Entrenamiento"><a href="/entrenamiento/"><i class="fa fa-graduation-cap"></i> Entrenamiento</a></li>
-						<li id="GuiaDeUso"><a href="/guia/"><i class="fa fa-book"></i>Guía de uso</a></li>
-					</ul>
-				</li>
-				<li id="PreguntasFrecuentes"><a href="/reportar/"><i class="fa fa-question-circle fa-fw"></i> Preguntas Frecuentes</a></li>
+				<li id="EnviosRespuestas"><a href="/asesoria/"><i class="fa fa-exchange"></i> Envíos y respuestas</a></li>
+				<li id="RepuestasDetalladas"><a href="/reportar/"><i class="fa fa-puzzle-piece"></i> Respuestas detalladas</a></li>
+			</ul>
+		</li>
+		<li id="AnalisisResultados">
+			<a href="#"><i class="fa fa-dashboard"></i><span class="nav-label"> Análisis de resultados </span></a>
+			<ul class="nav nav-second-level">
+				<li id="ResumenResultados"><a href="/asesoria/"><i class="fa fa-rocket"></i> Resumen </a></li>
+				<li id="AnalisisTextual"><a href="/reportar/"><i class="fa fa-file-text-o"></i> Textual</a></li>
+				<li id="CruceVariables"><a href="/reportar/"><i class="fa fa-random"></i> Cruce de variables</a></li>
+				<li id="AnalisisPropension"><a href="/reportar/"><i class="fa fa-th"></i> Propensión</a></li>
 			</ul>
 		</li>
 		<li ><a href="/salir/"><i class="fa fa-user fa-sign-out"></i><span class="nav-label"</span> Cerrar sesión</a></li>
@@ -46,15 +49,15 @@
 	<!-- Fin Barra de Navegación Lateral -->
 </nav>
 <div id="page-wrapper" class="gray-bg animated fadeInRight">
-<style>#BC{position:absolute;margin:8px 0 0 -26px;-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);transform:rotate(90deg);background:#27A9E1;border:1px solid #27A9E1}#BC:hover{margin-left:-20px;-moz-transition-property:margin-left;-moz-transition-duration:.6s;-webkit-transition-property:margin-left;-webkit-transition-duration:.6s;-o-transition-property:margin-left;-o-transition-duration:.6s}}</style>
+<style>#BC{position:absolute;margin:8px 0 0 -26px;-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);transform:rotate(90deg);background:#27A9E1;border:1px solid #27A9E1;outline: 0}#BC:hover{margin-left:-20px;-moz-transition-property:margin-left;-moz-transition-duration:.6s;-webkit-transition-property:margin-left;-webkit-transition-duration:.6s;-o-transition-property:margin-left;-o-transition-duration:.6s}}</style>
 <a id="BC" class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-{%endspaceless%}{%endcache%}{%block contenido2%}{%endblock%}{%cache 3600 dash2%}{%spaceless%}
+{%block contenido2%}{%endblock%}
 <div class="footer"><div class="pull-right"><strong>Copyright Networks Lab</strong> &copy; 2015-2020</div></div>
 <!-- MENU -->
 <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.min.js' %}"></script>
 <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
 <!-- Custom and plugin javascript -->
 <script src="{% static 'js/dash.min.js' %}"></script>
-<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>{%endspaceless%}{%endcache%}
-<script>$('#{{activar}}').addClass('active');$('#{{activarG}}').addClass('active');</script>
+<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+<script>$('#{{Activar}}').addClass('active');$('#{{activar}}').addClass('active');</script>
 {% block scripts%}{% endblock %}</div></div>{% endblock %}

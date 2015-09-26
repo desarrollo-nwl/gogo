@@ -1,6 +1,5 @@
 {% extends "dash.html" %}{% load staticfiles%}
 {% block title %} Home | Eliminar {% endblock %}
-{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
 {% block contenido2 %}
 <div class="row">
 <div class="m-l m-r row wrapper border-bottom white-bg page-heading">
@@ -25,12 +24,14 @@
 			</div>
 		</div>
 		<div class="ibox-content">
-			{%ifequal objeto "Empresa"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una empresa ocasiona que los siguientes elementos asociados:<br><br><ul><li>Proyectos <ul>{%for i in Empresa.proyectos_set.all%}<li>{{i.nombre | escape}}</li>{%endfor%}</ul></li><li>Variables</li><li>Preguntas</li><li>Colaboradores</li><li>Respuestas de los colaboradores</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la empresa <strong>{{Empresa}}</strong>?</div>{%endifequal%}
-			{%ifequal objeto "Usuario"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una usuario ocaciona que los siguientes elementos asociados:<br><br><ul><li>Empresas</li><li>Usuarios creados por el  <ul>{%for i in Usuarios %}<li>{{i.usuario.first_name | escape}} {{i.usuario.last_name | escape}}</li>{%endfor%}</ul></li><li>TODOS los proyectos creados por él</li><li>TODAS las respuestas de dichos proyectos</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar al usuario <strong>{{Usuario.first_name |escape}} {{Usuario.last_name |escape}}</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Empresa"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una empresa ocasiona que los siguientes elementos asociados:<br><br><ul><li>Proyectos <ul>{%for i in Empresa.proyectos_set.all%}<li>{{i.nombre | escape}}</li>{%endfor%}</ul></li><li>Variables</li><li>Preguntas</li><li>Colaboradores</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la empresa <strong>{{Empresa.nombre | escape}}</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Usuario"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una usuario ocasiona que los siguientes elementos asociados:<br><br><ul><li>Empresas</li><li>Usuarios creados por el  <ul>{%for i in Usuarios %}<li>{{i.usuario.first_name | escape}} {{i.usuario.last_name | escape}}</li>{%endfor%}</ul></li><li>TODOS los proyectos creados por él</li><li>TODAS las respuestas de participantes dichos proyectos</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar al usuario <strong>{{Usuario.first_name |escape}} {{Usuario.last_name |escape}}</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Proyecto"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar un proyecto ocasiona que los siguientes elementos asociados:<br><br><ul><li>Variables</li><li>Preguntas</li><li>Colaboradores</li><li>TODAS las respuestas de participantes dicho proyecto</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar el proyecto <strong>{{Proyecto.nombre |escape}}</strong> de la empresa <strong>{{Proyecto.empresa.nombre | escape}}</strong>?</div>{%endifequal%}
 			<form  method="POST">{%csrf_token%}
             	<div class="container-fluid">
 					{%ifequal objeto "Empresa"%}<a href="/empresas/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
 					{%ifequal objeto "Usuario"%}<a href="/usuarios/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
+					{%ifequal objeto "Proyecto"%}<a href="/home/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
 					<button type="submit" class="btn btn-danger pull-right m-t"><i class="fa fa-trash"></i> Eliminar definitivamente</button>
 				</div>
             </form>
@@ -39,12 +40,4 @@
 	</div>
 </div>
 </div>
-
-
-{%endblock%}
-
-{% block scripts%}
-<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#emp").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ empresas",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ninguna empresa creada.",sInfo:"Empresas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Empresas del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ empresas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {%endblock%}

@@ -1,0 +1,24 @@
+{%spaceless%}
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go | error 423</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link href="{% static 'css/estilo.min.css' %}" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>423</h1>
+        <h3 class="font-bold">Bloqueado.</h3>
+        <div class="error-desc">El recurso al que intenta acceder ha sido bloqueado por seguridad. Esto se debe generalmente por retornar a una página que necesita verificación. Nos disculpamos por los inconvenientes.<br/><a href="/home/" class="btn btn-primary m-t">Inicio</a>
+        </div>
+    </div>
+    <!-- Mainly scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endspaceless %}

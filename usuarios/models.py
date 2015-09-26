@@ -32,7 +32,7 @@ class Proyectos( models.Model ):
 	empresa = models.ForeignKey( Empresas )
 	fec_registro =  models.DateTimeField( auto_now_add = True )
 	iniciable = models.BooleanField( default = False )
-	interna = models.BooleanField( default = True )
+	interna = models.BooleanField( default = False )
 	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	prudenciamax = models.IntegerField( default = 2 )
@@ -164,3 +164,19 @@ class Recuperar( models.Model ):
 		managed = True
 		db_table = 'usuarios_recuperar'
 		verbose_name_plural = 'Recuperar'
+
+
+class Errores( models.Model ):
+	id = models.AutoField( primary_key=True )
+	usuario = models.ForeignKey( User )
+	reporte = models.TextField()
+	imagen = models.ImageField( upload_to = 'errores', blank = True, null = True )
+	fregistro = models.DateTimeField( auto_now_add = True )
+
+	def __unicode__(self):
+		return '%s'%self.usuario
+
+	class Meta:
+		managed = True
+		db_table = 'usuarios_errores'
+		verbose_name_plural = 'Errores'
