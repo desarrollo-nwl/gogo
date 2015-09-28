@@ -25,9 +25,11 @@
 		</div>
 		<div class="ibox-content">
 			{%ifequal objeto "Variable"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una variable ocasiona que los siguientes elementos asociados:<br><br><ul><li>Preguntas</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la variable <strong>{{Variable.nombre | escape}}</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Pregunta"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una pregunta ocasiona que los siguientes elementos asociados:<br><br><ul><li>Respuestas</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la pregunta <strong>"{{Pregunta.texto | escape}}"</strong>?</div>{%endifequal%}
 			<form  method="POST">{%csrf_token%}
             	<div class="container-fluid">
 					{%ifequal objeto "Variable"%}<a href="/variables/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
+					{%ifequal objeto "Pregunta"%}<a href="/variable/{{Pregunta.variable_id}}/preguntas/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
 					<button type="submit" class="btn btn-danger pull-right m-t"><i class="fa fa-trash"></i> Eliminar definitivamente</button>
 				</div>
             </form>

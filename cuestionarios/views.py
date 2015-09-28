@@ -35,13 +35,18 @@ def variables(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def indicepreguntas(request,id_variable):
+def preguntas(request,id_variable):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.per_see:
-		preguntas = Preguntas.objects.filter(id=int(id_variable))
-		return render_to_response('varadd.html',{
-		'activarG':'1','activar':'biblio'
+	if permisos.consultor and permisos.pre_see:
+		try:variable = Variables.objects.prefetch_related('preguntas_set'
+						).get(id=id_variable)
+		except:return render_to_response('403.html')
+		return render_to_response('preguntas.html',{
+		'Activar':'Configuracion','activar':'Variables','Variable':variable,
+		'Proyecto':proyecto,'Permisos':permisos,
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -74,15 +79,16 @@ def variablenueva(request):
 				variable.save()
 				proyecto.max_variables += 1
 				proyecto.save()
-				Logs.objects.create(usuario=request.user,accion="Creó la variable",descripcion=variable.nombre)
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó la variable",descripcion=variable.nombre)
 				cache.set(request.user.username,proyecto,86400)
 			if(proyecto.max_variables == 1 ):
-				return HttpResponseRedirect('/pregunta/nueva/')
+				return HttpResponseRedirect('/variable/'+str(variable.id)+'/pregunta/nueva/')
 			else:
 				return HttpResponseRedirect('/variables/')
 		return render_to_response('variablenueva.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
-		'Poyecto':proyecto
+		'Proyecto':proyecto
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -96,14 +102,17 @@ def variableactivar(request,id_variable):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.act_variables:
-		try:variable = Variables.objects.only('estado').get(id=int(id_variable))
-		except:return HttpResponseRedirect('/variables/')
+		try:
+			variable = Variables.objects.only('estado').filter(proyecto_id=proyecto.id).get(id=int(id_variable))
+		except:
+			return HttpResponseRedirect('/variables/')
 		if(variable.estado):
 			variable.estado = False
 		else:
 			variable.estado = True
-		variable.save
-		variable.save()
+		with transaction.atomic():
+			variable.save()
+			Preguntas.objects.filter(variable=variable).update(estado=variable.estado)
 		return HttpResponseRedirect('/variables/')
 	else:
 		return render_to_response('403.html')
@@ -111,39 +120,101 @@ def variableactivar(request,id_variable):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def nuevapregunta(request,id_variable):
+def preguntanueva(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_add:
-		variable = Variables.objects.get(id = int(id_variable))
+		try:variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id = int(id_variable))
+		except:return render_to_response('403.html')
 		if request.method == 'POST':
 			pregunta = Preguntas(
-						texto = request.POST['pregunta'],
+						texto = request.POST['texto'],
 						posicion = request.POST['posicion'],
 						variable = variable)
-			pregunta.abierta = bool(int(request.POST['abierta']))
-			pregunta.multiple = bool(int(request.POST['multiple']))
-			pregunta.numerica = bool(int(request.POST['numerica']))
-			pregunta.save()
-			if not ( pregunta.abierta ):
-				for i in xrange(int(request.POST['respuestas'])):
-					respuesta = request.POST[str(i)]
-					if(respuesta):
-						aux_numerico = '%s%s'%(i,i)
+
+			if(request.POST['tipo'] =="Abierta"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+			elif(request.POST['tipo'] =="Unica"):
+				pregunta.abierta = False
+				pregunta.numerica = False
+				pregunta.multiple = False
+			elif(request.POST['tipo'] =="Numerica"):
+				pregunta.abierta = False
+				pregunta.numerica = True
+				pregunta.multiple = False
+			elif(request.POST['tipo'] =="Multiple"):
+				pregunta.abierta = False
+				pregunta.numerica = False
+				pregunta.multiple =True
+			elif(request.POST['tipo'] =="MultipleNumerica"):
+				pregunta.abierta = False
+				pregunta.numerica = True
+				pregunta.multiple =True
+			else:
+				return render_to_response('500.html')
+			try:
+				if(request.POST['estado'] and Variable.estado):
+					pregunta.estado = True
+				else:pregunta.estado = False
+			except:
+				pregunta.estado = False
+			with transaction.atomic():
+				pregunta.save()
+				if ((not  pregunta.abierta) and pregunta.numerica):
+					for i in xrange(int(request.POST['contador'])):
+						aux_texto = 'respuesta%s'%(i)
+						respuesta = request.POST[aux_texto]
+						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
-						if(numerico):
-							Respuestas.objects.create(
-							texto = respuesta, numerico = numerico, pregunta = pregunta )
-						else:
-							R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
-			variable.max_preguntas += 1
-			variable.save()
-			return HttpResponseRedirect( '/cuestionario/variables/'+id_variable )
-		return render_to_response('create3.html',{
-		'activarG':'1','activar':'biblio','idbp':idbp
+						Respuestas.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
+
+				elif not( pregunta.abierta or pregunta.numerica):
+					for i in xrange(int(request.POST['contador'])):
+						aux_texto = 'respuesta%s'%(i)
+						respuesta = request.POST[aux_texto]
+						R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
+				proyecto.tot_preguntas += 1
+				proyecto.save()
+				variable.max_preguntas += 1
+				variable.save()
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Creó la pregunta',descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
+			return HttpResponseRedirect( '/variable/'+id_variable+'/preguntas/' )
+		return render_to_response('preguntanueva.html',{
+		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
+		'Poyecto':proyecto,'Variable':variable
 		}, context_instance=RequestContext(request))
 	else:
 		return HttpResponseRedirect('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def preguntactivar(request,id_pregunta):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.act_variables and permisos.pre_edit:
+		try:
+			pregunta = Preguntas.objects.get(id=int(id_pregunta))
+			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
+		except:
+			return HttpResponseRedirect('/variables/')
+		if(pregunta.estado):
+			pregunta.estado = False
+		else:
+			variable.estado = True
+			pregunta.estado = True
+		with transaction.atomic():
+			variable.save()
+			pregunta.save()
+		return HttpResponseRedirect('/variable/'+str(variable.id)+'/preguntas/')
+	else:
+		return render_to_response('403.html')
 
 #===============================================================================
 # editar
@@ -157,7 +228,7 @@ def variableditar(request,id_variable):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_edit:
-		try:variable = Variables.objects.get(id=int(id_variable))
+		try:variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=int(id_variable))
 		except:render_to_response('403.html')
 		if request.method == 'POST':
 			with transaction.atomic():
@@ -171,7 +242,8 @@ def variableditar(request,id_variable):
 					except:
 							variable.estado = False
 				variable.save()
-				Logs.objects.create(usuario=request.user,accion="Editó la variable",descripcion=variable.nombre)
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó la variable",descripcion=variable.nombre)
 				return HttpResponseRedirect('/variables/')
 		return render_to_response('variableditar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -183,38 +255,79 @@ def variableditar(request,id_variable):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def editarpregunta(request,id_pregunta):
+def preguntaeditar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_edit:
-		pregunta = Preguntas.objects.get(id = int(id_pregunta)
-					).prefetch_related('respuestas_set')
+		try:
+			pregunta = Preguntas.objects.get(id=int(id_pregunta))
+			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
+			num_respuestas = pregunta.respuestas_set.count()
+		except:render_to_response('403.html')
 		if request.method == 'POST':
-			pregunta.texto = request.POST['pregunta'],
-			pregunta.posicion = request.POST['posicion'],
-			pregunta.abierta = bool(int(request.POST['abierta']))
-			pregunta.multiple = bool(int(request.POST['multiple']))
-			pregunta.numerica = bool(int(request.POST['numerica']))
-			pregunta.save()
-			if not ( pregunta.abierta ):
-				pregunta.respuestas_set.delete()
-				for i in xrange(int(request.POST['respuestas'])):
-					respuesta = request.POST[str(i)]
-					if(respuesta):
-						aux_numerico = '%s%s'%(i,i)
-						numerico = request.POST[aux_numerico]
-						if(numerico):
-							Respuestas.objects.create(
-							texto = respuesta, numerico = numerico, pregunta = pregunta )
-						else:
-							R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
-			return HttpResponseRedirect( '/cuestionario/variables/'+str(pregunta.variable_id) )
-		return render_to_response('create3.html',{
-		'activarG':'1','activar':'biblio','idbp':idbp
-		}, context_instance=RequestContext(request))
+			pregunta.texto = request.POST['texto']
+			pregunta.posicion = request.POST['posicion']
+			pregunta.variable = variable
 
+			if(request.POST['tipo'] =="Abierta"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+			elif(request.POST['tipo'] =="Unica"):
+				pregunta.abierta = False
+				pregunta.numerica = False
+				pregunta.multiple = False
+			elif(request.POST['tipo'] =="Numerica"):
+				pregunta.abierta = False
+				pregunta.numerica = True
+				pregunta.multiple = False
+			elif(request.POST['tipo'] =="Multiple"):
+				pregunta.abierta = False
+				pregunta.numerica = False
+				pregunta.multiple =True
+			elif(request.POST['tipo'] =="MultipleNumerica"):
+				pregunta.abierta = False
+				pregunta.numerica = True
+				pregunta.multiple =True
+			else:
+				return render_to_response('500.html')
+			try:
+				if(request.POST['estado']):
+					if(variable.estado):
+						pregunta.estado = True
+					else:
+						pregunta.estado = False
+			except:
+				pregunta.estado = False
+			with transaction.atomic():
+				pregunta.save()
+				pregunta.respuestas_set.all().delete()
+				if ((not  pregunta.abierta) and pregunta.numerica):
+					for i in xrange(int(request.POST['contador'])):
+						aux_texto = 'respuesta%s'%(i)
+						respuesta = request.POST[aux_texto]
+						aux_numerico = 'numerico%s'%(i)
+						numerico = request.POST[aux_numerico]
+						Respuestas.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
+
+				elif not( pregunta.abierta or pregunta.numerica):
+					for i in xrange(int(request.POST['contador'])):
+						aux_texto = 'respuesta%s'%(i)
+						respuesta = request.POST[aux_texto]
+						R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Editó la pregunta',descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
+			return HttpResponseRedirect( '/variable/'+str(variable.id)+'/preguntas/' )
+		return render_to_response('preguntaeditar.html',{
+		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
+		'Poyecto':proyecto,'Variable':variable,'Pregunta':pregunta,
+		'numero_respuestas':num_respuestas
+		}, context_instance=RequestContext(request))
 	else:
 		return HttpResponseRedirect('403.html')
+
+
 
 #===============================================================================
 # clonar
@@ -234,61 +347,68 @@ def clonarproyecto(request,id_proyecto):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def clonarvariable(request,id_variable):
+def variableclonar(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_add:
-		variable = Variables.objects.get(id=int(id_variable)
-					).select_related('proyecto__max_variables'
-					).prefetch_related('preguntas_set__respuestas_set')
+	if permisos.consultor and permisos.var_add and permisos.pre_add:
 		try:
-			variable.id = None
-			variable.posicion = variable.proyecto.max_variables+1
-			with transaction.atomic():
-				variable.save()
-				variable.proyecto.max_variables += 1; proyecto.save()
-				preguntas_nuevas = []
-				respuestas_nuevas = []
-				for j in variable.preguntas_set.all():
-					j.id = None
-					j.variable = variable
-					preguntas_nuevas.append(j)
-					for k in j.respuestas_set.all():
-						k.id = None
-						k.pregunta = j
-						respuestas_nuevas.append(k)
-				Preguntas.objects.bulk_create(preguntas_nuevas)
-				Respuestas.objects.bulk_create(respuestas_nuevas)
-		except IntegrityError:
-			handle_exception()
-		return HttpResponseRedirect('/cuestionario/variables/')
+			variable = Variables.objects.select_related('proyecto__max_variables'
+						).prefetch_related('preguntas_set__respuestas_set'
+						).get(id=int(id_variable))
+		except:
+			return render_to_response('403.html')
+		variable.id = None
+		variable.posicion = variable.proyecto.max_variables+1
+		with transaction.atomic():
+			variable.save()
+			proyecto.max_variables += 1; proyecto.save()
+			respuestas_nuevas = []
+			for j in variable.preguntas_set.all():
+				j.id = None
+				j.variable = variable
+				j.save()
+				for k in j.respuestas_set.all():
+					k.id = None
+					k.pregunta = j
+					respuestas_nuevas.append(k)
+			Respuestas.objects.bulk_create(respuestas_nuevas)
+			nom_log = request.user.first_name+' '+request.user.last_name
+			Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la variable",descripcion=variable.nombre)
+		cache.set(request.user.username,proyecto,86400)
+
+		return HttpResponseRedirect('/variables/')
 	else:
 		return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def clonarpregunta(request,id_pregunta):
+def preguntaclonar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_edit:
-		pregunta = Preguntas.objects.get(id = int(id_pregunta)
-					).select_related('variable__max_preguntas').prefetch_related('respuestas_set')
+	if permisos.consultor and permisos.pre_add:
 		try:
+			pregunta = Preguntas.objects.prefetch_related('respuestas_set'
+						).get(id = int(id_pregunta))
+			variable = Variables.objects.filter(proyecto_id=proyecto.id
+						).get(id=pregunta.variable_id)
+
 			pregunta.id = None
-			pregunta.posicion = pregunta.variable.max_preguntas+1
+			pregunta.posicion = variable.max_preguntas+1
 			with transaction.atomic():
 				pregunta.save()
-				pregunta.variable.max_preguntas += 1; variable.save()
+				variable.max_preguntas += 1; variable.save()
 				respuestas_nuevas = []
 				for k in pregunta.respuestas_set.all():
 					k.id = None
 					k.pregunta = pregunta
 					respuestas_nuevas.append(k)
 				Respuestas.objects.bulk_create(respuestas_nuevas)
-		except IntegrityError:
-			handle_exception()
-		return HttpResponseRedirect( '/cuestionario/variables/'+str(pregunta.variable_id) )
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la pregunta",descripcion=pregunta.texto)
+		except:
+			return render_to_response('403.html')
+		return HttpResponseRedirect( '/variable/'+str(variable.id)+'/preguntas/')
 	else:
 		return HttpResponseRedirect('403.html')
 
@@ -305,7 +425,7 @@ def variableliminar(request,id_variable):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_del:
 		try:
-			variable = Variables.objects.get(id=int(id_variable))
+			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=int(id_variable))
 		except:
 			return render_to_response('403')
 		if request.method == 'POST':
@@ -314,7 +434,8 @@ def variableliminar(request,id_variable):
 				proyecto.max_variables -= 1
 				proyecto.save()
 				cache.set(request.user.username,proyecto,86400)
-				Logs.objects.create(usuario=request.user,accion="Eliminó la variable",descripcion=variable.nombre)
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la variable",descripcion=variable.nombre)
 			return HttpResponseRedirect('/variables/')
 		return render_to_response('cue_eliminar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -326,15 +447,28 @@ def variableliminar(request,id_variable):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def eliminarpregunta(request,id_variable):
+def preguntaeliminar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_del:
+		try:
+			pregunta = Preguntas.objects.get(id=int(id_pregunta))
+			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
+		except:
+			return HttpResponseRedirect('/variables/')
 		if request.method == 'POST':
-			Variables.objects.filter(id=1).update(proyecto_id=1)
-			return HttpResponseRedirect('/cuestionario/variables/')
+			pregunta.variable_id = 1
+			variable.max_preguntas -= 1
+			nom_log = request.user.first_name+' '+request.user.last_name
+			with transaction.atomic():
+				pregunta.save()
+				variable.save()
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la pregunta",descripcion=pregunta.texto)
+			return HttpResponseRedirect('/variable/'+str(variable.id)+'/preguntas/')
+
 		return render_to_response('cue_eliminar.html',{
-		'activarG':'1','activar':'biblio'
+		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
+		'Proyecto':proyecto,'Variable':variable,'Pregunta':pregunta,'objeto':'Pregunta'
 		}, context_instance=RequestContext(request))
 	else:
 		return HttpResponseRedirect('403.html')

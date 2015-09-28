@@ -38,7 +38,7 @@
                     {% for i in Logs %}
                     <tr>
 						<td>{{i.fregistro | date:'d/m/Y H:i'}}</td>
-                        <td><a href="/usuario/editar/{{i.usuario.id}}/">{{i.usuario.first_name | capfirst | escape}} {{i.usuario.last_name | capfirst | escape}}</a></td>
+                        <td>{{i.usuario | capfirst | escape}}</td>
 						<td>{{i.accion | escape}}</td>
 						<td>{{i.descripcion | escape}}</td>
                     </tr>{% endfor %}

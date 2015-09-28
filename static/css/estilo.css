@@ -3198,3 +3198,7 @@ a:focus{
 .LINK{
     text-decoration: underline !important;
 }
+
+.oculto{
+    display: none !important;
+}

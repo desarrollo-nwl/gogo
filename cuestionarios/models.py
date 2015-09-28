@@ -13,7 +13,6 @@ class Variables( models.Model ):
 	nombre =  models.CharField( max_length = 255 )
 	posicion = models.PositiveSmallIntegerField( blank = True, null = True )
 	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
-	rol = models.CharField( max_length = 255, blank = True, null = True )
 
 	def __unicode__(self):
 		return self.nombre
@@ -35,7 +34,7 @@ class Preguntas( models.Model ):
 	variable = models.ForeignKey( Variables )
 
 	def __unicode__(self):
-		return self.pregunta
+		return self.texto
 
 	class Meta:
 		managed = True
@@ -50,7 +49,7 @@ class Respuestas( models.Model ):
 	texto = models.CharField( max_length = 255 )
 
 	def __unicode__(self):
-		return self.respuesta
+		return self.texto
 
 	class Meta:
 		managed = True

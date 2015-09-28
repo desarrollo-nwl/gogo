@@ -137,7 +137,8 @@ class IndiceUsuarios( MPTTModel ):
 
 class Logs( models.Model ):
 	id = models.AutoField( primary_key=True )
-	usuario = models.ForeignKey( User )
+	usuario = models.CharField( max_length=1000 )
+	usuario_username = models.CharField( max_length=1000 )
 	accion = models.TextField( )
 	descripcion = models.TextField( )
 	fregistro = models.DateTimeField( auto_now_add = True )

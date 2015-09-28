@@ -184,7 +184,8 @@ def recuperar(request):
 				key = ''.join(random.sample(chars, 96))
 				Recuperar.objects.filter(usuario=usuario).delete()
 				Recuperar.objects.create(usuario=usuario,link=key)
-				Logs.objects.create(usuario=usuario,accion="Olvido de contraseña",descripcion=usuario.first_name+" "+usuario.last_name)
+				nom_log = usuario.first_name+' '+usuario.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=usuario.username,accion="Olvido de contraseña",descripcion=usuario.first_name+" "+usuario.last_name)
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
 				msg["subject"]=  'Cambio de clave.'
@@ -271,7 +272,8 @@ def empresaeditar(request,id_empresa):
 			empresa.departamento  = request.POST['departamento']
 			with transaction.atomic():
 				empresa.save()
-				Logs.objects.create(usuario=request.user,accion="Editó la empresa",descripcion=empresa.nombre)
+				nom_log =request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó la empresa",descripcion=empresa.nombre)
 			return HttpResponseRedirect('/empresas/')
 		return render_to_response('empresaeditar.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresa':empresa,
@@ -297,7 +299,8 @@ def empresaeliminar(request,id_empresa):
 				empresa.save()
 				for i in empresa.proyectos_set.all():
 					i.usuarios.clear()
-				Logs.objects.create(usuario=request.user,accion="Eliminó la empresa",descripcion=empresa.nombre)
+				nom_log =request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la empresa",descripcion=empresa.nombre)
 			return HttpResponseRedirect('/empresas/')
 		return render_to_response('eliminar.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresa':empresa,
@@ -325,7 +328,8 @@ def empresanueva(request):
 					pais  = request.POST['pais'],
 					departamento  = request.POST['departamento'],
 					usuario = request.user)
-				Logs.objects.create(usuario=request.user,accion="Creó la empresa",descripcion=request.POST['nombre'])
+				nom_log =request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó la empresa",descripcion=request.POST['nombre'])
 			return HttpResponseRedirect('/empresas/')
 		return render_to_response('empresanueva.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas,
@@ -387,7 +391,8 @@ def proyectonuevo(request):
 				except:
 					datos.censo = True
 				datos.save()
-				Logs.objects.create(usuario=request.user,accion="Creó el proyecto",descripcion=proyecto.nombre)
+				nom_log =request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el proyecto",descripcion=proyecto.nombre)
 			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/variable/nueva/')
 		return render_to_response('proyectonuevo.html',{
@@ -449,7 +454,8 @@ def proyectoeditar(request,id_proyecto):
 				except:
 					datos.censo = True
 				datos.save()
-				Logs.objects.create(usuario=request.user,accion="Editó el proyecto",descripcion=proyecto.nombre)
+				nom_log =request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó el proyecto",descripcion=proyecto.nombre)
 			return HttpResponseRedirect('/home/')
 		return render_to_response('proyectoeditar.html',{
 		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
@@ -472,7 +478,8 @@ def proyectoeliminar(request,id_proyecto):
 		if request.method == 'POST':
 			with transaction.atomic():
 				proyecto.usuarios.clear()
-				Logs.objects.create(usuario=request.user,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
+				nom_log =request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
 			return HttpResponseRedirect('/home/')
 		return render_to_response('eliminar.html',{
 		'Activar':'MisProyectos','objeto':'Proyecto','Permisos':permisos,
@@ -636,7 +643,8 @@ def usuarioeditar(request,id_usuario):
 							except:
 								usu_perm.pre_del = False
 						usu_perm.save()
-						Logs.objects.create(usuario=request.user,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
+						nom_log =request.user.first_name+' '+request.user.last_name
+						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
 					return HttpResponseRedirect('/usuarios/')
 				return render_to_response('usuarioeditar.html',{
 				'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,
@@ -668,7 +676,9 @@ def usuarioeliminar(request,id_usuario):
 						for  i in usuarios:
 							try:i.usuario.delete()
 							except:pass
-						Logs.objects.create(usuario=request.user,
+						nom_log =request.user.first_name+' '+request.user.last_name
+						Logs.objects.create(usuario=nom_log,
+											usuario_username=request.user.username,
 											accion="Eliminó al usuario",
 											descripcion=usuario.first_name+" "+usuario.last_name)
 					return HttpResponseRedirect('/usuarios/')
@@ -705,7 +715,8 @@ def usuarioreenviar(request,id_usuario):
 					server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
 					Recuperar.objects.filter(usuario=usuario).delete()
 					Recuperar.objects.create(usuario=usuario,link=key)
-					Logs.objects.create(usuario=request.user,accion="Reenvió activación a",descripcion=usuario.first_name+" "+usuario.last_name)
+					nom_log =request.user.first_name+' '+request.user.last_name
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Reenvió activación a",descripcion=usuario.first_name+" "+usuario.last_name)
 					destinatario = [usuario.email]
 					msg=MIMEMultipart()
 					msg["subject"]=  'Registro de cuenta.'
@@ -862,7 +873,8 @@ def usuarionuevo(request):
 					name=usuario.username,
 					parent=request.user.indiceusuarios)
 					Recuperar.objects.create(usuario=usuario,link=key)
-					Logs.objects.create(usuario=request.user,accion="Creó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
+					nom_log =request.user.first_name+' '+request.user.last_name
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
 
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
@@ -935,11 +947,13 @@ def logs(request):
 	cache.delete(request.user)
 	permisos = request.user.permisos
 	if permisos.consultor:
-		usuarios_creados = IndiceUsuarios.objects.filter(usuario=request.user).get_descendants(include_self=True)
+		usuarios_creados = IndiceUsuarios.objects.filter(usuario=request.user
+							).select_related('usuario').get_descendants(include_self=True)
 		aux = []
 		for  i in usuarios_creados:
-			aux.append(i.usuario_id)
-		logs = Logs.objects.filter(usuario__in=aux).select_related('usuario')
+			aux.append(i.usuario.username)
+		print aux
+		logs = Logs.objects.filter(usuario_username__in=aux)
 		return render_to_response('logs.html',{
 		'Activar':'Configuracion','activar':'Logs','Logs':logs,'Permisos':permisos
 		}, context_instance=RequestContext(request))

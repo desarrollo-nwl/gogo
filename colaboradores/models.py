@@ -34,7 +34,6 @@ class ColaboradoresDatos( models.Model ):
 	fec_nacimiento = models.DateField( blank = True, null = True )
 	genero = models.CharField( max_length = 10, blank = True, null = True)
 	niv_academico = models.CharField( max_length = 50, blank = True, null = True )
-	rol = models.CharField( max_length=100, blank=True, null=True )
 	opcional1 = models.CharField( max_length=100, blank=True, null=True )
 	opcional2 = models.CharField( max_length=100, blank=True, null=True )
 	opcional3 = models.CharField( max_length=100, blank=True, null=True )
