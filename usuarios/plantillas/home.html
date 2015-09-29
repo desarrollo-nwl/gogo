@@ -46,7 +46,7 @@
 								</div>
 							</div></a>
 						</td>
-						{%if Permisos.consultor%}<td><a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>{%endif%}
+						{%if Permisos.consultor%}<td>{%if Permisos.pro_add and Permisos.var_add and Permisos.pre_add%}<a href="/proyecto/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pro_edit%}<a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>{%endif%}
 					</tr>{% endfor %}
 				</tbody>
 			</table>

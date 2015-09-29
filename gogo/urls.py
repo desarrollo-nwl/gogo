@@ -45,7 +45,7 @@ urlpatterns += patterns('usuarios.views',
 )
 
 #===============================================================================
-# urls de errores
+# urls de cuestionarios
 #===============================================================================
 
 urlpatterns += patterns('cuestionarios.views',
@@ -61,10 +61,19 @@ urlpatterns += patterns('cuestionarios.views',
     url(r'^variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar'),
     url(r'^variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar'),
     url(r'^variable/activar/(?P<id_variable>[0-9]{1,10})/$', 'variableactivar'),
-
+    url(r'^proyecto/clonar/(?P<id_proyecto>[0-9]{1,10})/$', 'proyectoclonar'),
 )
 
+#===============================================================================
+# urls de errores
+#===============================================================================
 
+urlpatterns += patterns('colaboradores.views',
+    url(r'^participantes/individual/$', 'colaboradores'),
+    url(r'^participante/nuevo/$', 'colaboradornuevo'),
+    url(r'^participante/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreditar'),
+    url(r'^participante/activar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivar'),
+)
 
 #===============================================================================
 # urls de errores

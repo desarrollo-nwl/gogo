@@ -100,36 +100,36 @@
 						</select>
 					</div>
 				</div>
-				{% if Proyecto.proyectosdatos.opcional1%}<div class="form-group">
+				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100" value="{{Proyecto.proyectosdatos.opcional1 |escape}}">
+						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional1%}value="{{Proyecto.proyectosdatos.opcional1 |escape}}"{%endif%}>
 					</div>
-				</div>{%endif%}
-				{% if Proyecto.proyectosdatos.opcional2%}<div class="form-group">
+				</div>
+				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100" value="{{Proyecto.proyectosdatos.opcional2 |escape}}">
+						<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional2%}value="{{Proyecto.proyectosdatos.opcional2 |escape}}"{%endif%}>
 					</div>
-				</div>{%endif%}
-				{% if Proyecto.proyectosdatos.opcional3%}<div class="form-group">
+				</div>
+				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100" value="{{Proyecto.proyectosdatos.opcional3 |escape}}">
+						<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional3%}value="{{Proyecto.proyectosdatos.opcional3 |escape}}"{%endif%}>
 					</div>
-				</div>{%endif%}
-				{% if Proyecto.proyectosdatos.opcional4%}<div class="form-group">
+				</div>
+				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100" value="{{Proyecto.proyectosdatos.opcional4 |escape}}">
+						<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional4%}value="{{Proyecto.proyectosdatos.opcional4 |escape}}"{%endif%}>
 					</div>
-				</div>{%endif%}
-				{% if Proyecto.proyectosdatos.opcional5%}<div class="form-group">
+				</div>
+				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100" value="{{Proyecto.proyectosdatos.opcional5 |escape}}">
+						<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional5%}value="{{Proyecto.proyectosdatos.opcional5 |escape}}"{%endif%}>
 					</div>
-				</div>{%endif%}
+				</div>
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >

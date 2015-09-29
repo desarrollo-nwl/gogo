@@ -1,0 +1,154 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Participantes{% endblock %}
+{% block head2%}<link href="{% static 'css/plugins/chosen/chosen.min.css' %}" rel="stylesheet"><link href="{% static 'css/plugins/datepicker/datepicker.min.css' %}" rel="stylesheet"><style>.chosen-container-single .chosen-single {border-radius:0%;}</style>{% endblock %}
+{% block contenido2 %}
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+	<div class="col-lg-12">
+		<h2>Proyecto {{Proyecto.nombre |capfirst | escape}}</h2>
+		<ol class="breadcrumb">
+			<li class="active">
+				<a href="/home/"><i class="fa fa-cubes"></i> Mis proyectos</a>
+			</li>
+			<li><a href="/participantes/individual/">Participantes</a></li>
+			<li>Editar</li>
+		</ol>
+	</div>
+</div>
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">Complete los siguientes campos para editar un participante.</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link">
+					<i class="fa fa-chevron-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content">
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="nombre" class="form-control" maxlength="45" value="{{Participante.nombre |escape}}">
+					</div>
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Apellido:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="apellido" class="form-control" maxlength="45" value="{{Participante.apellido |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Email:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="email" class="form-control" maxlength="254" value="{{Participante.email |escape}}">
+					</div>
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Género:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<select class="chosen-select form-control" name="genero">
+							<option {%ifequal 'Femenino' Participante.colaboradoresdatos.genero %}selected{%endifequal%} value="Femenino">Femenino</option>
+							<option {%ifequal 'Masculino' Participante.colaboradoresdatos.genero %}selected{%endifequal%} value="Masculino">Masculino</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Área:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="area" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.area |escape}}">
+					</div>
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Cargo:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="cargo" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.cargo |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Regional:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="regional" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.regional |escape}}">
+					</div>
+					<label class="col-lg-1 col-md-1 col-sm-2 col-xs-2 control-label required">Ciudad:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="ciudad" class="form-control" maxlength="100" value="{{Participante.colaboradoresdatos.ciudad |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nivel académico:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<select class="chosen-select form-control" name="niv_academico">
+							<option {%ifequal 'Primaria' Participante.colaboradoresdatos.niv_academico %}selected{%endifequal%} value="Primaria">Primaria</option>
+							<option {%ifequal 'Bachillerato' Participante.colaboradoresdatos.niv_academico %}selected{%endifequal%} value="Bachillerato">Bachillerato</option>
+							<option {%ifequal 'Tecnologo' Participante.colaboradoresdatos.niv_academico %}selected{%endifequal%} value="Tecnologo">Técnico/Tecnólogo</option>
+							<option {%ifequal 'Profesional' Participante.colaboradoresdatos.niv_academico %}selected{%endifequal%} value="Profesional">Profesional</option>
+							<option {%ifequal 'Maestria' Participante.colaboradoresdatos.niv_academico %}selected{%endifequal%} value="Maestria">Maestría</option>
+							<option {%ifequal 'Doctorado' Participante.colaboradoresdatos.niv_academico %}selected{%endifequal%} value="Doctorado">Doctorado</option>
+						</select>
+					</div>
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Profesión:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="profesion" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.profesion |escape}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label norequired">Fecha de nacimiento:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input readonly type="text" name="fec_nacimiento" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="Opcional" {%if Participante.colaboradoresdatos.fec_nacimiento%}value="{{Participante.colaboradoresdatos.fec_nacimiento |date:"d/m/Y" |escape}}"{%endif%}>
+					</div>
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Fecha de ingreso:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input readonly type="text" name="fec_ingreso" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" value="{{Participante.colaboradoresdatos.fec_ingreso |date:"d/m/Y" |escape}}">
+					</div>
+				</div>
+				<div class="form-group">{%if Proyecto.proyectosdatos.opcional1%}
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">{{Proyecto.proyectosdatos.opcional1 |capfirst |escape}}</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="opcional1" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.opcional1 |escape}}">
+					</div>
+					{%endif%}
+					{%if Proyecto.proyectosdatos.opcional2%}
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">{{Proyecto.proyectosdatos.opcional2 |capfirst |escape}}</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="opcional2" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.opcional2 |escape}}">
+					</div>
+					{%endif%}
+				</div>
+				<div class="form-group">{%if Proyecto.proyectosdatos.opcional3%}
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">{{Proyecto.proyectosdatos.opcional3 |capfirst |escape}}</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="opcional3" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.opcional3 |escape}}">
+					</div>
+					{%endif%}
+					{%if Proyecto.proyectosdatos.opcional4%}
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">{{Proyecto.proyectosdatos.opcional4 |capfirst |escape}}</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="opcional4" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.opcional4 |escape}}">
+					</div>
+					{%endif%}
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activo:</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input {%if Participante.estado%}checked{%endif%} type="checkbox" name="estado" class="switch" >
+					</div>
+					{%if Proyecto.proyectosdatos.opcional5%}
+					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">{{Proyecto.proyectosdatos.opcional5 |capfirst |escape}}</label>
+					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<input required type="text" name="opcional5" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos.opcional5 |escape}}">
+					</div>
+					{%endif%}
+				</div>
+				<div class="container-fluid">
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Grabar Colaborador</button>
+				</div>
+			</form>
+        </div>
+	</div>
+</div>
+</div>
+{%endblock%}
+{% block scripts%}
+<script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
+<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
+<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+<script src="{% static 'js/plugins/datepicker/datepicker.min.js' %}"></script>
+<script>$(document).ready(function(){$('.fecha').datepicker({startView: 2,/*todayBtn: "linked",*/keyboardNavigation: false,forceParse: false,autoclose: true}); });</script>
+{%endblock%}

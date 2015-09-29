@@ -335,12 +335,41 @@ def preguntaeditar(request,id_pregunta):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def clonarproyecto(request,id_proyecto):
+def proyectoclonar(request,id_proyecto):
+	try:proyecto = Proyectos.objects.filter(usuarios=request.user
+					).select_related('proyectosdatos'
+					).prefetch_related('variables_set__preguntas_set__respuestas_set'
+					).get(id=int(id_proyecto))
+	except:return render_to_response('403.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pro_add:
-		return render_to_response('create1.html',{
-		'activarG':'1','activar':'biblio'
-		}, context_instance=RequestContext(request))
+	if permisos.consultor and permisos.var_add and permisos.pre_add and permisos.pro_add:
+		from copy import deepcopy
+		proyecto_back = deepcopy(proyecto)
+		datos = proyecto.proyectosdatos
+		proyecto.id = None
+		proyecto.nombre = 'Copia de '+proyecto.nombre
+		with transaction.atomic():
+			proyecto.save()
+			datos.id = proyecto
+			datos.save()
+			proyecto.usuarios.add(*proyecto_back.usuarios.all())
+			respuestas_nuevas = []
+			for variable in proyecto.variables_set.all():
+				variable.id = None
+				variable.proyecto = proyecto
+				variable.save()
+				for pregunta in variable.preguntas_set.all():
+					pregunta.id = None
+					pregunta.variable = variable
+					pregunta.save()
+					for respuesta in pregunta.respuestas_set.all():
+						respuesta.id = None
+						respuesta.pregunta = pregunta
+						respuestas_nuevas.append(respuesta)
+			Respuestas.objects.bulk_create(respuestas_nuevas)
+			nom_log = request.user.first_name+' '+request.user.last_name
+			Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó el proyecto",descripcion=proyecto.nombre)
+		return HttpResponseRedirect('/home/')
 	else:
 		return render_to_response('403.html')
 
@@ -363,14 +392,14 @@ def variableclonar(request,id_variable):
 			variable.save()
 			proyecto.max_variables += 1; proyecto.save()
 			respuestas_nuevas = []
-			for j in variable.preguntas_set.all():
-				j.id = None
-				j.variable = variable
-				j.save()
-				for k in j.respuestas_set.all():
-					k.id = None
-					k.pregunta = j
-					respuestas_nuevas.append(k)
+			for variable in variable.preguntas_set.all():
+				variable.id = None
+				variable.variable = variable
+				variable.save()
+				for respuesta in variable.respuestas_set.all():
+					respuesta.id = None
+					respuesta.pregunta = variable
+					respuestas_nuevas.append(respuesta)
 			Respuestas.objects.bulk_create(respuestas_nuevas)
 			nom_log = request.user.first_name+' '+request.user.last_name
 			Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la variable",descripcion=variable.nombre)
@@ -399,10 +428,10 @@ def preguntaclonar(request,id_pregunta):
 				pregunta.save()
 				variable.max_preguntas += 1; variable.save()
 				respuestas_nuevas = []
-				for k in pregunta.respuestas_set.all():
-					k.id = None
-					k.pregunta = pregunta
-					respuestas_nuevas.append(k)
+				for respuesta in pregunta.respuestas_set.all():
+					respuesta.id = None
+					respuesta.pregunta = pregunta
+					respuestas_nuevas.append(respuesta)
 				Respuestas.objects.bulk_create(respuestas_nuevas)
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la pregunta",descripcion=pregunta.texto)
