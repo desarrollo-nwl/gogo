@@ -190,7 +190,7 @@ def recuperar(request):
 				msg=MIMEMultipart()
 				msg["subject"]=  'Cambio de clave.'
 				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
-				url = 'http://127.0.0.1:8000/recuperar/'+key
+				url = 'http://www.lavozdemisclientes.com/recuperar/'+key
 				html = recuperar_cuenta(url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
@@ -721,7 +721,7 @@ def usuarioreenviar(request,id_usuario):
 					msg=MIMEMultipart()
 					msg["subject"]=  'Registro de cuenta.'
 					msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
-					url = 'http://127.0.0.1:8000/activar/'+key
+					url = 'http://www.lavozdemisclientes.com/activar/'+key
 					html = crear_cuenta(url)
 					mensaje = MIMEText(html,"html")
 					msg.attach(mensaje)
@@ -880,7 +880,7 @@ def usuarionuevo(request):
 				msg=MIMEMultipart()
 				msg["subject"]=  'Registro de cuenta.'
 				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
-				url = 'http://127.0.0.1:8000/activar/'+key
+				url = 'http://www.lavozdemisclientes.com/activar/'+key
 				html = crear_cuenta(url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)

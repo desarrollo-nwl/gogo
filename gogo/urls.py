@@ -69,10 +69,13 @@ urlpatterns += patterns('cuestionarios.views',
 #===============================================================================
 
 urlpatterns += patterns('colaboradores.views',
-    url(r'^participantes/individual/$', 'colaboradores'),
+    url(r'^participantes/individual/$', 'colaboradores_ind'),
+    url(r'^participantes/archivo/$', 'colaboradores_xls'),
     url(r'^participante/nuevo/$', 'colaboradornuevo'),
     url(r'^participante/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreditar'),
     url(r'^participante/activar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivar'),
+    url(r'^archivo/$', 'archivo'),
+
 )
 
 #===============================================================================

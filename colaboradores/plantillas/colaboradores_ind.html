@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div class="ibox-content">
-			<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+			{%if Permisos.col_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
 				<thead>
 					<tr>
 						<th >Apellido</th>
@@ -45,7 +45,7 @@
 						<td>{%if Permisos.col_edit%}<a href="/participante/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="editar"></i></a><a href="/participante/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.col_del%}<a href="/participante/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="editar"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>
-			</table>
+			</table>{%endif%}
 
 			{%if Permisos.col_add%}<div class="container-fluid"><a href="/participante/nuevo/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar Participante</a></div>{%endif%}
 		</div>

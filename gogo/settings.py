@@ -42,7 +42,7 @@ INSTALLED_APPS = (
 	'mensajeria',
 	'usuarios',
 	'mptt',
-	'debug_toolbar',
+	# 'debug_toolbar',
 
 )
 
@@ -91,7 +91,7 @@ DATABASES = {
 			'ENGINE':'django.db.backends.sqlite3',
 			'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 			# 'ENGINE': 'django.db.backends.mysql',
-			# 'NAME': 'nwl',
+			# 'NAME': 'gogo',
 			# 'USER': 'suidi',
 			# 'PASSWORD':'Su1357*-',
 			# 'HOST':'nwl.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
@@ -126,6 +126,7 @@ MEDIA_URL  = '/media/'
 MEDIAFILES_DIRS = (
 	os.path.join(BASE_DIR, "media"),
 )
+MEDIA_ROOT = BASE_DIR + '/media/'
 # secure proxy SSL header and secure cookies
 #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #SESSION_COOKIE_SECURE = True
@@ -140,15 +141,16 @@ CACHES = {
 		 'LOCATION': BASE_DIR,
 	 }
 }
+
 # CACHES = {
 # 	'default':{
 # 		'BACKEND':'redis_cache.RedisCache',
 # 		'LOCATION':'127.0.0.1:6379',
 # 		'OPTIONS':{
-# 			'DB':0,
-# 			'PASSWORD':'Z8pHafuZuZe7teSwaC8phupAC7AvAHuN'
+# 			'DB':2,
+# 			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
 # 		},
 # 	},
 # }
 
-# SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"

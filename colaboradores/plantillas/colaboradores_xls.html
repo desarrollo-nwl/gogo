@@ -1,0 +1,58 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Participantes{% endblock %}
+{% block contenido2 %}
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+	<div class="col-lg-12">
+		<h2>Proyecto {{Proyecto.nombre |capfirst | escape}}</h2>
+		<ol class="breadcrumb">
+			<li class="active">
+				<a href="/home/"><i class="fa fa-cubes"></i> Mis proyectos</a>
+			</li>
+			<li>Participantes</li>
+		</ol>
+	</div>
+</div>
+<div class="m-t col-lg-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5 class="m-r-xs">Agregar participantes por medio de archivo plano:</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+			</div>
+		</div>
+		<div class="ibox-content">
+			{%if Error%}<p id="esconder" class="center"><strong class="btn btn-info">{{Error}}</strong></p><br><br>{%endif%}
+			{%if Permisos.col_add%}
+			<p> El sistema posee un archivo excel (.xls) el cual usted podrá descargar y completar para grabar a sus participantes. Para obtener el archivo presione el botón descargar</p><br>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/archivo/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
+			<p><strong>Recomendaciones: </strong><p><br>
+				<ol><li> Preferiblemente use el formato texto en todas las celdas </li><br>
+					<li> Para cambos que involucren fechas use el formato dd/mm/yyyy.</li><br>
+					<li> La fecha de nacimiento es muy importante, pero si por motivos ajenos a usted no la conoce, no la coloque.</li><br>
+					<li> Tenga en cuenta la distinción entre mayúsculas y minúsculas, en donde "Ejecutivo" y "ejecutivo", son palabras distintas para el sistema.</li><br>
+					<li> Para el género se debe determinar entre Masculino y Femenino. La primera letra debe ser en mayúscula.
+					<li> El esquema de niveles académicos es:<br><br>
+						<ul>
+							<li>Primaria</li>
+							<li>Bachillerato</li>
+							<li>Tecnología/Tecnólogo</li>
+							<li>Profesional</li>
+							<li>Maestría</li>
+							<li>Doctorado</li>
+						</ul>
+					</li>
+				</ol><br>
+			<p>Ahora suba su archivo (.xls) editado:</p><br>
+			<form  enctype="multipart/form-data" method='POST'>{% csrf_token %}
+	            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"></div>
+				<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><input id="id_docfile" type="file" name="docfile" required /></div><br><br>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-paper-plane-o"></i>Enviar</buton></div>{%endif%}
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock %}
+{%if Error%}{%block scripts%}<script>$(document).ready(function(){var $esconder=$('#esconder');$esconder.click(function(){$esconder.hide();});});</script>{%endblock%}{%endif%}

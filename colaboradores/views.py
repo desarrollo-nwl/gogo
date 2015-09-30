@@ -4,12 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import transaction
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
 from usuarios.models import Proyectos, Logs
 from datetime import datetime as DT
+import random
 #===============================================================================
 # indices
 #===============================================================================
@@ -17,7 +18,7 @@ from datetime import datetime as DT
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradores(request):
+def colaboradores_ind(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
@@ -26,7 +27,7 @@ def colaboradores(request):
 		participantes = Colaboradores.objects.filter(proyecto=proyecto
 						).only('nombre','apellido','email','colaboradoresdatos__cargo'
 						).select_related('colaboradoresdatos')
-		return render_to_response('colaboradores.html',{
+		return render_to_response('colaboradores_ind.html',{
 		'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
 		'Proyecto':proyecto,'Permisos':permisos,'Participantes':participantes
 		}, context_instance=RequestContext(request))
@@ -46,9 +47,12 @@ def colaboradornuevo(request):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		if request.method == 'POST':
+			chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+			key = ''.join(random.sample(chars, 64))
 			participante = Colaboradores(
 				nombre = request.POST['nombre'],
 				apellido = request.POST['apellido'],
+				key = key,
 				email = request.POST['email'],
 				proyecto = proyecto)
 			try:
@@ -96,6 +100,10 @@ def colaboradornuevo(request):
 	else:
 		return render_to_response('403.html')
 
+
+#===============================================================================
+# editar
+#===============================================================================
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
@@ -156,6 +164,9 @@ def colaboradoreditar(request,id_colaborador):
 	else:
 		return render_to_response('403.html')
 
+#===============================================================================
+# activar/desactivar
+#===============================================================================
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
@@ -173,5 +184,138 @@ def colaboradoractivar(request,id_colaborador):
 			participante.estado = True
 		participante.save()
 		return HttpResponseRedirect('/participantes/individual')
+	else:
+		return render_to_response('403.html')
+
+#===============================================================================
+# nuevo archivo
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def archivo(request):
+	import xlwt
+	date_format = xlwt.XFStyle()
+	date_format.num_format_str = 'dd/mm/yyyy'
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.col_add:
+		response = HttpResponse(content_type='application/ms-excel')
+		import string
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet("GoChangeAnalytics")
+		datos = proyecto.proyectosdatos
+		ws.write(0,0,u"Nombre")
+		ws.write(0,1,u"Apellido")
+		ws.write(0,2,u"Email")
+		ws.write(0,3,u"Género")
+		ws.write(0,4,u"Área")
+		ws.write(0,5,u"Cargo")
+		ws.write(0,6,u"Regional")
+		ws.write(0,7,u"Ciudad")
+		ws.write(0,8,u"Nivel académico")
+		ws.write(0,9,u"Profesión")
+		ws.write(0,10,u"Fecha de nacimiento dd/mm/yyyy",date_format)
+		ws.write(0,11,u"Fecha de ingreso dd/mm/yyyy",date_format)
+		for i in xrange(1,10000):
+			ws.write(i,10,"",date_format)
+			ws.write(i,11,"",date_format)
+		if(datos.opcional1):
+			ws.write(0,12,datos.opcional1)
+		if(datos.opcional2):
+			ws.write(0,13,datos.opcional2)
+		if(datos.opcional3):
+			ws.write(0,14,datos.opcional3)
+		if(datos.opcional4):
+			ws.write(0,15,datos.opcional4)
+		if(datos.opcional5):
+			ws.write(0,16,datos.opcional5)
+		wb.save(response)
+		return response
+
+#===============================================================================
+# subir participantes archivo
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def colaboradores_xls(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.col_add:
+		error = None
+		if request.method == 'POST':
+			import xlrd,xlwt
+			date_format = xlwt.XFStyle()
+			date_format.num_format_str = 'dd/mm/yyyy'
+			input_excel = request.FILES['docfile']
+			doc = xlrd.open_workbook(file_contents=input_excel.read())
+			sheet = doc.sheet_by_index(0)
+			filas = sheet.nrows
+			var_error = None
+			try:
+				proyecto_datos = proyecto.proyectosdatos
+				vector_personas = []
+				nacimientos_arreglados =[]
+				for i in xrange(1,filas):
+					var_error = sheet.cell_value(i,0)+' '+sheet.cell_value(i,1)
+					chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+					key = ''.join(random.sample(chars, 64))
+					persona = Colaboradores(
+						nombre=sheet.cell_value(i,0),
+						apellido = sheet.cell_value(i,1),
+						key = key,
+						email=sheet.cell_value(i,2),
+						estado=True,proyecto=proyecto)
+					vector_personas.append(persona)
+					try:
+						nacimientos_arreglados.append(DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,10), 0)))
+					except:
+						nacimientos_arreglados.append(0)
+				vector_datos = []
+				with transaction.atomic():
+					for i in xrange(1,filas):
+						vector_personas[i-1].save()
+						datos = ColaboradoresDatos(id = vector_personas[i-1],
+							genero=sheet.cell_value(i,3),
+							area=sheet.cell_value(i,4),
+							cargo=sheet.cell_value(i,5),
+							regional=sheet.cell_value(i,6),
+							ciudad=sheet.cell_value(i,7),
+							niv_academico=sheet.cell_value(i,8),
+							profesion=sheet.cell_value(i,9),
+							fec_ingreso=DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,11), 0))
+							)
+						if(nacimientos_arreglados[i-1]):
+							datos.fec_nacimiento=nacimientos_arreglados[i-1]
+						if proyecto_datos.opcional1:
+							datos.opcional1 = sheet.cell_value(i,12)
+						if proyecto_datos.opcional2:
+							datos.opcional2 = sheet.cell_value(i,13)
+						if proyecto_datos.opcional3:
+							datos.opcional3 = sheet.cell_value(i,14)
+						if proyecto_datos.opcional4:
+							datos.opcional4 = sheet.cell_value(i,15)
+						if proyecto_datos.opcional5:
+							datos.opcional5 = sheet.cell_value(i,16)
+						vector_datos.append(datos)
+					ColaboradoresDatos.objects.bulk_create(vector_datos)
+				if(permisos.col_see):
+					return HttpResponseRedirect('/participantes/individual/')
+				else:
+					error = "Todos los colaboradores se han subido con éxito"
+			except:
+				error= "Ocurrio un error cuando se procesaba al participante "+var_error
+
+		return render_to_response('colaboradores_xls.html',{
+		'Activar':'Configuracion','activar':'Participantes','activarp':'AcrhivoPlano',
+		'Proyecto':proyecto,'Permisos':permisos,'Error':error
+		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
