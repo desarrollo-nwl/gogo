@@ -392,11 +392,11 @@ def variableclonar(request,id_variable):
 			variable.save()
 			proyecto.max_variables += 1; proyecto.save()
 			respuestas_nuevas = []
-			for variable in variable.preguntas_set.all():
-				variable.id = None
-				variable.variable = variable
-				variable.save()
-				for respuesta in variable.respuestas_set.all():
+			for pregunta in variable.preguntas_set.all():
+				pregunta.id = None
+				pregunta.variable = variable
+				pregunta.save()
+				for respuesta in pregunta.respuestas_set.all():
 					respuesta.id = None
 					respuesta.pregunta = variable
 					respuestas_nuevas.append(respuesta)
@@ -458,8 +458,9 @@ def variableliminar(request,id_variable):
 		except:
 			return render_to_response('403')
 		if request.method == 'POST':
+			maestro = Proyectos.objects.get(id=3)
 			with transaction.atomic():
-				Variables.objects.filter(id=int(id_variable)).update(proyecto_id=1)
+				Variables.objects.filter(id=int(id_variable)).update(proyecto=maestro)
 				proyecto.max_variables -= 1
 				proyecto.save()
 				cache.set(request.user.username,proyecto,86400)
