@@ -17,7 +17,7 @@ class Streaming( models.Model ):
 	respuesta = models.TextField( blank = True, null = True )
 
 	def __unicode__(self):
-		return '%s || Q: %s A: %s' %( self.colaborador, self.pregunta, self.respuesta )
+		return '%s || Q: %s A: %s' %( self.colaborador_id, self.pregunta_id, self.respuesta )
 
 	class Meta:
 		managed = True

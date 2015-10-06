@@ -27,7 +27,6 @@ def crear_cuenta( url ):
                                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="366" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-
                                                             <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-left: 18px;padding-bottom: 9px;padding-right: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%%  ;text-align: left;"> </td>
                                                         </tr>
                                                     </tbody>
@@ -121,7 +120,6 @@ def crear_cuenta( url ):
                                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-
                                                             <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%%  ;text-align: left;"><em>Copyright  NetWorks Lab, All rights reserved.</em>
                                                             <br>
                                                             <br>
@@ -180,7 +178,6 @@ def recuperar_cuenta( url ):
                                                 <table align="right" border="0" cellpadding="0" cellspacing="0" width="197" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-
                                                             <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%%  ;text-align: left;"></td>
                                                         </tr>
                                                     </tbody>
@@ -265,7 +262,6 @@ def recuperar_cuenta( url ):
                                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-
                                                             <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 11px;line-height: 125%%  ;text-align: left;"><em>Copyright  NetWorks Lab, All rights reserved.</em>
                                                             <br>
                                                             <br>

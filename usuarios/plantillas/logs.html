@@ -37,7 +37,7 @@
                 <tbody>
                     {% for i in Logs %}
                     <tr>
-						<td>{{i.fregistro | date:'d/m/Y H:i'}}</td>
+						<td>{{i.fregistro | date:'Y-m-d D H:i'}}</td>
                         <td>{{i.usuario | capfirst | escape}}</td>
 						<td>{{i.accion | escape}}</td>
 						<td>{{i.descripcion | escape}}</td>

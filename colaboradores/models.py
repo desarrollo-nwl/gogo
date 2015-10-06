@@ -43,6 +43,7 @@ class ColaboradoresDatos( models.Model ):
 	ciudad = models.CharField( max_length = 100, blank = True, null = True)
 	profesion = models.CharField( max_length = 200, blank = True, null = True  )
 	regional = models.CharField( max_length = 200, blank = True, null = True )
+	movil = models.IntegerField(default = 0, blank = True, null = True)
 
 	def __unicode__(self):
 		return '%s' % (self.id)
@@ -54,10 +55,8 @@ class ColaboradoresDatos( models.Model ):
 
 
 class ColaboradoresMetricas( models.Model ):
-	id = models.AutoField( primary_key = True )
-	colaborador = models.ForeignKey( Colaboradores )
-	fec_envio = models.DateTimeField( auto_now_add = True )
-	fec_respuesta = models.DateTimeField( blank = True, null = True )
+	id = models.OneToOneField( Colaboradores, primary_key=True )
+	propension = models.TextField( blank = True, null = True )
 
 	def __unicode__(self):
 		return '%s' % (self.colaborador)

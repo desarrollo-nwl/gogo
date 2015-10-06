@@ -35,8 +35,8 @@ class Proyectos( models.Model ):
 	interna = models.BooleanField( default = False )
 	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
-	prudenciamax = models.IntegerField( default = 2 )
-	prudenciamin = models.IntegerField( default = 1 )
+	prudenciamax = models.FloatField( default = 2 )
+	prudenciamin = models.FloatField( default = 1 )
 	tipo = models.CharField( max_length = 15, default = "Completa" )
 	tot_preguntas = models.PositiveSmallIntegerField( default = 0)
 	tot_participantes = models.PositiveIntegerField(default = 0)
@@ -76,7 +76,7 @@ class ProyectosDatos( models.Model ):
 
 	class Meta:
 		managed = True
-		db_table = 'cuestionarios_proyectosdatos'
+		db_table = 'usuarios_proyectosdatos'
 		verbose_name_plural = "Proyectos datos"
 
 

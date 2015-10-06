@@ -155,9 +155,10 @@ def preguntanueva(request,id_variable):
 			else:
 				return render_to_response('500.html')
 			try:
-				if(request.POST['estado'] and Variable.estado):
+				if(bool(request.POST['estado']) and variable.estado):
 					pregunta.estado = True
-				else:pregunta.estado = False
+				else:
+					pregunta.estado = False
 			except:
 				pregunta.estado = False
 			with transaction.atomic():
@@ -458,7 +459,7 @@ def variableliminar(request,id_variable):
 		except:
 			return render_to_response('403')
 		if request.method == 'POST':
-			maestro = Proyectos.objects.get(id=3)
+			maestro = Proyectos.objects.get(id=1)
 			with transaction.atomic():
 				Variables.objects.filter(id=int(id_variable)).update(proyecto=maestro)
 				proyecto.max_variables -= 1

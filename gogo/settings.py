@@ -42,7 +42,7 @@ INSTALLED_APPS = (
 	'mensajeria',
 	'usuarios',
 	'mptt',
-	# 'debug_toolbar',
+	'debug_toolbar',
 
 )
 

@@ -69,6 +69,7 @@ urlpatterns += patterns('cuestionarios.views',
 #===============================================================================
 
 urlpatterns += patterns('colaboradores.views',
+    url(r'^participante/eliminar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreliminar'),
     url(r'^participantes/individual/$', 'colaboradores_ind'),
     url(r'^participantes/archivo/$', 'colaboradores_xls'),
     url(r'^participante/nuevo/$', 'colaboradornuevo'),
@@ -77,6 +78,15 @@ urlpatterns += patterns('colaboradores.views',
     url(r'^archivo/$', 'archivo'),
 
 )
+
+#===============================================================================
+# urls de mensajeria
+#===============================================================================
+
+urlpatterns += patterns('mensajeria.views',
+    url(r'^gosurvey/$', 'gosurvey'),
+)
+
 
 #===============================================================================
 # urls de errores

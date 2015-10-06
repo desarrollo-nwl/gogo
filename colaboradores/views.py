@@ -86,12 +86,15 @@ def colaboradornuevo(request):
 				datos.opcional4 = request.POST['opcional4']
 			if proyecto_datos.opcional5:
 				datos.opcional5 = request.POST['opcional5']
+			proyecto.tot_participantes += 1
 			with transaction.atomic():
+				proyecto.save()
 				participante.save()
 				datos.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Creó al participante",descripcion=participante.nombre+' '+participante.apellido)
+				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/participantes/individual')
 		return render_to_response('colaboradornuevo.html',{
 		'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
@@ -279,6 +282,7 @@ def colaboradores_xls(request):
 					except:
 						nacimientos_arreglados.append(0)
 				vector_datos = []
+				proyecto.tot_participantes += filas-1
 				with transaction.atomic():
 					for i in xrange(1,filas):
 						vector_personas[i-1].save()
@@ -306,6 +310,8 @@ def colaboradores_xls(request):
 							datos.opcional5 = sheet.cell_value(i,16)
 						vector_datos.append(datos)
 					ColaboradoresDatos.objects.bulk_create(vector_datos)
+					proyecto.save()
+					cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/participantes/individual/')
 				else:
@@ -319,3 +325,33 @@ def colaboradores_xls(request):
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
+
+#===============================================================================
+# eliminar
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def colaboradoreliminar(request,id_colaborador):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.col_see and permisos.col_del:
+		try:
+			participante = Colaboradores.objects.filter(proyecto_id=proyecto.id).get(id=int(id_colaborador))
+		except:
+			return render_to_response('403')
+		if request.method == 'POST':
+			maestro = Proyectos.objects.get(id=1)
+			with transaction.atomic():
+				Colaboradores.objects.filter(id=int(id_colaborador)).update(proyecto=maestro)
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
+				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)
+			return HttpResponseRedirect('/participantes/individual/')
+	return render_to_response('col_eliminar.html',{
+	'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
+	'objeto':'Participante','Participante':participante,
+	'Proyecto':proyecto,'Permisos':permisos,
+	}, context_instance=RequestContext(request))
