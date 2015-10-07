@@ -1,4 +1,7 @@
 # -*- encoding: utf-8 -*-
+from colaboradores.models import Colaboradores,ColaboradoresMetricas
+from cuestionarios.models import Variables,Preguntas
+from datetime import datetime as DT
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -7,11 +10,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
-from usuarios.models import *
 from mensajeria.models import Streaming,SRS
-from cuestionarios.models import Variables,Preguntas
-from colaboradores.models import Colaboradores,ColaboradoresMetricas
-from datetime import datetime as DT
+from usuarios.models import *
+
+from datetime import timedelta
+from django.utils import timezone
+import json
+
 
 #===============================================================================
 # Administrar el envio
@@ -37,7 +42,7 @@ def gosurvey(request):
 							permisos.save()
 							proyecto.save()
 							nom_log = request.user.first_name+' '+request.user.last_name
-							Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Activó el proyecto",descripcion=proyecto.nombre)
+							Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Activó el proyecto',descripcion=proyecto.nombre)
 							cache.set(request.user.username,proyecto,86400)
 
 					else:
@@ -73,6 +78,7 @@ def gosurvey(request):
 
 				proyecto.prudenciamin = dMin
 				proyecto.prudenciamax = dMax
+				proyecto.can_envio = request.POST['can_envio']
 				streaming_crear =[]
 				metricas = []
 				if(proyecto.activo):
@@ -80,15 +86,13 @@ def gosurvey(request):
 					variables = proyecto.variables_set.all()
 					preguntas = Preguntas.objects.filter(variable__in=variables)
 					for i in colaboradores:
-						metricas.append(ColaboradoresMetricas(id=i))
 						for j in preguntas:
 							if not Streaming.objects.filter(proyecto=proyecto,colaborador=i,pregunta=j).exists():
 								streaming_crear.append(Streaming(proyecto=proyecto,colaborador=i,pregunta=j))
-
+								proyecto.tot_aresponder += 1
 				with transaction.atomic():
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
-						ColaboradoresMetricas.objects.bulk_create(metricas)
 					proyecto.save()
 					datos.save()
 					cache.set(request.user.username,proyecto,86400)
@@ -103,66 +107,141 @@ def gosurvey(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def Respuestas(request):
+def detalladas(request):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.det_see:
-		respuestas = Streaming.objects.filter(
-				proyecto = proyecto).defear(
-				'fec_controlenvio','fecharespuesta').select_related(
-				'colaborador','pregunta')
+		respuestas = Streaming.objects.filter(proyecto = proyecto,
+						respuesta__isnull=False).select_related('pregunta',
+						'colaborador__colaboradoresdatos__cargo')
 	else:
 		return render_to_response('403.html')
 
-	return render_to_response('stream.html',{
-	'activar':'survey','Proyecto':proyecto,'Permisos':permisos,
-	'Respuestas':respuestas
+	return render_to_response('detalladas.html',{
+	'Activar':'EstadoAvance','activar':'RepuestasDetalladas','Proyecto':proyecto,'Permisos':permisos,
+	'Participantes':respuestas
 	},	context_instance=RequestContext(request))
 
 
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def metricas(request):
+	proyecto = cache.get(request.user.username)
+	permisos = request.user.permisos
+
+	participantes = Colaboradores.objects.filter(proyecto = proyecto
+					).select_related('colaboradoresdatos',
+					'colaboradoresmetricas')
+
+	return render_to_response('metricas.html',{
+	'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
+	'Participantes':participantes
+	},	context_instance=RequestContext(request))
+
+
+#aqui falta el reenvío manual
+
 
 @cache_control(no_store=True)
-def encuesta(request,key):
-	encuactivo = Colaboradores.objects.get(key=key).select_related("proyecto__empresa")
-	Preguntas = Streaming.objects.filter(
-			colaborador = encuactivo,
-			respuesta__isnull = True).select_related(
-			'pregunta__variable').prefetch_related(
-			'pregunta_set')
-	total_cuestionario = len(Preguntas)
-	if(Preguntas and encuactivo.proyecto.activo):
-		i = 0
-		len_cuestionario = 0
-		cuestionario =[]
-		cuestionario_preguntas =[]
-		cuestionario_variables =[]
-		while( len_cuestionario < encuactivo.proyecto.can_envio and i < total_cuestionario):
-			if(Preguntas[i].pregunta.activa):
-				cuestionario.append(Preguntas[i])
-				cuestionario_preguntas.append(Preguntas[i].pregunta)### usaremos template regroup
-				cuestionario_variables.append(Preguntas[i].pregunta.variable)
-				len_cuestionario += 1
-			i += 1
+def encuesta(request,id_proyecto,key):
+	try:
+		encuestado = Colaboradores.objects.only('nombre','proyecto__proyectosdatos',
+					'proyecto__tot_respuestas','proyecto__can_envio','colaboradoresmetricas'
+					).filter(proyecto_id=int(id_proyecto)
+					).select_related('proyecto__proyectosdatos','colaboradoresmetricas',
+					'proyecto__tot_respuestas','proyecto__can_envio'
+					).get(key=key)
+		stream = Streaming.objects.filter(
+					colaborador = encuestado,
+					respuesta__isnull = True).prefetch_related(
+					'pregunta__respuestas_set').select_related('pregunta__variable'
+					).order_by('pregunta__variable__posicion')
+		proyecto = encuestado.proyecto
+		total_cuestionario = len(stream)
+	except:
+		return render_to_response('404.html')
+	try:
+		ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
+						proyecto_id=proyecto.id,
+						colaborador_id=encuestado.id,
+						respuesta__isnull=False
+						).latest('fecharespuesta')
+		pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
+		print pronto_acceso
+		if (pronto_acceso <= proyecto.prudenciamin):
+			acceso = False
+		else:
+			acceso = True
+	except:
+		acceso = True
+
+	if(stream and encuestado.proyecto.activo and acceso):
+		if (proyecto.tipo != 'Completa'):
+			i = 0
+			len_cuestionario = 0
+			cuestionario =[]
+			cuestionario_preguntas =[]
+			while( len_cuestionario < encuestado.proyecto.can_envio and i < total_cuestionario):
+				if(stream[i].pregunta.estado):
+					cuestionario.append(stream[i])
+					cuestionario_preguntas.append(stream[i].pregunta)
+					len_cuestionario += 1
+				i += 1
+
+			if not len_cuestionario:
+				try:
+					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
+				except:
+					return HttpResponseRedirect('http://networkslab.co')
+		else:
+			cuestionario = stream
+			cuestionario_preguntas =[]
+			for i in cuestionario:
+				cuestionario_preguntas.append(i.pregunta)
 	else:
 		try:
-			return HttpResponseRedirect('http://'+str(encuactivo.poyecto.empresa.pagina))
+			return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 		except:
 			return HttpResponseRedirect('http://networkslab.co')
 
 	if request.method == 'POST':
-		for i in cuestionario:
-			streaming = Streaming.objects.get(id =i.id)
-			streaming.fecharespuesta = timezone.now()
-			streaming.save()
-			for i in xrange(request.POST['repuestas de esta pregunta']):### falta acoplarlo para las vistas
-				respuesta = StreamingRespuestas(request.POST[str(i)], streaming = R )
-			Streaming.objects.filter(colaborador = encuactivo).update(fec_controlenvio=timezone.now())
+		proyecto.tot_respuestas += len_cuestionario
+		chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+		key = ''.join(random.sample(chars, 64))
+		encuestado.key = key
+		encuestado.repuestas += 1
+		proyecto.total = 100*(proyecto.tot_respuestas/proyecto.tot_aresponder)
+		metricas = encuestado.colaboradoresmetricas
+		vec_metricas = json.loads(metricas.propension)
 		try:
-			return HttpResponseRedirect('http://'+str(encuactivo.poyecto.empresa.pagina))
+			vec_metricas.append((timezone.now()-stream[0].fec_controlenvio).days)
+			metricas.propension = json.dumps(vec_metricas)
+		except:
+			vec_metricas.append(proyecto.prudenciamin)
+		encuestado.propension = sum(vec_metricas)/len(vec_metricas)
+		metricas.propension = json.dumps(vec_metricas)
+		print metricas.propension
+		with transaction.atomic():
+			metricas.save()
+			proyecto.save()
+			encuestado.save()
+			for i in cuestionario:
+				i.fecharespuesta = timezone.now()
+				if i.pregunta.abierta:
+					print request.POST[str(i.pregunta.id)]
+					i.respuesta = request.POST[str(i.pregunta.id)]
+				elif i.pregunta.multiple:
+					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
+					i.respuesta = r
+				else:
+					i.respuesta = request.POST[str(i.pregunta.id)]
+				i.save()
+			Streaming.objects.filter(colaborador = encuestado).update(fec_controlenvio=timezone.now())
+		try:
+			return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
 		except:
 			return HttpResponseRedirect('http://networkslab.co')
 
-
-	return render_to_response('encuesta2.html',{
-	###aqui van las variables
+	return render_to_response('encuesta.html',{
+	'Encuestado':encuestado,'Preguntas':cuestionario_preguntas,
 	},	context_instance=RequestContext(request))

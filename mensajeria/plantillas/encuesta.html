@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %} Encuesta {% endblock %}
+{% block head %}
+{% load staticfiles%}
+<link rel="stylesheet" href="{% static 'css/encuesta.css' %}">
+<link href="{% static 'css/plugins/chosen/chosen.min.css' %}" rel="stylesheet"><style>.chosen-container-single .chosen-single {border-radius:0%;}</style>
+<link href="http://fonts.googleapis.com/css?family=Nunito:400,300" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block contenido %}
+<div class="container">
+	<div class="col-lg-12">
+		{%if Encuestado.proyecto.proyectosdatos.logoenc%}<img src="{{Encuestado.proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
+		{%else%}<img src="{{Encuestado.proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
+		<h1 class="page-header"> Hola {{Encuestado.nombre | escape |capfirst}}:</h1>
+	</div>
+</div>
+
+{% regroup Preguntas by variable as preguntas_list %}
+<form  class="form-horizontal"method="POST">{% csrf_token %}
+	{% for variable in preguntas_list %}
+    <div class="container">
+		<legend class="m-t m-b">{{ variable.grouper }}</legend>
+		<fieldset>
+			{% for pregunta in variable.list|dictsort:"posicion" %}
+			<div class="form-group">
+				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
+				{%if pregunta.abierta%}<textarea type="text" max_length="255" name="{{pregunta.id | escape}}" required></textarea>{%endif%}
+				{%if pregunta.multiple%}<select multiple class="chosen-select form-control" name="{{pregunta.id}}" >
+					{%for i in pregunta.respuestas_set.all%}
+						<option value="{{i.texto|escape}}">{{i.texto|escape}}</option>
+					{% endfor %}
+				</select>{%endif%}
+				{%if pregunta.abierta or pregunta.multiple%}{%else%}
+				{%for i in pregunta.respuestas_set.all%}
+					<input {%ifequal forloop.counter 1%}checked{%endifequal%} type="radio" class="radio_buttom" name="{{pregunta.id}}" value="{{i.texto| escape}}" ><label class="light">{{i.texto | escape}}</label><br>
+				{% endfor %}
+				{%endif%}
+			</div>
+			{% endfor %}
+		</fieldset>
+	</div>
+	{% endfor %}
+
+<button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
+</form>
+<script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
+<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
+{% endblock %}

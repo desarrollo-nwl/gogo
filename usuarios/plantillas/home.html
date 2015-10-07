@@ -39,7 +39,7 @@
 						<td>{{i.empresa.nombre | capfirst | escape}}</td>
 						<td>
 							<span class="pull-center text-muted " >{{i.tot_respuestas}} de {{i.tot_aresponder}} | {{ i.total |floatformat:"-2" }}% Completo</span>
-							<a href="/respuestas/detalladas/{{i.0.id_proyecto}}">
+							<a href="/menu/{{i.id | escape}}/">
 							<div class="pull-middle progress {% if  i.activo %}{% ifnotequal 100 i.1 %} progress-striped{% endifnotequal %}{% endif %} active" style="width: 250px;margin: 0 auto;">
 									<div class="progress-bar {% if i.activo %}  progress-bar-primary {%else%} progress-bar-success {% endif %}" role="progressbar" aria-valuenow="{{i.total |floatformat:"0"}}" aria-valuemin="0" aria-valuemax="100" style="width: {{i.total |floatformat:"0"}}%">
 									<span class="sr-only">{{ i.total |floatformat:"-2" }}% Completado. {% ifequal i.total 100 %}(success){% endifequal %}</span>

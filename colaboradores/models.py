@@ -14,7 +14,8 @@ class Colaboradores( models.Model ):
 	propension = models.FloatField( default = 0 )
 	proyecto = models.ForeignKey( Proyectos )
 	enviados = models.PositiveSmallIntegerField( default = 0 )
-	repuestas = models.PositiveSmallIntegerField( default = 0 )
+	reenviados = models.PositiveSmallIntegerField( default = 0)
+	respuestas = models.PositiveSmallIntegerField( default = 0 )
 	res_salud = models.PositiveSmallIntegerField( default = 0 )
 
 	def __unicode__(self):
@@ -56,12 +57,12 @@ class ColaboradoresDatos( models.Model ):
 
 class ColaboradoresMetricas( models.Model ):
 	id = models.OneToOneField( Colaboradores, primary_key=True )
-	propension = models.TextField( blank = True, null = True )
+	propension = models.TextField( default=u'[]' )
 
 	def __unicode__(self):
-		return '%s' % (self.colaborador)
+		return '%s' % (self.id)
 
 	class Meta:
 		managed = True
 		db_table = 'colaboradores_metricas'
-		verbose_name_plural = 'Metricas envio-repuesta'
+		verbose_name_plural = 'Metricas propension'

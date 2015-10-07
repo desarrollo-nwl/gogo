@@ -91,6 +91,7 @@ def colaboradornuevo(request):
 				proyecto.save()
 				participante.save()
 				datos.save()
+				ColaboradoresMetricas.objects.create(id=participante)
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Creó al participante",descripcion=participante.nombre+' '+participante.apellido)
@@ -344,11 +345,15 @@ def colaboradoreliminar(request,id_colaborador):
 			return render_to_response('403')
 		if request.method == 'POST':
 			maestro = Proyectos.objects.get(id=1)
+			proyecto.tot_participantes -= 1
+			proyecto.tot_aresponder -= Streaming.objects.filter(proyecto=proyecto,colaborador_id=int(id_colaborador)).count()
 			with transaction.atomic():
 				Colaboradores.objects.filter(id=int(id_colaborador)).update(proyecto=maestro)
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)
+				proyecto.save()
+				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/participantes/individual/')
 	return render_to_response('col_eliminar.html',{
 	'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
