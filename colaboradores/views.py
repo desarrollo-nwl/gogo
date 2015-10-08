@@ -283,10 +283,12 @@ def colaboradores_xls(request):
 					except:
 						nacimientos_arreglados.append(0)
 				vector_datos = []
+				vector_metricas = []
 				proyecto.tot_participantes += filas-1
 				with transaction.atomic():
 					for i in xrange(1,filas):
 						vector_personas[i-1].save()
+						vector_metricas.append(ColaboradoresMetricas(id=vector_personas[i-1]))
 						datos = ColaboradoresDatos(id = vector_personas[i-1],
 							genero=sheet.cell_value(i,3),
 							area=sheet.cell_value(i,4),
@@ -311,6 +313,7 @@ def colaboradores_xls(request):
 							datos.opcional5 = sheet.cell_value(i,16)
 						vector_datos.append(datos)
 					ColaboradoresDatos.objects.bulk_create(vector_datos)
+					ColaboradoresMetricas.objects.bulk_create(vector_metricas)
 					proyecto.save()
 					cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):

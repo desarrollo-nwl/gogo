@@ -1,13 +1,13 @@
-{% extends "dash.html" %}{% load staticfiles%}
-{% block title %} Home | Usuarios {% endblock %}
+{% extends "dash2.html" %}{% load staticfiles%}
+{% block title %} Proyecto | Forzar envío {% endblock %}
 {% block contenido2 %}
 <div class="row">
 <div class="m-l m-r row wrapper border-bottom white-bg page-heading">
 	<div class="col-lg-12">
-		<h2>Reenviar correo de activación</h2>
+		<h2>Proyecto {{Proyecto.nombre |capfirst | escape}}</h2>
 		<ol class="breadcrumb">
-			<li >
-				<a href="/home/"><i class="fa fa-home"></i> Home</a>
+			<li class="active">
+				<a href="/home/"><i class="fa fa-cubes"></i> Mis proyectos</a>
 			</li>
 			<li>Reenvío</li>
 		</ol>
@@ -24,10 +24,10 @@
 			</div>
 		</div>
 		<div class="ibox-content">
-			<div class="m" style="text-rendering: optimizeLegibility;">El correo de confirmación puede tardar un máximo de 10 minutos en llegar.<br><br><br> ¿Está seguro de querer reenviar el link de activación a <strong>{{Usuario.email |escape}}</strong>?</div>
+			<div class="m" style="text-rendering: optimizeLegibility;">El correo puede tardar un máximo de 10 minutos en llegar. Adicionalmente si el usuario ha contestado recientemente la plataforma no le permitirá el acceso.<br><br><br> ¿Está seguro de querer reenviar el correo de encuesta a <strong>{{Colaborador.nombre |escape}} {{Colaborador.apellido |escape}} < {{Colaborador.email |escape}} > </strong>?</div>
             <form  method="POST">{%csrf_token%}
             	<div class="container-fluid">
-					<a href="/usuarios/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Regresar</a>
+					<a href="/respuestas/metricas/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Regresar</a>
 					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-envelope-o"></i> Enviar</button>
 				</div>
             </form>
@@ -36,6 +36,4 @@
 	</div>
 </div>
 </div>
-
-
 {%endblock%}

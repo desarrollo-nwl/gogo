@@ -15,8 +15,13 @@ from usuarios.models import *
 
 from datetime import timedelta
 from django.utils import timezone
+import random
 import json
 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import email.utils
+import smtplib
 
 #===============================================================================
 # Administrar el envio
@@ -109,16 +114,17 @@ def gosurvey(request):
 @login_required(login_url='/acceder/')
 def detalladas(request):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.det_see:
-		respuestas = Streaming.objects.filter(proyecto = proyecto,
-						respuesta__isnull=False).select_related('pregunta',
-						'colaborador__colaboradoresdatos__cargo')
+		respuestas = Streaming.objects.filter(proyecto = proyecto
+						).select_related('colaborador','pregunta__variable')
 	else:
 		return render_to_response('403.html')
 
 	return render_to_response('detalladas.html',{
-	'Activar':'EstadoAvance','activar':'RepuestasDetalladas','Proyecto':proyecto,'Permisos':permisos,
+	'Activar':'EstadoAvance','activar':'RespuestasDetalladas','Proyecto':proyecto,'Permisos':permisos,
 	'Participantes':respuestas
 	},	context_instance=RequestContext(request))
 
@@ -127,19 +133,70 @@ def detalladas(request):
 @login_required(login_url='/acceder/')
 def metricas(request):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
 	permisos = request.user.permisos
 
 	participantes = Colaboradores.objects.filter(proyecto = proyecto
 					).select_related('colaboradoresdatos',
 					'colaboradoresmetricas')
-
+	from django.db.models import Avg
+	average = Colaboradores.objects.filter(proyecto=proyecto).aggregate(Avg('propension'))
 	return render_to_response('metricas.html',{
 	'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
-	'Participantes':participantes
+	'Participantes':participantes,'Average':average
 	},	context_instance=RequestContext(request))
 
 
-#aqui falta el reenvío manual
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def colaboradoreenviar(request,id_colaborador):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor:
+		try:
+			colaborador = Colaboradores.objects.get(id=int(id_colaborador))
+			if Streaming.objects.filter(colaborador=int(id_colaborador),respuesta__isnull=True).exists():
+				alerta = None
+				if request.method == 'POST':
+					datos = proyecto.proyectosdatos
+					from usuarios.strings import correo_standar
+					from corrector import tildes,tildes2
+					server=smtplib.SMTP('smtp.mandrillapp.com',587)
+					server.ehlo()
+					server.starttls()
+					server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+					nom_log =request.user.first_name+' '+request.user.last_name
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
+					destinatario = [colaborador.email]
+					msg=MIMEMultipart()
+					msg["subject"]=  tildes2(datos.tit_encuesta)
+					msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+					urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
+					nombre = tildes(colaborador.nombre)
+					titulo = tildes(datos.tit_encuesta)
+					texto_correo = tildes(datos.cue_correo)
+					url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+					html = correo_standar(urlimg,nombre,titulo,texto_correo,url)
+					mensaje = MIMEText(html,"html")
+					msg.attach(mensaje)
+					with transition.atomic():
+						colaborador.reenviados =+1; colaborador.save()
+						server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+					server.quit()
+					alerta = 'Correo enviado exitosamente.'
+				return render_to_response('colaboradoreenviar.html',{
+				'Activar':'EstadoAvance','activar':'EnviosRespuestas','Colaborador':colaborador,
+				'Permisos':permisos,'Proyecto':proyecto,'Alerta':alerta
+				}, context_instance=RequestContext(request))
+			else:
+				return render_to_response('403.html')
+		except:
+			return render_to_response('404.html')
+	else:
+		return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
@@ -209,7 +266,7 @@ def encuesta(request,id_proyecto,key):
 		chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 		key = ''.join(random.sample(chars, 64))
 		encuestado.key = key
-		encuestado.repuestas += 1
+		encuestado.respuestas += 1
 		proyecto.total = 100*(proyecto.tot_respuestas/proyecto.tot_aresponder)
 		metricas = encuestado.colaboradoresmetricas
 		vec_metricas = json.loads(metricas.propension)

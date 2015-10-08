@@ -128,7 +128,10 @@ def menu(request,id_proyecto):
 		else:
 			return render_to_response('403.html')
 		cache.set(request.user.username,proyecto,86400)
-		return HttpResponseRedirect('/home2/')
+		if(permisos.consultor):
+			return HttpResponseRedirect('/respuestas/metricas')
+		else:
+			return HttpResponseRedirect('/resultados/')
 	except:
 		return render_to_response('403.html')
 
@@ -705,6 +708,7 @@ def usuarioreenviar(request,id_usuario):
 		try:
 			usuario = User.objects.get(id=int(id_usuario))
 			if usuario.indiceusuarios in usuarios and not usuario.is_active:
+				alerta = None
 				if request.method == 'POST':
 					from strings import crear_cuenta
 					chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -727,10 +731,10 @@ def usuarioreenviar(request,id_usuario):
 					msg.attach(mensaje)
 					server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
 					server.quit()
-					return HttpResponseRedirect('/usuarios/')
+					alerta = 'Correo enviado exitosamente.'
 				return render_to_response('usuarioreenviar.html',{
 				'Activar':'Configuracion','activar':'Usuarios','Usuario':usuario,
-				'Permisos':permisos,
+				'Permisos':permisos,'Alerta':alerta
 				}, context_instance=RequestContext(request))
 			else:
 				return render_to_response('403.html')
