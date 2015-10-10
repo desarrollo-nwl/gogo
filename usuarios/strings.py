@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-def crear_cuenta( url ):
+def crear_cuenta(nombre,url):
     cadena ="""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -79,9 +79,9 @@ def crear_cuenta( url ):
                                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-                                                            <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;text-align: left;"><h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 24px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -1px;text-align: left;color: #606060  ;">Bienvenido(a) a Go Salud:</h1><h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -.5px;text-align: left;color: #606060  ;">&nbsp;</h3>
+                                                            <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;text-align: left;"><h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 24px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -1px;text-align: left;color: #606060  ;">Apreciado(a) %s :</h1><h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -.5px;text-align: left;color: #606060  ;">&nbsp;</h3>
                                                             <p style="text-align: justify;margin: 1em 0;padding: 0;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;">
-                                                                Te damos la bienvenida a Go (nombre). Para culminar con la creaci&oacute;n de tu cuenta te invitamos a dar click en el bot&oacute;n activar cuenta y completar unos datos adicionales.
+                                                                El equipo de GoAnalyticsTe damos la bienvenida. Para culminar con la creaci&oacute;n de tu cuenta te invitamos a dar click en el bot&oacute;n activar cuenta y completar unos datos adicionales.
                                                                 <br>
                                                                 &nbsp;
                                                             </p></td>
@@ -139,11 +139,11 @@ def crear_cuenta( url ):
             </table>
         </center>
     </body>
-    </html>"""%(url)
+    </html>"""%(nombre,url)
     return str(cadena)
 
 
-def recuperar_cuenta( url ):
+def recuperar_cuenta(nombre,url):
     cadena ="""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -222,9 +222,9 @@ def recuperar_cuenta( url ):
                                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-                                                            <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;text-align: left;"><h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 24px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -1px;text-align: left;color: #606060  ;">Servicio de Go Salud:</h1><h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -.5px;text-align: left;color: #606060  ;">&nbsp;</h3>
+                                                            <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;text-align: left;"><h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 24px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -1px;text-align: left;color: #606060  ;">Apreciado(a) %s :</h1><h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -.5px;text-align: left;color: #606060  ;">&nbsp;</h3>
                                                             <p style="text-align: justify;margin: 1em 0;padding: 0;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;">
-                                                                Se ha solicitado un cambio de clave en Go salud. Si no ha solicitado este serivicio, comun&iacute;quese con su consultor de confianza para tomar las medidas pertinentes. Para continuar con el proceso le invitamos a dar click en el bot&oacute;n continuar.                                                                <br>
+                                                                Se ha solicitado un cambio de clave en te cuenta de GoAnalytics. Si no ha solicitado este servicio, comun&iacute;quese con su consultor de confianza para tomar las medidas pertinentes. Para continuar con el proceso le invitamos a dar click en el bot&oacute;n continuar.                                                                <br>
                                                                 &nbsp;
                                                             </p></td>
                                                         </tr>
@@ -281,11 +281,11 @@ def recuperar_cuenta( url ):
             </table>
         </center>
     </body>
-    </html>"""%(url)
+    </html>"""%(nombre,url)
     return str(cadena)
 
 
-def correo_standar(urlimg,nombre,titulo,texto_correo,url):
+def correo_standar(urlimg,genero,nombre,titulo,texto_correo,url):
     cadena ="""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -363,7 +363,7 @@ def correo_standar(urlimg,nombre,titulo,texto_correo,url):
                                                 <table align="left" border="0" cellpadding="0" cellspacing="0" width="600" class="mcnTextContentContainer" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;">
                                                     <tbody>
                                                         <tr>
-                                                            <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;text-align: left;"><h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 24px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -1px;text-align: left;color: #606060  ;">Apreciado(a) %s :</h1><h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -.5px;text-align: left;color: #606060  ;">&nbsp;</h3>
+                                                            <td valign="top" class="mcnTextContent" style="padding-top: 9px;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;text-align: left;"><h1 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 24px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -1px;text-align: left;color: #606060  ;">Apreciad%s %s :</h1><h3 style="margin: 0;padding: 0;display: block;font-family: Helvetica;font-size: 18px;font-style: normal;font-weight: bold;line-height: 125%%  ;letter-spacing: -.5px;text-align: left;color: #606060  ;">&nbsp;</h3>
                                                             <p style="text-align: justify;margin: 1em 0;padding: 0;-ms-text-size-adjust: 100%%  ;-webkit-text-size-adjust: 100%%  ;color: #606060;font-family: Helvetica;font-size: 15px;line-height: 150%%  ;">
                                                                 <br>%s<br><br>
                                                                 %s
@@ -424,5 +424,5 @@ def correo_standar(urlimg,nombre,titulo,texto_correo,url):
             </table>
         </center>
     </body>
-    </html>"""%(urlimg,nombre,titulo,texto_correo,url)
+    </html>"""%(urlimg,genero,nombre,titulo,texto_correo,url)
     return str(cadena)

@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class="ibox-content">
-			{%if Permisos.col_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+			{%if Permisos.det_see and Permisos.res_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
 				<thead>
 					<tr>
 						<th>Apellido</th>
@@ -47,8 +47,7 @@
 					</tr>{% endfor %}
 				</tbody>
 			</table>{%endif%}
-
-			{%if Permisos.exp_resp%}<div class="container-fluid"><a href="/participante/nuevo/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar Participante</a></div>{%endif%}
+			{%if Permisos.res_exp%}<div class="container-fluid"><a href="/respuestas/exportar/" class="btn btn-primary pull-right m-t"><i class="fa fa-file-xls"></i> Exportar respuestas</a></div>{%endif%}
 		</div>
 	</div>
 </div>

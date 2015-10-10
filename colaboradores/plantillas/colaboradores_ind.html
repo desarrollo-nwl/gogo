@@ -42,7 +42,7 @@
 						<td>{{i.colaboradoresdatos.cargo | capfirst | escape}}</td>
 						<td>{{i.email | capfirst | escape}}</td>
 						<td>{%if i.estado%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</td>
-						<td>{%if Permisos.col_edit%}<a href="/participante/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="editar"></i></a><a href="/participante/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.col_del%}<a href="/participante/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="editar"></i></a>{%endif%}</td>
+						<td>{%if Permisos.col_edit%}<a href="/participante/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="Activar/Desactivar" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a><a href="/participante/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.col_del%}<a href="/participante/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="editar"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>{%endif%}

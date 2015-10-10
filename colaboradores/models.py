@@ -8,15 +8,16 @@ class Colaboradores( models.Model ):
 	id = models.AutoField( primary_key = True )
 	apellido = models.CharField( max_length = 45 )
 	email = models.EmailField( )
+	enviados = models.PositiveSmallIntegerField( default = 0 )
 	estado = models.BooleanField( default = True)
 	key = models.CharField( max_length = 64 )
+	movil = models.CharField(max_length = 32, blank = True, null = True)
 	nombre = models.CharField( max_length = 45 )
 	propension = models.FloatField( default = 0 )
 	proyecto = models.ForeignKey( Proyectos )
-	enviados = models.PositiveSmallIntegerField( default = 0 )
 	reenviados = models.PositiveSmallIntegerField( default = 0)
-	respuestas = models.PositiveSmallIntegerField( default = 0 )
 	res_salud = models.PositiveSmallIntegerField( default = 0 )
+	respuestas = models.PositiveSmallIntegerField( default = 0 )
 
 	def __unicode__(self):
 		return '%s %s ' % (self.nombre,self.apellido)
@@ -44,7 +45,6 @@ class ColaboradoresDatos( models.Model ):
 	ciudad = models.CharField( max_length = 100, blank = True, null = True)
 	profesion = models.CharField( max_length = 200, blank = True, null = True  )
 	regional = models.CharField( max_length = 200, blank = True, null = True )
-	movil = models.IntegerField(default = 0, blank = True, null = True)
 
 	def __unicode__(self):
 		return '%s' % (self.id)

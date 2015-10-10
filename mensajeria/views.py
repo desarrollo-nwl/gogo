@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import transaction
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
@@ -95,6 +95,8 @@ def gosurvey(request):
 							if not Streaming.objects.filter(proyecto=proyecto,colaborador=i,pregunta=j).exists():
 								streaming_crear.append(Streaming(proyecto=proyecto,colaborador=i,pregunta=j))
 								proyecto.tot_aresponder += 1
+				if proyecto.tot_aresponder:
+					proyecto.total = 100*(proyecto.tot_respuestas)/proyecto.tot_aresponder
 				with transaction.atomic():
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
@@ -117,7 +119,7 @@ def detalladas(request):
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.det_see:
+	if permisos.consultor and permisos.det_see and permisos.res_see:
 		respuestas = Streaming.objects.filter(proyecto = proyecto
 						).select_related('colaborador','pregunta__variable')
 	else:
@@ -136,16 +138,37 @@ def metricas(request):
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
+	if permisos.consultor:
+		participantes = Colaboradores.objects.filter(proyecto = proyecto
+						).select_related('colaboradoresdatos',
+						'colaboradoresmetricas')
+		from django.db.models import Avg
+		average = Colaboradores.objects.filter(proyecto=proyecto).aggregate(Avg('propension'))
+		return render_to_response('metricas.html',{
+		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
+		'Participantes':participantes,'Average':average
+		},	context_instance=RequestContext(request))
+	else:
+		render_to_response('404.html')
 
-	participantes = Colaboradores.objects.filter(proyecto = proyecto
-					).select_related('colaboradoresdatos',
-					'colaboradoresmetricas')
-	from django.db.models import Avg
-	average = Colaboradores.objects.filter(proyecto=proyecto).aggregate(Avg('propension'))
-	return render_to_response('metricas.html',{
-	'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
-	'Participantes':participantes,'Average':average
-	},	context_instance=RequestContext(request))
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def colaboradoractivarmensajeria(request,id_colaborador):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.col_edit:
+		try:participante = Colaboradores.objects.only('estado').filter(proyecto=proyecto).get(id=int(id_colaborador))
+		except:return render_to_response('403.html')
+		if(participante.estado):
+			participante.estado = False
+		else:
+			participante.estado = True
+		participante.save()
+		return HttpResponseRedirect('/respuestas/metricas')
+	else:
+		return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
@@ -161,32 +184,42 @@ def colaboradoreenviar(request,id_colaborador):
 			if Streaming.objects.filter(colaborador=int(id_colaborador),respuesta__isnull=True).exists():
 				alerta = None
 				if request.method == 'POST':
-					datos = proyecto.proyectosdatos
-					from usuarios.strings import correo_standar
-					from corrector import tildes,tildes2
-					server=smtplib.SMTP('smtp.mandrillapp.com',587)
-					server.ehlo()
-					server.starttls()
-					server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
-					nom_log =request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
-					destinatario = [colaborador.email]
-					msg=MIMEMultipart()
-					msg["subject"]=  tildes2(datos.tit_encuesta)
-					msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-					urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
-					nombre = tildes(colaborador.nombre)
-					titulo = tildes(datos.tit_encuesta)
-					texto_correo = tildes(datos.cue_correo)
-					url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
-					html = correo_standar(urlimg,nombre,titulo,texto_correo,url)
-					mensaje = MIMEText(html,"html")
-					msg.attach(mensaje)
-					with transition.atomic():
-						colaborador.reenviados =+1; colaborador.save()
-						server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
-					server.quit()
-					alerta = 'Correo enviado exitosamente.'
+					if colaborador.estado:
+						datos = proyecto.proyectosdatos
+						from usuarios.strings import correo_standar
+						from corrector import salvar_html
+						import cgi,unicodedata
+						server=smtplib.SMTP('smtp.mandrillapp.com',587)
+						server.ehlo()
+						server.starttls()
+						server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+						nom_log =request.user.first_name+' '+request.user.last_name
+						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
+						destinatario = [colaborador.email]
+						msg=MIMEMultipart()
+						msg["subject"]=  unicodedata.normalize('NFKD', datos.tit_encuesta).encode('ascii','ignore')
+						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+						urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
+						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
+							genero = "a"
+						else:
+							genero = "o"
+						nombre = cgi.escape(colaborador.nombre).encode("ascii", "xmlcharrefreplace")
+						titulo = cgi.escape(datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
+						texto_correo = salvar_html(cgi.escape(datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
+						url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
+						mensaje = MIMEText(html,"html")
+						msg.attach(mensaje)
+						with transaction.atomic():
+							colaborador.reenviados =+1
+							Streaming.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
+							colaborador.save()
+							server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+						server.quit()
+						alerta = 'Correo enviado exitosamente.'
+					else:
+						alerta = 'Debe activar primero al colaborador para forzar el envío. Asegúrese de tener los permisos necesarios para editar participantes.'
 				return render_to_response('colaboradoreenviar.html',{
 				'Activar':'EstadoAvance','activar':'EnviosRespuestas','Colaborador':colaborador,
 				'Permisos':permisos,'Proyecto':proyecto,'Alerta':alerta
@@ -208,6 +241,8 @@ def encuesta(request,id_proyecto,key):
 					).select_related('proyecto__proyectosdatos','colaboradoresmetricas',
 					'proyecto__tot_respuestas','proyecto__can_envio'
 					).get(key=key)
+		if not encuestado.estado:
+			return render_to_response('404.html')
 		stream = Streaming.objects.filter(
 					colaborador = encuestado,
 					respuesta__isnull = True).prefetch_related(
@@ -224,7 +259,6 @@ def encuesta(request,id_proyecto,key):
 						respuesta__isnull=False
 						).latest('fecharespuesta')
 		pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
-		print pronto_acceso
 		if (pronto_acceso <= proyecto.prudenciamin):
 			acceso = False
 		else:
@@ -277,7 +311,6 @@ def encuesta(request,id_proyecto,key):
 			vec_metricas.append(proyecto.prudenciamin)
 		encuestado.propension = sum(vec_metricas)/len(vec_metricas)
 		metricas.propension = json.dumps(vec_metricas)
-		print metricas.propension
 		with transaction.atomic():
 			metricas.save()
 			proyecto.save()
@@ -285,7 +318,6 @@ def encuesta(request,id_proyecto,key):
 			for i in cuestionario:
 				i.fecharespuesta = timezone.now()
 				if i.pregunta.abierta:
-					print request.POST[str(i.pregunta.id)]
 					i.respuesta = request.POST[str(i.pregunta.id)]
 				elif i.pregunta.multiple:
 					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
@@ -302,3 +334,131 @@ def encuesta(request,id_proyecto,key):
 	return render_to_response('encuesta.html',{
 	'Encuestado':encuestado,'Preguntas':cuestionario_preguntas,
 	},	context_instance=RequestContext(request))
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def exportar(request):
+	import xlwt
+	date_format = xlwt.XFStyle()
+	date_format.num_format_str = 'dd/mm/yyyy'
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.res_exp:
+		response = HttpResponse(content_type='application/ms-excel')
+		import string
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet("GoAnalytics")
+		datos = proyecto.proyectosdatos
+		stream = Streaming.objects.filter(proyecto=proyecto).select_related(
+				'colaborador__colaboradoresdatos','proyecto__proyectosdatos',
+				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
+		lens = len(stream)
+		k = 0
+		ws.write(0,0,u"Nombre")
+		ws.write(0,1,u"Apellido")
+		ws.write(0,2,u"Email")
+		ws.write(0,3,u"Móvil")
+		ws.write(0,4,u"Género")
+		ws.write(0,5,u"Área")
+		ws.write(0,6,u"Cargo")
+		ws.write(0,7,u"Regional")
+		ws.write(0,8,u"Ciudad")
+		ws.write(0,9,u"Nivel académico")
+		ws.write(0,10,u"Profesión")
+		ws.write(0,11,u"Fecha de nacimiento",date_format)
+		ws.write(0,12,u"Fecha de ingreso",date_format)
+		if(datos.opcional1):
+			ws.write(0,13,datos.opcional1)
+		else:
+			k +=1
+		if(datos.opcional2):
+			ws.write(0,14-k,datos.opcional2)
+		else:
+			k +=1
+		if(datos.opcional3):
+			ws.write(0,15-k,datos.opcional3)
+		else:
+			k +=1
+		if(datos.opcional4):
+			ws.write(0,16-k,datos.opcional4)
+		else:
+			k +=1
+		if(datos.opcional5):
+			ws.write(0,17-k,datos.opcional5)
+		else:
+			k +=1
+		ws.write(0,18-k,u"Fecha de respuesta")
+		ws.write(0,19-k,u"Variable")
+		ws.write(0,20-k,u"Pregunta")
+		ws.write(0,21-k,u"Respuesta numérica (si aplica)")
+		ws.write(0,22-k,u"Respuesta(s)")
+		for i in xrange(lens):
+			k=0
+			ws.write(i+1,0,stream[i].colaborador.nombre)
+			ws.write(i+1,1,stream[i].colaborador.apellido)
+			ws.write(i+1,2,stream[i].colaborador.email)
+			ws.write(i+1,3,stream[i].colaborador.movil)
+			ws.write(i+1,4,stream[i].colaborador.colaboradoresdatos.genero)
+			ws.write(i+1,5,stream[i].colaborador.colaboradoresdatos.area)
+			ws.write(i+1,6,stream[i].colaborador.colaboradoresdatos.cargo)
+			ws.write(i+1,7,stream[i].colaborador.colaboradoresdatos.regional)
+			ws.write(i+1,8,stream[i].colaborador.colaboradoresdatos.ciudad)
+			ws.write(i+1,9,stream[i].colaborador.colaboradoresdatos.niv_academico)
+			ws.write(i+1,10,stream[i].colaborador.colaboradoresdatos.profesion)
+			if stream[i].colaborador.colaboradoresdatos.fec_nacimiento:
+				ws.write(i+1,11,stream[i].colaborador.colaboradoresdatos.fec_nacimiento.isoformat())
+			else:
+				ws.write(i+1,11,u"No registra")
+			ws.write(i+1,12,stream[i].colaborador.colaboradoresdatos.fec_ingreso.isoformat())
+			if(datos.opcional1):
+				ws.write(i+1,13,stream[i].colaborador.colaboradoresdatos.opcional1)
+			else:
+				k +=1
+			if(datos.opcional2):
+				ws.write(i+1,14-k,stream[i].colaborador.colaboradoresdatos.opcional2)
+			else:
+				k +=1
+			if(datos.opcional3):
+				ws.write(i+1,15-k,stream[i].colaborador.colaboradoresdatos.opcional3)
+			else:
+				k +=1
+			if(datos.opcional4):
+				ws.write(i+1,16-k,stream[i].colaborador.colaboradoresdatos.opcional4)
+			else:
+				k +=1
+			if(datos.opcional5):
+				ws.write(i+1,17-k,stream[i].colaborador.colaboradoresdatos.opcional5)
+			else:
+				k +=1
+			ws.write(i+1,18-k,stream[i].fecharespuesta.isoformat())
+			ws.write(i+1,19-k,stream[i].pregunta.variable.nombre)
+			ws.write(i+1,20-k,stream[i].pregunta.texto)
+			if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
+				respuestas = json.loads(stream[i].respuesta)
+				ans = []
+				for respuesta in stream[i].pregunta.respuestas_set.all():
+					if respuesta.texto in respuestas:
+						ans.append(respuesta.numerico)
+				if ans:
+					ws.write(i+1,21-k,json.dumps(ans))
+				else:
+					ws.write(i+1,21-k,u"[]")
+			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
+				for respuesta in stream[i].pregunta.respuestas_set.all():
+					if stream[i].respuesta == respuesta.texto:
+						ws.write(i+1,21-k,respuesta.numerico)
+			else:
+				ws.write(i+1,21-k,"No aplica")
+			if stream[i].respuesta:
+				ws.write(i+1,22-k,stream[i].respuesta)
+			else:
+				ws.write(i+1,22-k,u"")
+		wb.save(response)
+		return response
+	else:
+		render_to_response('403.html')

@@ -53,6 +53,7 @@ def colaboradornuevo(request):
 				nombre = request.POST['nombre'],
 				apellido = request.POST['apellido'],
 				key = key,
+				movil = request.POST['movil'],
 				email = request.POST['email'],
 				proyecto = proyecto)
 			try:
@@ -69,7 +70,7 @@ def colaboradornuevo(request):
 				genero = request.POST['genero'],
 				niv_academico = request.POST['niv_academico'],
 				profesion = request.POST['profesion'],
-				regional = request.POST['regional'],)
+				regional = request.POST['regional'])
 			try:
 				if(request.POST['fec_nacimiento']):
 					datos.fec_nacimiento = DT.strptime(str(request.POST['fec_nacimiento']),'%d/%m/%Y')
@@ -124,6 +125,7 @@ def colaboradoreditar(request,id_colaborador):
 			participante.nombre = request.POST['nombre']
 			participante.apellido = request.POST['apellido']
 			participante.email = request.POST['email']
+			participante.movil = request.POST['movil']
 			try:
 				if(request.POST['estado']):
 					participante.estado = True
@@ -211,33 +213,34 @@ def archivo(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoChangeAnalytics")
+		ws = wb.add_sheet("GoAnalytics")
 		datos = proyecto.proyectosdatos
 		ws.write(0,0,u"Nombre")
 		ws.write(0,1,u"Apellido")
 		ws.write(0,2,u"Email")
-		ws.write(0,3,u"Género")
-		ws.write(0,4,u"Área")
-		ws.write(0,5,u"Cargo")
-		ws.write(0,6,u"Regional")
-		ws.write(0,7,u"Ciudad")
-		ws.write(0,8,u"Nivel académico")
-		ws.write(0,9,u"Profesión")
-		ws.write(0,10,u"Fecha de nacimiento dd/mm/yyyy",date_format)
-		ws.write(0,11,u"Fecha de ingreso dd/mm/yyyy",date_format)
+		ws.write(0,3,u"Móvil")
+		ws.write(0,4,u"Género")
+		ws.write(0,5,u"Área")
+		ws.write(0,6,u"Cargo")
+		ws.write(0,7,u"Regional")
+		ws.write(0,8,u"Ciudad")
+		ws.write(0,9,u"Nivel académico")
+		ws.write(0,10,u"Profesión")
+		ws.write(0,11,u"Fecha de nacimiento dd/mm/yyyy",date_format)
+		ws.write(0,12,u"Fecha de ingreso dd/mm/yyyy",date_format)
 		for i in xrange(1,10000):
-			ws.write(i,10,"",date_format)
 			ws.write(i,11,"",date_format)
+			ws.write(i,12,"",date_format)
 		if(datos.opcional1):
-			ws.write(0,12,datos.opcional1)
+			ws.write(0,13,datos.opcional1)
 		if(datos.opcional2):
-			ws.write(0,13,datos.opcional2)
+			ws.write(0,14,datos.opcional2)
 		if(datos.opcional3):
-			ws.write(0,14,datos.opcional3)
+			ws.write(0,15,datos.opcional3)
 		if(datos.opcional4):
-			ws.write(0,15,datos.opcional4)
+			ws.write(0,16,datos.opcional4)
 		if(datos.opcional5):
-			ws.write(0,16,datos.opcional5)
+			ws.write(0,17,datos.opcional5)
 		wb.save(response)
 		return response
 
@@ -276,10 +279,11 @@ def colaboradores_xls(request):
 						apellido = sheet.cell_value(i,1),
 						key = key,
 						email=sheet.cell_value(i,2),
+						movil=sheet.cell_value(i,3),
 						estado=True,proyecto=proyecto)
 					vector_personas.append(persona)
 					try:
-						nacimientos_arreglados.append(DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,10), 0)))
+						nacimientos_arreglados.append(DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,11), 0)))
 					except:
 						nacimientos_arreglados.append(0)
 				vector_datos = []
@@ -290,27 +294,27 @@ def colaboradores_xls(request):
 						vector_personas[i-1].save()
 						vector_metricas.append(ColaboradoresMetricas(id=vector_personas[i-1]))
 						datos = ColaboradoresDatos(id = vector_personas[i-1],
-							genero=sheet.cell_value(i,3),
-							area=sheet.cell_value(i,4),
-							cargo=sheet.cell_value(i,5),
-							regional=sheet.cell_value(i,6),
-							ciudad=sheet.cell_value(i,7),
-							niv_academico=sheet.cell_value(i,8),
-							profesion=sheet.cell_value(i,9),
-							fec_ingreso=DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,11), 0))
+							genero=sheet.cell_value(i,4),
+							area=sheet.cell_value(i,5),
+							cargo=sheet.cell_value(i,6),
+							regional=sheet.cell_value(i,7),
+							ciudad=sheet.cell_value(i,8),
+							niv_academico=sheet.cell_value(i,9),
+							profesion=sheet.cell_value(i,10),
+							fec_ingreso=DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,12), 0))
 							)
 						if(nacimientos_arreglados[i-1]):
 							datos.fec_nacimiento=nacimientos_arreglados[i-1]
 						if proyecto_datos.opcional1:
-							datos.opcional1 = sheet.cell_value(i,12)
+							datos.opcional1 = sheet.cell_value(i,13)
 						if proyecto_datos.opcional2:
-							datos.opcional2 = sheet.cell_value(i,13)
+							datos.opcional2 = sheet.cell_value(i,14)
 						if proyecto_datos.opcional3:
-							datos.opcional3 = sheet.cell_value(i,14)
+							datos.opcional3 = sheet.cell_value(i,15)
 						if proyecto_datos.opcional4:
-							datos.opcional4 = sheet.cell_value(i,15)
+							datos.opcional4 = sheet.cell_value(i,16)
 						if proyecto_datos.opcional5:
-							datos.opcional5 = sheet.cell_value(i,16)
+							datos.opcional5 = sheet.cell_value(i,17)
 						vector_datos.append(datos)
 					ColaboradoresDatos.objects.bulk_create(vector_datos)
 					ColaboradoresMetricas.objects.bulk_create(vector_metricas)

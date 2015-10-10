@@ -16,7 +16,7 @@ import random
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
-import smtplib
+import smtplib,cgi
 #===============================================================================
 # Front end
 #===============================================================================
@@ -44,10 +44,10 @@ def index(request):
 				msg['To'] = email.utils.formataddr(('Respetado', destinatario))
 				msg['From'] = email.utils.formataddr(('Go salud', 'no-reply@gochangeanalytics.com'))
 
-				n = (request.POST['nombre']).encode('ascii','ignore')
-				e = (request.POST['email']).encode('ascii','ignore')
-				t = (request.POST['telefono']).encode('ascii','ignore')
-				m = (request.POST['mensaje']).encode('ascii','ignore')
+				n = cgi.escape(request.POST['nombre']).encode("ascii", "xmlcharrefreplace")
+				e = cgi.escape(request.POST['email']).encode("ascii", "xmlcharrefreplace")
+				t = cgi.escape(request.POST['telefono']).encode("ascii", "xmlcharrefreplace")
+				m = cgi.escape(request.POST['mensaje']).encode("ascii", "xmlcharrefreplace")
 				html = '<b>NOMBRE:</b> '+ n +'<br>'
 				html = html+'  <b>EMAIL:</b> '+str(e)+'<br>'
 				html = html+'  <b>TELEFONO: </b>'+str(t)+'<br>'
@@ -179,6 +179,8 @@ def recuperar(request):
 
 			if(delta.days >= 1 or (delta.seconds>=3600 or 2 >= delta.seconds)):
 				from strings import recuperar_cuenta
+				from mensajeria.corrector import salvar_html
+				import cgi
 				server=smtplib.SMTP('smtp.mandrillapp.com',587)
 				server.ehlo()
 				server.starttls()
@@ -191,10 +193,11 @@ def recuperar(request):
 				Logs.objects.create(usuario=nom_log,usuario_username=usuario.username,accion="Olvido de contraseña",descripcion=usuario.first_name+" "+usuario.last_name)
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
+				nombre = cgi.escape(usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				msg["subject"]=  'Cambio de clave.'
 				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
 				url = 'http://www.lavozdemisclientes.com/recuperar/'+key
-				html = recuperar_cuenta(url)
+				html = recuperar_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
 				server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
@@ -726,7 +729,8 @@ def usuarioreenviar(request,id_usuario):
 					msg["subject"]=  'Registro de cuenta.'
 					msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
 					url = 'http://www.lavozdemisclientes.com/activar/'+key
-					html = crear_cuenta(url)
+					nombre = cgi.escape(usuario.first_name).encode("ascii", "xmlcharrefreplace")
+					html = crear_cuenta(nombre,url)
 					mensaje = MIMEText(html,"html")
 					msg.attach(mensaje)
 					server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
@@ -885,7 +889,8 @@ def usuarionuevo(request):
 				msg["subject"]=  'Registro de cuenta.'
 				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
 				url = 'http://www.lavozdemisclientes.com/activar/'+key
-				html = crear_cuenta(url)
+				nombre = cgi.escape(usuario.first_name).encode("ascii", "xmlcharrefreplace")
+				html = crear_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
 				server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())

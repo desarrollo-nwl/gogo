@@ -89,6 +89,8 @@ urlpatterns += patterns('mensajeria.views',
 	url(r'^respuestas/detalladas/$', 'detalladas'),
     url(r'^respuestas/metricas/$', 'metricas'),
     url(r'^respuestas/forzar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreenviar'),
+	url(r'^participante/activar2/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivarmensajeria'),
+    url(r'^respuestas/exportar/$', 'exportar'),
 )
 
 
