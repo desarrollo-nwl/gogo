@@ -44,6 +44,7 @@ class Proyectos( models.Model ):
 	tot_respuestas = models.IntegerField( default = 0)
 	total = models.FloatField( default = 0 )
 	usuarios = models.ManyToManyField( User )
+	key = models.CharField(max_length=64, blank = True, null = True)
 
 	def __unicode__(self):
 		return self.nombre

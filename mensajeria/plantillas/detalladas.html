@@ -27,8 +27,8 @@
 			{%if Permisos.det_see and Permisos.res_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
 				<thead>
 					<tr>
-						<th>Apellido</th>
-						<th>Nombre</th>
+						<th>Participante</th>
+						<th>Email</th>
 						<th>Variable</th>
 						<th>Pregunta</th>
 						<th>Respuesta</th>
@@ -37,13 +37,13 @@
 				<tbody>
 					{%for i in Participantes%}
 					<tr>
-						<td>{{i.colaborador.nombre | capfirst | escape}}</td>
-						<td>{{i.colaborador.apellido | capfirst | escape}}</td>
+						<td>{{i.colaborador.nombre | capfirst | escape}} {{i.colaborador.apellido | capfirst | escape}}</td>
+						<td>{{i.colaborador.email | capfirst | escape}}</td>
 						<td>{{i.pregunta.variable.nombre  | escape}}</td>
 						<td>{{i.pregunta.texto  | escape}}</td>
 						{%if i.pregunta.abierta%}<td>{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}
-						{%if i.pregunta.multiple%}<td>{%if i.fecharespuesta%}{%if i.respuesta %}{{i.respuesta| jsonbr |safe}}{%else%}Ninguna seleccionada{%endif%}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}
-						{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}<td>{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}
+						{%if i.pregunta.multiple%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.fecharespuesta%}{%if i.respuesta %}{{i.respuesta| jsonbr |safe}}{%else%}Ninguna seleccionada{%endif%}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
+						{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
 					</tr>{% endfor %}
 				</tbody>
 			</table>{%endif%}

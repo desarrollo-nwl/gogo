@@ -69,7 +69,7 @@
 				<div id="contenedor">
 					{%if not Pregunta.abierta%}{%for i in Pregunta.respuestas_set.all %}
 					<div id="{{forloop.counter0}}" class="form-group">
-						<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta {{forloop.counter1}}:</label>
+						<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta {{forloop.counter}}:</label>
 						<div class="col-lg-5 col-md-5 col-xs-6 col-sm-6">
 							<input required type="text" name="respuesta{{forloop.counter0}}" class="form-control" maxlength="254" placeholder="Texto de la opción" value="{{i.texto|escape}}">
 						</div>
@@ -105,6 +105,8 @@ $(document).ready(function(){
 		switch ($tipo[0].selectedIndex) {
 			case 4:
 				$contenedor.html('');
+				aux_cantidad = 0;
+				cantidad = 0;
 				break;
 			case 3:
 				$('.numerica').removeClass('oculto');

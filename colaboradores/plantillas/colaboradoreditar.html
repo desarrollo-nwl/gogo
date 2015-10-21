@@ -42,13 +42,19 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Email:</label>
 					<div class="col-lg-5 col-md-6 col-xs-8 col-sm-7">
-						<input required type="text" name="email" class="form-control" maxlength="254" value="{{Participante.email |escape}}">
+						<input id="email" required type="email" name="email" class="form-control" maxlength="254" value="{{Participante.email |escape}}">
+					</div>
+				</div>
+				<div id="email_error" class="form-group">
+					<div class="col-lg-2 col-md-2 col-xs-2 col-sm-2"></div>
+					<div class="col-lg-5 col-md-6 col-xs-8 col-sm-7">
+						<span style="color:#cd1e21"> Este correo se encuentra registrado en el proyecto, el envío de este formulario será ignorado.</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Teléfono móvil:</label>
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label norequired">Teléfono móvil:</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input required type="number" name="movil" class="form-control" maxlength="20" value="{{Participante.movil |escape}}">
+						<input type="number" name="movil" class="form-control" maxlength="20" Placeholder="Ej: 573163025922" value="{{Participante.movil |escape}}">
 					</div>
 					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Género:</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
@@ -159,4 +165,25 @@
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
 <script src="{% static 'js/plugins/datepicker/datepicker.min.js' %}"></script>
 <script>$(document).ready(function(){$('.fecha').datepicker({startView: 2,/*todayBtn: "linked",*/keyboardNavigation: false,forceParse: false,autoclose: true}); });</script>
+<script>var contenido=function(e,n){for(var i=0;i<n.length;i++)if(e==n[i])return!0;return!1},emails=function(){var e=$("#email_error"),n=$("#email"),i=[];{%for i in Emails%}i.push('{{i.email|safe|escape|lower}}');{%endfor%}e.hide();n.bind("keyup change",function(){contenido(n.val().toLowerCase(),i)?e.show():e.hide()})};emails();</script>
+{% if 0 %}<script>
+var contenido = function(a,x){
+	for (var i = 0; i < x.length; i++) {
+		if (a == x[i]){return true;}
+	}
+	return false;
+}
+var emails = function(){
+	var $emailerror=$("#email_error"),$email=$('#email'),emails=[];{%for i in Emails%}emails.push('{{i.email|safe|escape|lower}}');{%endfor%}
+	$emailerror.hide();
+	$email.bind("keyup change", function(){
+		if(contenido($email.val().toLowerCase(),emails)){
+			$emailerror.show();
+		}else{
+			$emailerror.hide();
+		}
+	});
+}
+emails();
+</script>{% endif %}
 {%endblock%}

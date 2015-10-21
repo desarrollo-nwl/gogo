@@ -83,7 +83,8 @@ def gosurvey(request):
 
 				proyecto.prudenciamin = dMin
 				proyecto.prudenciamax = dMax
-				proyecto.can_envio = request.POST['can_envio']
+				if proyecto.tipo != "Completa":
+					proyecto.can_envio = request.POST['can_envio']
 				streaming_crear =[]
 				metricas = []
 				if(proyecto.activo):
