@@ -16,14 +16,14 @@
 			<a href="#"><i class="fa fa-cube"></i><span class="nav-label"> Configuración </span></a>
 			<ul class="nav nav-second-level">
 				{%if Permisos.var_see or Permisos.pre_see%}<li id="Variables"><a href="/variables/"><i class="fa fa-sitemap"></i>Variables y preguntas</a></li>{%endif%}
-				{%if Permisos.col_add%}<li id="Participantes">
+				{%if Proyecto.interna%}{%if Permisos.col_add%}<li id="Participantes">
 					<a href="#"><i class="fa fa-group"></i>Participantes</a>
 					<ul class="nav nav-third-level">
 						<li id="AcrhivoPlano"><a href="/participantes/archivo/"><i class="fa fa-file-excel-o"></i> Agregar en archivo plano</a></li>
 						{%if Permisos.col_see%}<li id="Individual"><a href="/participantes/individual/"><i class="fa fa-male"></i> Individual</a></li>{%endif%}
 
 					</ul>
-				</li>{%endif%}
+				</li>{%endif%}{%endif%}
 				<li id="IniciarDetener"><a href="/gosurvey/"><i class="fa fa-power-off"></i> Iniciar | detener</a></li>
 			</ul>
 		</li>{%endif%}

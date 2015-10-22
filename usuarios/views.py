@@ -360,11 +360,14 @@ def proyectonuevo(request):
 					).get_descendants(include_self=False).select_related(
 					'usuario__first_name','usuario__last_name','parent')
 		if request.method == 'POST':
+			chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+			key = ''.join(random.sample(chars, 64))
 			with transaction.atomic():
 				proyecto = Proyectos(
 							empresa_id = request.POST['empresa'],
 							nombre = request.POST['nombre'],
-							tipo = request.POST['tipo'])
+							tipo = request.POST['tipo'],
+							key=key)
 				try:
 					if(request.POST['interna']):proyecto.interna = True
 				except:

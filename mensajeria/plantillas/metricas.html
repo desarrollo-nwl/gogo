@@ -24,6 +24,7 @@
 			</div>
 		</div>
 		<div class="ibox-content">
+			{%if Proyecto.interna%}
 			{%if Permisos.col_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
 				<thead>
 					<tr>
@@ -51,8 +52,29 @@
 					</tr>{% endfor %}
 				</tbody>
 			</table>{%endif%}
-			
+
 			<br><br><p>Propensión Global: {{Average.propension__avg |floatformat:"2"}} recuerde que un lapsus global muy alto es perjudicial para el correcto desarrollo del proyecto. <br><br>Nota: La calificación lapsus es el promedio de los días que tarda cada participante en responder. La herramienta internamente minimiza estos tiempos por medio de algoritmos de envío, sin embargo manualmente puede forzar un envío en casos particulares. Para una cifra orientativa el nivel de lapsus debe rondar en <strong>{{Proyecto.prudenciamin |floatformat:"2" | escape}}</strong> o menor para ser excelente y <strong>{{Proyecto.prudenciamax |floatformat:"2" | escape}}</strong> para una muy baja frecuencia de respuesta en el proyecto. Es decir menos es mejor. </p>
+			{%else%}
+			{%if Permisos.col_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th>Fecha</th>
+						<th>Encuestados</th>
+						<th>Acumulado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{%for i in Metricas%}
+					<tr>
+						<td>{{i.fecha | date:'Y-m-d'}}</td>
+						<td>{{i.encuestados | escape}}</td>
+						<td>{{i.acumulado  | escape}}</td>
+					</tr>{% endfor %}
+				</tbody>
+			</table>{%endif%}
+
+			{% if Average.encuestados__avg %}<br><p>Encuestas promedio por día: <strong>{{Average.encuestados__avg |floatformat:"2"}}</strong>.{%endif%}
+			{%endif%}
 		</div>
 	</div>
 </div>
@@ -61,5 +83,7 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ]],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ métricas",sZeroRecords:"No se encontraron métricas",sEmptyTable:"El Proyecto no posee ninguna respuesta aún.",sInfo:"Métricas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Métricas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ métricas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%if Proyecto.interna%}<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ]],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ métricas",sZeroRecords:"No se encontraron métricas",sEmptyTable:"El Proyecto no posee ninguna respuesta aún.",sInfo:"Métricas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Métricas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ métricas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%else%}<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ]],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ métricas",sZeroRecords:"No se encontraron métricas",sEmptyTable:"El Proyecto no posee ninguna respuesta aún.",sInfo:"Métricas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Métricas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ métricas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%endif%}
 {%endblock%}

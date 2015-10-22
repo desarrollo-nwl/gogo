@@ -10,10 +10,11 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
-from mensajeria.models import Streaming,SRS
+from mensajeria.models import *
 from usuarios.models import *
 
-from datetime import timedelta
+from django.db.models import Avg
+from datetime import timedelta,date
 from django.utils import timezone
 import random
 import json
@@ -23,6 +24,7 @@ from email.mime.text import MIMEText
 import email.utils
 import smtplib
 
+from django.db.models import Max
 #===============================================================================
 # Administrar el envio
 #===============================================================================
@@ -37,7 +39,7 @@ def gosurvey(request):
 	datos = proyecto.proyectosdatos
 	if permisos.consultor:
 		if request.method == 'POST':
-			if(permisos.act_surveys):
+			if permisos.act_surveys:
 				try:
 					comprobar = request.POST['iniciable']
 					if(permisos.max_proyectos - permisos.max_pro_usados >= 1):
@@ -59,47 +61,46 @@ def gosurvey(request):
 					pass
 			try:
 				comprobar = request.POST['activo']
-
-				if(float(request.POST['dMin']) < float(request.POST['dMax'])):
-					dMax = float(request.POST['dMax'])
-					dMin = float(request.POST['dMin'])
-				else:
-					if(float(request.POST['dMin']) == float(request.POST['dMax'])):
+				streaming_crear =[]
+				if proyecto.interna:
+					if(float(request.POST['dMin']) < float(request.POST['dMax'])):
+						dMax = float(request.POST['dMax'])
 						dMin = float(request.POST['dMin'])
-						dMax = float(request.POST['dMax'])+1
 					else:
-						dMax = float(request.POST['dMin'])
-						dMin = float(request.POST['dMax'])
+						if(float(request.POST['dMin']) == float(request.POST['dMax'])):
+							dMin = float(request.POST['dMin'])
+							dMax = float(request.POST['dMax'])+1
+						else:
+							dMax = float(request.POST['dMin'])
+							dMin = float(request.POST['dMax'])
+					proyecto.prudenciamin = dMin
+					proyecto.prudenciamax = dMax
 
-				if(proyecto.activo):
-					proyecto.activo = False
-				else:
-					proyecto.activo = True
+					if proyecto.tipo != "Completa":
+						proyecto.can_envio = request.POST['can_envio']
+
+					if proyecto.activo:
+						colaboradores = Colaboradores.objects.filter(proyecto=proyecto)
+						variables = proyecto.variables_set.all()
+						preguntas = Preguntas.objects.filter(variable__in=variables)
+						for i in colaboradores:
+							for j in preguntas:
+								if not Streaming.objects.filter(proyecto=proyecto,colaborador=i,pregunta=j).exists():
+									streaming_crear.append(Streaming(proyecto=proyecto,colaborador=i,pregunta=j))
+									proyecto.tot_aresponder += 1
+					if proyecto.tot_aresponder:
+						proyecto.total = 100*(proyecto.tot_respuestas)/proyecto.tot_aresponder
 				try:
 					datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
 					datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
 				except:
 					pass
-
-				proyecto.prudenciamin = dMin
-				proyecto.prudenciamax = dMax
-				if proyecto.tipo != "Completa":
-					proyecto.can_envio = request.POST['can_envio']
-				streaming_crear =[]
-				metricas = []
 				if(proyecto.activo):
-					colaboradores = Colaboradores.objects.filter(proyecto=proyecto)
-					variables = proyecto.variables_set.all()
-					preguntas = Preguntas.objects.filter(variable__in=variables)
-					for i in colaboradores:
-						for j in preguntas:
-							if not Streaming.objects.filter(proyecto=proyecto,colaborador=i,pregunta=j).exists():
-								streaming_crear.append(Streaming(proyecto=proyecto,colaborador=i,pregunta=j))
-								proyecto.tot_aresponder += 1
-				if proyecto.tot_aresponder:
-					proyecto.total = 100*(proyecto.tot_respuestas)/proyecto.tot_aresponder
+					proyecto.activo = False
+				else:
+					proyecto.activo = True
 				with transaction.atomic():
-					if(streaming_crear):
+					if streaming_crear:
 						Streaming.objects.bulk_create(streaming_crear)
 					proyecto.save()
 					datos.save()
@@ -139,15 +140,21 @@ def metricas(request):
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor:
+	if permisos.consultor and proyecto.interna:
 		participantes = Colaboradores.objects.filter(proyecto = proyecto
 						).select_related('colaboradoresdatos',
 						'colaboradoresmetricas')
-		from django.db.models import Avg
 		average = Colaboradores.objects.filter(proyecto=proyecto).aggregate(Avg('propension'))
 		return render_to_response('metricas.html',{
 		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
 		'Participantes':participantes,'Average':average
+		},	context_instance=RequestContext(request))
+	elif permisos.consultor and not proyecto.interna:
+		metricas = MetricasExterna.objects.filter(proyecto = proyecto)
+		average = MetricasExterna.objects.filter(proyecto=proyecto).aggregate(Avg('encuestados'))
+		return render_to_response('metricas.html',{
+		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
+		'Metricas':metricas,'Average':average
 		},	context_instance=RequestContext(request))
 	else:
 		render_to_response('404.html')
@@ -322,6 +329,8 @@ def encuesta(request,id_proyecto,key):
 					i.respuesta = request.POST[str(i.pregunta.id)]
 				elif i.pregunta.multiple:
 					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
+					if not r:
+						respuesta = 'Ninguna seleccionada'
 					i.respuesta = r
 				else:
 					i.respuesta = request.POST[str(i.pregunta.id)]
@@ -334,6 +343,84 @@ def encuesta(request,id_proyecto,key):
 
 	return render_to_response('encuesta.html',{
 	'Encuestado':encuestado,'Preguntas':cuestionario_preguntas,
+	},	context_instance=RequestContext(request))
+
+
+@cache_control(no_store=True)
+def encuestaexterna(request,id_proyecto,key):
+	# try:
+	proyecto = Proyectos.objects.filter(id=id_proyecto).get(key=key)
+	if not proyecto.activo:
+		return render_to_response('403.html')
+	variables = Variables.objects.filter(proyecto = proyecto)
+	preguntas = Preguntas.objects.prefetch_related('respuestas_set'
+		).select_related('variable').filter(variable__in = variables,estado = True
+		).order_by('variable__posicion')
+	len_cuestionario = len(preguntas)
+	# except:
+	# 	return render_to_response('404.html')
+
+	if not len_cuestionario:
+		return render_to_response('403.html')
+
+	if request.method == 'POST':
+		proyecto.tot_respuestas += len_cuestionario
+		if proyecto.tot_preguntas:
+			proyecto.total = proyecto.tot_respuestas / proyecto.tot_preguntas
+		else:
+			proyecto.total = 0
+		try:
+			colaborador = Externa.objects.only('colaborador').filter(proyecto=proyecto
+							).aggregate(Max('colaborador'))
+			colaborador = colaborador['colaborador__max'] + 1
+		except:
+			colaborador = 1
+		streaming = []
+		for i in preguntas:
+			if i.abierta:
+				respuesta = request.POST[str(i.id)]
+			elif i.multiple:
+				respuesta = json.dumps(request.POST.getlist(str(i.id)))
+				if not respuesta:
+					respuesta = 'Ninguna seleccionada'
+			else:
+				respuesta = request.POST[str(i.id)]
+			streaming.append(Externa(colaborador=colaborador,proyecto=proyecto,pregunta=i,
+							fecharespuesta=timezone.now(),
+							respuesta=respuesta))
+		x = timezone.now()
+		hoy = date(year=x.year,month=x.month,day=x.day)
+		ayer = hoy - timedelta(1)
+		try:
+			metrica = MetricasExterna.objects.filter(proyecto=proyecto).get(fecha=hoy)
+			metrica.encuestados += 1
+			try:
+				metricas_ayer = MetricasExterna.objects.filter(proyecto=proyecto).get(fecha=ayer)
+				if metrica.acumulado:
+					metrica.acumulado += 1
+				else:
+					metrica.acumulado = 1 + metricas_ayer.acumulado
+			except:
+				if metrica.acumulado:
+					metrica.acumulado += 1
+				else:
+					metrica.acumulado = 1
+		except:
+			metrica = MetricasExterna(proyecto=proyecto,fecha=hoy,encuestados=1)
+			try:
+				metricas_ayer = MetricasExterna.objects.filter(proyecto=proyecto).get(fecha=ayer)
+				metrica.acumulado = 1 + metricas_ayer.acumulado
+			except:
+				metrica.acumulado = 1
+		with transaction.atomic():
+			metrica.save()
+			proyecto.save()
+			Externa.objects.bulk_create(streaming)
+
+		return HttpResponseRedirect('/externa2/'+str(proyecto.id)+'/'+key)
+
+	return render_to_response('encuesta.html',{
+	'Proyecto':proyecto,'Preguntas':preguntas,
 	},	context_instance=RequestContext(request))
 
 

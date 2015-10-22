@@ -25,6 +25,8 @@ def colaboradores_ind(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_see:
 		participantes = Colaboradores.objects.filter(proyecto=proyecto
@@ -47,6 +49,8 @@ def colaboradornuevo(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		emails = Colaboradores.objects.only('email').filter(proyecto=proyecto)
@@ -134,6 +138,8 @@ def colaboradoreditar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_edit:
 		try:participante = Colaboradores.objects.filter(proyecto=proyecto
@@ -200,6 +206,8 @@ def colaboradoractivar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_edit:
 		try:participante = Colaboradores.objects.only('estado').filter(proyecto=proyecto).get(id=int(id_colaborador))
@@ -226,6 +234,8 @@ def archivo(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		response = HttpResponse(content_type='application/ms-excel')
@@ -274,6 +284,8 @@ def colaboradores_xls(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		error = None
@@ -381,6 +393,8 @@ def colaboradoreliminar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_see and permisos.col_del:
 		try:

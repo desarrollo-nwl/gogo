@@ -9,11 +9,18 @@
 
 {% block contenido %}
 <div class="container">
+	{%if Proyecto.interno%}
 	<div class="col-lg-12">
 		{%if Encuestado.proyecto.proyectosdatos.logoenc%}<img src="{{Encuestado.proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
 		{%else%}<img src="{{Encuestado.proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
 		<h1 class="page-header"> Hola {{Encuestado.nombre | escape |capfirst}}:</h1>
 	</div>
+	{%else%}
+	<div class="col-lg-12">
+		{%if Proyecto.proyectosdatos.logoenc%}<img src="{{Proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
+		{%else%}<img src="{{Proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
+		<h1 class="page-header">Proyecto {{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}:</h1>
+	</div>{%endif%}
 </div>
 
 {% regroup Preguntas by variable as preguntas_list %}
@@ -26,11 +33,14 @@
 			<div class="form-group">
 				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
 				{%if pregunta.abierta%}<textarea type="text" max_length="255" name="{{pregunta.id | escape}}" required></textarea>{%endif%}
-				{%if pregunta.multiple%}<select multiple class="chosen-select form-control" name="{{pregunta.id}}" >
+				{%if pregunta.multiple%}
+				<!-- <legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto | escape}}</legend> -->
 					{%for i in pregunta.respuestas_set.all%}
-						<option value="{{i.texto|escape}}">{{i.texto|escape}}</option>
+						<input type="checkbox" class="checkbox" name="{{pregunta.id}}" value="{{i.texto|escape}}" >
+						<label class="light">{{i.texto|escape}}</label>
+						<br>
 					{% endfor %}
-				</select>{%endif%}
+				{% endif %}
 				{%if pregunta.abierta or pregunta.multiple%}{%else%}
 				{%for i in pregunta.respuestas_set.all%}
 					<input {%ifequal forloop.counter 1%}checked{%endifequal%} type="radio" class="radio_buttom" name="{{pregunta.id}}" value="{{i.texto| escape}}" ><label class="light">{{i.texto | escape}}</label><br>
