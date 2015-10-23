@@ -1018,8 +1018,7 @@ def reportarerror(request):
 	if permisos.consultor:
 		aviso = None
 		if request.method == 'POST':
-			nom_log = request.user.first_name+' '+request.user.last_name
-			print nom_log
+			nom_log =request.user.first_name+' '+request.user.last_name
 			try:
 				error = Errores(usuario=nom_log,reporte=request.POST['reporte'],
 						imagen=request.FILES['imagen'])
@@ -1046,7 +1045,7 @@ def reportarerror(request):
 			html = 'El usuario '+nombre+' con usuario '+usuario.encode("ascii", "xmlcharrefreplace")+' ha reportado un error en Goanalytics: <br>'+cgi.escape(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
 			parte2=MIMEText(html,"html")
 			msg.attach(parte2)
-			# server.sendmail('no-reply@gochangeanalytics.com',destinatario,msg.as_string())
+			server.sendmail('no-reply@gochangeanalytics.com',destinatario,msg.as_string())
 			server.quit()
 		return render_to_response('reportarerror.html',{
 		'Activar':'CentroDeAyuda','activar':'Reportar','Permisos':permisos,
