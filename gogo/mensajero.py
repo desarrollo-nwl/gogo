@@ -10,12 +10,6 @@ os.environ["DJANGO_SETTINGS_MODULE"] ="gogo.settings"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 django.setup()
-DEBUG = False
-INSTALLED_APPS = ('analisis','colaboradores','cuestionarios','mensajeria','usuarios','mptt',)
-DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql','NAME': 'gogo','USER': 'suidi','PASSWORD':'Su1357*-','HOST':'nwl.co3mxnuop6eu.us-east-1.rds.amazonaws.com','PORT':'3306'}}
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-LANGUAGE_CODE = 'es-CO'
-TIME_ZONE = 'America/Bogota'
 
 from colaboradores.models import *
 from mensajeria.corrector import salvar_html
@@ -29,7 +23,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
 import smtplib,cgi,unicodedata
-
 from django.db import models
 
 server=smtplib.SMTP('smtp.mandrillapp.com',587)
@@ -72,32 +65,35 @@ def sendmail(stream_i,stream,tiempo):
 	# 	pass
 
 def enviar():
+	#solo postgresql soporta el distinct() de django
 	stream = Streaming.objects.select_related('colaborador__colaboradoresdatos',
 			'proyecto__proyectosdatos').filter(
 			fecharespuesta__isnull=True,proyecto__activo =True,
-			colaborador__estado=True,pregunta__estado=True)
+			colaborador__estado=True,pregunta__estado=True).distinct('colaborador')
+	print stream
 	lens = len(stream)
 	tiempo = timezone.now()
 	for i in xrange(lens):
+		print i
 		if not stream[i].fec_controlenvio:#no se ha enviado?
 			stream = sendmail(stream[i],stream,tiempo)
-			# print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
+			print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
 		else:
 			delta = tiempo - stream[i].fec_controlenvio
 			if stream[i].colaborador.propension:
 				propension = stream[i].colaborador.propension - 0.83 #calibrador para que no se mueva a derecha
 				if ( delta.days >= stream[i].proyecto.prudenciamin and delta.days >= propension ):  # x > p > m
 					stream = sendmail(stream[i],stream,tiempo)
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en bajo lapsus'
+					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en bajo lapsus'
 				elif ( delta.days <= stream[i].proyecto.prudenciamax and delta.days >= propension ): # M > x > p
 					stream = sendmail(stream[i],stream,tiempo)
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en medio lapsus'
+					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en medio lapsus'
 				elif delta.days >= stream[i].proyecto.prudenciamax: # x > M con propension
 					stream = sendmail(stream[i],stream,tiempo)
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
+					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 			elif delta.days >= stream[i].proyecto.prudenciamax: # x > M sin propension
 					stream = sendmail(stream[i],stream,tiempo)
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
+					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 enviar()
 server.quit()
 print 'Finalizado'

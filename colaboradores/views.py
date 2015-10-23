@@ -7,6 +7,7 @@ from django.db import transaction
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import Proyectos, Logs
 from datetime import datetime as DT
@@ -400,13 +401,14 @@ def colaboradoreliminar(request,id_colaborador):
 		try:
 			participante = Colaboradores.objects.filter(proyecto_id=proyecto.id).get(id=int(id_colaborador))
 		except:
-			return render_to_response('403')
+			return render_to_response('403.html')
 		if request.method == 'POST':
 			maestro = Proyectos.objects.get(id=1)
 			proyecto.tot_participantes -= 1
 			proyecto.tot_aresponder -= Streaming.objects.filter(proyecto=proyecto,colaborador_id=int(id_colaborador)).count()
 			with transaction.atomic():
-				Colaboradores.objects.filter(id=int(id_colaborador)).update(proyecto=maestro)
+				Colaboradores.objects.filter(id=id_colaborador).update(proyecto=maestro,zdel=timezone.now())
+				Streaming.objects.filter(id=id_colaborador).update(proyecto=maestro)
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)

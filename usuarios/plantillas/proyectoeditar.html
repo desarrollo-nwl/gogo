@@ -50,12 +50,12 @@
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						{%if Proyecto.interna%}
 						<select class="chosen-select form-control" name="tipo">
 							<option {%ifequal "Completa" Proyecto.tipo%}selected{%endifequal%} value="Completa">Encuesta Completa</option>
 							<option {%ifequal "Fragmentada" Proyecto.tipo%}selected{%endifequal%} value="Fragmentada">Encuesta Fragmentada</option>
-							<option {%ifequal "Longitudinal" Proyecto.tipo%}selected{%endifequal%} value="Longitudinal">Encuesta longitudinal</option>
-							<option {%ifequal "Circular" Proyecto.tipo%}selected{%endifequal%} value="Circular">Encuesta circular</option>
 						</select>
+						{%else%}<spam class="form-control">Encuesta {{Proyecto.tipo | escape}}</span>{%endif%}
 					</div>
 				</div>
 				<div class="form-group">
@@ -65,7 +65,7 @@
 					</div>
 				</div>
 				<input type="hidden" value="" name="int_encuesta"/>
-				<div class="form-group">
+				<div class="form-group {%if not Proyecto.interna%}oculto{%endif%}" >
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 						<div id="summernote3" class="summernote">{{Proyecto.proyectosdatos.cue_correo | safe |escape}}</div>
@@ -73,7 +73,7 @@
 				</div>
 				<input type="hidden" value="" name="cue_correo" />
 				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo para correo:</label>
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo Principal (correo):</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 						<input id ="logo" name="logo" type="file">
 						<img class="logos" src="{{Proyecto.proyectosdatos.logo.url}}"/>
@@ -85,13 +85,13 @@
 						<div id="summernote1" class="summernote">{{Proyecto.proyectosdatos.int_encuesta | safe |escape}}</div>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo para encuesta web:</label>
+				{%if Proyecto.interna%}<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 						<input id ="logoenc" name="logoenc" type="file" >
 						<img class="logos" src={%if Proyecto.proyectosdatos.logoenc %}"{{Proyecto.proyectosdatos.logoenc.url}}"{%else%}"{{Proyecto.proyectosdatos.logo.url}}"{%endif%} />
 					</div>
-				</div>
+				</div>{%endif%}
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Usuarios asociados:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
@@ -100,7 +100,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="form-group">
+				{%if Proyecto.interna%}<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional1%}value="{{Proyecto.proyectosdatos.opcional1 |escape}}"{%endif%}>
@@ -135,11 +135,7 @@
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
 						<input type="checkbox" {%if not Proyecto.proyectosdatos.censo%}checked{%endif%} name="censo" class="switch" />
 					</div>
-					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Consulta interna:</label>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
-						<input type="checkbox" {%if Proyecto.interna%}checked{%endif%} disabled name="interna" class="switch" />
-					</div>
-				</div>
+				</div>{%endif%}
 				<div class="container-fluid">
 					<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Actualizar proyecto</button>
 				</div>
@@ -153,8 +149,8 @@
 {%block scripts%}
 <script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
 <script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
-<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
-<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+{%if Proyecto.interna %}<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>{%endif%}
 <script src="{% static 'js/plugins/summernote/summernote.min.js' %}"></script>
 {% if 0%}
 <script>

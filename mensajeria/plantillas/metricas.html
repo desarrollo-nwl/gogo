@@ -48,7 +48,7 @@
 						<td>{{i.nombre     | capfirst | escape}}</td>
 						<td>{{i.apellido   | capfirst | escape}}</td>
 						<td>{{i.colaboradoresdatos.area  | escape}}</td>
-						<td>{%if Permisos.col_edit%}<a href="/participante/activar2/{{i.id}}/"><i title="Activar/Desactivar" class="fa fa-retweet m-r" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a>{%endif%}<a href="/respuestas/forzar/{{i.id}}/"><i title="Forzar envío" class="fa fa-envelope-o m-r" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a></td>
+						<td>{%if Permisos.col_edit%}<a href="/participante/activar2/{{i.id}}/"><i title="Activar/Desactivar" class="fa fa-retweet m-r" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a>{%endif%}{%if Proyecto.activo%}<a href="/respuestas/forzar/{{i.id}}/"><i title="Forzar envío" class="fa fa-envelope-o m-r" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>{%endif%}

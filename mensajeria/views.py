@@ -121,9 +121,12 @@ def detalladas(request):
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.det_see and permisos.res_see:
+	if permisos.consultor and permisos.det_see and permisos.res_see and proyecto.interna:
 		respuestas = Streaming.objects.filter(proyecto = proyecto
 						).select_related('colaborador','pregunta__variable')
+
+	elif permisos.consultor and permisos.det_see and permisos.res_see and (not proyecto.interna):
+		respuestas = Externa.objects.filter(proyecto = proyecto).select_related('pregunta__variable')
 	else:
 		return render_to_response('403.html')
 
@@ -157,7 +160,7 @@ def metricas(request):
 		'Metricas':metricas,'Average':average
 		},	context_instance=RequestContext(request))
 	else:
-		render_to_response('404.html')
+		return render_to_response('404.html')
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
@@ -186,7 +189,7 @@ def colaboradoreenviar(request,id_colaborador):
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor:
+	if permisos.consultor and proyecto.activo:
 		try:
 			colaborador = Colaboradores.objects.get(id=int(id_colaborador))
 			if Streaming.objects.filter(colaborador=int(id_colaborador),respuesta__isnull=True).exists():
@@ -250,7 +253,7 @@ def encuesta(request,id_proyecto,key):
 					'proyecto__tot_respuestas','proyecto__can_envio'
 					).get(key=key)
 		if not encuestado.estado:
-			return render_to_response('404.html')
+			return render_to_response('403.html')
 		stream = Streaming.objects.filter(
 					colaborador = encuestado,
 					respuesta__isnull = True).prefetch_related(
@@ -274,7 +277,7 @@ def encuesta(request,id_proyecto,key):
 	except:
 		acceso = True
 
-	if(stream and encuestado.proyecto.activo and acceso):
+	if stream and encuestado.proyecto.activo and acceso:
 		if (proyecto.tipo != 'Completa'):
 			i = 0
 			len_cuestionario = 0
@@ -291,9 +294,10 @@ def encuesta(request,id_proyecto,key):
 				try:
 					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
-					return HttpResponseRedirect('http://networkslab.co')
+					return HttpResponseRedirect('http://www.networkslab.co')
 		else:
 			cuestionario = stream
+			len_cuestionario = len(stream)
 			cuestionario_preguntas =[]
 			for i in cuestionario:
 				cuestionario_preguntas.append(i.pregunta)
@@ -342,23 +346,23 @@ def encuesta(request,id_proyecto,key):
 			return HttpResponseRedirect('http://networkslab.co')
 
 	return render_to_response('encuesta.html',{
-	'Encuestado':encuestado,'Preguntas':cuestionario_preguntas,
+	'Encuestado':encuestado,'Preguntas':cuestionario_preguntas,'Proyecto':proyecto
 	},	context_instance=RequestContext(request))
 
 
 @cache_control(no_store=True)
 def encuestaexterna(request,id_proyecto,key):
-	# try:
-	proyecto = Proyectos.objects.filter(id=id_proyecto).get(key=key)
-	if not proyecto.activo:
-		return render_to_response('403.html')
-	variables = Variables.objects.filter(proyecto = proyecto)
-	preguntas = Preguntas.objects.prefetch_related('respuestas_set'
-		).select_related('variable').filter(variable__in = variables,estado = True
-		).order_by('variable__posicion')
-	len_cuestionario = len(preguntas)
-	# except:
-	# 	return render_to_response('404.html')
+	try:
+		proyecto = Proyectos.objects.filter(id=id_proyecto).get(key=key)
+		if not proyecto.activo:
+			return render_to_response('403.html')
+		variables = Variables.objects.filter(proyecto = proyecto)
+		preguntas = Preguntas.objects.prefetch_related('respuestas_set'
+			).select_related('variable').filter(variable__in = variables,estado = True
+			).order_by('variable__posicion')
+		len_cuestionario = len(preguntas)
+	except:
+		return render_to_response('404.html')
 
 	if not len_cuestionario:
 		return render_to_response('403.html')
@@ -369,25 +373,7 @@ def encuestaexterna(request,id_proyecto,key):
 			proyecto.total = proyecto.tot_respuestas / proyecto.tot_preguntas
 		else:
 			proyecto.total = 0
-		try:
-			colaborador = Externa.objects.only('colaborador').filter(proyecto=proyecto
-							).aggregate(Max('colaborador'))
-			colaborador = colaborador['colaborador__max'] + 1
-		except:
-			colaborador = 1
-		streaming = []
-		for i in preguntas:
-			if i.abierta:
-				respuesta = request.POST[str(i.id)]
-			elif i.multiple:
-				respuesta = json.dumps(request.POST.getlist(str(i.id)))
-				if not respuesta:
-					respuesta = 'Ninguna seleccionada'
-			else:
-				respuesta = request.POST[str(i.id)]
-			streaming.append(Externa(colaborador=colaborador,proyecto=proyecto,pregunta=i,
-							fecharespuesta=timezone.now(),
-							respuesta=respuesta))
+
 		x = timezone.now()
 		hoy = date(year=x.year,month=x.month,day=x.day)
 		ayer = hoy - timedelta(1)
@@ -412,6 +398,21 @@ def encuestaexterna(request,id_proyecto,key):
 				metrica.acumulado = 1 + metricas_ayer.acumulado
 			except:
 				metrica.acumulado = 1
+
+		colaborador = metrica.acumulado
+		streaming = []
+		for i in preguntas:
+			if i.abierta:
+				respuesta = request.POST[str(i.id)]
+			elif i.multiple:
+				respuesta = json.dumps(request.POST.getlist(str(i.id)))
+				if not respuesta:
+					respuesta = 'Ninguna seleccionada'
+			else:
+				respuesta = request.POST[str(i.id)]
+			streaming.append(Externa(colaborador=colaborador,proyecto=proyecto,pregunta=i,
+							fecharespuesta=timezone.now(),
+							respuesta=respuesta))
 		with transaction.atomic():
 			metrica.save()
 			proyecto.save()
@@ -426,7 +427,67 @@ def encuestaexterna(request,id_proyecto,key):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def exportar(request):
+def exportarexterna(request):
+	import xlwt
+	date_format = xlwt.XFStyle()
+	date_format.num_format_str = 'dd/mm/yyyy'
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.res_exp:
+		response = HttpResponse(content_type='application/ms-excel')
+		import string
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet("GoAnalytics")
+		datos = proyecto.proyectosdatos
+		stream = Externa.objects.filter(proyecto=proyecto).select_related(
+				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
+		lens = len(stream)
+		k = 0
+		ws.write(0,0,u"Participante #")
+		ws.write(0,1,u"Variable")
+		ws.write(0,2,u"Pregunta")
+		ws.write(0,3,u"Numerico")
+		ws.write(0,4,u"Respuesta")
+		ws.write(0,5,u"Fecha de respuesta")
+		for i in xrange(lens):
+			k=0
+			ws.write(i+1,0,stream[i].colaborador)
+			ws.write(i+1,1,stream[i].pregunta.variable.nombre)
+			ws.write(i+1,2,stream[i].pregunta.texto)
+			if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
+				respuestas = json.loads(stream[i].respuesta)
+				ans = []
+				for respuesta in stream[i].pregunta.respuestas_set.all():
+					if respuesta.texto in respuestas:
+						ans.append(respuesta.numerico)
+				if ans:
+					ws.write(i+1,3,json.dumps(ans))
+				else:
+					ws.write(i+1,3,u"[]")
+			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
+				for respuesta in stream[i].pregunta.respuestas_set.all():
+					if stream[i].respuesta == respuesta.texto:
+						ws.write(i+1,3,respuesta.numerico)
+			else:
+				ws.write(i+1,3,"No aplica")
+			if stream[i].respuesta:
+				ws.write(i+1,4,stream[i].respuesta)
+			else:
+				ws.write(i+1,4,u"")
+			ws.write(i+1,5,stream[i].fecharespuesta.isoformat())
+		wb.save(response)
+		return response
+	else:
+		render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def exportarinterna(request):
 	import xlwt
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'

@@ -9,7 +9,6 @@ from usuarios.views import e400,e403,e404,e500
 #===============================================================================
 
 urlpatterns = patterns('usuarios.views',
-	url(r'^admin/', include(admin.site.urls)),
 	url(r'^$', 'index', name='index'),
 	url(r'^index/$', 'index'),
 	url(r'^acceder/$', 'acceder'),
@@ -18,6 +17,7 @@ urlpatterns = patterns('usuarios.views',
 	url(r'^menu/(?P<id_proyecto>[0-9]{1,10})/$', 'menu'),
 	url(r'^home2/$', 'home2'),
 	url(r'^logs/$', 'logs'),
+	url(r'^reportar/$', 'reportarerror'),
 	url(r'^salir/$', 'salir')
 )
 
@@ -91,7 +91,8 @@ urlpatterns += patterns('mensajeria.views',
     url(r'^respuestas/metricas/$', 'metricas'),
     url(r'^respuestas/forzar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreenviar'),
 	url(r'^participante/activar2/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivarmensajeria'),
-    url(r'^respuestas/exportar/$', 'exportar'),
+    url(r'^respuestas/exportar/interna/$', 'exportarinterna'),
+	url(r'^respuestas/exportar/externa/$', 'exportarexterna'),
 )
 
 
@@ -111,4 +112,5 @@ handler500 = e500
 if settings.DEBUG:
 	urlpatterns += patterns('',
 		url(r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.MEDIA_ROOT,}),
+		url(r'^admin/', include(admin.site.urls)),
 	)

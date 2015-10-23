@@ -1,5 +1,6 @@
 from django.contrib import admin
 from usuarios.models import *
+admin.site.register(Errores)
 admin.site.register(IndiceUsuarios)
 admin.site.register(Logs)
 admin.site.register(Permisos)

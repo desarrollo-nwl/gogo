@@ -38,13 +38,17 @@
 						<td><a href="/menu/{{i.id | escape}}/">{{i.nombre | capfirst | escape}}</a></td>
 						<td>{{i.empresa.nombre | capfirst | escape}}</td>
 						<td>
-							<span class="pull-center text-muted " >{{i.tot_respuestas}} de {{i.tot_aresponder}} | {{ i.total |floatformat:"-2" }}% Completo</span>
+							{%if i.interna%}
+							<span class="pull-center text-muted " >{{i.tot_respuestas}} de {{i.tot_aresponder}} | <b>{{ i.total |floatformat:"-2" }}</b>% Completo</span>
 							<a href="/menu/{{i.id | escape}}/">
 							<div class="pull-middle progress {% if  i.activo %}{% ifnotequal 100 i.1 %} progress-striped{% endifnotequal %}{% endif %} active" style="width: 250px;margin: 0 auto;">
 									<div class="progress-bar {% if i.activo %}  progress-bar-primary {%else%} progress-bar-success {% endif %}" role="progressbar" aria-valuenow="{{i.total |floatformat:"0"}}" aria-valuemin="0" aria-valuemax="100" style="width: {{i.total |floatformat:"0"}}%">
 									<span class="sr-only">{{ i.total |floatformat:"-2" }}% Completado. {% ifequal i.total 100 %}(success){% endifequal %}</span>
 								</div>
-							</div></a>
+								</div></a>
+							{%else%}
+							<b>{{i.tot_respuestas}}</b> respuestas en <b>{{i.total |floatformat:"0"}}</b> encuestas.
+							{%endif%}
 						</td>
 						{%if Permisos.consultor%}<td>{%if Permisos.pro_add and Permisos.var_add and Permisos.pre_add%}<a href="/proyecto/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pro_edit%}<a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>{%endif%}
 					</tr>{% endfor %}

@@ -18,6 +18,7 @@ class Colaboradores( models.Model ):
 	reenviados = models.PositiveSmallIntegerField( default = 0)
 	res_salud = models.PositiveSmallIntegerField( default = 0 )
 	respuestas = models.PositiveSmallIntegerField( default = 0 )
+	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):
 		return '%s %s ' % (self.nombre,self.apellido)

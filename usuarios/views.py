@@ -16,7 +16,7 @@ import random
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
-import smtplib,cgi
+import smtplib,cgi,os
 #===============================================================================
 # Front end
 #===============================================================================
@@ -368,10 +368,9 @@ def proyectonuevo(request):
 							nombre = request.POST['nombre'],
 							tipo = request.POST['tipo'],
 							key=key)
-				try:
-					if(request.POST['interna']):proyecto.interna = True
-				except:
-					pass
+
+				if int(request.POST['interna']):
+					proyecto.interna = True
 				proyecto.save()
 				proyecto.usuarios.add(request.user)
 				for i in request.POST.getlist('usuarios'):
@@ -424,7 +423,10 @@ def proyectoeditar(request,id_proyecto):
 						).select_related('proyectosdatos'
 						).get(id=int(id_proyecto))
 		except:
-			return render_to_response('403.html')
+			if request.user.is_staff:
+				proyecto = Proyectos.objects.select_related('empresa__nombre').get(id=int(id_proyecto))
+			else:
+				return render_to_response('403.html')
 		empresas = Empresas.objects.only('nombre').filter(usuario=request.user)
 		proyectos = Proyectos.objects.only('nombre').filter(usuarios=request.user)
 		usuarios = IndiceUsuarios.objects.get(usuario=request.user
@@ -434,7 +436,6 @@ def proyectoeditar(request,id_proyecto):
 			with transaction.atomic():
 				proyecto.empresa_id = request.POST['empresa']
 				proyecto.nombre = request.POST['nombre']
-				proyecto.tipo = request.POST['tipo']
 				proyecto.save()
 				proyecto.usuarios.clear()
 				usuarios_add = [i for i in request.POST.getlist('usuarios')]
@@ -444,10 +445,26 @@ def proyectoeditar(request,id_proyecto):
 				datos.tit_encuesta = request.POST['tit_encuesta']
 				datos.int_encuesta = request.POST['int_encuesta']
 				datos.cue_correo = request.POST['cue_correo']
-				try:datos.logo = request.FILES['logo']
-				except:pass
-				try:datos.logoenc = request.FILES['logoenc']
-				except:pass
+				try:
+					if request.FILES['logo']:
+						try:
+							command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
+							os.system(command)
+						except:
+							pass
+					datos.logo = request.FILES['logo']
+				except:
+					pass
+				try:
+					if request.FILES['logoenc']:
+						try:
+							command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
+							os.system(command)
+						except:
+							pass
+					datos.logoenc = request.FILES['logoenc']
+				except:
+					pass
 				try:datos.opcional1 = request.POST['opcional1']
 				except:pass
 				try:datos.opcional2 = request.POST['opcional2']
@@ -482,11 +499,27 @@ def proyectoeliminar(request,id_proyecto):
 	if permisos.consultor and permisos.pro_del:
 		try:
 			proyecto = Proyectos.objects.filter(usuarios=request.user
-			).select_related('empresa__nombre').get(id=int(id_proyecto))
-		except:return render_to_response('403.html')
+				).select_related('empresa__nombre').get(id=int(id_proyecto))
+		except:
+			if request.user.is_staff:
+				proyecto = Proyectos.objects.select_related('empresa__nombre').get(id=int(id_proyecto))
+			else:
+				return render_to_response('403.html')
 		if request.method == 'POST':
+			proyecto.zdel = timezone.now()
+			try:
+				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
+				os.system(command)
+			except:
+				pass
+			try:
+				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
+				os.system(command)
+			except:
+				pass
 			with transaction.atomic():
 				proyecto.usuarios.clear()
+				proyecto.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
 			return HttpResponseRedirect('/home/')
@@ -968,6 +1001,56 @@ def logs(request):
 		logs = Logs.objects.filter(usuario_username__in=aux)
 		return render_to_response('logs.html',{
 		'Activar':'Configuracion','activar':'Logs','Logs':logs,'Permisos':permisos
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+#===============================================================================
+#    Páginas de errores
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def reportarerror(request):
+	cache.delete(request.user)
+	permisos = request.user.permisos
+	if permisos.consultor:
+		aviso = None
+		if request.method == 'POST':
+			nom_log = request.user.first_name+' '+request.user.last_name
+			print nom_log
+			try:
+				error = Errores(usuario=nom_log,reporte=request.POST['reporte'],
+						imagen=request.FILES['imagen'])
+			except:
+				error = Errores(usuario=nom_log,reporte=request.POST['reporte'])
+
+			with transaction.atomic():
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Reportó un error",descripcion='Esperando respuesta')
+				error.save()
+				aviso = "ok"
+			server=smtplib.SMTP('smtp.mandrillapp.com',587)
+			server.ehlo()
+			server.starttls()
+			server.login('no-reply@gochangeanalytics.com','anVgUmTPhGyqT8J9D5yM1A')
+
+			destinatario = ['ilgaleanos@gmail.com','lamedinaa@gmail.com','jshenaop@gmail.com']
+			msg=MIMEMultipart()
+			msg["subject"]=  'Reporte de error.'
+			msg['To'] = email.utils.formataddr(('Respetado', destinatario))
+			msg['From'] = email.utils.formataddr(('Go salud', 'no-reply@gochangeanalytics.com'))
+
+			nombre = cgi.escape(nom_log).encode("ascii", "xmlcharrefreplace")
+			usuario =cgi.escape(request.user.username).encode("ascii", "xmlcharrefreplace")
+			html = 'El usuario '+nombre+' con usuario '+usuario.encode("ascii", "xmlcharrefreplace")+' ha reportado un error en Goanalytics: <br>'+cgi.escape(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
+			parte2=MIMEText(html,"html")
+			msg.attach(parte2)
+			# server.sendmail('no-reply@gochangeanalytics.com',destinatario,msg.as_string())
+			server.quit()
+		return render_to_response('reportarerror.html',{
+		'Activar':'CentroDeAyuda','activar':'Reportar','Permisos':permisos,
+		'Aviso':aviso
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')

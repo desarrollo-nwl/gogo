@@ -51,7 +51,7 @@
 				<div class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<select class="chosen-select form-control" name="tipo">
+						<select id ="tipo" class="chosen-select form-control" name="tipo">
 							<option value="Completa">Encuesta Completa</option>
 							<option value="Fragmentada">Encuesta Fragmentada</option>
 							<option value="Externa">Encuesta Externa</option>
@@ -71,7 +71,7 @@
 					</div>
 				</div>
 				<input type="hidden" value="" name="int_encuesta"/>
-				<div class="form-group">
+				<div id="cue_correo" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 						<div id="summernote3" class="summernote"><i>Este es el texto que llegará al correo para seguir a la encuesta </i><b>(requerido)</b></div>
@@ -79,13 +79,13 @@
 				</div>
 				<input type="hidden" value="" name="cue_correo" />
 				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo para correo:</label>
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo Principal (correo):</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 						<input id ="logo" name="logo" type="file" required>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo para encuesta web:</label>
+				<div id="logoenc" class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
 					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 						<input id ="logoenc" name="logoenc" type="file" >
 					</div>
@@ -98,46 +98,42 @@
 						</select>
 					</div>
 				</div>
-				<div class="form-group">
+				<div id="opcional1" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100">
 					</div>
 				</div>
-				<div class="form-group">
+				<div id="opcional2" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100">
 					</div>
 				</div>
-				<div class="form-group">
+				<div id="opcional3" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100">
 					</div>
 				</div>
-				<div class="form-group">
+				<div id="opcional4" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100">
 					</div>
 				</div>
-				<div class="form-group">
+				<div id="opcional5" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
 						<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100">
 					</div>
 				</div>
-				<div class="form-group">
+				<div id ="muestreo" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
 					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
 						<input type="checkbox" name="censo" class="switch" />
 					</div>
-					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Consulta interna:</label>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
-						<input type="checkbox" name="interna" class="switch" checked />
-					</div>
-				</div>
+				</div><input id="interna" type="hidden" name="interna" value="1" />
 				<div class="container-fluid">
 					<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Grabar proyecto</button>
 				</div>
@@ -207,7 +203,7 @@ $nombre.keyup(function(){
 	ban = false;
 	for (var i = 0; i < nnombres; i++) {
 		if($nombre.val() == nombres[i]){
-			$error.html('<p id="error" style="color:red">Este nombre ya existe. Favor de elegir otro.</p>');
+			$error.html('<p id="error" style="color:red">Este nombre ya existe. Por favor escoja otro.</p>');
 			ban = true;
 		}
 		if(! ban){$error.html('');}
@@ -216,4 +212,11 @@ $nombre.keyup(function(){
 });
 </script>{%endif%}
 <script>$(document).ready(function(){$(".summernote").summernote({height:150,minHeight:null,maxHeight:null}),$("div .note-insert.btn-group").hide(),$("div .note-view.btn-group").hide(),$("div .note-help.btn-group").hide(),$("div .note-table.btn-group").hide(),$("div .note-height.btn-group").hide(),$("#Dm").hide(),$("#Ppe").hide()});var edit=function(){$(".click3edit").summernote({focus:!0})};$("form").submit(function(){return $('input[name="int_encuesta"]').attr("value",$("#summernote1").code()),$('input[name="cue_correo"]').attr("value",$("#summernote3").code()),!0}),$("#logo").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen"),$("#Go").hide()}}),$("#logoenc").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen"),$("#Go").hide()}});var nombres=[],$nombre=$("#nombre"),$error=$("#error");{% for i in Proyectos%}nombres.push('{{i.nombre |escape|safe}}');{%endfor%}nnombres=nombres.length,$nombre.keyup(function(){ban=!1;for(var e=0;nnombres>e;e++)$nombre.val()==nombres[e]&&($error.html('<p id="error" style="color:red">Este nombre ya existe. Favor elegir otro.</p>'),ban=!0),ban||$error.html("");$nombre.val});</script>
+<script>var $interna=$('#interna'),$tipo=$('#tipo'),elementos =[$('#cue_correo'),$('#logoenc'),$('#muestreo'),$('#opcional1'),$('#opcional2'),$('#opcional3'),$('#opcional4'),$('#opcional5')];
+$tipo.on('change',function(e){
+	if($tipo.val() == "Completa"){for (var i = 0; i < 8; i++){elementos[i].show()};$interna.val(1)}
+	if($tipo.val() == "Fragmentada"){for (var i = 0; i < 8; i++){elementos[i].show()};$interna.val(1)}
+	if($tipo.val() == "Externa"){for (var i = 0; i < 8; i++){elementos[i].hide()};$interna.val(0)}
+});
+</script>
 {% endblock %}

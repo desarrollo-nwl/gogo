@@ -8,6 +8,7 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import Empresas, Proyectos, Logs
 
@@ -461,7 +462,7 @@ def variableliminar(request,id_variable):
 		if request.method == 'POST':
 			maestro = Proyectos.objects.get(id=1)
 			with transaction.atomic():
-				Variables.objects.filter(id=int(id_variable)).update(proyecto=maestro)
+				Variables.objects.filter(id=int(id_variable)).update(proyecto=maestro,zdel=timezone.now())
 				proyecto.max_variables -= 1
 				proyecto.save()
 				cache.set(request.user.username,proyecto,86400)
@@ -490,6 +491,7 @@ def preguntaeliminar(request,id_pregunta):
 		if request.method == 'POST':
 			pregunta.variable_id = 1
 			variable.max_preguntas -= 1
+			pregunta.zdel = timezone.now()
 			nom_log = request.user.first_name+' '+request.user.last_name
 			with transaction.atomic():
 				pregunta.save()

@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class="ibox-content">
-			{%if Permisos.det_see and Permisos.res_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+			{%if Permisos.det_see and Permisos.res_see and Proyecto.interna%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
 				<thead>
 					<tr>
 						<th>Participante</th>
@@ -47,7 +47,30 @@
 					</tr>{% endfor %}
 				</tbody>
 			</table>{%endif%}
-			{%if Permisos.res_exp%}<div class="container-fluid"><a href="/respuestas/exportar/" class="btn btn-primary pull-right m-t"><i class="fa fa-file-xls"></i> Exportar respuestas</a></div>{%endif%}
+			{%if Permisos.det_see and Permisos.res_see and not Proyecto.interna%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th>Participante</th>
+						<th>Fecha</th>
+						<th>Variable</th>
+						<th>Pregunta</th>
+						<th>Respuesta</th>
+					</tr>
+				</thead>
+				<tbody>
+					{%for i in Participantes%}
+					<tr>
+						<td>Participante_{{i.colaborador | escape}}</td>
+						<td>{{i.fecharespuesta | date:'Y-m-d D H:i'}}</td>
+						<td>{{i.pregunta.variable.nombre  | escape}}</td>
+						<td>{{i.pregunta.texto  | escape}}</td>
+						{%if i.pregunta.abierta%}<td>{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}
+						{%if i.pregunta.multiple%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.fecharespuesta%}{%if i.respuesta %}{{i.respuesta| jsonbr |safe}}{%else%}Ninguna seleccionada{%endif%}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
+						{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
+					</tr>{% endfor %}
+				</tbody>
+			</table>{%endif%}
+			{%if Permisos.res_exp%}<div class="container-fluid"><a href={%if Proyecto.interna%}"/respuestas/exportar/interna/"{%else%}"/respuestas/exportar/externa/"{%endif%} class="btn btn-primary pull-right m-t"><i class="fa fa-file-xls"></i> Exportar respuestas</a></div>{%endif%}
 		</div>
 	</div>
 </div>

@@ -13,6 +13,7 @@ class Variables( models.Model ):
 	nombre =  models.CharField( max_length = 255 )
 	posicion = models.PositiveSmallIntegerField( blank = True, null = True )
 	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
+	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):
 		return self.nombre
@@ -32,6 +33,7 @@ class Preguntas( models.Model ):
 	posicion = models.IntegerField()
 	texto = models.CharField( max_length = 255 )
 	variable = models.ForeignKey( Variables )
+	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):
 		return self.texto

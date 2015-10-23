@@ -15,6 +15,7 @@ class Empresas( models.Model ):
 	pais =  models.CharField(  max_length = 100 , blank = True, null = True )
 	sector = models.CharField(  max_length = 100, blank = True, null = True )
 	usuario = models.ForeignKey( User )
+	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):
 		return self.nombre
@@ -45,6 +46,7 @@ class Proyectos( models.Model ):
 	total = models.FloatField( default = 0 )
 	usuarios = models.ManyToManyField( User )
 	key = models.CharField(max_length=64, blank = True, null = True)
+	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):
 		return self.nombre
@@ -170,13 +172,13 @@ class Recuperar( models.Model ):
 
 class Errores( models.Model ):
 	id = models.AutoField( primary_key=True )
-	usuario = models.ForeignKey( User )
+	usuario = models.CharField( max_length = 500 )
 	reporte = models.TextField()
 	imagen = models.ImageField( upload_to = 'errores', blank = True, null = True )
 	fregistro = models.DateTimeField( auto_now_add = True )
 
 	def __unicode__(self):
-		return '%s'%self.usuario
+		return '%s'%self.id
 
 	class Meta:
 		managed = True

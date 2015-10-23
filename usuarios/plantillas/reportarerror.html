@@ -1,0 +1,54 @@
+{% extends 'dash.html'%}{% load staticfiles%}
+{%block title%} Home | Soporte{%endblock%}
+{%block contenido2%}
+<div class="row">
+<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Soporte</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/home/"><i class="fa fa-home"></i> Home</a>
+            </li>
+            <li class="active">soporte</li>
+        </ol>
+    </div>
+</div>
+
+<div class="m-t col-lg-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5 class="m-r-xs">{{user.first_name | capfirst | escape }}, aquí puedes solicitar citas, reportar errores, así como conceder felicitaciones.</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <form class="form-horizontal" enctype="multipart/form-data" method="POST" action=".">{%csrf_token%}
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Reporte:</label>
+                        <div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+                           <textarea class="form-control" placeholder="En caso de cita dejar un teléfono de contacto. En caso de error, describa claramente, que estaba realizando cuando sucedió." name="reporte" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Imagen adicional:</label>
+                        <div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+                            <input name="imagen" type="file">
+                        </div>
+                    </div>
+                {%if Aviso%}
+                <div class="form-group">
+                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"></div>
+                    <div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" style="color:#1d9d73;text-align:justify">Su reporte ha sido correctamente enviado. Gracias por su paciencia y colaboración. Nuestro equipo se comunicará cuando el error se encuentre resuelto o para pedir más detalles.</div>
+                </div>{%endif%}
+                <button type="submit" class="btn btn-primary pull-right m-r"><i class="fa fa-send"></i> Reportar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{%endblock%}
