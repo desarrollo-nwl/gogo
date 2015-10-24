@@ -58,6 +58,7 @@ class Proyectos( models.Model ):
 
 
 class ProyectosDatos( models.Model ):
+	asunto = models.CharField( max_length = 75, blank = True, null = True )
 	id = models.OneToOneField( Proyectos, primary_key = True )
 	cue_correo = models.TextField( blank = True, null = True )
 	fregistro = models.DateField( auto_now_add = True )

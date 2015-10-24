@@ -64,6 +64,13 @@
 						<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" maxlength="255" required value="{{Proyecto.proyectosdatos.tit_encuesta |escape}}">
 					</div>
 				</div>
+				{%if not Proyecto.interna%}
+				<div id="asunto" class="form-group">
+					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
+					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+						<input class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required maxlength="75" value="{{Proyecto.proyectosdatos.asunto|escape}}">
+					</div>
+				</div>{%endif%}
 				<input type="hidden" value="" name="int_encuesta"/>
 				<div class="form-group {%if not Proyecto.interna%}oculto{%endif%}" >
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>

@@ -208,7 +208,7 @@ def colaboradoreenviar(request,id_colaborador):
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
-						msg["subject"]=  unicodedata.normalize('NFKD', datos.tit_encuesta).encode('ascii','ignore')
+						msg["subject"]=  unicodedata.normalize('NFKD', datos.asunto).encode('ascii','ignore')
 						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 						urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":

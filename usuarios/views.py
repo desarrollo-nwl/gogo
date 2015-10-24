@@ -382,6 +382,8 @@ def proyectonuevo(request):
 						cue_correo = request.POST['cue_correo'],
 						logo = request.FILES['logo'],
 						)
+				try:datos.asunto = request.POST['asunto']
+				except:pass
 				try:datos.logoenc = request.FILES['logoenc']
 				except:pass
 				try:datos.opcional1 = request.POST['opcional1']
@@ -465,6 +467,8 @@ def proyectoeditar(request,id_proyecto):
 					datos.logoenc = request.FILES['logoenc']
 				except:
 					pass
+				try:datos.asunto = request.POST['asunto']
+				except:pass
 				try:datos.opcional1 = request.POST['opcional1']
 				except:pass
 				try:datos.opcional2 = request.POST['opcional2']

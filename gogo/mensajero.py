@@ -45,7 +45,7 @@ def sendmail(stream_i,stream,tiempo):
 	titulo = cgi.escape(stream_i.proyecto.proyectosdatos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 	url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
 	texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-	msg["subject"]=  unicodedata.normalize('NFKD', stream_i.proyecto.proyectosdatos.tit_encuesta).encode('ascii','ignore')
+	msg["subject"]=  unicodedata.normalize('NFKD', stream_i.proyecto.proyectosdatos.asunto).encode('ascii','ignore')
 	msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
 	html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 	parte2=MIMEText(html,"html")
