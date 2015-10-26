@@ -31,50 +31,53 @@ server.starttls()
 server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
 
 def sendmail(stream_i,stream,tiempo):
-	# try
-	colaborador = stream_i.colaborador
-	desde="Team@goanalytics.com"
-	destinatario = colaborador.email
-	msg=MIMEMultipart()
-	urlimg = 'http://www.lavozdemisclientes.com'+stream_i.proyecto.proyectosdatos.logo.url
-	if colaborador.colaboradoresdatos.genero.lower() == "femenino" :
-		genero = "a"
-	else:
-		genero = "o"
-	nombre = cgi.escape(colaborador.nombre).encode("ascii", "xmlcharrefreplace")
-	titulo = cgi.escape(stream_i.proyecto.proyectosdatos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
-	url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
-	texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-	msg["subject"]=  unicodedata.normalize('NFKD', stream_i.proyecto.proyectosdatos.asunto).encode('ascii','ignore')
-	msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
-	html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
-	parte2=MIMEText(html,"html")
-	msg.attach(parte2)
-	server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
-	with transaction.atomic():
-		colaborador.enviados =+1
-		colaborador.save()
-		Streaming.objects.filter(colaborador=i.colaborador,proyecto=i.proyecto).update(fec_controlenvio=tiempo)
-	print 'Enviado.'
+	try:
+		colaborador = stream_i.colaborador
+		desde="Team@goanalytics.com"
+		destinatario = colaborador.email
+		msg=MIMEMultipart()
+		urlimg = 'http://www.lavozdemisclientes.com'+stream_i.proyecto.proyectosdatos.logo.url
+		if colaborador.colaboradoresdatos.genero.lower() == "femenino" :
+			genero = "a"
+		else:
+			genero = "o"
+		nombre = cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+		titulo = cgi.escape(stream_i.proyecto.proyectosdatos.tit_encuestan).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+		url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
+		texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).decode("utf-8").encode("ascii", "xmlcharrefreplace"))
+		msg["subject"]=  cgi.escape(stream_i.proyecto.proyectosdatos.asunto).decode("utf-8")
+		msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
+		html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
+		parte2=MIMEText(html,"html")
+		msg.attach(parte2).encode("ascii", "xmlcharrefreplace")
+		server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+		with transaction.atomic():
+			colaborador.enviados =+1
+			colaborador.save()
+			Streaming.objects.filter(colaborador=i.colaborador,proyecto=i.proyecto).update(fec_controlenvio=tiempo)
+		print 'Enviado.'
 
-	for j in stream:
-		if j.colaborador_id == colaborador.id:
-			j.fec_controlenvio = tiempo
-	return stream
-	# except:
-	# 	pass
+		for j in stream:
+			if j.colaborador_id == colaborador.id:
+				j.fec_controlenvio = tiempo
+		return stream
+	except:
+		pass
 
 def enviar():
 	#solo postgresql soporta el distinct() de django
+	tiempo = timezone.now()
 	stream = Streaming.objects.select_related('colaborador__colaboradoresdatos',
 			'proyecto__proyectosdatos').filter(
 			fecharespuesta__isnull=True,proyecto__activo =True,
-			colaborador__estado=True,pregunta__estado=True).distinct('colaborador')
+			proyecto__proyectosdatos__finicio__lte=tiempo,
+			proyecto__proyectosdatos__ffin__gte=tiempo,
+			colaborador__estado=True,pregunta__estado=True)#.distinct('colaborador')
 	print stream
 	lens = len(stream)
-	tiempo = timezone.now()
+	print lens
 	for i in xrange(lens):
-		print i
+		# print i
 		if not stream[i].fec_controlenvio:#no se ha enviado?
 			stream = sendmail(stream[i],stream,tiempo)
 			print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'

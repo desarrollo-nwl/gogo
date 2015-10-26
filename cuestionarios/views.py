@@ -400,7 +400,7 @@ def variableclonar(request,id_variable):
 				pregunta.save()
 				for respuesta in pregunta.respuestas_set.all():
 					respuesta.id = None
-					respuesta.pregunta = variable
+					respuesta.pregunta = pregunta
 					respuestas_nuevas.append(respuesta)
 			Respuestas.objects.bulk_create(respuestas_nuevas)
 			nom_log = request.user.first_name+' '+request.user.last_name

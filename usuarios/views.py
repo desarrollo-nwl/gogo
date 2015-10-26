@@ -193,7 +193,7 @@ def recuperar(request):
 				Logs.objects.create(usuario=nom_log,usuario_username=usuario.username,accion="Olvido de contraseña",descripcion=usuario.first_name+" "+usuario.last_name)
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
-				nombre = cgi.escape(usuario.first_name).encode("ascii", "xmlcharrefreplace")
+				nombre = cgi.escape(usuario.first_name).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 				msg["subject"]=  'Cambio de clave.'
 				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
 				url = 'http://www.lavozdemisclientes.com/recuperar/'+key
@@ -438,6 +438,10 @@ def proyectoeditar(request,id_proyecto):
 			with transaction.atomic():
 				proyecto.empresa_id = request.POST['empresa']
 				proyecto.nombre = request.POST['nombre']
+				try:
+					proyecto.tipo = request.POST['tipo']
+				except:
+					pass
 				proyecto.save()
 				proyecto.usuarios.clear()
 				usuarios_add = [i for i in request.POST.getlist('usuarios')]
@@ -769,7 +773,7 @@ def usuarioreenviar(request,id_usuario):
 					msg["subject"]=  'Registro de cuenta.'
 					msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
 					url = 'http://www.lavozdemisclientes.com/activar/'+key
-					nombre = cgi.escape(usuario.first_name).encode("ascii", "xmlcharrefreplace")
+					nombre = cgi.escape(usuario.first_name).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 					html = crear_cuenta(nombre,url)
 					mensaje = MIMEText(html,"html")
 					msg.attach(mensaje)
@@ -929,7 +933,7 @@ def usuarionuevo(request):
 				msg["subject"]=  'Registro de cuenta.'
 				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
 				url = 'http://www.lavozdemisclientes.com/activar/'+key
-				nombre = cgi.escape(usuario.first_name).encode("ascii", "xmlcharrefreplace")
+				nombre = cgi.escape(usuario.first_name).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 				html = crear_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
@@ -1045,8 +1049,8 @@ def reportarerror(request):
 			msg['From'] = email.utils.formataddr(('Go salud', 'no-reply@gochangeanalytics.com'))
 
 			nombre = cgi.escape(nom_log).encode("ascii", "xmlcharrefreplace")
-			usuario =cgi.escape(request.user.username).encode("ascii", "xmlcharrefreplace")
-			html = 'El usuario '+nombre+' con usuario '+usuario.encode("ascii", "xmlcharrefreplace")+' ha reportado un error en Goanalytics: <br>'+cgi.escape(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
+			usuario = cgi.escape(request.user.username).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+			html = 'El usuario '+nombre+' con usuario '+usuario+' ha reportado un error en Goanalytics: <br>'+cgi.escape(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
 			parte2=MIMEText(html,"html")
 			msg.attach(parte2)
 			server.sendmail('no-reply@gochangeanalytics.com',destinatario,msg.as_string())

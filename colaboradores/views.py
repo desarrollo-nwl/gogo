@@ -72,36 +72,36 @@ def colaboradornuevo(request):
 					participante.estado = False
 				try:participante.movil = request.POST['movil']
 				except:pass
-				datos = ColaboradoresDatos(
-					id = participante,
-					area = request.POST['area'],
-					cargo = request.POST['cargo'],
-					ciudad = request.POST['ciudad'],
-					fec_ingreso = DT.strptime(str(request.POST['fec_ingreso']),'%d/%m/%Y'),
-					genero = request.POST['genero'],
-					niv_academico = request.POST['niv_academico'],
-					profesion = request.POST['profesion'],
-					regional = request.POST['regional'])
-				try:
-					if(request.POST['fec_nacimiento']):
-						datos.fec_nacimiento = DT.strptime(str(request.POST['fec_nacimiento']),'%d/%m/%Y')
-				except:
-					datos.fec_nacimiento = None
-				proyecto_datos = proyecto.proyectosdatos
-				if proyecto_datos.opcional1:
-					datos.opcional1 = request.POST['opcional1']
-				if proyecto_datos.opcional2:
-					datos.opcional2 = request.POST['opcional2']
-				if proyecto_datos.opcional3:
-					datos.opcional3 = request.POST['opcional3']
-				if proyecto_datos.opcional4:
-					datos.opcional4 = request.POST['opcional4']
-				if proyecto_datos.opcional5:
-					datos.opcional5 = request.POST['opcional5']
-				proyecto.tot_participantes += 1
-				streaming_crear = []
 				with transaction.atomic():
 					participante.save()
+					datos = ColaboradoresDatos(
+						id = participante,
+						area = request.POST['area'],
+						cargo = request.POST['cargo'],
+						ciudad = request.POST['ciudad'],
+						fec_ingreso = DT.strptime(str(request.POST['fec_ingreso']),'%d/%m/%Y'),
+						genero = request.POST['genero'],
+						niv_academico = request.POST['niv_academico'],
+						profesion = request.POST['profesion'],
+						regional = request.POST['regional'])
+					try:
+						if(request.POST['fec_nacimiento']):
+							datos.fec_nacimiento = DT.strptime(str(request.POST['fec_nacimiento']),'%d/%m/%Y')
+					except:
+						datos.fec_nacimiento = None
+					proyecto_datos = proyecto.proyectosdatos
+					if proyecto_datos.opcional1:
+						datos.opcional1 = request.POST['opcional1']
+					if proyecto_datos.opcional2:
+						datos.opcional2 = request.POST['opcional2']
+					if proyecto_datos.opcional3:
+						datos.opcional3 = request.POST['opcional3']
+					if proyecto_datos.opcional4:
+						datos.opcional4 = request.POST['opcional4']
+					if proyecto_datos.opcional5:
+						datos.opcional5 = request.POST['opcional5']
+					proyecto.tot_participantes += 1
+					streaming_crear = []
 					datos.save()
 					ColaboradoresMetricas.objects.create(id=participante)
 					variables = proyecto.variables_set.all()

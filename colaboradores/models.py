@@ -48,7 +48,7 @@ class ColaboradoresDatos( models.Model ):
 	regional = models.CharField( max_length = 200, blank = True, null = True )
 
 	def __unicode__(self):
-		return '%s' % (self.id)
+		return '%s %s' % (self.id.nombre,self.id.apellido)
 
 	class Meta:
 		managed = True

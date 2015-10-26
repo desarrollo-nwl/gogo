@@ -64,7 +64,7 @@
 						<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" maxlength="255" required value="{{Proyecto.proyectosdatos.tit_encuesta |escape}}">
 					</div>
 				</div>
-				{%if not Proyecto.interna%}
+				{%if Proyecto.interna%}
 				<div id="asunto" class="form-group">
 					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >

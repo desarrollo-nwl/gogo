@@ -208,22 +208,22 @@ def colaboradoreenviar(request,id_colaborador):
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
-						msg["subject"]=  unicodedata.normalize('NFKD', datos.asunto).encode('ascii','ignore')
+						msg["subject"]=  cgi.escape(datos.asunto).decode("utf-8")
 						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 						urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
 						else:
 							genero = "o"
-						nombre = cgi.escape(colaborador.nombre).encode("ascii", "xmlcharrefreplace")
-						titulo = cgi.escape(datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
+						nombre = cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+						titulo = cgi.escape(datos.tit_encuesta).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 						texto_correo = salvar_html(cgi.escape(datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 						url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 						mensaje = MIMEText(html,"html")
 						msg.attach(mensaje)
 						with transaction.atomic():
-							colaborador.reenviados =+1
+							colaborador.reenviados = colaborador.reenviados + 1
 							Streaming.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
 							colaborador.save()
 							server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
@@ -424,6 +424,12 @@ def encuestaexterna(request,id_proyecto,key):
 	'Proyecto':proyecto,'Preguntas':preguntas,
 	},	context_instance=RequestContext(request))
 
+@cache_control(no_store=True)
+def encuestaexterna2(request,id_proyecto,key):
+	link = '/externa/'+id_proyecto+'/'+key
+	return render_to_response('externa2.html',{
+	'Link':link
+	},	context_instance=RequestContext(request))
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
