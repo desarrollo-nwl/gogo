@@ -16,6 +16,7 @@ from usuarios.models import *
 from django.db.models import Avg
 from datetime import timedelta,date
 from django.utils import timezone
+import datetime
 import random
 import json
 
@@ -260,6 +261,8 @@ def encuesta(request,id_proyecto,key):
 					'pregunta__respuestas_set').select_related('pregunta__variable'
 					).order_by('pregunta__variable__posicion')
 		proyecto = encuestado.proyecto
+		tiempo = datetime.date.today()
+		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto)
 		total_cuestionario = len(stream)
 	except:
 		return render_to_response('404.html')
@@ -353,7 +356,9 @@ def encuesta(request,id_proyecto,key):
 @cache_control(no_store=True)
 def encuestaexterna(request,id_proyecto,key):
 	try:
-		proyecto = Proyectos.objects.filter(id=id_proyecto).get(key=key)
+		tiempo = datetime.date.today()
+		proyecto = Proyectos.objects.select_related('proyectosdatos').filter(id=id_proyecto).get(key=key)
+		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto)
 		if not proyecto.activo:
 			return render_to_response('403.html')
 		variables = Variables.objects.filter(proyecto = proyecto)

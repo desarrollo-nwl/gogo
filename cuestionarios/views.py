@@ -351,6 +351,11 @@ def proyectoclonar(request,id_proyecto):
 		proyecto.id = None
 		proyecto.nombre = 'Copia de '+proyecto.nombre
 		with transaction.atomic():
+			proyecto.tot_preguntas = 0
+			proyecto.tot_participantes = 0
+			proyecto.tot_aresponder = 0
+			proyecto.tot_respuestas = 0
+			proyecto.total = 0
 			proyecto.save()
 			datos.id = proyecto
 			datos.save()

@@ -16,13 +16,14 @@ from mensajeria.corrector import salvar_html
 from mensajeria.models import *
 from usuarios.strings import *
 from django.db import transaction
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,date
 from django.utils import timezone
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
 import smtplib,cgi,unicodedata
+import datetime
 from django.db import models
 
 server=smtplib.SMTP('smtp.mandrillapp.com',587)
@@ -66,7 +67,7 @@ def sendmail(stream_i,stream,tiempo):
 
 def enviar():
 	#solo postgresql soporta el distinct() de django
-	tiempo = timezone.now()
+	tiempo = datetime.date.today()
 	stream = Streaming.objects.select_related('colaborador__colaboradoresdatos',
 			'proyecto__proyectosdatos').filter(
 			fecharespuesta__isnull=True,proyecto__activo =True,
