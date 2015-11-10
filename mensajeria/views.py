@@ -273,7 +273,7 @@ def encuesta(request,id_proyecto,key):
 						respuesta__isnull=False
 						).latest('fecharespuesta')
 		pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
-		if (pronto_acceso <= proyecto.prudenciamin):
+		if (pronto_acceso < proyecto.prudenciamin):
 			acceso = False
 		else:
 			acceso = True
@@ -316,7 +316,7 @@ def encuesta(request,id_proyecto,key):
 		key = ''.join(random.sample(chars, 64))
 		encuestado.key = key
 		encuestado.respuestas += 1
-		proyecto.total = 100*(proyecto.tot_respuestas/proyecto.tot_aresponder)
+		proyecto.total = 100*(1.0*proyecto.tot_respuestas/proyecto.tot_aresponder)
 		metricas = encuestado.colaboradoresmetricas
 		vec_metricas = json.loads(metricas.propension)
 		try:

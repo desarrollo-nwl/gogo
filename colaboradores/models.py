@@ -13,7 +13,7 @@ class Colaboradores( models.Model ):
 	key = models.CharField( max_length = 64 )
 	movil = models.CharField(max_length = 32, blank = True, null = True)
 	nombre = models.CharField( max_length = 45 )
-	propension = models.FloatField( default = 0 )
+	propension = models.FloatField( default = -1 )
 	proyecto = models.ForeignKey( Proyectos )
 	reenviados = models.PositiveSmallIntegerField( default = 0)
 	res_salud = models.PositiveSmallIntegerField( default = 0 )

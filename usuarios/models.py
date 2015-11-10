@@ -58,8 +58,8 @@ class Proyectos( models.Model ):
 
 
 class ProyectosDatos( models.Model ):
-	asunto = models.CharField( max_length = 75, blank = True, null = True )
 	id = models.OneToOneField( Proyectos, primary_key = True )
+	asunto = models.CharField( max_length = 75, blank = True, null = True )
 	cue_correo = models.TextField( blank = True, null = True )
 	fregistro = models.DateField( auto_now_add = True )
 	int_encuesta = models.TextField( blank = True, null = True )
@@ -72,6 +72,7 @@ class ProyectosDatos( models.Model ):
 	opcional3 = models.CharField( max_length=100, blank=True, null=True )
 	opcional4 = models.CharField( max_length=100, blank=True, null=True )
 	opcional5 = models.CharField( max_length=100, blank=True, null=True )
+	msm = models.BooleanField( default = False )
 	finicio = models.DateField( blank = True, null = True)
 	ffin = models.DateField( blank = True, null = True)
 

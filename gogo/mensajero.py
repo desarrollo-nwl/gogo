@@ -33,71 +33,74 @@ server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
 
 def sendmail(stream_i,stream,tiempo):
 	try:
-		colaborador = stream_i.colaborador
-		desde="Team@goanalytics.com"
-		destinatario = colaborador.email
-		msg=MIMEMultipart()
-		urlimg = 'http://www.lavozdemisclientes.com'+stream_i.proyecto.proyectosdatos.logo.url
-		if colaborador.colaboradoresdatos.genero.lower() == "femenino" :
-			genero = "a"
-		else:
-			genero = "o"
-		nombre = cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
-		titulo = cgi.escape(stream_i.proyecto.proyectosdatos.tit_encuestan).decode("utf-8").encode("ascii", "xmlcharrefreplace")
-		url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
-		texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).decode("utf-8").encode("ascii", "xmlcharrefreplace"))
-		msg["subject"]=  cgi.escape(stream_i.proyecto.proyectosdatos.asunto).decode("utf-8")
-		msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
-		html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
-		parte2=MIMEText(html,"html")
-		msg.attach(parte2).encode("ascii", "xmlcharrefreplace")
-		server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
 		with transaction.atomic():
-			colaborador.enviados =+1
+			colaborador = stream_i.colaborador
+			desde="Team@goanalytics.com"
+			destinatario = colaborador.email
+			msg=MIMEMultipart()
+			urlimg = 'http://www.lavozdemisclientes.com'+stream_i.proyecto.proyectosdatos.logo.url
+			if colaborador.colaboradoresdatos.genero.lower() == "femenino" :
+				genero = "a"
+			else:
+				genero = "o"
+			nombre = cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+			titulo = cgi.escape(stream_i.proyecto.proyectosdatos.tit_encuesta).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+			url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
+			texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
+			msg["subject"]=  cgi.escape(stream_i.proyecto.proyectosdatos.asunto).decode("utf-8")
+			msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
+			html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
+			parte2=MIMEText(html,"html")
+			msg.attach(parte2)
+			colaborador.enviados +=1
 			colaborador.save()
-			Streaming.objects.filter(colaborador=i.colaborador,proyecto=i.proyecto).update(fec_controlenvio=tiempo)
-		print 'Enviado.'
+			Streaming.objects.filter(colaborador=colaborador,proyecto=stream_i.proyecto).update(fec_controlenvio=tiempo)
+			server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+		# print 'Enviado.'
 
 		for j in stream:
 			if j.colaborador_id == colaborador.id:
 				j.fec_controlenvio = tiempo
 		return stream
 	except:
-		pass
+		return stream
 
 def enviar():
 	#solo postgresql soporta el distinct() de django
-	tiempo = datetime.date.today()
+	tiempo = datetime.datetime.now()
 	stream = Streaming.objects.select_related('colaborador__colaboradoresdatos',
 			'proyecto__proyectosdatos').filter(
 			fecharespuesta__isnull=True,proyecto__activo =True,
 			proyecto__proyectosdatos__finicio__lte=tiempo,
 			proyecto__proyectosdatos__ffin__gte=tiempo,
 			colaborador__estado=True,pregunta__estado=True)#.distinct('colaborador')
-	print stream
+	# print stream
 	lens = len(stream)
-	print lens
+	# print lens
 	for i in xrange(lens):
-		# print i
 		if not stream[i].fec_controlenvio:#no se ha enviado?
 			stream = sendmail(stream[i],stream,tiempo)
-			print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
+			# print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
 		else:
 			delta = tiempo - stream[i].fec_controlenvio
-			if stream[i].colaborador.propension:
+			if stream[i].colaborador.propension or stream[i].colaborador.propension>=0:
 				propension = stream[i].colaborador.propension - 0.83 #calibrador para que no se mueva a derecha
 				if ( delta.days >= stream[i].proyecto.prudenciamin and delta.days >= propension ):  # x > p > m
 					stream = sendmail(stream[i],stream,tiempo)
-					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en bajo lapsus'
-				elif ( delta.days <= stream[i].proyecto.prudenciamax and delta.days >= propension ): # M > x > p
+					delta = tiempo - stream[i].fec_controlenvio
+					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en bajo lapsus'
+				elif ( delta.days <= stream[i].proyecto.prudenciamax and delta.days >= propension and delta.days >= stream[i].proyecto.prudenciamin): # M > x > p
 					stream = sendmail(stream[i],stream,tiempo)
-					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en medio lapsus'
+					delta = tiempo - stream[i].fec_controlenvio
+					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en medio lapsus'
 				elif delta.days >= stream[i].proyecto.prudenciamax: # x > M con propension
 					stream = sendmail(stream[i],stream,tiempo)
-					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
+					delta = tiempo - stream[i].fec_controlenvio
+					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 			elif delta.days >= stream[i].proyecto.prudenciamax: # x > M sin propension
-					stream = sendmail(stream[i],stream,tiempo)
-					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
+				stream = sendmail(stream[i],stream,tiempo)
+				delta = tiempo - stream[i].fec_controlenvio
+				# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 enviar()
 server.quit()
-print 'Finalizado'
+# print 'Finalizado'
