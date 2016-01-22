@@ -1,161 +1,148 @@
-{% extends "dash.html" %}
-{% load staticfiles%}
+{% extends "dash.html" %}{%load staticfiles %}
 {% block title %} Datos del proyecto {% endblock %}
-{% block head2%}
-<link href="{% static 'css/plugins/chosen/chosen.min.css' %}" rel="stylesheet">
+{%block head2%}<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 <link href="{% static 'css/plugins/summernote/summernote.min.css' %}" rel="stylesheet">
 <style>.chosen-container-single .chosen-single {border-radius:0%;}div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom: 10px;}</style>
 {% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Editar proyecto</span></i></a></li>
+{%endblock%}
 {% block contenido2 %}
 <div class="row">
-<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
-	<div class="col-lg-12">
-		<h2>Editar proyecto</h2>
-		<ol class="breadcrumb">
-			<li ><a href="/home/"><i class="fa fa-home"></i> Home</a>
-			</li>
-			<li>Proyectos</li>
-		</ol>
-	</div>
-</div>
-<div class="m-t col-lg-12">
-	<div class="ibox float-e-margins">
-		<div class="ibox-title">
-			<h5 class="m-r-xs">Complete los campos correctamente:</h5>
-			<div class="ibox-tools">
-				<a class="collapse-link">
-					<i class="fa fa-chevron-up"></i>
-				</a>
-			</div>
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Complete los campos correctamente:</h4>
 		</div>
-		<div class="ibox-content">
-		<form method="POST" class="form-horizontal" enctype="multipart/form-data" action=".">{% csrf_token %}
-			<div class="row">
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-xs-3 col-sm-3 control-label required">Empresa:</label>
-					<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
-						<select class="chosen-select form-control" name="empresa" required>
-							<option value="">Seleccione una empresa</option>
-							{%for i in Empresas%}<option {%ifequal i.id Proyecto.empresa_id%}selected{%endifequal%} value="{{i.id}}">{{i}}</option>{%endfor%}
-						</select>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<form method="POST" class="form-horizontal" enctype="multipart/form-data" action=".">{% csrf_token %}
+				<div class="row">
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-xs-3 col-sm-3 control-label required">Empresa:</label>
+						<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
+							<select class="select2 form-control" name="empresa" required>
+								<option value="">Seleccione una empresa</option>
+								{%for i in Empresas%}<option {%ifequal i.id Proyecto.empresa_id%}selected{%endifequal%} value="{{i.id}}">{{i}}</option>{%endfor%}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre de proyecto:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" value="{{Proyecto.nombre |escape}}" required>
+							<div id="error"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							{%if Proyecto.interna%}
+							<select class="select2 form-control" name="tipo">
+								<option {%ifequal "Completa" Proyecto.tipo%}selected{%endifequal%} value="Completa">Encuesta Completa</option>
+								<option {%ifequal "Fragmentada" Proyecto.tipo%}selected{%endifequal%} value="Fragmentada">Encuesta Fragmentada</option>
+							</select>
+							{%else%}<spam class="form-control">Encuesta {{Proyecto.tipo | escape}}</span>{%endif%}
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Título de la encuesta:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" maxlength="255" required value="{{Proyecto.proyectosdatos.tit_encuesta |escape}}">
+						</div>
+					</div>
+					{%if Proyecto.interna%}
+					<div id="asunto" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required maxlength="75" value="{{Proyecto.proyectosdatos.asunto|escape}}">
+						</div>
+					</div>{%endif%}
+					<input type="hidden" value="" name="int_encuesta"/>
+					<div class="form-group {%if not Proyecto.interna%}oculto{%endif%}" >
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<div id="summernote3" class="summernote">{{Proyecto.proyectosdatos.cue_correo | safe |escape}}</div>
+						</div>
+					</div>
+					<input type="hidden" value="" name="cue_correo" />
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo Principal (correo):</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<input id ="logo" name="logo" type="file">
+							<img class="logos" src="{{Proyecto.proyectosdatos.logo.url}}"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Introducción a la encuesta web:</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<div id="summernote1" class="summernote">{{Proyecto.proyectosdatos.int_encuesta | safe |escape}}</div>
+						</div>
+					</div>
+					{%if Proyecto.interna%}<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<input id ="logoenc" name="logoenc" type="file" >
+							<img class="logos" src={%if Proyecto.proyectosdatos.logoenc %}"{{Proyecto.proyectosdatos.logoenc.url}}"{%else%}"{{Proyecto.proyectosdatos.logo.url}}"{%endif%} />
+						</div>
+					</div>{%endif%}
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Usuarios asociados:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<select class="select2 form-control" multiple name="usuarios">
+								{%for i in Usuarios%}<option {%if i.usuario in Proyecto.usuarios.all%}selected{%endif%} value="{{i.usuario_id}}">{{i.usuario.first_name|capfirst|escape}} {{i.usuario.last_name|capfirst|escape}}</option>{%endfor%}
+							</select>
+						</div>
+					</div>
+					{%if Proyecto.interna%}<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional1%}value="{{Proyecto.proyectosdatos.opcional1 |escape}}"{%endif%}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional2%}value="{{Proyecto.proyectosdatos.opcional2 |escape}}"{%endif%}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional3%}value="{{Proyecto.proyectosdatos.opcional3 |escape}}"{%endif%}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional4%}value="{{Proyecto.proyectosdatos.opcional4 |escape}}"{%endif%}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional5%}value="{{Proyecto.proyectosdatos.opcional5 |escape}}"{%endif%}>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
+						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
+							<input type="checkbox" {%if not Proyecto.proyectosdatos.censo%}checked{%endif%} name="censo" class="switch" />
+						</div>
+					</div>{%endif%}
+					<div class="container-fluid">
+						<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Actualizar proyecto</button>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre de proyecto:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" value="{{Proyecto.nombre |escape}}" required>
-						<div id="error"></div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						{%if Proyecto.interna%}
-						<select class="chosen-select form-control" name="tipo">
-							<option {%ifequal "Completa" Proyecto.tipo%}selected{%endifequal%} value="Completa">Encuesta Completa</option>
-							<option {%ifequal "Fragmentada" Proyecto.tipo%}selected{%endifequal%} value="Fragmentada">Encuesta Fragmentada</option>
-						</select>
-						{%else%}<spam class="form-control">Encuesta {{Proyecto.tipo | escape}}</span>{%endif%}
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Título de la encuesta:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" maxlength="255" required value="{{Proyecto.proyectosdatos.tit_encuesta |escape}}">
-					</div>
-				</div>
-				{%if Proyecto.interna%}
-				<div id="asunto" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required maxlength="75" value="{{Proyecto.proyectosdatos.asunto|escape}}">
-					</div>
-				</div>{%endif%}
-				<input type="hidden" value="" name="int_encuesta"/>
-				<div class="form-group {%if not Proyecto.interna%}oculto{%endif%}" >
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<div id="summernote3" class="summernote">{{Proyecto.proyectosdatos.cue_correo | safe |escape}}</div>
-					</div>
-				</div>
-				<input type="hidden" value="" name="cue_correo" />
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo Principal (correo):</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<input id ="logo" name="logo" type="file">
-						<img class="logos" src="{{Proyecto.proyectosdatos.logo.url}}"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Introducción a la encuesta web:</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<div id="summernote1" class="summernote">{{Proyecto.proyectosdatos.int_encuesta | safe |escape}}</div>
-					</div>
-				</div>
-				{%if Proyecto.interna%}<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<input id ="logoenc" name="logoenc" type="file" >
-						<img class="logos" src={%if Proyecto.proyectosdatos.logoenc %}"{{Proyecto.proyectosdatos.logoenc.url}}"{%else%}"{{Proyecto.proyectosdatos.logo.url}}"{%endif%} />
-					</div>
-				</div>{%endif%}
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Usuarios asociados:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<select class="chosen-select form-control" multiple name="usuarios">
-							{%for i in Usuarios%}<option {%if i.usuario in Proyecto.usuarios.all%}selected{%endif%} value="{{i.usuario_id}}">{{i.usuario.first_name|capfirst|escape}} {{i.usuario.last_name|capfirst|escape}}</option>{%endfor%}
-						</select>
-					</div>
-				</div>
-				{%if Proyecto.interna%}<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional1%}value="{{Proyecto.proyectosdatos.opcional1 |escape}}"{%endif%}>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional2%}value="{{Proyecto.proyectosdatos.opcional2 |escape}}"{%endif%}>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional3%}value="{{Proyecto.proyectosdatos.opcional3 |escape}}"{%endif%}>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional4%}value="{{Proyecto.proyectosdatos.opcional4 |escape}}"{%endif%}>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100" {% if Proyecto.proyectosdatos.opcional5%}value="{{Proyecto.proyectosdatos.opcional5 |escape}}"{%endif%}>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
-						<input type="checkbox" {%if not Proyecto.proyectosdatos.censo%}checked{%endif%} name="censo" class="switch" />
-					</div>
-				</div>{%endif%}
-				<div class="container-fluid">
-					<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Actualizar proyecto</button>
-				</div>
-			</div>
-		</form>
+			</form>
 		</div>
 	</div>
 </div>
-</div>
-{%endblock%}
+{% endblock %}
+
+
 {%block scripts%}
-<script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
-<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script>$('.select2').select2()</script>
 {%if Proyecto.interna %}<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>{%endif%}
 <script src="{% static 'js/plugins/summernote/summernote.min.js' %}"></script>

@@ -1,60 +1,160 @@
 {% extends "base.html" %}{% block head %}{% load staticfiles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link href="{% static 'css/estilo.min.css' %}" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>
+<link href="{% static 'css/icons.min.css' %}" rel="stylesheet" />
+<!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" /> -->
+<link href="{% static 'css/plugins.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/main.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/custom.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/icons.min.css' %}" rel="stylesheet" />
+<!-- Fav and touch icons -->
+<link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/ico/favicon144.png' %}">
+<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/ico/favicon114.png' %}">
+<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/ico/favicon72.png' %}">
+<link rel="apple-touch-icon" href="{% static 'img/ico/favicon57.png' %}">
+<!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
+<meta name="msapplication-TileColor" content="#3399cc" />
 {%block head2%}{%endblock%}{%endblock%}{%block contenido%}
-<div id="wrapper">
-<nav class="navbar-default navbar-static-side" role="navigation" style="z-index:999;">
-	<div class="sidebar-collapse">
-		<ul class="nav" id="side-menu">
-		<li class="nav-header">
-			<div class="dropdown profile-element">
-				<span><img alt="image" src="{% static 'img/GoChange.png' %}"/></span>
+	<!--[if lt IE 9]>
+	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+        <!-- .page-navbar -->
+        <div id="header" class="page-navbar">
+            <!-- .navbar-brand -->
+            <a href="/index/" class="navbar-brand hidden-xs hidden-sm">
+                <img src="{% static 'img/logo.png' %}" class="logo hidden-xs" alt="Dynamic logo" style="margin:5px 0px 0px -10px">
+                <img src="{% static 'img/logosm.png' %}" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo" style="margin:5px 0px 0px -5px">
+            </a>
+            <!-- / navbar-brand -->
+            <!-- .no-collapse -->
+            <div id="navbar-no-collapse" class="navbar-no-collapse">
+                <!-- top left nav -->
+                <ul class="nav navbar-nav">
+                    <li class="toggle-sidebar">
+                        <a href="#">
+                            <i class="fa fa-reorder"></i>
+                            <span class="sr-only">Colapsar sidebar</span>
+                        </a>
+                    </li>
+                    {%block navegacion%}{%endblock%}
+                </ul>
+                <!-- / top left nav -->
+                <!-- top right nav -->
+                <ul class="nav navbar-nav navbar-right">
+					<li>
+                        <a href="/salir/">
+                            <i class="fa fa-power-off"></i>
+                            <span class="sr-only">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- / top right nav -->
+            </div>
+            <!-- / collapse -->
+        </div>
+        <!-- / page-navbar -->
+
+        <!-- #wrapper -->
+        <div id="wrapper">
+            <!-- .page-sidebar -->
+            <aside id="sidebar" class="page-sidebar hidden-md hidden-sm hidden-xs">
+                <!-- Start .sidebar-inner -->
+                <div class="sidebar-inner">
+                    <!-- Start .sidebar-scrollarea -->
+                    <div class="sidebar-scrollarea">
+                        <!--  .sidebar-panel -->
+                        <div class="sidebar-panel">
+                            <h5 class="sidebar-panel-title">Navegación</h5>
+                        </div>
+                        <!-- / .sidebar-panel -->
+                        <!-- .side-nav -->
+                        <div class="side-nav">
+                            <ul class="nav">
+                                <li id="MisProyectos"><a href="/home/"><i class=" l-basic-home"></i><span class="txt">Mis proyectos</span></a></li>
+
+                                <li id="Configuracion">
+                                    <a href="#"><i class="l-basic-gear"></i> <span class="txt">Configuración</span></a>
+                                    <ul class="sub">
+                                        <li><a id="Empresas" href="/empresas/"><span class="txt">Empresas</span></a></li>
+                                        <li><a id="Usuarios" href="/usuarios/"><span class="txt">Usuarios</span></a></li>
+                                        <li><a id="Logs" href="/logs/"><span class="txt">Registro histórico </span></a></li>
+                                        <li><a id="Cuenta" href="/cuenta/"><span class="txt">Contraseña</span></a></li>
+										<li><a id="Licencia" href="/licencia/"><span class="txt">Información de licencia</span></a></li>
+                                    </ul>
+                                </li>
+
+								<li>
+                                    <a href="#"><i class="l-basic-flag1"></i> <span class="txt">Centro de ayuda</span></a>
+                                    <ul class="sub">
+                                        <li><a id="Reportar" href="/reportar/"><span class="txt">Soporte</span></a></li>
+                                        <li><a id="Entrenamiento" href="#"><span class="txt">Entrenamiento</span></a></li>
+                                        <li><a id="Preguntas" href="#"><span class="txt">Preguntas frecuentes </span></a></li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <!-- / side-nav -->
+                    </div>
+                    <!-- End .sidebar-scrollarea -->
+                </div>
+                <!-- End .sidebar-inner -->
+            </aside>
+            <!-- / page-sidebar -->
+
+			<div class="page-content sidebar-page right-sidebar-page clearfix">
+			{%block contenido2%}{%endblock%}
 			</div>
-		</li>
-		<li id="MisProyectos"><a href="/home/"><i class="fa fa-home"></i><span class="nav-label"> Mis proyectos</span></a></li>
-		<li id="Configuracion">
-			<a href="#"><i class="fa fa-gear fa-fw"></i><span class="nav-label"> Configuración</span></a>
-			<ul class="nav nav-second-level">
-				{%if Permisos.consultor%}<li id="Empresas"><a href="/empresas/"><i class="fa fa-building-o"></i> Empresas</a></li>
-				{%if Permisos.cre_usuarios%}<li id="Usuarios"><a href="/usuarios/"><i class="fa fa-group"></i> Usuarios</a></li>{%endif%}
-				<li id="Logs"><a href="/logs/"><i class="fa fa-history"></i> Registro histórico</a></li>{%endif%}
-				<li id="GestionarCuenta"><a href="#"><i class="fa fa-gears"></i> Gestionar cuenta</a>
-					<ul class="nav nav-third-level">
-						<li id="Licencia"><a href="/licencia/"><i class="fa fa-key"></i> Información de licencia</a></li>
-						<li id="Cuenta"><a href="/cuenta/"><i class="fa fa-expeditedssl"></i> Cambiar contraseña</a></li>
-					</ul>
-				</li>
-			</ul>
-		</li>
-		<li id="CentroDeAyuda">
-			<a href="#"><i class="fa fa-support fa-fw"></i><span class="nav-label"> Centro de ayuda</span></a>
-			<ul class="nav nav-second-level">
-				<!-- <li id="CitaAsesoria"><a href="/asesoria/"><i class="fa fa-tty fa-fw"></i> Cita asesoría</a></li> -->
-				<li id="Reportar"><a href="/reportar/"><i class="fa fa-tty fa-fw"></i> Soporte</a></li>
-				<li id="Entrenamiento"><a href="#"><i class="fa fa-graduation-cap fa-fw"></i> Entrenamiento</a>
-					<ul class="nav nav-third-level">
-						<li id="Entrenamiento"><a href="#"><i class="fa fa-graduation-cap"></i> Entrenamiento</a></li>
-						<li id="GuiaDeUso"><a href="#"><i class="fa fa-book"></i>Guía de uso</a></li>
-					</ul>
-				</li>
-				<li id="PreguntasFrecuentes"><a href="#"><i class="fa fa-question-circle fa-fw"></i> Preguntas Frecuentes</a></li>
-			</ul>
-		</li>
-		<li ><a href="/salir/"><i class="fa fa-user fa-sign-out"></i><span class="nav-label">Cerrar sesión</span></a></li>
-		</ul>
-	</div>
-	<!-- Fin Barra de Navegación Lateral -->
-</nav>
-<div id="page-wrapper" class="gray-bg animated fadeInRight">
-<style>#BC{position:absolute;margin:8px 0 0 -26px;-ms-transform:rotate(90deg);-webkit-transform:rotate(90deg);transform:rotate(90deg);background:#27A9E1;border:1px solid #27A9E1;outline: 0}#BC:hover{margin-left:-20px;-moz-transition-property:margin-left;-moz-transition-duration:.6s;-webkit-transition-property:margin-left;-webkit-transition-duration:.6s;-o-transition-property:margin-left;-o-transition-duration:.6s}}</style>
-<a id="BC" class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-{%block contenido2%}{%endblock%}
-<br><br><div class="footer"><div class="pull-right"><strong>Copyright Networks Lab</strong> &copy; 2015-2020</div></div>
-<!-- MENU -->
-<script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.min.js' %}"></script>
-<script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
-<script src="{% static 'js/dash.min.js' %}"></script>
-<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
-<script>$('#{{Activar}}').addClass('active');{%if activar%}$('#{{activar}}').addClass('active');{%endif%}{%if activarp%}$('#{{activarp}}').addClass('active');{%endif%}</script>
-{% block scripts%}{% endblock %}</div></div>{% endblock %}
+
+		<div></div>
+
+		</div>
+		<!-- / #wrapper -->
+        <div id="footer" class="clearfix sidebar-page right-sidebar-page">
+            <!-- Start #footer  -->
+            <p class="pull-left">
+                Copyrights &copy; 2015 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.
+            </p>
+            <p class="pull-right">
+                <a href="#" class="mr5">Terms of use</a>
+                |
+                <a href="#" class="ml5 mr25">Privacy police</a>
+            </p>
+        </div>
+        <!-- End #footer  -->
+        <!-- Back to top -->
+        <div id="back-to-top"><a href="#">Back to Top</a>
+        </div>
+        <!-- Javascripts -->
+        <!-- Load pace first -->
+        <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="{% static 'js/libs/excanvas.min.js' %}"></script>
+		<script type="text/javascript" src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<script type="text/javascript" src="{% static 'js/libs/respond.min.js' ""%}></script>
+		<![endif]-->
+		<script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+		<script src="{% static 'js/libs/modernizr.custom.min.js' %}"></script>
+		<!-- Handle responsive view functions -->
+		<script src="{% static 'js/jRespond.min.js' %}"></script>
+		<!-- Custom scroll for sidebars,tables and etc. -->
+		<script src="{% static 'plugins/core/slimscroll/jquery.slimscroll.min.js' %}"></script>
+		<script src="{% static 'plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js' %}"></script>
+		<!-- Remove click delay in touch -->
+		<script src="{% static 'plugins/core/fastclick/fastclick.min.js' %}"></script>
+		<!-- Increase jquery animation speed -->
+		<script src="{% static 'plugins/core/velocity/jquery.velocity.min.js' %}"></script>
+        <!-- <script src="{% static 'plugins/ui/bootbox/bootbox.min.js' %}"></script> -->
+		<script src="{% static 'js/jquery.dynamic.min.js' %}"></script>
+		<script src="{% static 'js/main.min.js' %}"></script>
+
+		<script>
+		$('#{{Activar}}').addClass('highlight-menu');
+		$('#{{Activar}} > a').addClass('expand active-state');
+		{% if activar%}$('#{{Activar}} > ul.sub').addClass('show');
+		$(document).ready(function(){$('#{{Activar}} a').click();$('#{{activar}}').addClass('expand activate-state');});{%endif%}
+		</script>
+		{% block scripts%}{% endblock %}{% endblock %}
+
+    </body>
+</html>

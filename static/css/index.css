@@ -129,7 +129,7 @@ of those sections to manage the look and feel of the site. */
 }
 
 .we-netlab-section .container {
-    background: url(http://i.imgur.com/pTrPq7o.jpg) no-repeat bottom center scroll;
+    background: url(../img/pTrPq7o.jpg) no-repeat bottom center scroll;
     background-size: contain;
 }
 
@@ -149,7 +149,7 @@ h3 {
 }
 
 .contact-section .container {
-    background: url(http://i.imgur.com/ZhPtgSO.jpg) no-repeat center center scroll;
+    background: url(../img/ZhPtgSO.jpg) no-repeat center center scroll;
     background-size: cover;
 }
 
