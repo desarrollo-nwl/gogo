@@ -3,15 +3,15 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
 from usuarios.models import Proyectos
-from django_pgjsonb import JSONField
+from json_field import JSONField
 
 
 class Busqueda( models.Model ):
-	id = models.OneToOne( Proyectos, primary_key = True )
+	id = models.OneToOneField( Proyectos, primary_key = True )
 	fecha = models.DateTimeField( )
-	facebook = models.JSONField( null = True )
-	twitter = models.JSONField( null = True )
-	youtube = models.JSONField( null = True )
+	facebook = JSONField( null = True )
+	twitter = JSONField( null = True )
+	youtube = JSONField( null = True )
 	terminos = models.TextField( )
 	masculino = models.PositiveIntegerField( default = 0 )
 	femenino = models.PositiveIntegerField( default = 0 )
@@ -66,7 +66,7 @@ class Twitter( models.Model ):
 
 class Tweets( models.Model ):
 	id = models.AutoField( primary_key = True )
-	fecha = DateField( index_db = True )
+	fecha = models.DateField( index_db = True )
 	twitter = models.ForeignKey( Twitter )
 	tweet = JSONField( )
 
