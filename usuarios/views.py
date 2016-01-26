@@ -701,7 +701,7 @@ def usuarioeditar(request,id_usuario):
 				'Usuario':usuario
 				}, context_instance=RequestContext(request))
 			else:
-				return render_to_response('403.html')
+				return render_to_response('/usuarios/')
 		except:
 			return render_to_response('404.html')
 	else:

@@ -1,158 +1,142 @@
-{% extends "dash.html" %}
-{% load staticfiles%}
-{% block title %} Datos para el proyecto {% endblock %}
-{% block head2%}
-<link href="{% static 'css/plugins/chosen/chosen.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/plugins/summernote/summernote.min.css' %}" rel="stylesheet">
-<style>.chosen-container-single .chosen-single {border-radius:0%;}div.note-editor{height: 100%;width: 100%;border: 1px solid #dedede;margin-bottom: 10px;}</style>
-{% endblock %}
+{% extends "dash.html" %}{%load staticfiles %}
+{% block title %} Home | Licencia{% endblock %}
+{%block head2%}<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<link href="{% static 'css/plugins/summernote/summernote.min.css' %}">{%endblock%}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Nuevo proyecto</span></i></a></li>
+{%endblock%}
 {% block contenido2 %}
 <div class="row">
-<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
-	<div class="col-lg-12">
-		<h2>Agregar proyecto</h2>
-		<ol class="breadcrumb">
-			<li ><a href="/home/"><i class="fa fa-home"></i> Home</a>
-			</li>
-			<li>Proyectos</li>
-		</ol>
-	</div>
-</div>
-<div class="m-t col-lg-12">
-	<div class="ibox float-e-margins">
-		<div class="ibox-title">
-			<h5 class="m-r-xs">Complete los campos correctamente:</h5>
-			<div class="ibox-tools">
-				<a class="collapse-link">
-					<i class="fa fa-chevron-up"></i>
-				</a>
-			</div>
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Complete los campos correctamente:</h4>
 		</div>
-		<div class="ibox-content">
-		{%if not Empresas%}<p> Recuerde crear la <a href="/empresa/nueva/" class="LINK">EMPRESA</a> {%if Permisos.cre_usuarios %}y los <a href="/usuario/nuevo/" class="LINK">USUARIOS</a>{%endif%} primero para ahorrar trabajo.{%endif%}
-		<form method="POST" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
-			<div class="row">
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-xs-3 col-sm-3 control-label required">Empresa:</label>
-					<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
-						<select class="chosen-select form-control" name="empresa" required>
-							<option value="">Seleccione una empresa</option>
-							{%for i in Empresas%}<option value="{{i.id}}">{{i}}</option>{%endfor%}
-						</select>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if not Empresas%}<p> Recuerde crear la <a href="/empresa/nueva/" class="LINK">EMPRESA</a> {%if Permisos.cre_usuarios %}y los <a href="/usuario/nuevo/" class="LINK">USUARIOS</a>{%endif%} primero para ahorrar trabajo.{%endif%}
+			<form method="POST" class="form-horizontal" enctype="multipart/form-data">{% csrf_token %}
+				<div class="row">
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-xs-3 col-sm-3 control-label required">Empresa:</label>
+						<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
+							<select class="select2 form-control" name="empresa" required>
+								<option value="">Seleccione una empresa</option>
+								{%for i in Empresas%}<option value="{{i.id}}">{{i}}</option>{%endfor%}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre de proyecto:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" required>
+							<div id="error"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<select id ="tipo" class="select2 form-control" name="tipo">
+								<option value="Completa">Encuesta Completa</option>
+								<option value="Fragmentada">Encuesta Fragmentada</option>
+								<option value="Externa">Encuesta Externa</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Título de la encuesta:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" required maxlength="255">
+						</div>
+					</div>
+					<div id="asunto" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input id="asunto-input" class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required maxlength="75">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Introducción a la encuesta:</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<div id="summernote1" class="summernote"><i>Este texto aparecerá en la introducción de la encuesta web </i><b>(requerido)</b></div>
+						</div>
+					</div>
+					<input type="hidden" value="" name="int_encuesta"/>
+					<div id="cue_correo" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<div id="summernote3" class="summernote"><i>Este es el texto que llegará al correo para seguir a la encuesta </i><b>(requerido)</b></div>
+						</div>
+					</div>
+					<input type="hidden" value="" name="cue_correo" />
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo Principal (correo):</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<input id ="logo" name="logo" type="file" required>
+						</div>
+					</div>
+					<div id="logoenc" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
+						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
+							<input id ="logoenc" name="logoenc" type="file" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Usuarios asociados:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<select class="select2 form-control" multiple name="usuarios">
+								{%for i in Usuarios%}<option value="{{i.usuario.id}}">{{i.usuario.first_name|capfirst|escape}} {{i.usuario.last_name|capfirst|escape}}</option>{%endfor%}
+							</select>
+						</div>
+					</div>
+					<div id="opcional1" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100">
+						</div>
+					</div>
+					<div id="opcional2" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100">
+						</div>
+					</div>
+					<div id="opcional3" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100">
+						</div>
+					</div>
+					<div id="opcional4" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100">
+						</div>
+					</div>
+					<div id="opcional5" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
+						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
+							<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100">
+						</div>
+					</div>
+					<div id ="muestreo" class="form-group">
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
+						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
+							<input type="checkbox" name="censo" class="switch" />
+						</div>
+					</div><input id="interna" type="hidden" name="interna" value="1" />
+					<div class="container-fluid">
+						<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Grabar proyecto</button>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre de proyecto:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" required>
-						<div id="error"></div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<select id ="tipo" class="chosen-select form-control" name="tipo">
-							<option value="Completa">Encuesta Completa</option>
-							<option value="Fragmentada">Encuesta Fragmentada</option>
-							<option value="Externa">Encuesta Externa</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Título de la encuesta:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" required maxlength="255">
-					</div>
-				</div>
-				<div id="asunto" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input id="asunto-input" class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required maxlength="75">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Introducción a la encuesta:</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<div id="summernote1" class="summernote"><i>Este texto aparecerá en la introducción de la encuesta web </i><b>(requerido)</b></div>
-					</div>
-				</div>
-				<input type="hidden" value="" name="int_encuesta"/>
-				<div id="cue_correo" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Cuerpo del correo:</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<div id="summernote3" class="summernote"><i>Este es el texto que llegará al correo para seguir a la encuesta </i><b>(requerido)</b></div>
-					</div>
-				</div>
-				<input type="hidden" value="" name="cue_correo" />
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo Principal (correo):</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<input id ="logo" name="logo" type="file" required>
-					</div>
-				</div>
-				<div id="logoenc" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
-					<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-						<input id ="logoenc" name="logoenc" type="file" >
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Usuarios asociados:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<select class="chosen-select form-control" multiple name="usuarios">
-							{%for i in Usuarios%}<option value="{{i.usuario.id}}">{{i.usuario.first_name|capfirst|escape}} {{i.usuario.last_name|capfirst|escape}}</option>{%endfor%}
-						</select>
-					</div>
-				</div>
-				<div id="opcional1" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 1:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100">
-					</div>
-				</div>
-				<div id="opcional2" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 2:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100">
-					</div>
-				</div>
-				<div id="opcional3" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 3:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100">
-					</div>
-				</div>
-				<div id="opcional4" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 4:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100">
-					</div>
-				</div>
-				<div id="opcional5" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Variable opcional 5:</label>
-					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-						<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100">
-					</div>
-				</div>
-				<div id ="muestreo" class="form-group">
-					<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
-					<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
-						<input type="checkbox" name="censo" class="switch" />
-					</div>
-				</div><input id="interna" type="hidden" name="interna" value="1" />
-				<div class="container-fluid">
-					<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Grabar proyecto</button>
-				</div>
-			</div>
-		</form>
+			</form>
 		</div>
 	</div>
 </div>
-</div>
-{%endblock%}
+{% endblock %}
+
 {%block scripts%}
-<script src="{% static 'js/plugins/chosen/chosen.min.js' %}"></script>
-<script>var config = {'.chosen-select': {},'.chosen-select-deselect'  : {allow_single_deselect:true},'.chosen-select-no-single' : {disable_search_threshold:10},'.chosen-select-no-results': {no_results_text:'No se encontraron resultados.'},'.chosen-select-width': {width:"95%"}};for (var selector in config) {$(selector).chosen(config[selector]);};</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script>$('.select2').select2()</script>
 <script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
 <script src="{% static 'js/plugins/summernote/summernote.min.js' %}"></script>

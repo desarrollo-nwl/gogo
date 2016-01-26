@@ -1,4 +1,4 @@
-{% load staticfiles%}{% load cache%}{% cache 21600 login1 %}{% spaceless %}
+{% load staticfiles%}{% spaceless %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,7 +26,7 @@
 		<div class="col-lg-4 col-md-6 col-sm-8 col-xs-10">
 		<section class="login-form">
 			<img src="http://i.imgur.com/QuC6Dv3.png" class="img-responsive" alt="" />
-			{%endspaceless%}{% endcache %}<form id="formlog" role="form" style="margin-top:20px" method='post'>{%csrf_token%}{%cache 21600 login2 %}{%spaceless%}
+			<form id="formlog" role="form" style="margin-top:20px" method='post'>{%csrf_token%}
 				<div class="form-group">
 				<input class="form-control" placeholder="Email" name="email" type="email" required autofocus>
 				</div>
@@ -39,7 +39,7 @@
 				<input id="btnlogin" class="btn btn-lg btn-primary btn-block" type="submit" value="Entrar" />
 				</div>
 			</form>
-			{%endspaceless%}{%endcache%}{%spaceless%}{%if Error %}<div class="form-links" style="color:#CACACA">{{Error | escape}}</div>{%endif%}
+			{%if Error %}<div class="form-links" style="color:#CACACA">{{Error | escape}}</div>{%endif%}
 			<div class="form-links">{%if Error%}<a href="/recuperar">¿Olvidó su contraseña?</a>{%endif%}</div>
 		</section>
 		</div>
