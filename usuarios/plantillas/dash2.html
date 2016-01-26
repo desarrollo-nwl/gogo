@@ -64,35 +64,41 @@
                     <div class="sidebar-scrollarea">
                         <!--  .sidebar-panel -->
                         <div class="sidebar-panel">
-                            <h5 class="sidebar-panel-title">Navegación general</h5>
+                            <h5 class="sidebar-panel-title">{{Proyecto.nombre |capfirst | escape |truncatechars:60}} </h5>
                         </div>
                         <!-- / .sidebar-panel -->
                         <!-- .side-nav -->
                         <div class="side-nav">
-                            <ul class="nav">
-                                <li id="MisProyectos"><a href="/home/"><i class=" l-basic-home"></i><span class="txt">Mis proyectos</span></a></li>
-
-                                <li id="Configuracion">
-                                    <a href="#"><i class="l-basic-gear"></i> <span class="txt">Configuración</span></a>
-                                    <ul class="sub">
-                                        <li><a id="Empresas" href="/empresas/"><span class="txt">Empresas</span></a></li>
-                                        <li><a id="Usuarios" href="/usuarios/"><span class="txt">Usuarios</span></a></li>
-                                        <li><a id="Logs" href="/logs/"><span class="txt">Registro histórico </span></a></li>
-                                        <li><a id="Cuenta" href="/cuenta/"><span class="txt">Contraseña</span></a></li>
-										<li><a id="Licencia" href="/licencia/"><span class="txt">Información de licencia</span></a></li>
-                                    </ul>
-                                </li>
-
-								<li>
-                                    <a href="#"><i class="l-basic-flag1"></i> <span class="txt">Centro de ayuda</span></a>
-                                    <ul class="sub">
-                                        <li><a id="Reportar" href="/reportar/"><span class="txt">Soporte</span></a></li>
-                                        <li><a id="Entrenamiento" href="#"><span class="txt">Entrenamiento</span></a></li>
-                                        <li><a id="Preguntas" href="#"><span class="txt">Preguntas frecuentes </span></a></li>
-                                    </ul>
-                                </li>
-
-                            </ul>
+							<ul  class="nav">{%if Permisos.consultor%}
+							<li id="Configuracion">
+								<a href="#"><i class="l-basic-gear"></i><span class="nav-label"><span class="txt"> Configuración </span></a>
+								<ul class="sub">
+									{%if Permisos.var_see or Permisos.pre_see%}
+									<li><a id="Variables" href="/variables/"><span class="txt"> Variables y preguntas </span></a></li>{%endif%}
+									{%if Proyecto.interna%}{%if Permisos.col_add%}
+									<li><a id="AcrhivoPlano" href="/participantes/archivo/"><span class="txt"> Múltiples participantes </span></a></li>
+									{%if Permisos.col_see%}<li><a id="Individual" href="/participantes/individual/"><span class="txt"> Participantes Individual </span></a></li>{%endif%}
+									{%endif%}{%endif%}
+									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
+								</ul>
+							</li>{%endif%}
+							<li id="EstadoAvance">
+								<a href="#"><i class="l-basic-pencil-ruler"></i><span class="nav-label"><span class="txt"> Estado de avance </span></a>
+								<ul class="sub">
+									<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
+									{%if Permisos.det_see%}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}
+								</ul>
+							</li>
+							<li id="AnalisisResultados">
+								<a href="#"><i class="l-ecommerce-graph3"></i><span class="txt">Análisis <span class="txt"></a>
+								<ul class="sub">
+									<li><a id="Resultados" href="#"><span class="txt"> Resultados </span></a></li>
+									<li><a id="AnalisisTextual" href="#"><span class="txt"> Textual </span></a></li>
+									<li><a id="CruceVariables" href="#"><span class="txt"> Cruce de variables </span></a></li>
+									<li><a id="AnalisisPropension" href="#"><span class="txt"> Propensión </span></a></li>
+								</ul>
+							</li>
+							</ul>
                         </div>
                         <!-- / side-nav -->
                     </div>

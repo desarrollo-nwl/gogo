@@ -187,7 +187,7 @@ def preguntanueva(request,id_variable):
 			return HttpResponseRedirect( '/variable/'+id_variable+'/preguntas/' )
 		return render_to_response('preguntanueva.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
-		'Poyecto':proyecto,'Variable':variable
+		'Proyecto':proyecto,'Variable':variable
 		}, context_instance=RequestContext(request))
 	else:
 		return HttpResponseRedirect('403.html')
@@ -323,7 +323,7 @@ def preguntaeditar(request,id_pregunta):
 			return HttpResponseRedirect( '/variable/'+str(variable.id)+'/preguntas/' )
 		return render_to_response('preguntaeditar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
-		'Poyecto':proyecto,'Variable':variable,'Pregunta':pregunta,
+		'Proyecto':proyecto,'Variable':variable,'Pregunta':pregunta,
 		'numero_respuestas':num_respuestas
 		}, context_instance=RequestContext(request))
 	else:

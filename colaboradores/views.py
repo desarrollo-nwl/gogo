@@ -34,7 +34,7 @@ def colaboradores_ind(request):
 						).only('nombre','apellido','email','colaboradoresdatos__cargo'
 						).select_related('colaboradoresdatos')
 		return render_to_response('colaboradores_ind.html',{
-		'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
+		'Activar':'Configuracion','activar':'Individual',
 		'Proyecto':proyecto,'Permisos':permisos,'Participantes':participantes
 		}, context_instance=RequestContext(request))
 	else:
@@ -122,7 +122,7 @@ def colaboradornuevo(request):
 				return HttpResponseRedirect('/participantes/individual')
 
 		return render_to_response('colaboradornuevo.html',{
-		'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
+		'Activar':'Configuracion','activar':'Individual',
 		'Proyecto':proyecto,'Permisos':permisos,'Emails':emails
 		}, context_instance=RequestContext(request))
 	else:
@@ -191,7 +191,7 @@ def colaboradoreditar(request,id_colaborador):
 					accion="Editó al participante",descripcion=participante.nombre+' '+participante.apellido)
 				return HttpResponseRedirect('/participantes/individual')
 		return render_to_response('colaboradoreditar.html',{
-		'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
+		'Activar':'Configuracion','activar':'Individual',
 		'Proyecto':proyecto,'Permisos':permisos,'Participante':participante,'Emails':emails,
 		}, context_instance=RequestContext(request))
 	else:
@@ -378,7 +378,7 @@ def colaboradores_xls(request):
 				error= "Ocurrio un error cuando se procesaba al participante "+var_error
 
 		return render_to_response('colaboradores_xls.html',{
-		'Activar':'Configuracion','activar':'Participantes','activarp':'AcrhivoPlano',
+		'Activar':'Configuracion','activar':'AcrhivoPlano',
 		'Proyecto':proyecto,'Permisos':permisos,'Error':error
 		}, context_instance=RequestContext(request))
 	else:
@@ -416,7 +416,7 @@ def colaboradoreliminar(request,id_colaborador):
 				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/participantes/individual/')
 	return render_to_response('col_eliminar.html',{
-	'Activar':'Configuracion','activar':'Participantes','activarp':'Individual',
+	'Activar':'Configuracion','activar':'Individual',
 	'objeto':'Participante','Participante':participante,
 	'Proyecto':proyecto,'Permisos':permisos,
 	}, context_instance=RequestContext(request))

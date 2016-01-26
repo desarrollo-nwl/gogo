@@ -1,28 +1,16 @@
 {% extends "dash2.html" %}{%load staticfiles %}
 {% block title %} Proyecto | Iniciar detener{% endblock %}
-{% block head2%}<link href="{% static 'css/plugins/datepicker/datepicker.min.css' %}" rel="stylesheet">{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Iniciar Detener</span></i></a></li>
+{%endblock%}
 {% block contenido2 %}
 <div class="row">
-<div class="m-l m-r row wrapper border-bottom white-bg page-heading">
-	<div class="col-lg-12">
-		<h2>Proyecto {{Proyecto.nombre |capfirst | escape}}</h2>
-		<ol class="breadcrumb">
-			<li class="active">
-				<a href="/home/"><i class="fa fa-cubes"></i> Mis proyectos</a>
-			</li>
-			<li>Iniciar Detener</li>
-		</ol>
-	</div>
-</div>
-<div class="m-t col-lg-12">
-	<div class="ibox float-e-margins">
-		<div class="ibox-title">
-			<h5 class="m-r-xs">{%if Permisos.act_surveys%}Active y desactive el proyecto, al igual que inícielo y deténgalo.{%else%}Inicie y detenga el proyecto.{%endif%}</h5>
-			<div class="ibox-tools">
-				<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-			</div>
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> {%if Permisos.act_surveys%}Active y desactive el proyecto, al igual que inícielo y deténgalo.{%else%}Inicie y detenga el proyecto.{%endif%}</h4>
 		</div>
-		<div class="ibox-content">
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
 			<p> El estado actual del proyecto es {%if Proyecto.activo%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</p>
 
 			{%if Proyecto.iniciable%}<form class="form-horizontal" method="POST">{%csrf_token%}
@@ -77,8 +65,8 @@
 		</div>
 	</div>
 </div>
-</div>
 {% endblock %}
+
 {% block scripts%}
 <script src="{% static 'js/plugins/datepicker/datepicker.min.js' %}"></script>
 <script>$(document).ready(function(){$('.fecha').datepicker({startView: 1,todayBtn: "linked",keyboardNavigation: false,forceParse: false,autoclose: true}); });</script>
