@@ -96,6 +96,14 @@ urlpatterns += patterns('mensajeria.views',
 	url(r'^respuestas/exportar/externa/$', 'exportarexterna'),
 )
 
+#===============================================================================
+# urls de AnalisisResultados
+#===============================================================================
+
+urlpatterns += patterns('analisis.views',
+	url(r'^focalizado/$', 'focalizados'),
+	url(r'^wordanalytics/$', 'wordanalytics'),
+)
 
 #===============================================================================
 # urls de errores
