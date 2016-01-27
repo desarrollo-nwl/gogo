@@ -8,11 +8,148 @@
 <div class="row">
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
-			<h4 class="panel-title"> Ivancho:</h4>
+			<h4 class="panel-title">Promedio General Tiempo Real Por Variable</h4>
 		</div>
-		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
-		blablabla
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div align="center">
+					<input id="lastDay" type="button" value="Ultimo Dia" />
+					<input id="lastWeek" type="button" value="Ultima Semana" />
+					<input id="lastMonth" type="button" value="Ultimo Mes" />
+				</div>
+				<div style='margin: 0 5px 0 5px' id="chart_div"></div>
+				<div style='margin: 0 5px 0 5px' id="control_div"></div>
+			</div>
+
+			<div class="col-lg-3 m-t-xs">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<ul class="list-unstyled mb0">
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Variable</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Pregunta</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Organización</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Regional</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Ciudad</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Area</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Cargo</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Resultados Generales Promedio Por Variable</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 5px 0 5px' id="modulo_ocho_barras"></div>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<ul class="list-unstyled mb0">
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Variable</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Pregunta</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Organización</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Regional</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Ciudad</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Area</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Histograma de las respuestas de los participantes</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 0px 0 0px' id="modulo_ocho_area"></div>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<ul class="list-unstyled mb0">
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Variable</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Pregunta</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Organización</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Regional</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Ciudad</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Area</span>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong">Cargo</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
 {% endblock %}
+
+{%block scripts%}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
+<script type="text/javascript" src="{% static 'js/google_charts/focalizado_barras.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/google_charts/focalizado_area.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/google_charts/focalizado_serie_tiempo.min.js' %}"></script>
+{%endblock%}
