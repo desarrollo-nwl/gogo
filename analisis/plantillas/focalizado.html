@@ -17,8 +17,8 @@
 					<input id="lastWeek" type="button" value="Ultima Semana" />
 					<input id="lastMonth" type="button" value="Ultimo Mes" />
 				</div>
-				<div style='margin: 0 5px 0 5px' id="chart_div"></div>
-				<div style='margin: 0 5px 0 5px' id="control_div"></div>
+				<div style='margin: 0 5px 0 5px' id="grafica_uno_div"></div>
+				<div style='margin: 0 5px 0 5px' id="control_grafica_uno_div"></div>
 			</div>
 
 			<div class="col-lg-3 m-t-xs">
@@ -63,7 +63,7 @@
 		</div>
 		<div class="panel-body">
 			<div class="col-lg-9">
-				<div style='margin: 0 5px 0 5px' id="modulo_ocho_barras"></div>
+				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
 			</div>
 
 			<div class="col-lg-3">
@@ -105,7 +105,7 @@
 		</div>
 		<div class="panel-body">
 			<div class="col-lg-9">
-				<div style='margin: 0 0px 0 0px' id="modulo_ocho_area"></div>
+				<div style='margin: 0 0px 0 0px' id="grafica_tres_div"></div>
 			</div>
 
 			<div class="col-lg-3">
@@ -147,9 +147,203 @@
 {% endblock %}
 
 {%block scripts%}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
-<script type="text/javascript" src="{% static 'js/google_charts/focalizado_barras.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/google_charts/focalizado_area.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/google_charts/focalizado_serie_tiempo.min.js' %}"></script>
+
+<!-- GRAFICO 1 -->
+<script type="text/javascript">
+function grafica_uno() {
+	var data = new google.visualization.DataTable();
+	data.addColumn('date', 'Fecha');
+	data.addColumn('number', 'Conocimiento Estratégico');
+	data.addColumn('number', 'Planeación');
+	data.addColumn('number', 'Abordaje');
+	data.addColumn('number', 'Solución');
+	data.addColumn('number', 'Compromiso y cierre');
+	data.addColumn('number', 'Retención y lealtad');
+	data.addColumn('number', 'Comportamientos Transversales');
+
+
+	data.addRows([
+		[new Date(2015,0,31), 0, 0, 0, 0, 0, 0, 0],
+		[new Date(2015,1,1), 3.8, 4, 4.8, 3.6, 7.5, 1.4, 6.7],
+		[new Date(2015,1,2), 3.8, 4.1, 5, 3.2, 6.5, 2.4, 5.7 ],
+		[new Date(2015,1,3), 3.7, 4.1, 5, 3.6, 7.8, 1.6, 4.7],
+		[new Date(2015,1,4), 3.6, 4.2, 4.5, 3.6, 7.7, 4.4, 6.5],
+		[new Date(2015,1,5), 3.4, 4.1, 5.0, 3.6, 7.9, 3.4, 5.7],
+		[new Date(2015,1,6), 3.8, 4.0, 5.0, 3.6, 6.5, 3.5, 4.8],
+		[new Date(2015,1,7), 3.6, 4.0, 4.7, 3.6, 5.5, 7.4, 4.9],
+		[new Date(2015,1,8), 3.6, 4.1, 5.0, 3.6, 7.7, 1.4, 5.1],
+		[new Date(2015,1,9), 3.7, 3.9, 3.9, 3.6, 4.5, 5.4, 6.4],
+		[new Date(2015,1,10), 4.0, 4.3, 4.5, 3.6, 5.5, 6.4, 5.5],
+		[new Date(2015,1,11), 4.2, 4.2, 5.0, 3.6, 6.4, 1.4, 6.2],
+		[new Date(2015,1,12), 4.1, 4.1, 4.9, 3.6, 5.5, 6.4, 5.8],
+		[new Date(2015,1,13), 4.1, 4.1, 4.7, 3.6, 8.4, 2.8, 7.2],
+		[new Date(2015,1,14), 4.2, 4.1, 4.6, 3.6, 7.5, 6.4, 5.6],
+		[new Date(2015,1,15), 4.0, 4.2, 4.8, 3.6, 3.8, 8.2, 2.9],
+		[new Date(2015,1,16), 4.0, 4.2, 4.7, 3.6, 6.5, 9.1, 3.5],
+		[new Date(2015,1,17), 4.0, 4.2, 4.6, 3.6, 8.4, 6.7, 6.4],
+		[new Date(2015,1,18), 4.1, 4.1, 4.3, 3.6, 8.4, 7.8, 2.8],
+		[new Date(2015,1,19), 4.1, 4.2, 4.3, 3.6, 5.9, 6.5, 6.4],
+		[new Date(2015,1,20), 4.0, 3.9, 4.8, 3.6, 4.5, 6.7, 5.2]
+		]);
+
+	var chart = new google.visualization.ChartWrapper({
+		chartType: 'LineChart',
+		containerId: 'grafica_uno_div',
+		options: {
+			height: 200,
+			// omit width, since we set this in CSS
+			legend: 'none',
+			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0'],
+			chartArea: {
+				width: '80%' // this should be the same as the ChartRangeFilter
+			}
+		}
+	});
+
+	var control = new google.visualization.ControlWrapper({
+		controlType: 'ChartRangeFilter',
+		containerId: 'control_grafica_uno_div',
+		options: {
+			filterColumnIndex: 0,
+			ui: {
+				chartOptions: {
+					height: 50,
+					// omit width, since we set this in CSS
+					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0'],
+					chartArea: {
+						width: '80%' // this should be the same as the ChartRangeFilter
+					}
+				}
+			}
+		}
+	});
+
+	var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
+	dashboard.bind([control], [chart]);
+	dashboard.draw(data);
+
+	function zoomLastDay () {
+		var range = data.getColumnRange(0);
+		control.setState({
+			range: {
+				start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 1),
+				end: range.max
+			}
+		});
+		control.draw();
+	}
+	function zoomLastWeek () {
+		var range = data.getColumnRange(0);
+		control.setState({
+			range: {
+				start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 7),
+				end: range.max
+			}
+		});
+		control.draw();
+	}
+	function zoomLastMonth () {
+		// zoom here sets the month back 1, which can have odd effects when the last month has more days than the previous month
+		// eg: if the last day is March 31, then zooming last month will give a range of March 3 - March 31, as this sets the start date to February 31, which doesn't exist
+		// you can tweak this to make it function differently if you want
+		var range = data.getColumnRange(0);
+		control.setState({
+			range: {
+				start: new Date(range.max.getFullYear(), range.max.getMonth() - 1, range.max.getDate()),
+				end: range.max
+			}
+		});
+		control.draw();
+	}
+
+	var runOnce = google.visualization.events.addListener(dashboard, 'ready', function () {
+		google.visualization.events.removeListener(runOnce);
+
+		if (document.addEventListener) {
+			document.querySelector('#lastDay').addEventListener('click', zoomLastDay);
+			document.querySelector('#lastWeek').addEventListener('click', zoomLastWeek);
+			document.querySelector('#lastMonth').addEventListener('click', zoomLastMonth);
+		}
+		else if (document.attachEvent) {
+			document.querySelector('#lastDay').attachEvent('onclick', zoomLastDay);
+			document.querySelector('#lastWeek').attachEvent('onclick', zoomLastWeek);
+			document.querySelector('#lastMonth').attachEvent('onclick', zoomLastMonth);
+		}
+		else {
+			document.querySelector('#lastDay').onclick = zoomLastDay;
+			document.querySelector('#lastWeek').onclick = zoomLastWeek;
+			document.querySelector('#lastMonth').onclick = zoomLastMonth;
+		}
+	});
+}
+google.load('visualization', '1', {packages:['controls'], callback: grafica_uno});
+</script>
+
+<!--  GRAFICA 2-->
+<script type="text/javascript">
+// google.load("visualization", "1", {packages:["corechart"]});
+google.setOnLoadCallback(grafica_dos);
+
+	function grafica_dos() {
+	  var data = google.visualization.arrayToDataTable([
+		['Dimensiones', 'R1', 'R2', 'R3', 'R4', 'R5'],
+		['Area 1',  5.40,  5.40,  5.40,  5.40,  5.40],
+		['Area 2',  30.70,  30.70,  30.70,  30.70,  30.70],
+		['Area 3',  40.60,  40.60,  40.60,  40.60,  40.60],
+		['Area 4',  20.00,  20.00,  20.00,  20.00,  20.00],
+		['Area 5',  3.30,  3.30,  3.30,  3.30,  3.30]
+	  ]);
+
+	  var options = {
+		legend: 'none',
+	 };
+
+	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+
+	chart.draw(data, options);
+
+	}
+
+</script>
+
+<!--  GRAFICA 3-->
+<script type="text/javascript">
+google.setOnLoadCallback(grafica_tres);
+	function grafica_tres() {
+		var data = google.visualization.arrayToDataTable([
+		  ['Year', 'Tot Desacuerdo', 'Parcialmente Desacuerdo', 'Neutral', 'Parcialmente de acuerdo', 'Totalmente de acuerdo'],
+		  ['2013',  1000, 400, 300, 500, 200],
+		  ['2014',  1170, 460, 200, 300, 200],
+		  ['2015',  660, 1120, 300, 250, 300],
+		  ['2016',  1030, 540, 100, 600, 700]
+		]);
+
+		var options = {
+		  isStacked: 'relative',
+		  height: 300,
+		  legend: {position: 'top', maxLines: 3},
+		  vAxis: {
+			minValue: 0,
+			ticks: [0, .3, .6, .9, 1]
+		  }
+		};
+
+				var options_fullStacked = {
+		  isStacked: 'relative',
+		  height: 300,
+		  legend: {position: 'top', maxLines: 3},
+		  vAxis: {
+			minValue: 0,
+			ticks: [0, .3, .6, .9, 1]
+		  }
+		};
+
+
+		var chart = new google.visualization.AreaChart(document.getElementById('grafica_tres_div'));
+		chart.draw(data, options);
+	}
+</script>
+
+<script type="text/javascript">$(document).ready(function() {	$(window).resize(function() {		grafica_uno();		grafica_dos();		grafica_tres();	});});</script>
 {%endblock%}
