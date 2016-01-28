@@ -12,24 +12,6 @@ sys.setrecursionlimit(2000)
                  #~ ]
 #############################
 
-#~ def matrizComentarios(datasetInfo):
-	#~ comentarios = datasetInfo[1:]
-
-datasetgrafo =[['Por favor escribe 3 aspectos que le ayudar dan a tu área HOY para lograr que el cambio sea exitoso',
-				'El libro se abre con el retrato largo y detallado del obispo Bienvenue Myriel, el obispo de Digne, donde vive modestamente con su hermana Baptistine y de una criada, la señora Magloire. El religioso vive de solo lo que es necesario y distribuye el resto de sus ahorros para los pobres, siempre muestra un gran amor, deja la puerta abierta y confraterniza con aquellos a quienes la sociedad rechaza.',
-				'Su destino se cruza con el personaje central de la obra: Jean Valjean.',
-				'La acción comienza en 1815 con la llegada de Jean Valjean, el personaje principal de la obra, después de una sentencia de diecinueve años de prisión: víctima de un trágico destino, originalmente sentenciado a cinco años de prisión por robar pan para alimentar a su familia, ve ampliada su sentencia después de varios intentos de fuga. Su pasado como convicto lo abruma y en cada ciudad que pasa, escucha la negativa por ser un ex convicto con un pasaporte amarillo, universalmente rechazado; y sólo el obispo Myriel le abre la puerta para ofrecerle alimento y refugio. Jean Valjean, muestra un odio-amor y resentimiento con la sociedad. Sin ser muy consciente de sus actos, le roba su vajilla de plata al obispo y huye por la ventana. Cuando es detenido y llevado por la policía ante el obispo Myriel, éste cuenta a la policía que él le había regalado la vajilla de plata y que aún se había olvidado de darle dos candelabros del mismo metal, consiguiendo así que Valjean quede libre de nuevo. Después dice a Valjean que lo perdona y le ofrece los candelabros de plata, haciéndole prometer que redimirá su vida y se transformará en una persona de bien. Perdido en sus pensamientos, Valjean roba sin querer una moneda de 40 sueldos de un saboyano llamado Petit Gervais cubriéndolo con su pie. ',
-				'Camaraderia, liderazgo y comunicación',
-				'Ya he contestado esto tres veces. ',
-				'Respeto, confianza, trabajo en equipo. Comunicación.',
-				'conocimiento, respaldo, confianza, trabajo en equipo',
-				'La señora y el señor Thenardier carecen de honradez ',
-				'Trabajar, Mejorar, Ser Humilde',
-				'Poder, Valor, Lealtad',
-				'Totalmente de acuerdo',
-				'XXX','zzz','hola mundo trascendental valor'],
-				]
-
 def SplitRespuestas(respuestas):
 	SplitRespuesta = []
 	for respuesta in respuestas:
