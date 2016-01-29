@@ -25,7 +25,7 @@
 				<div class="panel panel-default toggle">
 					<!-- Inicio .panel -->
 					<div class="panel-heading">
-						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
 					</div>
 					<div class="panel-body">
 						<ul class="list-unstyled mb0">
@@ -149,6 +149,13 @@
 {%block scripts%}
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
 
+<script type="text/javascript">
+var Datos = [{%for i in Datos%}
+['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , {%if i.pregunta.abierta%}['{{ i.respuesta | escape }}'],{%endif%} {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }})], {%endfor%}];
+var Cuestionario = [{% for i in Preguntas %}
+'{{ i.variable.nombre | escape }}', '{{ i.texto | escape }}',[{% for j in i.respuestas_set.all %}'{{ j.texto | escape}}',{% endfor %}],{% endfor %}
+];
+</script>
 <!-- GRAFICO 1 -->
 <script type="text/javascript">
 function grafica_uno() {

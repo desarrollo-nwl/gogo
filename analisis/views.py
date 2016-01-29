@@ -23,10 +23,15 @@ def focalizados(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-		# Ivan hace el superquery para mandar al js
+		variables = Variables.objects.filter(proyecto_id=proyecto.id)
+		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
+		datos = Streaming.objects.filter(
+				proyecto_id=proyecto.id,pregunta__in=preguntas,respuesta__isnull=False
+				).select_related(
+				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos')
 		return render_to_response('focalizado.html',{
 		'Activar':'AnalisisResultados','activar':'Focalizados',
-		'Proyecto':proyecto,'Permisos':permisos,
+		'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')

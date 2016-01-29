@@ -112,6 +112,10 @@ def colaboradornuevo(request):
 							proyecto.tot_aresponder += 1
 						except:
 							pass
+					if(proyecto.tot_aresponder):
+						proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
+					else:
+						proyecto.total = 0.0
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
 					proyecto.save()
@@ -406,9 +410,13 @@ def colaboradoreliminar(request,id_colaborador):
 			maestro = Proyectos.objects.get(id=1)
 			proyecto.tot_participantes -= 1
 			proyecto.tot_aresponder -= Streaming.objects.filter(proyecto=proyecto,colaborador_id=int(id_colaborador)).count()
+			proyecto.tot_respuestas -= Streaming.objects.filter(proyecto=proyecto,colaborador_id=int(id_colaborador),respuesta__isnull=False).count()
+			if(proyecto.tot_aresponder):
+				proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
+			else:
+				proyecto.total = 0.0
 			with transaction.atomic():
-				Colaboradores.objects.filter(id=id_colaborador).update(proyecto=maestro,zdel=timezone.now())
-				Streaming.objects.filter(id=id_colaborador).update(proyecto=maestro)
+				Colaboradores.objects.filter(id=id_colaborador).delete()
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)

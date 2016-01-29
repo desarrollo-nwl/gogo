@@ -40,14 +40,14 @@ def index(request):
 
 				destinatario = ['ilgaleanos@gmail.com','ricardo.montoya@networkslab.co']
 				msg=MIMEMultipart()
-				msg["subject"]=  'Persona interesada Go Salud xD.'
+				msg["subject"]=  'Persona interesada GoAnalytics xD.'
 				msg['To'] = email.utils.formataddr(('Respetado', destinatario))
-				msg['From'] = email.utils.formataddr(('Go salud', 'no-reply@gochangeanalytics.com'))
+				msg['From'] = email.utils.formataddr(('GoAnalytics', 'no-reply@gochangeanalytics.com'))
 
-				n = cgi.escape(request.POST['nombre']).encode("ascii", "xmlcharrefreplace")
-				e = cgi.escape(request.POST['email']).encode("ascii", "xmlcharrefreplace")
-				t = cgi.escape(request.POST['telefono']).encode("ascii", "xmlcharrefreplace")
-				m = cgi.escape(request.POST['mensaje']).encode("ascii", "xmlcharrefreplace")
+				n = (request.POST['nombre']).encode("ascii", "xmlcharrefreplace")
+				e = (request.POST['email']).encode("ascii", "xmlcharrefreplace")
+				t = (request.POST['telefono']).encode("ascii", "xmlcharrefreplace")
+				m = (request.POST['mensaje']).encode("ascii", "xmlcharrefreplace")
 				html = '<b>NOMBRE:</b> '+ n +'<br>'
 				html = html+'  <b>EMAIL:</b> '+str(e)+'<br>'
 				html = html+'  <b>TELEFONO: </b>'+str(t)+'<br>'
@@ -180,7 +180,6 @@ def recuperar(request):
 			if(delta.days >= 1 or (delta.seconds>=3600 or 2 >= delta.seconds)):
 				from strings import recuperar_cuenta
 				from mensajeria.corrector import salvar_html
-				import cgi
 				server=smtplib.SMTP('smtp.mandrillapp.com',587)
 				server.ehlo()
 				server.starttls()
@@ -193,9 +192,9 @@ def recuperar(request):
 				Logs.objects.create(usuario=nom_log,usuario_username=usuario.username,accion="Olvido de contraseña",descripcion=usuario.first_name+" "+usuario.last_name)
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
-				nombre = cgi.escape(usuario.first_name).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				msg["subject"]=  'Cambio de clave.'
-				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
+				msg['From'] = email.utils.formataddr(('Goanalytics', 'Team@goanalytics.com'))
 				url = 'http://www.lavozdemisclientes.com/recuperar/'+key
 				html = recuperar_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
@@ -771,9 +770,9 @@ def usuarioreenviar(request,id_usuario):
 					destinatario = [usuario.email]
 					msg=MIMEMultipart()
 					msg["subject"]=  'Registro de cuenta.'
-					msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
+					msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 					url = 'http://www.lavozdemisclientes.com/activar/'+key
-					nombre = cgi.escape(usuario.first_name).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+					nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 					html = crear_cuenta(nombre,url)
 					mensaje = MIMEText(html,"html")
 					msg.attach(mensaje)
@@ -831,7 +830,7 @@ def usuarionuevo(request):
 			if  User.objects.filter(email=request.POST['email']).exists():
 				return render_to_response('usuarionuevo.html',{
 				'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,
-				'Usuarios':emails,'Error':'Ocurrió un error al procesar la solicitud, este correo ya existe'
+				'Error':'Ocurrió un error al procesar la solicitud, este correo ya existe'
 				}, context_instance=RequestContext(request))
 			else:
 				from strings import crear_cuenta
@@ -931,9 +930,9 @@ def usuarionuevo(request):
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
 				msg["subject"]=  'Registro de cuenta.'
-				msg['From'] = email.utils.formataddr(('Go salud', 'Team@goanalytics.com'))
+				msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 				url = 'http://www.lavozdemisclientes.com/activar/'+key
-				nombre = cgi.escape(usuario.first_name).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				html = crear_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
@@ -1046,11 +1045,11 @@ def reportarerror(request):
 			msg=MIMEMultipart()
 			msg["subject"]=  'Reporte de error.'
 			msg['To'] = email.utils.formataddr(('Respetado', destinatario))
-			msg['From'] = email.utils.formataddr(('Go salud', 'no-reply@gochangeanalytics.com'))
+			msg['From'] = email.utils.formataddr(('GoAnalytics', 'no-reply@gochangeanalytics.com'))
 
-			nombre = cgi.escape(nom_log).encode("ascii", "xmlcharrefreplace")
-			usuario = cgi.escape(request.user.username).decode("utf-8").encode("ascii", "xmlcharrefreplace")
-			html = 'El usuario '+nombre+' con usuario '+usuario+' ha reportado un error en Goanalytics: <br>'+cgi.escape(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
+			nombre = (nom_log).encode("ascii", "xmlcharrefreplace")
+			usuario = (request.user.username).encode("ascii", "xmlcharrefreplace")
+			html = 'El usuario '+nombre+' con usuario '+usuario+' ha reportado un error en Goanalytics: <br>'+(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
 			parte2=MIMEText(html,"html")
 			msg.attach(parte2)
 			server.sendmail('no-reply@gochangeanalytics.com',destinatario,msg.as_string())

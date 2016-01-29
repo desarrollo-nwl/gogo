@@ -43,11 +43,11 @@ def sendmail(stream_i,stream,tiempo):
 				genero = "a"
 			else:
 				genero = "o"
-			nombre = cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
-			titulo = cgi.escape(stream_i.proyecto.proyectosdatos.tit_encuesta).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+			nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")#cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+			titulo = (stream_i.proyecto.proyectosdatos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 			url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
 			texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-			msg["subject"]=  cgi.escape(stream_i.proyecto.proyectosdatos.asunto).decode("utf-8")
+			msg["subject"]=  stream_i.proyecto.proyectosdatos.asunto
 			msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
 			html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 			parte2=MIMEText(html,"html")
@@ -56,11 +56,11 @@ def sendmail(stream_i,stream,tiempo):
 			colaborador.save()
 			Streaming.objects.filter(colaborador=colaborador,proyecto=stream_i.proyecto).update(fec_controlenvio=tiempo)
 			server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
-		# print 'Enviado.'
-
-		for j in stream:
-			if j.colaborador_id == colaborador.id:
-				j.fec_controlenvio = tiempo
+			# print 'Enviado.'
+			for j in stream:
+				if j.colaborador_id == colaborador.id:
+					j.fec_controlenvio = tiempo
+					break
 		return stream
 	except:
 		return stream
@@ -73,8 +73,7 @@ def enviar():
 			fecharespuesta__isnull=True,proyecto__activo =True,
 			proyecto__proyectosdatos__finicio__lte=tiempo,
 			proyecto__proyectosdatos__ffin__gte=tiempo,
-			colaborador__estado=True,pregunta__estado=True)#.distinct('colaborador')
-	# print stream
+			colaborador__estado=True,pregunta__estado=True).distinct('colaborador')
 	lens = len(stream)
 	# print lens
 	for i in xrange(lens):

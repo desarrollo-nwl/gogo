@@ -200,7 +200,7 @@ def colaboradoreenviar(request,id_colaborador):
 						datos = proyecto.proyectosdatos
 						from usuarios.strings import correo_standar
 						from corrector import salvar_html
-						import cgi,unicodedata
+						import unicodedata
 						server=smtplib.SMTP('smtp.mandrillapp.com',587)
 						server.ehlo()
 						server.starttls()
@@ -209,15 +209,15 @@ def colaboradoreenviar(request,id_colaborador):
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
-						msg["subject"]=  cgi.escape(datos.asunto).decode("utf-8")
+						msg["subject"]=  datos.asunto
 						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 						urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
 						else:
 							genero = "o"
-						nombre = cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
-						titulo = cgi.escape(datos.tit_encuesta).decode("utf-8").encode("ascii", "xmlcharrefreplace")
+						nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
+						titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 						texto_correo = salvar_html(cgi.escape(datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 						url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
