@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
-			<h4 class="panel-title">Promedio general por variable en tiempo real</h4>
+			<h4 class="panel-title">Promedio General Tiempo Real Por Variable</h4>
 		</div>
 		<div class="panel-body">
 			<div class="col-lg-9">
@@ -31,58 +31,58 @@
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr25">Variables</span>
-								<select id="variables_g1" class="filtro filtros_uno" multiple></select>
+								<select id="variables_g1" class="filtro" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr20">Preguntas</span>
-								<select id="preguntas_g1" class="filtro filtros_uno" multiple>
-									{% for i in Preguntas %}<option selected value="{{ i.id }}">{{ i.texto | escape }}</option>{% endfor%}
+								<select id="preguntas_g1" class="filtro" multiple>
+									{% for i in Preguntas %}<option selected value="{{ i.texto | escape }}">{{ i.teto | escape }}</option>{% endfor%}
 								</select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g1" class="filtro filtros_uno" multiple></select>
+								<select id="regionales_g1" class="filtro" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g1" class="filtro filtros_uno" multiple></select>
+								<select id="ciudades_g1" class="filtro" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g1" class="filtro filtros_uno" multiple></select>
+								<select id="areas_g1" class="filtro" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g1" class="filtro filtros_uno" multiple></select>
+								<select id="cargos_g1" class="filtro" multiple></select>
 							</li>
 							{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
-								<select id="opcional1_g1" class="filtro filtros_uno" multiple></select>
+								<select id="opcional1_g1" class="filtro" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
-								<select id="opcional2_g1" class="filtro filtros_uno" multiple></select>
+								<select id="opcional2_g1" class="filtro" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
-								<select id="opcional3_g1" class="filtro filtros_uno" multiple></select>
+								<select id="opcional3_g1" class="filtro" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
-								<select id="opcional4_g1" class="filtro filtros_uno" multiple></select>
+								<select id="opcional4_g1" class="filtro" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
-								<select id="opcional5_g1" class="filtro filtros_uno" multiple></select>
+								<select id="opcional5_g1" class="filtro" multiple></select>
 							</li>
 							{% endif %}
 						</ul>
@@ -180,9 +180,9 @@
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
 var Datos = [{%for i in Datos%}
-['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }}, "{{ i.pregunta.numerica }}" ],{%endfor%}];
+['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }} ],{%endfor%}];
 var Cuestionario = [ {% for i in Preguntas %}
-['{{ i.variable.id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}
+['{{ i.variable.nombre | escape }}',{ '{{ i.texto | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}
 ];
 </script>
 
@@ -278,8 +278,8 @@ $(document).ready(function() {
 	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g1 = $('#opcional5_g1'),opcional5=[];{% endif %}
 
 	for (var i = 0; i < Datos.length; i++) {
-		if (!contenido(Datos[i][14],variables)){
-			variables.push(Datos[i][14]);
+		if (!contenido(Datos[i][1],variables)){
+			variables.push(Datos[i][1]);
 			$var_g1.append($('<option>', {
 		        value: Datos[i][14],
 		        text : Datos[i][1]
@@ -367,8 +367,8 @@ $(document).ready(function() {
 		$pre_g1.find('option').remove();
 		if($var_g1.val()){
 			for (var i = 0; i < Datos.length; i++) {
-				if ( !contenido(Datos[i][15],preguntas) && contenido(Datos[i][14],$var_g1.val()) ){
-					preguntas.push(Datos[i][15]);
+				if ( !contenido(Datos[i][2],preguntas) && contenido(Datos[i][1],$var_g1.val()) ){
+					preguntas.push(Datos[i][2]);
 					$pre_g1.append($('<option>', {
 						value: Datos[i][15],
 						text : Datos[i][2]
@@ -377,8 +377,6 @@ $(document).ready(function() {
 			}
 		}
 		$pre_g1.multiselect('rebuild');
-		$pre_g1.multiselect('selectAll', false);
-		$pre_g1.multiselect('updateButtonText');
 	});
 
 //  UPDATE Selects
@@ -394,28 +392,26 @@ $(document).ready(function() {
 		var data = new google.visualization.DataTable();
 
 		// cacheamos las seleccionadas
-		var variables_seleccionadas=$var_g1.val() || [],
-			{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val() || [],{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g1.val() || [],{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val() || [],{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val() || [],{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val() || [],{% endif %}
-			preguntas_seleccionadas = $pre_g1.val() || [],
-			regionales_seleccionadas = $reg_g1.val() || [],
-			ciudades_seleccionadas = $ciu_g1.val() || [],
-			areas_seleccionadas = $are_g1.val() || [],
-			cargos_seleccionados = $car_g1.val() || [];
+		var variables_seleccionadas=$var_g1.val(),
+			{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val(),{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g1.val(),{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val(),{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val(),{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val(),{% endif %}
+			preguntas_seleccionadas = $pre_g1.val(),
+			regionales_seleccionadas = $reg_g1.val(),
+			ciudades_seleccionadas = $ciu_g1.val(),
+			areas_seleccionadas = $are_g1.val(),
+			cargos_seleccionados = $car_g1.val();
 
 
 		// inicializamos las variables de la data table
-		var variables_seleccionadas_textos = [], v = $('#variables_g1 option');
-		for(var  i=0; i< v.length; i++){ if(v[i].selected){variables_seleccionadas_textos.push(v[i].text)}};
 		data.addColumn('date', 'Fecha');
-
-		for (var i = 0; i < variables_seleccionadas_textos.length; i++) {
-			data.addColumn('number',variables_seleccionadas_textos[i] );
+		for (var i = 0; i < variables_seleccionadas.length; i++) {
+			data.addColumn('number', variables_seleccionadas[i]);
 		}
-		var matriz_g1 = [],fechas_g1=[],auxiliar=0;
+
+		var matriz_g1 = [],fechas_g1=[],auxiliar=[];
 
 		// vector de fechas diferentes
 		for (var i = 0; i < Datos.length; i++) {
@@ -427,6 +423,8 @@ $(document).ready(function() {
 		// inicializamos la date tables
 		for (var i = 0; i < fechas_g1.length; i++) {
 			matriz_g1.push([ fechas_g1[i] ]);
+			auxiliar.push([ fechas_g1[i] ]);
+
 			// llenamos de ceros la date tables
 			for (var j = 0; j < variables_seleccionadas.length; j++) {
 				matriz_g1[i].push(0);
@@ -434,14 +432,39 @@ $(document).ready(function() {
 
 		}
 
+		var auxiliar = [];
+		for (var i = 0; i < variables_seleccionadas.length; i++) {
+			auxiliar.push(0);
+		}
+
 		// contamos
 		for (var i = 0; i < matriz_g1.length; i++) {
-			for (var k = 0; k < variables_seleccionadas.length; k++) {
-				for (var j = 0; j < Datos.length; j++) {
-					if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
-					&& variables_seleccionadas[k] == Datos[j][14]
-					&& Datos[j][16] == "True"
-					&& contenido(Datos[j][15],preguntas_seleccionadas)
+			for (var j = 0; j < Datos.length; j++) {
+				for (var k = 0; k < variables_seleccionadas.length; k++) {
+					console.log( (matriz_g1[i][0] - Datos[j][8] ) == 0
+					, contenido(Datos[j][2],preguntas_seleccionadas)
+					, contenido(Datos[j][3],regionales_seleccionadas)
+					, contenido(Datos[j][4],ciudades_seleccionadas)
+					, contenido(Datos[j][5],areas_seleccionadas)
+					, contenido(Datos[j][6],cargos_seleccionados)
+					{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+						, contenido(Datos[j][9],opcional1_seleccionadas)
+					{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+						, contenido(Datos[j][10],opcional2_seleccionadas)
+					{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+						, contenido(Datos[j][11],opcional3_seleccionadas)
+					{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+						, contenido(Datos[j][12],opcional4_seleccionadas)
+					{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+						, contenido(Datos[j][13],opcional5_seleccionadas)
+					{% endif %}
+					);
+					if( (matriz_g1[i][0] - Datos[j][8] ) == 0
+					&& contenido(Datos[j][2],preguntas_seleccionadas)
 					&& contenido(Datos[j][3],regionales_seleccionadas)
 					&& contenido(Datos[j][4],ciudades_seleccionadas)
 					&& contenido(Datos[j][5],areas_seleccionadas)
@@ -463,46 +486,66 @@ $(document).ready(function() {
 					{% endif %}
 				){
 						for (var l = 0; l < Cuestionario.length; l++) {
-							if( Cuestionario[l][0] == Datos[j][14] && Cuestionario[l][1][Datos[j][15]] )
-							{
+							console.log(Cuestionario[l][0], Datos[j][1] && Cuestionario[l][1][Datos[j][2]]);
+							if( Cuestionario[l][0] == Datos[j][1] && Cuestionario[l][1][Datos[j][2]] ){
 								for (var m = 0; m < Datos[j][7].length; m++) {
-									if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
-										matriz_g1[i][k+1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
-										auxiliar++;
+									console.log(k,Datos[i],Cuestionario[l][0], Cuestionario[l][1],Cuestionario[l][1][Datos[j][2]],Cuestionario[l][1][Datos[j][2]][ Datos[j][7][m] ]);
+									if( Cuestionario[l][1][Datos[j][2]][ Datos[j][7][m] ] ){
+										console.log('in');
+										matriz_g1[i][k] += Cuestionario[l][1][Datos[j][2]][ Datos[j][7][m] ];
+										auxiliar[k]++;
 									}
 								}
 							}
 						}
 					}
 				}
-
-			if(auxiliar){
-				matriz_g1[i][k+1] = +(Math.round(matriz_g1[i][k+1]/auxiliar+ "e+2")  + "e-2");
-				auxiliar = 0;
 			}
 
+			for (var k = 0; k < auxiliar.length; k++) {
+				if(auxiliar[k]){
+					matriz_g1[i][k+1] = matriz_g1[i][k+1]/auxiliar[k+1];
+					auxiliar[k] = 0;
+				}
 			}
 		}
 
 		console.log(matriz_g1);
 
-		data.addRows( matriz_g1 );
-
-		var altura = 200;
-		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
+		data.addRows(
+			// [
+			// [new Date(2015,0,31), 0, 0, 0, 0, 0, 0, 0],
+			// [new Date(2015,1,1), 3.8, 4, 4.8, 3.6, 7.5, 1.4, 6.7],
+			// [new Date(2015,1,2), 3.8, 4.1, 5, 3.2, 6.5, 2.4, 5.7 ],
+			// [new Date(2015,1,3), 3.7, 4.1, 5, 3.6, 7.8, 1.6, 4.7],
+			// [new Date(2015,1,4), 3.6, 4.2, 4.5, 3.6, 7.7, 4.4, 6.5],
+			// [new Date(2015,1,5), 3.4, 4.1, 5.0, 3.6, 7.9, 3.4, 5.7],
+			// [new Date(2015,1,6), 3.8, 4.0, 5.0, 3.6, 6.5, 3.5, 4.8],
+			// [new Date(2015,1,7), 3.6, 4.0, 4.7, 3.6, 5.5, 7.4, 4.9],
+			// [new Date(2015,1,8), 3.6, 4.1, 5.0, 3.6, 7.7, 1.4, 5.1],
+			// [new Date(2015,1,9), 3.7, 3.9, 3.9, 3.6, 4.5, 5.4, 6.4],
+			// [new Date(2015,1,10), 4.0, 4.3, 4.5, 3.6, 5.5, 6.4, 5.5],
+			// [new Date(2015,1,11), 4.2, 4.2, 5.0, 3.6, 6.4, 1.4, 6.2],
+			// [new Date(2015,1,12), 4.1, 4.1, 4.9, 3.6, 5.5, 6.4, 5.8],
+			// [new Date(2015,1,13), 4.1, 4.1, 4.7, 3.6, 8.4, 2.8, 7.2],
+			// [new Date(2015,1,14), 4.2, 4.1, 4.6, 3.6, 7.5, 6.4, 5.6],
+			// [new Date(2015,1,15), 4.0, 4.2, 4.8, 3.6, 3.8, 8.2, 2.9],
+			// [new Date(2015,1,16), 4.0, 4.2, 4.7, 3.6, 6.5, 9.1, 3.5],
+			// [new Date(2015,1,17), 4.0, 4.2, 4.6, 3.6, 8.4, 6.7, 6.4],
+			// [new Date(2015,1,18), 4.1, 4.1, 4.3, 3.6, 8.4, 7.8, 2.8],
+			// [new Date(2015,1,19), 4.1, 4.2, 4.3, 3.6, 5.9, 6.5, 6.4],
+			// [new Date(2015,1,20), 4.0, 3.9, 4.8, 3.6, 4.5, 6.7, 5.2]
+			// ]
+		);
 
 		var chart = new google.visualization.ChartWrapper({
 			chartType: 'LineChart',
 			containerId: 'grafica_uno_div',
 			options: {
-				height: altura,
+				height: 200,
 				// omit width, since we set this in CSS
 				legend: 'none',
-				colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
+				colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0'],
 				chartArea: {
 					width: '80%' // this should be the same as the ChartRangeFilter
 				}
@@ -585,9 +628,7 @@ $(document).ready(function() {
 			}
 		});
 	}
-
 	google.load('visualization', '1', {packages:['controls'], callback: grafica_uno});
-
 
 
 //==============================================================================
@@ -598,10 +639,6 @@ $(document).ready(function() {
 		grafica_uno();
 		grafica_dos();
 		grafica_tres();
-	});
-
-	$('.filtros_uno').change(function(){
-		grafica_uno();
 	});
 });
 </script>
