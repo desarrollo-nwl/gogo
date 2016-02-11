@@ -83,7 +83,7 @@ def enviar():
 		else:
 			delta = tiempo - stream[i].fec_controlenvio
 			if stream[i].colaborador.propension or stream[i].colaborador.propension>=0:
-				propension = stream[i].colaborador.propension - 0.83 #calibrador para que no se mueva a derecha
+				propension = (stream[i].colaborador.propension)/24.0 - 0.83 #calibrador para que no se mueva a derecha
 				if ( delta.days >= stream[i].proyecto.prudenciamin and delta.days >= propension ):  # x > p > m
 					stream = sendmail(stream[i],stream,tiempo)
 					delta = tiempo - stream[i].fec_controlenvio
