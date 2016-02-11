@@ -91,11 +91,11 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label norequired">Fecha de nacimiento:</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input readonly type="text" name="fec_nacimiento" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="Opcional">
+						<input readonly type="text" name="fec_nacimiento" data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="Opcional">
 					</div>
 					<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required">Fecha de ingreso:</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input readonly type="text" name="fec_ingreso" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="">
+						<input required type="text" name="fec_ingreso" data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="">
 					</div>
 				</div>
 				<div class="form-group">{%if Proyecto.proyectosdatos.opcional1%}

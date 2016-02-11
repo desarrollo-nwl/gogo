@@ -27,7 +27,7 @@
 					{%for i in Participantes%}
 					<tr>
 						<td>{{i.colaborador.nombre | capfirst | escape}} {{i.colaborador.apellido | capfirst | escape}}</td>
-						<td>{{i.colaborador.email | capfirst | escape}}</td>
+						<td>{{i.colaborador.email | escape}}</td>
 						<td>{{i.pregunta.variable.nombre  | escape}}</td>
 						<td>{{i.pregunta.texto  | escape}}</td>
 						{%if i.pregunta.abierta%}<td>{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}

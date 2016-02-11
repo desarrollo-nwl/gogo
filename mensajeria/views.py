@@ -218,7 +218,7 @@ def colaboradoreenviar(request,id_colaborador):
 							genero = "o"
 						nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
 						titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
-						texto_correo = salvar_html(cgi.escape(datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
+						texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 						url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 						mensaje = MIMEText(html,"html")
@@ -255,43 +255,47 @@ def encuesta(request,id_proyecto,key):
 					).get(key=key)
 		if not encuestado.estado:
 			return render_to_response('403.html')
-		stream = Streaming.objects.filter(
-					colaborador = encuestado,
-					respuesta__isnull = True).prefetch_related(
-					'pregunta__respuestas_set').select_related('pregunta__variable'
-					).order_by('pregunta__variable__posicion')
+		stream = Streaming.objects.prefetch_related(
+						'pregunta__respuestas_set'
+					).select_related(
+						'pregunta__variable'
+					).filter(
+						colaborador = encuestado,
+						pregunta__estado = True,
+						respuesta__isnull = True
+					).order_by(
+						'pregunta__variable__posicion'
+					)
 		proyecto = encuestado.proyecto
 		tiempo = datetime.date.today()
 		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto)
 		total_cuestionario = len(stream)
 	except:
 		return render_to_response('404.html')
-	try:
-		ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
-						proyecto_id=proyecto.id,
-						colaborador_id=encuestado.id,
-						respuesta__isnull=False
-						).latest('fecharespuesta')
-		pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
-		if (pronto_acceso < proyecto.prudenciamin):
-			acceso = False
-		else:
-			acceso = True
-	except:
-		acceso = True
-
-	if stream and encuestado.proyecto.activo and acceso:
+	# try:
+	# 	ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
+	# 					proyecto_id=proyecto.id,
+	# 					colaborador_id=encuestado.id,
+	# 					respuesta__isnull=False
+	# 					).latest('fecharespuesta')
+	# 	pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
+	# 	if (pronto_acceso < proyecto.prudenciamin):
+	# 		acceso = False
+	# 	else:
+	# 		acceso = True
+	# except:
+	# 	acceso = True
+	acceso =True
+	# si hay preguntas sin responder en un proyecto activo y NO es aleatorio
+	if stream and encuestado.proyecto.activo and acceso and proyecto.pordenadas:
 		if (proyecto.tipo != 'Completa'):
-			i = 0
 			len_cuestionario = 0
 			cuestionario =[]
 			cuestionario_preguntas =[]
-			while( len_cuestionario < encuestado.proyecto.can_envio and i < total_cuestionario):
-				if(stream[i].pregunta.estado):
-					cuestionario.append(stream[i])
-					cuestionario_preguntas.append(stream[i].pregunta)
-					len_cuestionario += 1
-				i += 1
+			while( len_cuestionario < encuestado.proyecto.can_envio and len_cuestionario < total_cuestionario ):
+				cuestionario.append(stream[len_cuestionario])
+				cuestionario_preguntas.append(stream[len_cuestionario].pregunta)
+				len_cuestionario += 1
 
 			if not len_cuestionario:
 				try:
@@ -304,6 +308,34 @@ def encuesta(request,id_proyecto,key):
 			cuestionario_preguntas =[]
 			for i in cuestionario:
 				cuestionario_preguntas.append(i.pregunta)
+
+	# si hay preguntas sin responder en un proyecto activo y es aleatorio
+	elif stream and encuestado.proyecto.activo and acceso and (not proyecto.pordenadas):
+		stream_vect = range(total_cuestionario)
+		if (proyecto.tipo != 'Completa'):
+			len_cuestionario = 0
+			cuestionario =[]
+			cuestionario_preguntas =[]
+			random.shuffle(stream_vect)
+
+			while( len_cuestionario < encuestado.proyecto.can_envio and len_cuestionario < total_cuestionario ):
+				cuestionario.append(stream[stream_vect[len_cuestionario]])
+				cuestionario_preguntas.append(stream[stream_vect[len_cuestionario]].pregunta)
+				len_cuestionario += 1
+
+			if not len_cuestionario:
+				try:
+					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
+				except:
+					return HttpResponseRedirect('http://www.networkslab.co')
+		else:
+			cuestionario = stream
+			len_cuestionario = len(stream)
+			cuestionario_preguntas =[]
+			for i in cuestionario:
+				cuestionario_preguntas.append(i.pregunta)
+
+
 	else:
 		try:
 			return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))

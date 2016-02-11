@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
-# django.setup()
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -37,14 +37,13 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'json_field',
 	'analisis',
 	'colaboradores',
 	'cuestionarios',
 	'mensajeria',
 	'usuarios',
 	'mptt',
-	'debug_toolbar',
+#	'debug_toolbar',
 
 )
 
@@ -90,14 +89,14 @@ WSGI_APPLICATION = 'gogo.wsgi.application'
 
 DATABASES = {
 	'default': {
-			'ENGINE':'django.db.backends.sqlite3',
-			'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-			# 'ENGINE': 'django.db.backends.mysql',
-			# 'NAME': 'gogo',
-			# 'USER': 'suidi',
-			# 'PASSWORD':'Su1357*-',
-			# 'HOST':'nwl.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
-			# 'PORT':'3306',
+			#'ENGINE':'django.db.backends.sqlite3',
+			#'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+			 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+			 'NAME': 'gogo',
+			 'USER': 'suidi',
+			 'PASSWORD':'NPlaySuN007*-',
+			 'HOST':'networks.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
+			 'PORT':'5432',
 	}
 }
 
@@ -108,12 +107,6 @@ DATABASES = {
 LANGUAGE_CODE = 'es-CO'
 
 TIME_ZONE = 'America/Bogota'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -130,29 +123,30 @@ MEDIAFILES_DIRS = (
 )
 MEDIA_ROOT = BASE_DIR + '/media/'
 # secure proxy SSL header and secure cookies
-#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-#SESSION_COOKIE_SECURE = True
-#CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # session expire at browser close
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+#CACHES = {
+#	 'default': {
+#		 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+#		 'LOCATION': BASE_DIR,
+#	 }
+#}
+
 CACHES = {
-	 'default': {
-		 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-		 'LOCATION': BASE_DIR,
-	 }
+ 	'default':{
+ 		'BACKEND':'redis_cache.RedisCache',
+ 		'LOCATION':'127.0.0.1:6379',
+ 		'OPTIONS':{
+ 			'DB':2,
+ 			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
+ 		},
+ 	},
 }
 
-# CACHES = {
-# 	'default':{
-# 		'BACKEND':'redis_cache.RedisCache',
-# 		'LOCATION':'127.0.0.1:6379',
-# 		'OPTIONS':{
-# 			'DB':2,
-# 			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
-# 		},
-# 	},
-# }
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+# SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"

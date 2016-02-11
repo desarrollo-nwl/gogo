@@ -16,7 +16,7 @@ import random
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
-import smtplib,cgi,os
+import smtplib,os
 #===============================================================================
 # Front end
 #===============================================================================
@@ -367,7 +367,10 @@ def proyectonuevo(request):
 							nombre = request.POST['nombre'],
 							tipo = request.POST['tipo'],
 							key=key)
-
+				try:
+					if(request.POST['pordenadas']):proyecto.pordenadas = True
+				except:
+					proyecto.pordenadas = False
 				if int(request.POST['interna']):
 					proyecto.interna = True
 				proyecto.save()
@@ -441,6 +444,10 @@ def proyectoeditar(request,id_proyecto):
 					proyecto.tipo = request.POST['tipo']
 				except:
 					pass
+				try:
+					if(request.POST['pordenadas']):proyecto.pordenadas = True
+				except:
+					proyecto.pordenadas = False
 				proyecto.save()
 				proyecto.usuarios.clear()
 				usuarios_add = [i for i in request.POST.getlist('usuarios')]

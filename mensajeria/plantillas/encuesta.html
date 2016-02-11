@@ -1,4 +1,4 @@
-{%spaceless%}<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" id="Networks Lab">
 <head>
 	<title>Encuesta</title>
@@ -52,9 +52,8 @@
 			{% for pregunta in variable.list|dictsort:"posicion" %}
 			<div class="form-group">
 				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
-				{%if pregunta.abierta%}<textarea type="text" max_length="1000" name="{{pregunta.id | escape}}" required></textarea>{%endif%}
+				{%if pregunta.abierta%}<textarea type="text" max_length="1000" name="{{pregunta.id}}" required></textarea>{%endif%}
 				{%if pregunta.multiple%}
-				<!-- <legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto | escape}}</legend> -->
 					{%for i in pregunta.respuestas_set.all%}
 						<input type="checkbox" class="checkbox" name="{{pregunta.id}}" value="{{i.texto|escape}}" >
 						<label class="light">{{i.texto|escape}}</label><br>
@@ -77,4 +76,3 @@
 </section>
 </body>
 </html>
-{%endspaceless%}

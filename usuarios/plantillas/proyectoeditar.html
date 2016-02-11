@@ -128,6 +128,10 @@
 						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
 							<input type="checkbox" {%if not Proyecto.proyectosdatos.censo%}checked{%endif%} name="censo" class="switch" />
 						</div>
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Preguntas ordenadas:</label>
+						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
+							<input type="checkbox" {%if Proyecto.pordenadas%}checked{%endif%} name="pordenadas" class="switch" />
+						</div>
 					</div>{%endif%}
 					<div class="container-fluid">
 						<button class="btn btn-primary pull-right m-r m-t" id="Go" type="submit" /><i class="fa fa-save"></i> Actualizar proyecto</button>

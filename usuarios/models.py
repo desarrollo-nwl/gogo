@@ -34,6 +34,7 @@ class Proyectos( models.Model ):
 	fec_registro =  models.DateTimeField( auto_now_add = True )
 	iniciable = models.BooleanField( default = False )
 	interna = models.BooleanField( default = False )
+	pordenadas = models.BooleanField( default = False )
 	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	prudenciamax = models.FloatField( default = 2 )
@@ -53,7 +54,7 @@ class Proyectos( models.Model ):
 
 	class Meta:
 		managed = True
-		db_table = 'cuestionarios_proyectos'
+		db_table = 'cuestionarios_proyectos' #ojo con este nombre
 		verbose_name_plural = 'Proyectos'
 
 
