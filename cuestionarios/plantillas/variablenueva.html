@@ -16,20 +16,20 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  id="nombre" required type="text" name="nombre" class="form-control" maxlength="254" placeholder="Nombre privado de la variable a registrar">
+						<input  id="nombre" required title="Se requiere un nombre" type="text" name="nombre" class="form-control" maxlength="254" placeholder="Nombre privado de la variable a registrar">
 					</div>
 
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Texto encuesta:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  id="nombre" required type="text" name="descripcion" class="form-control" maxlength="254" placeholder="Texto que aparecerá en la encuesta">
+						<input  id="nombre" required title="Se requiere un texto para la encuesta" type="text" name="descripcion" class="form-control" maxlength="254" placeholder="Texto que aparecerá en la encuesta">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="number" name="posicion" class="form-control" maxlength="30" min="1" max="999" placeholder="Posición dentro del proyecto" value="{{Proyecto.max_variables |add:1}}">
+						<input  required title="Se requiere una posición" type="number" name="posicion" class="form-control" maxlength="30" min="1" max="999" placeholder="Posición dentro del proyecto" value="{{Proyecto.max_variables |add:1}}">
 					</div>
 				</div>
 				<div class="form-group">
@@ -48,4 +48,6 @@
 {% block scripts%}
 <script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});
 {%endblock%}

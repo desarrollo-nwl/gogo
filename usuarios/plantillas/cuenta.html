@@ -16,19 +16,19 @@
 					<div class="form-group">
 						 <div class="col-xs-1"></div>
 						<label class="col-xs-2 control-label">Contraseña actual:</label>
-						<div class="col-xs-5"><input name="cpassword" type="password" class="form-control" maxlength="255" required></div>
+						<div class="col-xs-5"><input name="cpassword" type="password" class="form-control" maxlength="255" required title="Este campo es obligatorio"></div>
 						<div class="col-xs-4 control-label m-t" ></div>
 					</div>
 					<div class="form-group">
 						 <div class="col-xs-1"></div>
 						<label class="col-xs-2 control-label">Nueva contraseña:</label>
-						<div class="col-xs-5"><input name="password" type="password" class="form-control" maxlength="255" pattern=".{8,}" required title="8 caracteres mínimo"></div>
+						<div class="col-xs-5"><input name="password" type="password" class="form-control" maxlength="255" pattern=".{8,}" required title="Debe tener 8 carácteres mínimo"></div>
 						<div class="col-xs-4 control-label m-t" ></div>
 					</div>
 					<div class="form-group">
 						 <div class="col-xs-1"></div>
 						<label class="col-xs-2 control-label">Repita la nueva contraseña:</label>
-						<div class="col-xs-5"><input name="password2" type="password" class="form-control" maxlength="255" pattern=".{8,}" required title="8 caracteres mínimo"></div>
+						<div class="col-xs-5"><input name="password2" type="password" class="form-control" maxlength="255" pattern=".{8,}" required title="Debe tener 8 carácteres mínimo"></div>
 					</div>
 				{%if Cambio%}
 				<div class="form-group">
@@ -42,4 +42,8 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
+{% block scripts%}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
 {% endblock %}

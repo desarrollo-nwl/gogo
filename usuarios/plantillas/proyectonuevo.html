@@ -19,7 +19,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 col-md-3 col-xs-3 col-sm-3 control-label required">Empresa:</label>
 						<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
-							<select class="select2 form-control" name="empresa" required>
+							<select class="select2 form-control" name="empresa" required title="Este campo es obligatorio">
 								<option value="">Seleccione una empresa</option>
 								{%for i in Empresas%}<option value="{{i.id}}">{{i}}</option>{%endfor%}
 							</select>
@@ -28,7 +28,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Nombre de proyecto:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" required>
+							<input id="nombre" class="form-control" placeholder="Nombre que identifica el proyecto" name="nombre"  type="text" required title="Este campo es obligatorio">
 							<div id="error"></div>
 						</div>
 					</div>
@@ -45,13 +45,13 @@
 					<div class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Título de la encuesta:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" required maxlength="255">
+							<input class="form-control" placeholder="Título que aparecerá en la encuesta" name="tit_encuesta"  type="text" required title="Este campo es obligatorio" maxlength="255">
 						</div>
 					</div>
 					<div id="asunto" class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Asunto del correo:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input id="asunto-input" class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required maxlength="75">
+							<input id="asunto-input" class="form-control" placeholder="Corto pero llamativo." name="asunto"  type="text" required title="Este campo es obligatorio" maxlength="75">
 						</div>
 					</div>
 					<div class="form-group">
@@ -71,7 +71,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo Principal (correo):</label>
 						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
-							<input id ="logo" name="logo" type="file" required>
+							<input id ="logo" name="logo" type="file" required title="Este campo es obligatorio">
 						</div>
 					</div>
 					<div id="logoenc" class="form-group">
@@ -145,6 +145,8 @@
 <script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
 <script src="{% static 'js/plugins/summernote/summernote.min.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
 {% if 0%}
 <script>
 $(document).ready(function(){

@@ -17,33 +17,33 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input id="nombre" required type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar" value="{{Empresa.nombre |escape}}">
+						<input id="nombre" required title="Este campo es obligatorio" type="text" name="nombre" class="form-control" maxlength="100" placeholder="Nombre de la empresa a registrar" value="{{Empresa.nombre |escape}}">
 						<div id="errornombre"></div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nit:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input id="nit" required type="text" name="nit" class="form-control" maxlength="20" placeholder="Nit de la empresa a registrar" value="{{Empresa.nit |escape}}">
+						<input id="nit" required title="Este campo es obligatorio" type="text" name="nit" class="form-control" maxlength="20" placeholder="Nit de la empresa a registrar" value="{{Empresa.nit |escape}}">
 						<div id="errornit"></div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Página web:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="text" name="pagina" class="form-control" maxlength="1000" placeholder="Página de redicrección al terminar una encuesta" value="{{Empresa.pagina |escape}}">
+						<input  required title="Este campo es obligatorio" type="text" name="pagina" class="form-control" maxlength="1000" placeholder="Página de redicrección al terminar una encuesta" value="{{Empresa.pagina |escape}}">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Número de empleados:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<input  required type="number" name="num_empleados" class="form-control" min="1" max="99999999" placeholder="Número aproximado de empleados" value="{{Empresa.num_empleados |escape}}">
+						<input  required title="Este campo es obligatorio" type="number" name="num_empleados" class="form-control" min="1" max="99999999" placeholder="Número aproximado de empleados" value="{{Empresa.num_empleados |escape}}">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Sector económico:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<select class="select2 form-control" name="sector">
+						<select class="select2 form-control" name="sector" required titlle="Este campo es obligatorio">
 							<option {%ifequal "Administración" Empresa.sector %}selected{%endifequal%} value="Administración">Administración</option>
 							<option {%ifequal "Agrícola" Empresa.sector %}selected{%endifequal%} value="Agrícola">Agrícola</option>
 							<option {%ifequal "Comercial" Empresa.sector %}selected{%endifequal%} value="Comercial">Comercial</option>
@@ -71,13 +71,13 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">País:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8">
-						<select id="country" name="pais" class="select2 form-control" required></select>
+						<select id="country" name="pais" class="select2 form-control" required title="Este campo es obligatorio"></select>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Departamento:</label>
 					<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8">
-						<select  id="state" name="departamento" class="select2 form-control" required></select>
+						<select  id="state" name="departamento" class="select2 form-control" required title="Este campo es obligatorio"></select>
 					</div>
 				</div>
 				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> Actualizar Empresa</button></div>
@@ -129,4 +129,6 @@ populateCountries2("country", "state");
 </script>
 <script>$('.select2').select2()</script>
 <script>$(document).ready(function(){var nombres =[],$nombre = $("#nombre"),nits =[],$nit = $("#nit"),$errornombre=$('#errornombre'),	$errornit=$('#errornit');{% for i in Empresas%}nombres.push('{{i.nombre |escape|safe}}');nits.push('{{i.nit |escape|safe}}');{% endfor %}nnombres=nombres.length;$nombre.keyup(function(){ban = false;for (var i = 0; i < nnombres; i++) {if($nombre.val() == nombres[i]){$errornombre.html('<span style="color:#cd1e21">Este nombre ya se encuentra registrado.</span>');ban = true;}if(! ban){$errornombre.html('');}}$nombre.val});nnits=nits.length;$nit.keyup(function(){ban2 = false;for (var i = 0; i < nnits; i++) {if($nit.val() == nits[i]){$errornit.html('<span style="color:#cd1e21">Este nit ya se encuentra registrado.</span>');ban2 = true;}if(! ban2){$errornit.html('');}}$nombre.val});});</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
 {% endblock %}

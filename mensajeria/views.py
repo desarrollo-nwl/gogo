@@ -272,19 +272,19 @@ def encuesta(request,id_proyecto,key):
 		total_cuestionario = len(stream)
 	except:
 		return render_to_response('404.html')
-	# try:
-	# 	ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
-	# 					proyecto_id=proyecto.id,
-	# 					colaborador_id=encuestado.id,
-	# 					respuesta__isnull=False
-	# 					).latest('fecharespuesta')
-	# 	pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
-	# 	if (pronto_acceso < proyecto.prudenciamin):
-	# 		acceso = False
-	# 	else:
-	# 		acceso = True
-	# except:
-	# 	acceso = True
+	try:
+		ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
+						proyecto_id=proyecto.id,
+						colaborador_id=encuestado.id,
+						respuesta__isnull=False
+						).latest('fecharespuesta')
+		pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
+		if (pronto_acceso < proyecto.prudenciamin):
+			acceso = False
+		else:
+			acceso = True
+	except:
+		acceso = True
 	acceso =True
 	# si hay preguntas sin responder en un proyecto activo y NO es aleatorio
 	if stream and encuestado.proyecto.activo and acceso and proyecto.pordenadas:

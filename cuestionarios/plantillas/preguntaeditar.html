@@ -18,13 +18,13 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Texto:</label>
 					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8">
-						<textarea  id="texto" required type="text" name="texto" class="form-control" maxlength="254" placeholder="Texto de la pregunta">{{Pregunta.texto | escape}}</textarea>
+						<textarea  id="texto" required title="Introduzca el texto de la pregunta" type="text" name="texto" class="form-control" maxlength="254" placeholder="Texto de la pregunta">{{Pregunta.texto | escape}}</textarea>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
 					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8">
-						<input  id="posicion" required type="number" name="posicion" min="1" max="99999" class="form-control" maxlength="254" placeholder="Posición dentro de la variable" value="{{Pregunta.posicion | escape}}">
+						<input  id="posicion" required title="Introduzca la posición" type="number" name="posicion" min="1" max="99999" class="form-control" maxlength="254" placeholder="Posición dentro de la variable" value="{{Pregunta.posicion | escape}}">
 					</div>
 				</div>
 				<div class="form-group">
@@ -79,6 +79,7 @@
 <script>$('.select2').select2()</script>
 <script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	var $tipo=$("#tipo"),$contenedor=$('#contenedor'),$agregar=$('#agregar'),
@@ -130,6 +131,7 @@ $(document).ready(function(){
 		$("#"+cantidad).remove();
 		$contador.val(cantidad);}
 	});
+	$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});
 });
 </script>
 {%endblock%}

@@ -18,28 +18,28 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Fecha de inicio:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required type="text" name="fec_inicio" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="DD/MM/AAAA" value="{{Proyecto.proyectosdatos.finicio |date:"d/m/Y" |escape}}">
+						<input required title="Este campo es obligatorio" type="text" name="fec_inicio" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="DD/MM/AAAA" value="{{Proyecto.proyectosdatos.finicio |date:"d/m/Y" |escape}}">
 					</div>
 					<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Fecha de finalizacion:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required type="text" name="fec_fin" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="DD/MM/AAAA" value="{{Proyecto.proyectosdatos.ffin |date:"d/m/Y" |escape}}">
+						<input required title="Este campo es obligatorio" type="text" name="fec_fin" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="DD/MM/AAAA" value="{{Proyecto.proyectosdatos.ffin |date:"d/m/Y" |escape}}">
 					</div>
 				</div>
 				{%if Proyecto.interna%}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Frecuencia mínima:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required type="number" name="dMin"  class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamin|escape}}">
+						<input required title="Este campo es obligatorio" type="number" name="dMin"  class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamin|escape}}">
 					</div>
 					<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Frecuencia máxima:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required type="number" name="dMax"  class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamax|escape}}">
+						<input required title="Este campo es obligatorio" type="number" name="dMax"  class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamax|escape}}">
 					</div>
 				</div>
 				{%ifnotequal Proyecto.tipo "Completa"%}<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Preguntas por envío:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required type="number" name="can_envio"  class="form-control" maxlength="16" placeholder="Máximo número por envío" value="{{Proyecto.can_envio|escape}}">
+						<input required title="Este campo es obligatorio" type="number" name="can_envio"  class="form-control" maxlength="16" placeholder="Máximo número por envío" value="{{Proyecto.can_envio|escape}}">
 					</div>
 				</div>{%endifnotequal%}
 				{%else%}
@@ -54,7 +54,7 @@
 				<div class="form-group">
 					<label class="col-lg-3 col-md-4 col-xs-4 col-sm-4 control-label required">Comprendo las implicaciones:</label>
 					<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8 m-t-xs">
-						<input type="checkbox" required>
+						<input type="checkbox" required title="Este campo es obligatorio">
 					</div>
 				</div>
 				<input hidden name="iniciable" >
@@ -70,4 +70,6 @@
 {% block scripts%}
 <script src="{% static 'js/plugins/datepicker/datepicker.min.js' %}"></script>
 <script>$(document).ready(function(){$('.fecha').datepicker({startView: 1,todayBtn: "linked",keyboardNavigation: false,forceParse: false,autoclose: true}); });</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
 {%endblock%}
