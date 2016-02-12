@@ -102,7 +102,7 @@
 			<!--  Insertar Grafo  -->
 			<div class="row">
 				<div class="col-xs-4" >
-					<select id="preguntas" name="Preguntas"  data-placeholder="Elige una pregunta" class="form-control"  style="min-width:250px;" >
+					<select id="preguntas" name="Preguntas"  data-placeholder = "Elige una pregunta" class="form-control"  style="min-width:250px;" >
 							<option></option>
 							{%for i in listaPreguntas %}
 								<option value="{{forloop.counter0| escape }}">{{i| escape }}</option>
@@ -113,11 +113,11 @@
 				</div>
 				<div class='col-xs-4'>
 
-					<select id="numeroConexiones" data-placeholder = "elige el numero de conexiones de tu grafo principal" class="form-control"  style="min-width:250px;" ></select>
+					<select id="numeroConexiones" data-placeholder = "Elige el numero de conexiones de tu grafo principal" class="form-control"  style="min-width:250px;" ></select>
 
 				</div>
 				<div class="col-xs-4">
-					<select id="palabras" name="Preguntas" data-placeholder="Elige una palabra!!!" class="form-control"  style="min-width:250px;" ></select>
+					<select id="palabras" name="Preguntas" data-placeholder = "Elige una palabra" class="form-control"  style="min-width:250px;" ></select>
 				</div>
 			</div>
 			<br>

@@ -93,9 +93,9 @@ DATABASES = {
 			#'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 			 'ENGINE': 'django.db.backends.postgresql_psycopg2',
 			 'NAME': 'gogo',
-			 'USER': 'suidi',
-			 'PASSWORD':'NPlaySuN007*-',
-			 'HOST':'networks.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
+			 'USER': 'usuariodb_gogo',
+			 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
+			 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			 'PORT':'5432',
 	}
 }

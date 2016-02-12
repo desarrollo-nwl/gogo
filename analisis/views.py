@@ -26,9 +26,9 @@ def focalizados(request):
 		variables = Variables.objects.filter(proyecto_id=proyecto.id)
 		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
 		datos = Streaming.objects.filter(
-				proyecto_id=proyecto.id,pregunta__in=preguntas,respuesta__isnull=False
+				proyecto_id=proyecto.id,pregunta__abierta=False,respuesta__isnull=False
 				).select_related('proyecto__proyectosdatos',
-				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos')
+				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos').order_by('fecharespuesta')
 		return render_to_response('focalizado.html',{
 		'Activar':'AnalisisResultados','activar':'Focalizados',
 		'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
