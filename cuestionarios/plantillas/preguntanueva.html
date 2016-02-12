@@ -24,7 +24,7 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
 					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8">
-						<input  id="posicion" required title="Introduzca la posición" type="number" name="posicion" min="1" max="99999" class="form-control" maxlength="254" placeholder="Posición dentro de la variable" value="{{Variable.max_preguntas |add:1}}">
+						<input  id="posicion" required title="Este campo es obligatorio" type="number" name="posicion" min="1" max="99999" class="form-control" maxlength="254" placeholder="Posición dentro de la variable" value="{{Variable.max_preguntas |add:1}}">
 					</div>
 				</div>
 				<div class="form-group">
@@ -52,11 +52,11 @@
 					<div id="0" class="form-group">
 						<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta 1:</label>
 						<div class="col-lg-5 col-md-5 col-xs-6 col-sm-6">
-							<input required title="Es obligatorio almenos una respuesta" type="text" name="respuesta0" class="form-control" maxlength="254" placeholder="Texto de la opción">
+							<input required title="Es obligatoria una respuesta" type="text" name="respuesta0" class="form-control" maxlength="254" placeholder="Texto de la opción">
 						</div>
 						<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica oculto">Numérico:</label>
 						<div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica oculto">
-							<input type="number" name="numerico0" class="form-control numerica oculto" maxlength="254" placeholder="Valor">
+							<input title="Este campo es obligatorio" type="number" name="numerico0" class="form-control numerica oculto" maxlength="254" placeholder="Valor">
 						</div>
 					</div>
 				</div>
@@ -111,13 +111,13 @@ $(document).ready(function(){
 	$agregar.click(function(){
 		if( ($tipo[0].selectedIndex == 1 || $tipo[0].selectedIndex == 3) && cantidad < 13){
 			aux_cantidad +=1;
-			$contenedor.append('<div id="'+cantidad+'" class="form-group"><label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta '+aux_cantidad+':</label><div class="col-lg-5 col-md-5 col-xs-6 col-sm-6"><input required type="text" name="respuesta'+cantidad+'" class="form-control" maxlength="254" placeholder="Texto de la opción"></div><label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica">Numérico:</label><div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica"><input required type="number" name="numerico'+cantidad+'" class="form-control" maxlength="254" placeholder="Valor"></div></div>')
+			$contenedor.append('<div id="'+cantidad+'" class="form-group"><label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta '+aux_cantidad+':</label><div class="col-lg-5 col-md-5 col-xs-6 col-sm-6"><input required title="Este campo es obligatorio" type="text" name="respuesta'+cantidad+'" class="form-control" maxlength="254" placeholder="Texto de la opción"></div><label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica">Numérico:</label><div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica"><input required  title="Este campo es obligatorio" type="number" name="numerico'+cantidad+'" class="form-control" maxlength="254" placeholder="Valor"></div></div>')
 			cantidad +=1;
 			$contador.val(cantidad);
 		}
 		else if(($tipo[0].selectedIndex == 0 || $tipo[0].selectedIndex == 2) && cantidad < 13){
 			aux_cantidad +=1;
-			$contenedor.append('<div id="'+cantidad+'" class="form-group"><label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta '+aux_cantidad+':</label><div class="col-lg-5 col-md-5 col-xs-6 col-sm-6"><input required type="text" name="respuesta'+cantidad+'" class="form-control" maxlength="254" placeholder="Texto de la opción"></div><label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica oculto">Numérico:</label><div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica oculto"><input type="number" name="numerico'+cantidad+'" class="form-control" maxlength="254" placeholder="Valor"></div></div>')
+			$contenedor.append('<div id="'+cantidad+'" class="form-group"><label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta '+aux_cantidad+':</label><div class="col-lg-5 col-md-5 col-xs-6 col-sm-6"><input required title="Este campo es obligatorio" type="text" name="respuesta'+cantidad+'" class="form-control" maxlength="254" placeholder="Texto de la opción"></div><label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica oculto">Numérico:</label><div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica oculto"><input title="Este campo es obligatorio" type="number" name="numerico'+cantidad+'" class="form-control" maxlength="254" placeholder="Valor"></div></div>')
 			cantidad +=1;
 			$contador.val(cantidad);
 		}

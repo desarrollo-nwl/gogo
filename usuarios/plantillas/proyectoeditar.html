@@ -69,7 +69,7 @@
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo Principal (correo):</label>
 						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 							<input id ="logo" name="logo" type="file">
-							<img class="logos" src="{{Proyecto.proyectosdatos.logo.url}}"/>
+							{% if Proyecto.proyectosdatos.logo %}<img class="logos" src="{{Proyecto.proyectosdatos.logo.url}}"/>{% endif %}
 						</div>
 					</div>
 					<div class="form-group">
@@ -82,7 +82,7 @@
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo secundario (encuesta):</label>
 						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 							<input id ="logoenc" name="logoenc" type="file" >
-							<img class="logos" src={%if Proyecto.proyectosdatos.logoenc %}"{{Proyecto.proyectosdatos.logoenc.url}}"{%else%}"{{Proyecto.proyectosdatos.logo.url}}"{%endif%} />
+							{% if Proyecto.proyectosdatos.logo %}<img class="logos" src={%if Proyecto.proyectosdatos.logoenc %}"{{Proyecto.proyectosdatos.logoenc.url}}"{%else%}"{{Proyecto.proyectosdatos.logo.url}}"{%endif%} />{% endif %}
 						</div>
 					</div>{%endif%}
 					<div class="form-group">

@@ -1,7 +1,11 @@
 {% extends "dash2.html" %}{%load staticfiles %}
-{% block title %} Home | Gráficas{% endblock %}
+{% block title %} Home | A. Focalizado{% endblock %}
+{% block head2 %}
+<style media="screen">.multiselect{margin-left: -15px !important;}.panel-body{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
+{% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
 <li><a href="#"><i><span>/ Focalizado</span></i></a></li>
 {%endblock%}
 {% block contenido2 %}
@@ -224,7 +228,6 @@ var Cuestionario = [ {% for i in Preguntas %}
 ['{{ i.variable.id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}
 ];
 </script>
-
 <script type="text/javascript">
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -234,12 +237,36 @@ var contenido_date = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
 	return false;
 }
+var limpiar_filas_nulas = function(matriz_datos){
+	var long_fila = matriz_datos[0].length, i = 0;
+	while ( i < matriz_datos.length ) {
+		var aux = 0;
+		for (var j = 1; j < long_fila; j++)
+			aux += matriz_datos[i][j];
+
+		if( aux == 0 ) matriz_datos.splice(i,1);
+		else i++;
+	}
+	return matriz_datos;
+}
+
+var maximo_cuestionario = 5;
+for (var i = 0; i < Cuestionario.length; i++) {
+	for (var key in Cuestionario[i][1]) {
+		if (Cuestionario[i][1].hasOwnProperty(key)){
+			for (var key2 in Cuestionario[i][1][key]) {
+				if (Cuestionario[i][1][key].hasOwnProperty(key2) && Cuestionario[i][1][key][key2] > maximo_cuestionario)
+			 		maximo_cuestionario = Cuestionario[i][1][key][key2];
+			 }
+		}
+	}
+}
 
 //==============================================================================
 //   variables GLOBALES
 //==============================================================================
 
-var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[],
+var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[],
 	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
 	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
 	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
@@ -260,13 +287,19 @@ var $var_g3 = $('#variables_g3'), $pre_g3 = $('#preguntas_g3'),
 {%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4_g3 = $('#opcional4_g3'),opcional4=[];{% endif %}
 {%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g3 = $('#opcional5_g3'),opcional5=[];{% endif %}
 
+
 var Elementos = {
 //==============================================================================
-//   Selects Grafica UNO
+//   Selects
 //==============================================================================
 inicio : function(){
 
 	for (var i = 0; i < Datos.length; i++) {
+
+		if(!contenido_date(Datos[i][8],fechas)){
+			fechas.push(Datos[i][8]);
+		}
+
 		if (!contenido(Datos[i][14],variables)){
 			variables.push(Datos[i][14]);
 			$var_g1.append($('<option>', {
@@ -467,8 +500,6 @@ inicio : function(){
 //   Grafica UNO
 //==============================================================================
 grafica_uno: function(){
-	var data = new google.visualization.DataTable();
-
 	// cacheamos las seleccionadas
 	var variables_seleccionadas=$var_g1.val() || [],
 		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val() || [],{% endif %}
@@ -482,27 +513,20 @@ grafica_uno: function(){
 		areas_seleccionadas = $are_g1.val() || [],
 		cargos_seleccionados = $car_g1.val() || [];
 
-
 	// inicializamos las variables de la data table
-	var variables_seleccionadas_textos = [], v = $('#variables_g1 option');
+	var data = new google.visualization.DataTable(),
+		variables_seleccionadas_textos = [], v = $('#variables_g1 option');
 	for(var  i=0; i< v.length; i++){ if(v[i].selected){variables_seleccionadas_textos.push(v[i].text)}};
 	data.addColumn('date', 'Fecha');
 
 	for (var i = 0; i < variables_seleccionadas_textos.length; i++) {
 		data.addColumn('number',variables_seleccionadas_textos[i] );
 	}
-	var matriz_g1 = [],fechas_g1=[],auxiliar=0;
-
-	// vector de fechas diferentes
-	for (var i = 0; i < Datos.length; i++) {
-		if(!contenido_date(Datos[i][8],fechas_g1)){
-			fechas_g1.push(Datos[i][8]);
-		}
-	}
+	var matriz_g1 = [],auxiliar=0;
 
 	// inicializamos la date tables
-	for (var i = 0; i < fechas_g1.length; i++) {
-		matriz_g1.push([ fechas_g1[i] ]);
+	for (var i = 0; i < fechas.length; i++) {
+		matriz_g1.push([ fechas[i] ]);
 		// llenamos de ceros la date tables
 		for (var j = 0; j < variables_seleccionadas.length; j++) {
 			matriz_g1[i].push(0);
@@ -559,7 +583,7 @@ grafica_uno: function(){
 		}
 	}
 
-	console.log(matriz_g1);
+	matriz_g1 = limpiar_filas_nulas(matriz_g1);
 
 	data.addRows( matriz_g1 );
 
@@ -575,12 +599,15 @@ grafica_uno: function(){
 		containerId: 'grafica_uno_div',
 		options: {
 			height: altura,
-			// omit width, since we set this in CSS
 			legend: 'none',
 			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
 			chartArea: {
-				width: '90%' // this should be the same as the ChartRangeFilter
-			}
+				width: '90%'
+			},
+			vAxis : {
+			   maxValue: maximo_cuestionario,
+			   minValue: 0
+		   },
 		}
 	});
 
@@ -592,10 +619,9 @@ grafica_uno: function(){
 			ui: {
 				chartOptions: {
 					height: 50,
-					// omit width, since we set this in CSS
 					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
 					chartArea: {
-						width: '90%' // this should be the same as the ChartRangeFilter
+						width: '90%'
 					}
 				}
 			}
@@ -662,24 +688,121 @@ grafica_uno: function(){
 },
 
 //==============================================================================
+//   Grafica DOS
+//==============================================================================
+grafica_dos : function(){
+  var data = google.visualization.arrayToDataTable([
+	['Dimensiones', 'R1', 'R2', 'R3', 'R4', 'R5'],
+	['Area 1',  5.40,  5.40,  5.40,  5.40,  5.40],
+	['Area 2',  30.70,  30.70,  30.70,  30.70,  30.70],
+	['Area 3',  40.60,  40.60,  40.60,  40.60,  40.60],
+	['Area 4',  20.00,  20.00,  20.00,  20.00,  20.00],
+	['Area 5',  3.30,  3.30,  3.30,  3.30,  3.30]
+  ]);
+
+  var options = {
+	legend: 'none',
+ };
+
+var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+
+chart.draw(data, options);
+
+},
+//==============================================================================
 //   Grafica TRES
 //==============================================================================
 grafica_tres: function(){
-	var data3 = new google.visualization.DataTable();
 
-	data3.addColumn('number', 'Fecha');
-	data3.addColumn('number', 'Algo muy laaaaaargo como');
-	data3.addColumn('number', 'Algo muy laaaaaargo como');
-	data3.addColumn('number', 'Algo muy laaaaaargo como');
-	data3.addColumn('number', 'Algo muy laaaaaargo como');
-	data3.addColumn('number', 'Algo muy laaaaaargo como');
-	data3.addRows(
-	[
-		  [2013,  1000, 400, 300, 500, 200],
-		  [2014,  1170, 460, 200, 300, 200],
-		  [2015,  660, 1120, 300, 250, 300],
-		  [2016,  1030, 540, 100, 600, 700]
-	]);
+	// cacheamos las seleccionadas
+	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
+		preguntas_seleccionadas = $pre_g3.val() || [],
+		regionales_seleccionadas = $reg_g3.val() || [],
+		ciudades_seleccionadas = $ciu_g3.val() || [],
+		areas_seleccionadas = $are_g3.val() || [],
+		cargos_seleccionados = $car_g3.val() || [];
+
+	// inicializamos las respuestas en la data table
+	var v = document.getElementById("variables_g3"),
+		variable_seleccionada = v.options[v.selectedIndex].value,
+		p = $('#preguntas_g3 option'),
+		respuestas_seleccionadas_textos = [], preguntas_control=[];
+
+	// Obtenemos las posibles respuestas de la encuesta
+	for (var i = 0; i < Cuestionario.length; i++) {
+		if( Cuestionario[i][0] == variable_seleccionada ){
+			for (var j = 0; j < p.length; j++) {
+				if( Cuestionario[i][1][p[j].value] && p[j].selected && ( !contenido( p[j].value, preguntas_control ) ) ){
+					for ( var key in Cuestionario[i][1][p[j].value] ) {
+					  if ( Cuestionario[i][1][p[j].value].hasOwnProperty(key) && !contenido(key,respuestas_seleccionadas_textos) ) {
+					    respuestas_seleccionadas_textos.push(key);
+					  }
+					}
+					preguntas_control.push( p[j].value )
+				}
+			}
+		}
+	}
+
+	// inicializamos la date tables
+	var data3 = new google.visualization.DataTable();
+	data3.addColumn('date', 'Fecha');
+	for (var i = 0; i < respuestas_seleccionadas_textos.length; i++) {
+		data3.addColumn('number',respuestas_seleccionadas_textos[i] );
+	}
+
+	// llenamos de ceros la date tables
+	var matriz_g3 = [];
+	for (var i = 0; i < fechas.length; i++) {
+		matriz_g3.push([ fechas[i] ]);
+		for (var j = 0; j < respuestas_seleccionadas_textos.length; j++) {
+			matriz_g3[i].push(0);
+		}
+	}
+
+	// contamos
+	for (var i = 0; i < matriz_g3.length; i++) {
+		for (var k = 0; k < respuestas_seleccionadas_textos.length; k++) {
+			for (var j = 0; j < Datos.length; j++) {
+				if( matriz_g3[i][0].getTime() === Datos[j][8].getTime()
+				&& variable_seleccionada == Datos[j][14]
+				&& contenido(Datos[j][15],preguntas_seleccionadas)
+				&& contenido(Datos[j][3],regionales_seleccionadas)
+				&& contenido(Datos[j][4],ciudades_seleccionadas)
+				&& contenido(Datos[j][5],areas_seleccionadas)
+				&& contenido(Datos[j][6],cargos_seleccionados)
+				{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+					&& contenido(Datos[j][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+					&& contenido(Datos[j][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+					&& contenido(Datos[j][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+					&& contenido(Datos[j][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+					&& contenido(Datos[j][13],opcional5_seleccionadas)
+				{% endif %}
+				){
+					for (var l = 0; l < Datos[j][7].length; l++) {
+						if( Datos[j][7][l] == respuestas_seleccionadas_textos[k] ){
+							matriz_g3[i][k+1] += 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	matriz_g3 = limpiar_filas_nulas(matriz_g3);
+
+	data3.addRows( matriz_g3 );
 
 	var altura = 200;
 	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
@@ -697,11 +820,11 @@ grafica_tres: function(){
 			legend: {position: 'top', maxLines: 3},
 			vAxis: {
 				minValue: 0,
-				ticks: [0, .3, .6, .9, 1]
+				ticks: [0, .25, .5, .75, 1]
 			},
 			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
 			chartArea: {
-				width: '90%' // this should be the same as the ChartRangeFilter
+				width: '90%'
 			}
 		}
 	});
@@ -713,11 +836,10 @@ grafica_tres: function(){
 			filterColumnIndex: 0,
 			ui: {
 				chartOptions: {
-					height: 50,
-					// omit width, since we set this in CSS
+					height: 150,
 					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
 					chartArea: {
-						width: '90%' // this should be the same as the ChartRangeFilter
+						width: '90%'
 					}
 				}
 			}
@@ -728,56 +850,25 @@ grafica_tres: function(){
 	dashboard.draw(data3);
 },
 }
-</script>
 
-
-<!--  GRAFICA 2-->
-<script type="text/javascript">
-// google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(grafica_dos);
-
-	function grafica_dos() {
-	  var data = google.visualization.arrayToDataTable([
-		['Dimensiones', 'R1', 'R2', 'R3', 'R4', 'R5'],
-		['Area 1',  5.40,  5.40,  5.40,  5.40,  5.40],
-		['Area 2',  30.70,  30.70,  30.70,  30.70,  30.70],
-		['Area 3',  40.60,  40.60,  40.60,  40.60,  40.60],
-		['Area 4',  20.00,  20.00,  20.00,  20.00,  20.00],
-		['Area 5',  3.30,  3.30,  3.30,  3.30,  3.30]
-	  ]);
-
-	  var options = {
-		legend: 'none',
-	 };
-
-	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
-
-	chart.draw(data, options);
-
-	}
-
-</script>
-
-
-<script type="text/javascript">
 //==============================================================================
-//   responsive
+//   Control de mision
 //==============================================================================
 $(document).ready(function() {
 	Elementos.inicio();
+	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+	Elementos.grafica_dos();
+	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_tres});
+
+	$('.panel-body').fadeTo('slow',100);
+
+	$('.filtros_uno').change(function(){		Elementos.grafica_uno();	});
+	$('.filtros_uno').change(function(){		Elementos.grafica_dos();	});
+	$('.filtros_tres').change(function(){		Elementos.grafica_tres();	});
+
 	$(window).resize(function() {
 		Elementos.grafica_uno();
 		Elementos.grafica_dos();
-		Elementos.grafica_tres();
-	});
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_tres});
-
-	$('.filtros_uno').change(function(){
-		Elementos.grafica_uno();
-	});
-
-	$('.filtros_tres').change(function(){
 		Elementos.grafica_tres();
 	});
 });

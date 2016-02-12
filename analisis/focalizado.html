@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
-			<h4 class="panel-title">Promedio General Tiempo Real Por Variable</h4>
+			<h4 class="panel-title">Promedio general por variable en tiempo real</h4>
 		</div>
 		<div class="panel-body">
 			<div class="col-lg-9">
@@ -31,58 +31,58 @@
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr25">Variables</span>
-								<select id="variables_g1" class="filtro" multiple></select>
+								<select id="variables_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr20">Preguntas</span>
-								<select id="preguntas_g1" class="filtro" multiple>
-									{% for i in Preguntas %}<option selected value="{{ i.texto | escape }}">{{ i.teto | escape }}</option>{% endfor%}
+								<select id="preguntas_g1" class="filtro filtros_uno" multiple>
+									{% for i in Preguntas %}<option selected value="{{ i.id }}">{{ i.texto | escape }}</option>{% endfor%}
 								</select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g1" class="filtro" multiple></select>
+								<select id="regionales_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g1" class="filtro" multiple></select>
+								<select id="ciudades_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g1" class="filtro" multiple></select>
+								<select id="areas_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g1" class="filtro" multiple></select>
+								<select id="cargos_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
-								<select id="opcional1_g1" class="filtro" multiple></select>
+								<select id="opcional1_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
-								<select id="opcional2_g1" class="filtro" multiple></select>
+								<select id="opcional2_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
-								<select id="opcional3_g1" class="filtro" multiple></select>
+								<select id="opcional3_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
-								<select id="opcional4_g1" class="filtro" multiple></select>
+								<select id="opcional4_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							{% endif %}
 							{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
-								<select id="opcional5_g1" class="filtro" multiple></select>
+								<select id="opcional5_g1" class="filtro filtros_uno" multiple></select>
 							</li>
 							{% endif %}
 						</ul>
@@ -99,6 +99,10 @@
 		<div class="panel-body">
 			<div class="col-lg-9">
 				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
+
+
+				<br>
+				<div id="slider"></div>
 			</div>
 
 			<div class="col-lg-3">
@@ -110,20 +114,61 @@
 					<div class="panel-body">
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
-								<span class="strong">Variable</span>
+								<span class="strong pr25">Variables</span>
+								<select id="variables_g2" class="filtro filtros_dos"></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
-								<span class="strong">Pregunta</span>
+								<span class="strong pr20">Preguntas</span>
+								<select id="preguntas_g2" class="filtro filtros_dos">
+									{% for i in Preguntas %}<option selected value="{{ i.id }}">{{ i.texto | escape }}</option>{% endfor%}
+								</select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
-								<span class="strong">Regional</span>
+								<span class="strong" style="padding-right:47px">Áreas</span>
+								<select id="areas_g2" class="filtro filtros_uno" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
-								<span class="strong">Ciudad</span>
+								<span class="strong pr15">Regionales</span>
+								<select id="regionales_g2" class="filtro filtros_dos" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
-								<span class="strong">Area</span>
+								<span class="strong pr25">Ciudades</span>
+								<select id="ciudades_g2" class="filtro filtros_dos" multiple></select>
 							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong" style="padding-right:39px">Cargos</span>
+								<select id="cargos_g2" class="filtro filtros_dos" multiple></select>
+							</li>
+							{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
+								<select id="opcional1_g2" class="filtro filtros_dos" multiple></select>
+							</li>
+							{% endif %}
+							{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
+								<select id="opcional2_g2" class="filtro filtros_dos" multiple></select>
+							</li>
+							{% endif %}
+							{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
+								<select id="opcional3_g2" class="filtro filtros_dos" multiple></select>
+							</li>
+							{% endif %}
+							{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
+								<select id="opcional4_g2" class="filtro filtros_dos" multiple></select>
+							</li>
+							{% endif %}
+							{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
+								<select id="opcional5_g2" class="filtro filtros_dos" multiple></select>
+							</li>
+							{% endif %}
 						</ul>
 					</div>
 				</div>
@@ -176,42 +221,418 @@
 {% endblock %}
 
 {%block scripts%}
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+
+
+<!-- <script src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.js'%}"></script> -->
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderDraggable.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderBar.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderHandle.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSliderHandle.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderLabel.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSlider.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.js'%}"></script>
+
+
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
-<script type="text/javascript">
-var Datos = [{%for i in Datos%}
-['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }} ],{%endfor%}];
-var Cuestionario = [ {% for i in Preguntas %}
-['{{ i.variable.nombre | escape }}',{ '{{ i.texto | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}
-];
-</script>
 
+<script type="text/javascript">
+
+
+// var Datos = [
+// 	['susaná'+'GaleApontñe' ,
+// 	'Prueba para datos' ,
+// 	'Preguntica sin numerica' ,
+// 	'regio2' ,
+// 	'ciudad2' ,
+// 	'area2' ,
+// 	'cargo2' ,
+// 			["A", "B", "C"],
+// 	new Date(2016,0,29),
+// 	'asd12',
+// 	'asd22',
+// 	'asd32',
+// 	'asd42',
+// 	'asd52',
+// 	6,
+// 	18,
+// 	"False" ],
+//
+// 	['Iván'+'Gañeanó' ,
+// 	'Prueba para datos' ,
+// 	'Preguntica sin numerica' ,
+// 	'regional1' ,
+// 	'ciudad1' ,
+// 	'area1' ,
+// 	'cargo1' ,
+//
+//
+// 			["A", "B", "C"],
+//
+//
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd11',
+// 	'asd21',
+// 	'asd31',
+// 	'asd41',
+// 	'asd51',
+// 	6,
+// 	18,
+// 	"False" ],
+//
+// 	['susaná'+'GaleApontñe' ,
+// 	'Variable 1 prueba' ,
+// 	'pregunta 1' ,
+// 	'regio2' ,
+// 	'ciudad2' ,
+// 	'area2' ,
+// 	'cargo2' ,
+//
+//
+//
+// 			['respuesta 1'],
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd12',
+// 	'asd22',
+// 	'asd32',
+// 	'asd42',
+// 	'asd52',
+// 	5,
+// 	22,
+// 	"True" ],
+//
+// 	['Iván'+'Gañeanó' ,
+// 	'Variable 1 prueba' ,
+// 	'pregunta 1' ,
+// 	'regional1' ,
+// 	'ciudad1' ,
+// 	'area1' ,
+// 	'cargo1' ,
+//
+//
+//
+// 			['respuesta 1'],
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd11',
+// 	'asd21',
+// 	'asd31',
+// 	'asd41',
+// 	'asd51',
+// 	5,
+// 	22,
+// 	"True" ],
+//
+// 	['susaná'+'GaleApontñe' ,
+// 	'Maestra' ,
+// 	'¿Está usted de acuerdo?' ,
+// 	'regio2' ,
+// 	'ciudad2' ,
+// 	'area2' ,
+// 	'cargo2' ,
+//
+//
+// 			["No", "Si"],
+//
+//
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd12',
+// 	'asd22',
+// 	'asd32',
+// 	'asd42',
+// 	'asd52',
+// 	7,
+// 	15,
+// 	"True" ],
+//
+// 	['Iván'+'Gañeanó' ,
+// 	'Maestra' ,
+// 	'¿Está usted de acuerdo?' ,
+// 	'regional1' ,
+// 	'ciudad1' ,
+// 	'area1' ,
+// 	'cargo1' ,
+//
+//
+// 			["No", "Si"],
+//
+//
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd11',
+// 	'asd21',
+// 	'asd31',
+// 	'asd41',
+// 	'asd51',
+// 	7,
+// 	15,
+// 	"True" ],
+//
+// 	['susaná'+'GaleApontñe' ,
+// 	'Maestra' ,
+// 	'preguntica' ,
+// 	'regio2' ,
+// 	'ciudad2' ,
+// 	'area2' ,
+// 	'cargo2' ,
+//
+//
+//
+// 			['No'],
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd12',
+// 	'asd22',
+// 	'asd32',
+// 	'asd42',
+// 	'asd52',
+// 	7,
+// 	21,
+// 	"False" ],
+//
+// 	['Iván'+'Gañeanó' ,
+// 	'Maestra' ,
+// 	'preguntica' ,
+// 	'regional1' ,
+// 	'ciudad1' ,
+// 	'area1' ,
+// 	'cargo1' ,
+//
+//
+//
+// 			['Ok'],
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd11',
+// 	'asd21',
+// 	'asd31',
+// 	'asd41',
+// 	'asd51',
+// 	7,
+// 	21,
+// 	"False" ],
+//
+// 	['susaná'+'GaleApontñe' ,
+// 	'Maestra' ,
+// 	'Preguntica numérica' ,
+// 	'regio2,' ,
+// 	'ciudad2' ,
+// 	'area2' ,
+// 	'cargo2' ,
+//
+//
+//
+// 			['No'],
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd12',
+// 	'asd22',
+// 	'asd32',
+// 	'asd42',
+// 	'asd52',
+// 	7,
+// 	15,
+// 	"True" ],
+//
+// 	['Iván'+'Gañeanó' ,
+// 	'Maestra' ,
+// 	'Preguntica numérica' ,
+// 	'regio2' ,
+// 	'ciudad1' ,
+// 	'area1' ,
+// 	'cargo1' ,
+//
+//
+//
+// 			['Si'],
+//
+//
+// 	new Date(2016,0,29),
+// 	'asd11',
+// 	'asd21',
+// 	'asd31',
+// 	'asd41',
+// 	'asd51',
+// 	15,
+// 	15,
+// 	"True" ],
+//  ];
+// var Cuestionario = [
+//
+// 		['7',
+// 		 { '20':{
+//
+// 			 	'Si':
+//
+// 						10.0
+// 					,
+//
+// 			 	'No':
+//
+// 						1.0
+// 					,
+// 	           }
+// 		  }
+// 	   ],
+//
+// 		['7',
+// 		 { '21':{
+//
+// 			 	'Ok':
+//
+// 						0
+// 					,
+//
+// 			 	'No':
+//
+// 						0
+// 					,
+// 	           }
+// 		  }
+// 	   ],
+//
+// 		['7',
+// 		 { '22':{
+//
+// 			 	'No':
+//
+// 						2.0
+// 					,
+//
+// 			 	'Si':
+//
+// 						5.0
+// 					,
+// 	           }
+// 		  }
+// 	   ],
+//
+// 		['6',
+// 		 { '18':{
+//
+// 			 	'A':
+//
+// 						0
+// 					,
+//
+// 			 	'B':
+// 						0
+//
+// 					,
+//
+// 			 	'C':
+//
+// 						0
+// 					,
+// 	           }
+// 		  }
+// 	   ],
+//
+// 		['5',
+// 		 { '15':{
+//
+// 			 	'respuesta 1':
+//
+// 						7.0
+// 					,
+// 	           }
+// 		  }
+// 	   ],
+//
+// ];
+
+
+
+
+
+// [variable.id,{i.id : { j.texto: valorNumerio}}]
+
+
+// DATOS ORIGINAL
+
+var Datos = [{%for i in Datos%}
+	['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' ,
+	'{{ i.pregunta.variable.nombre | escape }}' ,
+	'{{ i.pregunta.texto | escape }}' ,
+	'{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' ,
+	'{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' ,
+	'{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' ,
+	'{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' ,
+	{%if i.pregunta.multiple%}
+		{%ifequal i.respuesta "0"%}
+			['0'],
+		{%else%}
+			{{ i.respuesta | safe | escape }},
+		{%endifequal%}
+	{%endif%}
+	{%if i.pregunta.abierta or i.pregunta.multiple%}
+	{%else%}
+		{%ifequal i.respuesta "0"%}
+			['0'],
+		{%else%}
+			['{{ i.respuesta | escape}}'],
+		{%endifequal%}
+	{%endif%}
+	new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}),
+	'{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}',
+	'{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}',
+	'{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}',
+	'{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}',
+	'{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',
+	{{ i.pregunta.variable.id }},
+	{{ i.pregunta.id }},
+	"{{ i.pregunta.numerica }}" ],
+ {%endfor%}];
+var Cuestionario = [
+	{% for i in Preguntas %}
+		['{{ i.variable.id | escape }}',
+		 { '{{ i.id | escape }}':{
+			 {% for j in i.respuestas_set.all %}
+			 	'{{ j.texto | escape}}':
+				 	{% if j.numerico %}
+						{{ j.numerico | escape }}
+					{% else %}
+						0
+					{% endif %},
+	          {% endfor %} }
+		  }
+	   ],
+	 {% endfor %}
+];
+//
+//
+//
+// console.log(Datos)
+//
+// [variable.id,{i.id : { j.texto: valorNumerio}}]
+
+
+
+
+</script>
 <!--  GRAFICA 2-->
 <script type="text/javascript">
 // google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(grafica_dos);
 
-	function grafica_dos() {
-	  var data = google.visualization.arrayToDataTable([
-		['Dimensiones', 'R1', 'R2', 'R3', 'R4', 'R5'],
-		['Area 1',  5.40,  5.40,  5.40,  5.40,  5.40],
-		['Area 2',  30.70,  30.70,  30.70,  30.70,  30.70],
-		['Area 3',  40.60,  40.60,  40.60,  40.60,  40.60],
-		['Area 4',  20.00,  20.00,  20.00,  20.00,  20.00],
-		['Area 5',  3.30,  3.30,  3.30,  3.30,  3.30]
-	  ]);
-
-	  var options = {
-		legend: 'none',
-	 };
-
-	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
-
-	chart.draw(data, options);
-
-	}
 
 </script>
+
 
 <!--  GRAFICA 3-->
 <script type="text/javascript">
@@ -256,31 +677,38 @@ var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
 	return false;
 }
+
 var contenido_date = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
 	return false;
 }
 $(document).ready(function() {
 
-//==============================================================================
-//   Selects Grafica UNO
-//==============================================================================
 
 	var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[],
 		$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
 		$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
 		$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
 
-	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3_g1 = $('#opcional3_g1'),opcional3=[];{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4_g1 = $('#opcional4_g1'),opcional4=[];{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g1 = $('#opcional5_g1'),opcional5=[];{% endif %}
+		var $var_g2 = $('#variables_g2'), $pre_g2 = $('#preguntas_g2'),
+			$reg_g2 = $('#regionales_g2'), $ciu_g2 = $('#ciudades_g2'),
+			$are_g2 = $('#areas_g2'), $car_g2 = $('#cargos_g2'),
+			$are_g2 = $('#areas_g2');
+
+	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];var $op1_g2 = $('#opcional1_g2');{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];var $op2_g2 = $('#opcional2_g2');{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3_g1 = $('#opcional3_g1'),opcional3=[];var $op3_g2 = $('#opcional3_g2');{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4_g1 = $('#opcional4_g1'),opcional4=[];var $op4_g2 = $('#opcional4_g2');{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g1 = $('#opcional5_g1'),opcional5=[];var $op5_g2 = $('#opcional5_g2');{% endif %}
 
 	for (var i = 0; i < Datos.length; i++) {
-		if (!contenido(Datos[i][1],variables)){
-			variables.push(Datos[i][1]);
+		if (!contenido(Datos[i][14],variables)){
+			variables.push(Datos[i][14]);
 			$var_g1.append($('<option>', {
+		        value: Datos[i][14],
+		        text : Datos[i][1]
+		    }));
+			$var_g2.append($('<option>', {
 		        value: Datos[i][14],
 		        text : Datos[i][1]
 		    }));
@@ -291,10 +719,18 @@ $(document).ready(function() {
 				value: Datos[i][3],
 				text : Datos[i][3]
 			}));
+			$reg_g2.append($('<option>', {
+				value: Datos[i][3],
+				text : Datos[i][3]
+			}));
 		}
 		if (!contenido(Datos[i][4],ciudades)){
 			ciudades.push(Datos[i][4]);
 			$ciu_g1.append($('<option>', {
+				value: Datos[i][4],
+				text : Datos[i][4]
+			}));
+			$ciu_g2.append($('<option>', {
 				value: Datos[i][4],
 				text : Datos[i][4]
 			}));
@@ -305,10 +741,19 @@ $(document).ready(function() {
 				value: Datos[i][5],
 				text : Datos[i][5]
 			}));
+			$are_g2.append($('<option>', {
+				value: Datos[i][5],
+				text : Datos[i][5]
+			}));
+
 		}
 		if (!contenido(Datos[i][6],cargos)){
 			cargos.push(Datos[i][6]);
 			$car_g1.append($('<option>', {
+				value: Datos[i][6],
+				text : Datos[i][6]
+			}));
+			$car_g2.append($('<option>', {
 				value: Datos[i][6],
 				text : Datos[i][6]
 			}));
@@ -321,12 +766,20 @@ $(document).ready(function() {
 				value: Datos[i][9],
 				text : Datos[i][9]
 			}));
+			$op1_g2.append($('<option>', {
+				value: Datos[i][9],
+				text : Datos[i][9]
+			}));
 		}
 		{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
 		if (!contenido(Datos[i][10],opcional2)){
 			opcional2.push(Datos[i][10]);
 			$op2_g1.append($('<option>', {
+				value: Datos[i][10],
+				text : Datos[i][10]
+			}));
+			$op2_g2.append($('<option>', {
 				value: Datos[i][10],
 				text : Datos[i][10]
 			}));
@@ -339,6 +792,10 @@ $(document).ready(function() {
 				value: Datos[i][11],
 				text : Datos[i][11]
 			}));
+			$op3_g2.append($('<option>', {
+				value: Datos[i][11],
+				text : Datos[i][11]
+			}));
 		}
 		{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
@@ -348,12 +805,20 @@ $(document).ready(function() {
 				value: Datos[i][12],
 				text : Datos[i][12]
 			}));
+			$op4_g2.append($('<option>', {
+				value: Datos[i][12],
+				text : Datos[i][12]
+			}));
 		}
 		{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
 		if (!contenido(Datos[i][13],opcional5)){
 			opcional5.push(Datos[i][13]);
 			$op5_g1.append($('<option>', {
+				value: Datos[i][13],
+				text : Datos[i][13]
+			}));
+			$op5_g2.append($('<option>', {
 				value: Datos[i][13],
 				text : Datos[i][13]
 			}));
@@ -367,8 +832,8 @@ $(document).ready(function() {
 		$pre_g1.find('option').remove();
 		if($var_g1.val()){
 			for (var i = 0; i < Datos.length; i++) {
-				if ( !contenido(Datos[i][2],preguntas) && contenido(Datos[i][1],$var_g1.val()) ){
-					preguntas.push(Datos[i][2]);
+				if ( !contenido(Datos[i][15],preguntas) && contenido(Datos[i][14],$var_g1.val()) ){
+					preguntas.push(Datos[i][15]);
 					$pre_g1.append($('<option>', {
 						value: Datos[i][15],
 						text : Datos[i][2]
@@ -377,6 +842,27 @@ $(document).ready(function() {
 			}
 		}
 		$pre_g1.multiselect('rebuild');
+		$pre_g1.multiselect('selectAll', false);
+		$pre_g1.multiselect('updateButtonText');
+	});
+	$var_g2.change(function(){
+		preguntas = [];
+		$pre_g2.find('option').remove();
+		if($var_g2.val()){
+			for (var i = 0; i < Datos.length; i++) {
+				if ( !contenido(Datos[i][15],preguntas) && contenido(Datos[i][14],$var_g2.val()) ){
+					preguntas.push(Datos[i][15]);
+					$pre_g2.append($('<option>', {
+						value: Datos[i][15],
+						text : Datos[i][2]
+					}));
+				}
+			}
+		}
+		$pre_g2.multiselect('rebuild');
+		$pre_g2.multiselect('selectAll', false);
+		$pre_g2.multiselect('updateButtonText');
+		console.log($var_g2.val());
 	});
 
 //  UPDATE Selects
@@ -392,26 +878,28 @@ $(document).ready(function() {
 		var data = new google.visualization.DataTable();
 
 		// cacheamos las seleccionadas
-		var variables_seleccionadas=$var_g1.val(),
-			{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val(),{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g1.val(),{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val(),{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val(),{% endif %}
-			{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val(),{% endif %}
-			preguntas_seleccionadas = $pre_g1.val(),
-			regionales_seleccionadas = $reg_g1.val(),
-			ciudades_seleccionadas = $ciu_g1.val(),
-			areas_seleccionadas = $are_g1.val(),
-			cargos_seleccionados = $car_g1.val();
+		var variables_seleccionadas=$var_g1.val() || [],
+			{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val() || [],{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g1.val() || [],{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val() || [],{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val() || [],{% endif %}
+			{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val() || [],{% endif %}
+			preguntas_seleccionadas = $pre_g1.val() || [],
+			regionales_seleccionadas = $reg_g1.val() || [],
+			ciudades_seleccionadas = $ciu_g1.val() || [],
+			areas_seleccionadas = $are_g1.val() || [],
+			cargos_seleccionados = $car_g1.val() || [];
 
 
 		// inicializamos las variables de la data table
+		var variables_seleccionadas_textos = [], v = $('#variables_g1 option');
+		for(var  i=0; i< v.length; i++){ if(v[i].selected){variables_seleccionadas_textos.push(v[i].text)}};
 		data.addColumn('date', 'Fecha');
-		for (var i = 0; i < variables_seleccionadas.length; i++) {
-			data.addColumn('number', variables_seleccionadas[i]);
-		}
 
-		var matriz_g1 = [],fechas_g1=[],auxiliar=[];
+		for (var i = 0; i < variables_seleccionadas_textos.length; i++) {
+			data.addColumn('number',variables_seleccionadas_textos[i] );
+		}
+		var matriz_g1 = [],fechas_g1=[],auxiliar=0;
 
 		// vector de fechas diferentes
 		for (var i = 0; i < Datos.length; i++) {
@@ -423,8 +911,6 @@ $(document).ready(function() {
 		// inicializamos la date tables
 		for (var i = 0; i < fechas_g1.length; i++) {
 			matriz_g1.push([ fechas_g1[i] ]);
-			auxiliar.push([ fechas_g1[i] ]);
-
 			// llenamos de ceros la date tables
 			for (var j = 0; j < variables_seleccionadas.length; j++) {
 				matriz_g1[i].push(0);
@@ -432,39 +918,14 @@ $(document).ready(function() {
 
 		}
 
-		var auxiliar = [];
-		for (var i = 0; i < variables_seleccionadas.length; i++) {
-			auxiliar.push(0);
-		}
-
 		// contamos
 		for (var i = 0; i < matriz_g1.length; i++) {
-			for (var j = 0; j < Datos.length; j++) {
-				for (var k = 0; k < variables_seleccionadas.length; k++) {
-					console.log( (matriz_g1[i][0] - Datos[j][8] ) == 0
-					, contenido(Datos[j][2],preguntas_seleccionadas)
-					, contenido(Datos[j][3],regionales_seleccionadas)
-					, contenido(Datos[j][4],ciudades_seleccionadas)
-					, contenido(Datos[j][5],areas_seleccionadas)
-					, contenido(Datos[j][6],cargos_seleccionados)
-					{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-						, contenido(Datos[j][9],opcional1_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-						, contenido(Datos[j][10],opcional2_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-						, contenido(Datos[j][11],opcional3_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-						, contenido(Datos[j][12],opcional4_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-						, contenido(Datos[j][13],opcional5_seleccionadas)
-					{% endif %}
-					);
-					if( (matriz_g1[i][0] - Datos[j][8] ) == 0
-					&& contenido(Datos[j][2],preguntas_seleccionadas)
+			for (var k = 0; k < variables_seleccionadas.length; k++) {
+				for (var j = 0; j < Datos.length; j++) {
+					if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
+					&& variables_seleccionadas[k] == Datos[j][14]
+					&& Datos[j][16] == "True"
+					&& contenido(Datos[j][15],preguntas_seleccionadas)
 					&& contenido(Datos[j][3],regionales_seleccionadas)
 					&& contenido(Datos[j][4],ciudades_seleccionadas)
 					&& contenido(Datos[j][5],areas_seleccionadas)
@@ -486,66 +947,46 @@ $(document).ready(function() {
 					{% endif %}
 				){
 						for (var l = 0; l < Cuestionario.length; l++) {
-							console.log(Cuestionario[l][0], Datos[j][1] && Cuestionario[l][1][Datos[j][2]]);
-							if( Cuestionario[l][0] == Datos[j][1] && Cuestionario[l][1][Datos[j][2]] ){
+							if( Cuestionario[l][0] == Datos[j][14] && Cuestionario[l][1][Datos[j][15]] )
+							{
 								for (var m = 0; m < Datos[j][7].length; m++) {
-									console.log(k,Datos[i],Cuestionario[l][0], Cuestionario[l][1],Cuestionario[l][1][Datos[j][2]],Cuestionario[l][1][Datos[j][2]][ Datos[j][7][m] ]);
-									if( Cuestionario[l][1][Datos[j][2]][ Datos[j][7][m] ] ){
-										console.log('in');
-										matriz_g1[i][k] += Cuestionario[l][1][Datos[j][2]][ Datos[j][7][m] ];
-										auxiliar[k]++;
+									if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
+										matriz_g1[i][k+1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
+										auxiliar++;
 									}
 								}
 							}
 						}
 					}
 				}
+
+			if(auxiliar){
+				matriz_g1[i][k+1] = +(Math.round(matriz_g1[i][k+1]/auxiliar+ "e+2")  + "e-2");
+				auxiliar = 0;
 			}
 
-			for (var k = 0; k < auxiliar.length; k++) {
-				if(auxiliar[k]){
-					matriz_g1[i][k+1] = matriz_g1[i][k+1]/auxiliar[k+1];
-					auxiliar[k] = 0;
-				}
 			}
 		}
-
+        console.log('soy una matriz')
 		console.log(matriz_g1);
 
-		data.addRows(
-			// [
-			// [new Date(2015,0,31), 0, 0, 0, 0, 0, 0, 0],
-			// [new Date(2015,1,1), 3.8, 4, 4.8, 3.6, 7.5, 1.4, 6.7],
-			// [new Date(2015,1,2), 3.8, 4.1, 5, 3.2, 6.5, 2.4, 5.7 ],
-			// [new Date(2015,1,3), 3.7, 4.1, 5, 3.6, 7.8, 1.6, 4.7],
-			// [new Date(2015,1,4), 3.6, 4.2, 4.5, 3.6, 7.7, 4.4, 6.5],
-			// [new Date(2015,1,5), 3.4, 4.1, 5.0, 3.6, 7.9, 3.4, 5.7],
-			// [new Date(2015,1,6), 3.8, 4.0, 5.0, 3.6, 6.5, 3.5, 4.8],
-			// [new Date(2015,1,7), 3.6, 4.0, 4.7, 3.6, 5.5, 7.4, 4.9],
-			// [new Date(2015,1,8), 3.6, 4.1, 5.0, 3.6, 7.7, 1.4, 5.1],
-			// [new Date(2015,1,9), 3.7, 3.9, 3.9, 3.6, 4.5, 5.4, 6.4],
-			// [new Date(2015,1,10), 4.0, 4.3, 4.5, 3.6, 5.5, 6.4, 5.5],
-			// [new Date(2015,1,11), 4.2, 4.2, 5.0, 3.6, 6.4, 1.4, 6.2],
-			// [new Date(2015,1,12), 4.1, 4.1, 4.9, 3.6, 5.5, 6.4, 5.8],
-			// [new Date(2015,1,13), 4.1, 4.1, 4.7, 3.6, 8.4, 2.8, 7.2],
-			// [new Date(2015,1,14), 4.2, 4.1, 4.6, 3.6, 7.5, 6.4, 5.6],
-			// [new Date(2015,1,15), 4.0, 4.2, 4.8, 3.6, 3.8, 8.2, 2.9],
-			// [new Date(2015,1,16), 4.0, 4.2, 4.7, 3.6, 6.5, 9.1, 3.5],
-			// [new Date(2015,1,17), 4.0, 4.2, 4.6, 3.6, 8.4, 6.7, 6.4],
-			// [new Date(2015,1,18), 4.1, 4.1, 4.3, 3.6, 8.4, 7.8, 2.8],
-			// [new Date(2015,1,19), 4.1, 4.2, 4.3, 3.6, 5.9, 6.5, 6.4],
-			// [new Date(2015,1,20), 4.0, 3.9, 4.8, 3.6, 4.5, 6.7, 5.2]
-			// ]
-		);
+		data.addRows( matriz_g1 );
+
+		var altura = 200;
+		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
 		var chart = new google.visualization.ChartWrapper({
 			chartType: 'LineChart',
 			containerId: 'grafica_uno_div',
 			options: {
-				height: 200,
+				height: altura,
 				// omit width, since we set this in CSS
 				legend: 'none',
-				colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0'],
+				colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
 				chartArea: {
 					width: '80%' // this should be the same as the ChartRangeFilter
 				}
@@ -628,18 +1069,295 @@ $(document).ready(function() {
 			}
 		});
 	}
+
 	google.load('visualization', '1', {packages:['controls'], callback: grafica_uno});
+
+
+
+
+//==============================================================================
+//   grafica 2
+//==============================================================================
+// var sintaxis = [['20', ['Si','No',]],['21',['Ok','No',]],['15',['No','Si',]],['22',['A','B','C',]],['inf',['respuesta 1',]],];
+//////////SINTAXIS ORIGINAL
+			var sintaxis = [
+					 	{% for i in Preguntas %}
+   		        ['{{i.id | escape}}',
+					 		  [ {% for j in i.respuestas_set.all %}
+   		 			  '{{ j.texto | escape }}',
+   		 			{% endfor %}]
+					 	    ],
+					 	{% endfor %}
+     		 ]
+
+
+
+
+function dataTotal(){
+        // $pre_g2.val() || []
+	    var preguntaSelecionada =  '15',
+		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g2.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g2.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g2.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g2.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g2.val() || [],{% endif %}
+		regionales_seleccionadas = $reg_g2.val() || [],
+		ciudades_seleccionadas = $ciu_g2.val() || [],
+		areas_seleccionadas = $are_g2.val() || [],
+		cargos_seleccionados = $car_g2.val() || [];
+
+
+		var fechas_g2 = [];
+		var matriz_g2 = [];
+
+
+		for(f=0;f<Datos.length;f++){
+
+			if(!contenido_date(Datos[f][8],fechas_g2)){
+				fechas_g2.push(Datos[f][8]);
+			}
+		}
+
+		for (var j = 0; j <sintaxis.length; j++){
+			 if(sintaxis[j][0] == preguntaSelecionada){
+				 var vectorRespuestas = sintaxis[j][1];
+				 var longitudRespuesta = vectorRespuestas.length;
+			 }
+		}
+
+
+		var cerosRespuestas = []
+		for(k=0;k<longitudRespuesta;k++){
+			cerosRespuestas.push(0);
+		}
+
+
+		var matrizIntegral = []
+		for(m=0;m<areas_seleccionadas.length;m++){
+
+
+			  var vectorMatrizIntegral = [areas_seleccionadas[m]];
+			  matrizIntegral.push(vectorMatrizIntegral.concat(cerosRespuestas));
+
+           for(l=0;l<fechas_g2.length;l++){
+			   var a = [areas_seleccionadas[m],fechas_g2[l].getTime()]
+			   matriz_g2.push(a.concat(cerosRespuestas));
+			}
+		}
+
+
+		for(k=0;k<Datos.length;k++){
+			if(contenido(Datos[k][5],areas_seleccionadas)
+			   && Datos[k][15]==preguntaSelecionada
+			   && contenido(Datos[k][3],regionales_seleccionadas)
+			   && contenido(Datos[k][4],ciudades_seleccionadas)
+			   && contenido(Datos[k][6],cargos_seleccionados)
+			   {%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+				   && contenido(Datos[k][9],opcional1_seleccionadas)
+			   {% endif %}
+			   {%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+				   && contenido(Datos[k][10],opcional2_seleccionadas)
+			   {% endif %}
+			   {%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+				   && contenido(Datos[k][11],opcional3_seleccionadas)
+			   {% endif %}
+			   {%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+				   && contenido(Datos[k][12],opcional4_seleccionadas)
+			   {% endif %}
+			   {%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+				   && contenido(Datos[k][13],opcional5_seleccionadas)
+			   {% endif %}
+			){
+				var numFila = 0;
+				while(numFila<matriz_g2.length && (matriz_g2[numFila][0]!=Datos[k][5] || matriz_g2[numFila][1] != Datos[k][8].getTime() ) ){  //************************************
+					numFila += 1;
+				}
+
+				var respuestas = []
+				for(z=0;z<Datos[k][7].length;z++){
+					var indice = vectorRespuestas.indexOf(Datos[k][7][z]);
+					respuestas.push(indice);
+				}
+
+             if(numFila<matriz_g2.length){
+				for(x=0;x<respuestas.length;x++){
+
+					var ind = respuestas[x] + 2;
+					matriz_g2[numFila][ind] += 1;
+				}
+              }
+				// fin del bucle if
+			}
+		// fin del primer for
+		}
+		console.log('MATRIZ FINAL');
+		console.log(matriz_g2);
+		console.log('+++++')
+		console.log(vectorRespuestas);
+		console.log('+++++')
+		console.log(matrizIntegral);
+		console.log('+++++')
+		console.log(fechas_g2);
+        return [matriz_g2,vectorRespuestas,matrizIntegral,fechas_g2]
+
+// FIN DE LA FUNCION DATATOTAl
+}
+
+
+////SEGUNDA PARTE SUMAS SEGUN FECHAS se integran datos de mas optima
+// function integrarDatos(){
+//    for(y=0;y<fechas_g2.length;y++){
+//    	var inicio= y*fechas.length;
+//    	for(p=inicio;p<inicio+fechas.length; p++){
+//    		  if(matriz_g2[p][1].getTime()>= tiempoMin.getTime() && matriz_g2[p][1]<=tiempoMax.getTime()){
+//    			  for(y=0;y<vectorRespuestas.length;y++){
+//    				  var dat = matriz_g2[p][y+2]
+//    			  }
+//    		  }
+//    	}
+//    }
+// }
+//
+//
+//
+function grafica_dos(dataTable,vector) {
+    var paila = dataTable;
+	console.log('paila');
+	console.log(paila);
+	var preguntaSelecionada = $pre_g2.val() || [];
+    var data = new google.visualization.DataTable();
+
+	data.addColumn('string','Area');
+
+
+
+    var a =  vector;
+	for (var i = 0; i < a.length; i++) {
+		data.addColumn('number',a[i] );
+	}
+
+
+	var options = {
+			 legend: 'none',
+		   };
+	data.addRows(dataTable);
+	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+	chart.draw(data, options);
+
+    //  FIN FUNCION GRAFICA 2
+		}
+
+
+function integrarDatos(tiempoMin,tiempoMax,matriz_g2,matrizIntegral,respuestas){
+		  for(m=0;m<matrizIntegral.length;m++){
+			  for(i=0;i<matriz_g2.length;i++){
+					if(matriz_g2[i][1]>= tiempoMin && matriz_g2[i][1]<=tiempoMax && matriz_g2[i][0]==matrizIntegral[m][0]){
+						for(k = 0; k<respuestas.length; k++){
+							matrizIntegral[m][k+1] += matriz_g2[i][k+2];
+						}
+				  }
+			}
+		}
+
+		console.log('matrizIntegral')
+		console.log(matrizIntegral);
+	    return matrizIntegral;
+		}
+//==============================================================================
+//   grafica 2 inicial
+//==============================================================================
+// [matriz_g2,respuestas,matrizIntegral,fechas_g2]
+var variables = dataTotal()
+function tiemposIniciales(){
+	var tiempoMaximo = new Date(2000,1,20).getTime();
+	var tiempoMinimo = new Date(2030,1,20).getTime();
+	var fechaMaxima = new Date(2030,1,20);
+	var fechaMinima = new Date(2000,1,20);
+	console.log('soy minima');
+	console.log(fechaMinima);
+	for(i=0;i<variables[3].length;i++){
+			var tiempo = variables[3][i].getTime();
+			var fecha = variables[3][i];
+			console.log('soy una fecha');
+			console.log(fecha);
+			if(tiempo>tiempoMaximo){
+				tiempoMaximo = tiempo;
+                fechaMaxima = fecha;
+				console.log('soy maxima');
+				console.log(fechaMaxima);
+				}
+			if(tiempo<tiempoMinimo){
+				tiempoMinimo = tiempo;
+				fechaMinima = fecha;
+				console.log('soy minima');
+				console.log(fechaMinima);
+			}
+		}
+    return [tiempoMinimo,tiempoMaximo,fechaMinima,fechaMaxima];
+}
+var tiemposIniciales = tiemposIniciales();
+var esperanza =  integrarDatos(tiemposIniciales[0],tiemposIniciales[1],variables[0],variables[2],variables[1]);
+google.setOnLoadCallback(grafica_dos(esperanza,variables[1]));
 
 
 //==============================================================================
 //   responsive
 //==============================================================================
 
-	$(window).resize(function() {
+$(window).resize(function() {
 		grafica_uno();
-		grafica_dos();
 		grafica_tres();
 	});
+
+	$('.filtros_uno').change(function(){
+		grafica_uno();
+	});
+	$('.filtros_dos').change(function(){
+		console.log('estoy en filtros dos')
+        var dataTotal2 = dataTotal()
+		var tiemposIniciales = tiemposIniciales();
+		var esperanza =  integrarDatos(tiemposIniciales[0],tiemposIniciales[1],variables[0],variables[2],variables[1]);
+        grafica_dos(esperanza,variables[1])
+		// grafica_dos(variables[0]);
+	});
+
+//==============================================================================
+//   slider grafica dos
+//==============================================================================
+console.log('puchaaa')
+console.log(tiemposIniciales[3])
+// Set date option
+$("#slider").dateRangeSlider({
+    bounds:{
+      min: new Date(2016,0,1),
+      max: new Date(2016,11,20)
+    },
+    // defaultValues:{
+    //   min: new Date("2013-01-01 00:00:00"),
+    //   max: new Date("2013-12-31 00:00:00")
+    // }
 });
+
+$('#slider').on('valuesChanged',function(e,data){
+	var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
+	var esperanza2 =  integrarDatos(tiempoMin,tiempoMax,variables[0],variables[2],variables[1]);
+	grafica_dos(esperanza2,variables[1]);
+})
+
+// definición de Slider
+
+var fechasIntervalo = {min: new Date(2016,0,01),max:new Date(2016,11,30)};
+$('#slider').dateRangeSlider({defaultValues:fechasIntervalo});
+
+var cotas = $('#slider').dateRangeSlider('bounds');
+console.log('cotas: '+cotas.min);
+console.log('cotasMax:'+cotas.max);
+
+
+
+// fin document ready
+});
+
+
 </script>
 {%endblock%}
