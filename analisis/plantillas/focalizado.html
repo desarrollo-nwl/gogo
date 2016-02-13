@@ -1,5 +1,5 @@
 {% extends "dash2.html" %}{%load staticfiles %}
-{% block title %} Home | A. Focalizado{% endblock %}
+{% block title %} A. Focalizado{% endblock %}
 {% block head2 %}
 <style media="screen">.multiselect{margin-left: -15px !important;}.panel-body{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
 {% endblock %}
@@ -117,11 +117,11 @@
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr25">Variables</span>
-								<select id="variables_g2" class="filtro filtros_dos"></select>
+								<select id="variables_g2" class="filtros_dos"></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr20">Preguntas</span>
-								<select id="preguntas_g2" class="filtro filtros_dos"></select>
+								<select id="preguntas_g2" class="filtros_dos"></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:47px">Áreas</span>
@@ -260,15 +260,14 @@
 {%block scripts%}
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
 
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.js'%} "></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderDraggable.js'%} "></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderBar.js'%}"></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderHandle.js'%}"></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSliderHandle.js'%}"></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderLabel.js'%}"></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSlider.js'%}"></script>
-<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.js'%}"></script>
-
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.min.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderDraggable.min.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderBar.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderHandle.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSliderHandle.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderLabel.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSlider.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
@@ -613,7 +612,7 @@ inicio : function(){
 			}
 		}
 		$pre_g2.multiselect('rebuild');
-		$pre_g2.multiselect('selectAll', false);
+		$pre_g2.selectedIndex = 0;
 		$pre_g2.multiselect('updateButtonText');
 	});
 	$var_g3.change(function(){
@@ -639,6 +638,12 @@ inicio : function(){
 	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
 	$('.filtro').multiselect('selectAll', false);
 	$('.filtro').multiselect('updateButtonText');
+	$var_g2.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$var_g2.selectedIndex = 0;
+	$var_g2.multiselect('updateButtonText');
+	$pre_g2.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$pre_g2.selectedIndex = 0;
+	$pre_g2.multiselect('updateButtonText');
 	$var_g3.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
 	$var_g3.selectedIndex = 0;
 	$var_g3.multiselect('updateButtonText');
@@ -857,10 +862,7 @@ grafica_dos : function(dataTable,vector) {
 	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
 	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
-	var options = {
-	   title: "",
-	   height: altura,
-	 };
+	var options = {   height: altura, };
 	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
 	chart.draw(data2, options);
 },
@@ -878,15 +880,7 @@ dataTotal : function(){
 		areas_seleccionadas = $are_g2.val() || [],
 		cargos_seleccionados = $car_g2.val() || [];
 
-		var fechas_g2 = [];
 		var matriz_g2 = [];
-
-		for(var f=0;f<Datos.length;f++){
-
-			if(!contenido_date(Datos[f][8],fechas_g2)){
-				fechas_g2.push(Datos[f][8]);
-			}
-		}
 
 		for (var j = 0; j <sintaxis.length; j++){
 			 if(sintaxis[j][0] == preguntaSelecionada){
@@ -895,22 +889,20 @@ dataTotal : function(){
 			 }
 		}
 
-
 		var cerosRespuestas = []
 		for(var k=0;k<longitudRespuesta;k++){
 			cerosRespuestas.push(0);
 		}
 
-
 		var matrizIntegral = []
 		for(var m=0;m<areas_seleccionadas.length;m++){
 
+			var vectorMatrizIntegral = [areas_seleccionadas[m]];
 
-			  var vectorMatrizIntegral = [areas_seleccionadas[m]];
-			  matrizIntegral.push(vectorMatrizIntegral.concat(cerosRespuestas));
+			matrizIntegral.push(vectorMatrizIntegral.concat(cerosRespuestas));
 
-           for(var l=0;l<fechas_g2.length;l++){
-			   var a = [areas_seleccionadas[m],fechas_g2[l].getTime()]
+			for(var l=0;l<fechas.length;l++){
+			   var a = [areas_seleccionadas[m],fechas[l].getTime()]
 			   matriz_g2.push(a.concat(cerosRespuestas));
 			}
 		}
@@ -949,18 +941,15 @@ dataTotal : function(){
 					respuestas.push(indice);
 				}
 
-             if(numFila<matriz_g2.length){
-				for(x=0;x<respuestas.length;x++){
-
-					var ind = respuestas[x] + 2;
-					matriz_g2[numFila][ind] += 1;
+				if(numFila<matriz_g2.length){
+					for(x=0;x<respuestas.length;x++){
+						var ind = respuestas[x] + 2;
+						matriz_g2[numFila][ind] += 1;
+					}
 				}
-              }
-				// fin del bucle if
 			}
-		// fin del primer for
 		}
-        return [matriz_g2,vectorRespuestas,matrizIntegral,fechas_g2]
+        return [matriz_g2,vectorRespuestas,matrizIntegral,fechas]
 },
 //==============================================================================
 //   Grafica TRES
@@ -1112,7 +1101,6 @@ $(document).ready(function() {
 	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
 
 	var variables = Elementos.dataTotal();
-	var guardarData = variables[2];
 	var esperanza =  integrarDatos(new Date(2016,0,1).getTime(),new Date(2016,11,31).getTime(),variables[0],variables[2],variables[1]);
 	google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
 
@@ -1121,9 +1109,11 @@ $(document).ready(function() {
 	$('.panel-body').fadeTo('slow',100);
 
 	$('.filtros_uno').change(function(){		Elementos.grafica_uno();	});
+
+	var tiemposInicio_0 = tiemposIniciales(variables);
 	$('.filtros_dos').change(function(){
 		var variables = Elementos.dataTotal();
-		var esperanza =  integrarDatos(new Date(2016,0,1).getTime(),new Date(2016,11,31).getTime(),variables[0],variables[2],variables[1]);
+		var esperanza =  integrarDatos(tiemposInicio_0[2].getTime(),tiemposInicio_0[3].getTime(),variables[0],variables[2],variables[1]);
 		google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
 	});
 	$('.filtros_tres').change(function(){		Elementos.grafica_tres();	});
@@ -1134,7 +1124,6 @@ $(document).ready(function() {
 		Elementos.grafica_tres();
 	});
 
-	var tiemposInicio_0 = tiemposIniciales(variables);
 
 	$("#slider").dateRangeSlider({
 	    bounds:{
