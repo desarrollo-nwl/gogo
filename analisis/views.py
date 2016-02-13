@@ -37,7 +37,6 @@ def focalizados(request):
 		return render_to_response('403.html')
 
 
-
 def solucion(a):
 	a = str(a).lower()
 	a = string.replace(a,',','')
@@ -76,16 +75,7 @@ def wordanalytics(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-			# HINTS
-			# streaming.objects.filter(preguntas__in=preguntas_abiertas)
-			# preguntas_abiertas = Preguntas.objects.filter(abierta=True, proyecto_id=1)
-			# el proyecton se recoge de la cache
-			# streaming.objects.filter(preguntas__in=preguntas_abiertas,respuestas__isnull=False)
-			# hint1: la tabla streaming esta en mensajeria
-			# hint2: la tabla preguntas esta en cuestionarios
-			# hint3: programar en las views de analisis
-			preguntasAbiertas = Preguntas.objects.filter(abierta = True, proyecto_id = proyecto.id)
-			objetosStreaming = Streaming.objects.filter(preguntas_in = preguntasAbiertas).filter(respuestas__isnull = False)
+			objetosStreaming = Streaming.objects.filter(pregunta__abierta = True,respuesta__isnull = False)
 			listaPreguntas = []
 			datasetgrafo = []
 			for i in objetosStreaming:
@@ -94,7 +84,7 @@ def wordanalytics(request):
 					datasetgrafo[indi].append(i.respuesta)
 				elif i.pregunta not in listaPreguntas:
 					listaPreguntas.append(i.pregunta)
-					dastasetgrafo.append([i.pregunta,i.respuesta])
+					datasetgrafo.append([i.pregunta,i.respuesta])
 			grafoPorPregunta,diccionariosPorPregunta,cantidades = gr.Grafos(datasetgrafo)
 			listaPreguntas = gr.preguntas(datasetgrafo)
 			return render_to_response('wordanalytics.html',{

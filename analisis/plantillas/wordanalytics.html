@@ -102,7 +102,7 @@
 			<!--  Insertar Grafo  -->
 			<div class="row">
 				<div class="col-xs-4" >
-					<select id="preguntas" name="Preguntas"  data-placeholder = "Elige una pregunta" class="form-control"  style="min-width:250px;" >
+					<select id="preguntas" name="Preguntas"  data-placeholder="Elige una pregunta." class="form-control"  style="min-width:250px;" >
 							<option></option>
 							{%for i in listaPreguntas %}
 								<option value="{{forloop.counter0| escape }}">{{i| escape }}</option>
@@ -113,11 +113,11 @@
 				</div>
 				<div class='col-xs-4'>
 
-					<select id="numeroConexiones" data-placeholder = "Elige el numero de conexiones de tu grafo principal" class="form-control"  style="min-width:250px;" ></select>
+					<select id="numeroConexiones" data-placeholder = "Elige el numero de conexiones de tu grafo principal." class="form-control"  style="min-width:250px;" ></select>
 
 				</div>
 				<div class="col-xs-4">
-					<select id="palabras" name="Preguntas" data-placeholder = "Elige una palabra" class="form-control"  style="min-width:250px;" ></select>
+					<select id="palabras" name="Preguntas" data-placeholder="Elige una palabra." class="form-control"  style="min-width:250px;" ></select>
 				</div>
 			</div>
 			<br>
@@ -236,11 +236,9 @@
 			}
 		}
 	});
-	//{"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],scrollX:!0,language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Palabras",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No hay palabras relacionadas.",sInfo:"Palabras del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Palabras del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Palabras)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}}
 	var mtabla = $("#mtabla").dataTable();
 </script>
 
-<!-- <script src=" chosen_v1.4.2/chosen.jquery.js"></script> -->
 <script type="text/javascript">
 $('#preguntas').select2();
 $('#numeroConexiones').select2();
@@ -248,41 +246,8 @@ $('#palabras').select2();
 
 
 var grafos = {{grafos| safe}};
-var diccionarios = {{diccionarios| safe}};
+var diccionarios = [{% for i in diccionarios %}[{% for j in i %} '{{ j |escape | safe }}',{% endfor %}],{% endfor %}];
 var cantidadPy = {{ cantidades | safe }};
-
-
-
-
-
-console.log("separador!!!!!!!!!!!!!!!!!!!")
-console.log(grafos);
-console.log('separador!!!!!!!!!!!!!!')
-console.log(diccionarios);
-console.log('separador!!!!!!!!!!!!!')
-console.log(cantidadPy)
-//CORRECION ORTOGRAFICA DE LOS DICCIONARIOS
-var ortografia=function decode_utf8(s) {
-  return decodeURIComponent(escape(s));
-}
-
-var corregirDiccionario =function corregirDiccionario(diccionarios){
-    var dicCorregido = [];
-    for(i=0;i<diccionarios.length;i++){
-        var dic = [];
-        for(k in diccionarios[i]){
-            var x = ortografia(diccionarios[i][k])
-            dic.push(x);
-        }
-        dicCorregido.push(dic);
-    }
-    return dicCorregido;
-}
-
-
-diccionarios = corregirDiccionario(diccionarios);
-console.log(diccionarios);
-
 
 
 ////////CODIGO PARA CREA INPUT DE NUMERO DE CONEXIONES
@@ -292,7 +257,6 @@ for(n=0;n<31;n++){
 	conexion += "<option value="+n+">"+n+"</option>";
 }
 numerConexiones.html(conexion);
-///////
 $('#preguntas').change(function(){
 					var palabras = $("#palabras"), valor = $(this).val();
 				    if(valor != null){
@@ -307,7 +271,6 @@ $('#preguntas').change(function(){
 	              });
 
 
-/////////////
 
 var cantidad = function cantidad(grafo){
 	var cantidades = [] ;
@@ -376,11 +339,9 @@ var functionlink3 = function functionlink3(palabra,pregunta,grafoPregunta){
 	var links = [],
 	    grafoPalabra = grafoPregunta[palabra],
 		diccionarioPregunta = diccionarios[pregunta];
-        console.log(diccionarioPregunta);
 		for(key in grafoPalabra){
 			links.push({source: diccionarioPregunta[palabra]  , target:diccionarioPregunta[key] , valuelink: cantidad})
 		}
-       console.log(links);
 	   return links;
 }
 
@@ -485,9 +446,6 @@ $(document).ready(function(){
 				        // console.log('numero de conexiones '+pruebita)
 						var val = inputPreguntas.val(),
 							valConexiones = inputConexiones.val();
-							console.log(val);
-							console.log(valConexiones);
-
 		 	  				val = parseFloat(val);
                         	valConexiones = parseFloat(valConexiones);
 		 	  			var tablaDic = $("#diccionarioTabla"),
@@ -508,8 +466,6 @@ $(document).ready(function(){
 		 	  				return a['value']-b['value'];
 		 	  			}
 		 	  			diccionarioValores.sort(sortValores).reverse();
-
-                        console.log(diccionarioValores)
 
 		 	            ///CONSTRUCCION DE   ntabla    "la tabla diccionario "
 						//$("#ntabla").remove();
@@ -570,6 +526,7 @@ $(document).ready(function(){
 
 
 	})
+
 
 </script>
 
