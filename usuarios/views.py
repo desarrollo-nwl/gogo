@@ -131,7 +131,7 @@ def menu(request,id_proyecto):
 		if(permisos.consultor):
 			return HttpResponseRedirect('/respuestas/metricas')
 		else:
-			return HttpResponseRedirect('/resultados/')
+			return HttpResponseRedirect('/focalizado/')
 	except:
 		return render_to_response('403.html')
 

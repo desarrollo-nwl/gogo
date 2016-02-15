@@ -25,7 +25,7 @@ SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['www.lavozdemisclientes.com']
 
 
 # Application definition
@@ -91,12 +91,13 @@ DATABASES = {
 	'default': {
 			#'ENGINE':'django.db.backends.sqlite3',
 			#'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-			 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-			 'NAME': 'gogo',
-			 'USER': 'usuariodb_gogo',
-			 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
-			 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
-			 'PORT':'5432',
+			'ENGINE': 'django.db.backends.postgresql_psycopg2',
+			'NAME': 'gogo',
+			'USER': 'usuariodb_gogo',
+			'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
+			'HOST':'127.0.0.1',
+			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
+			'PORT':'5432',
 	}
 }
 
@@ -113,14 +114,14 @@ TIME_ZONE = 'America/Bogota'
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-	os.path.join(BASE_DIR, "static"),
-)
+# STATICFILES_DIRS = (
+# 	os.path.join(BASE_DIR, "static"),
+# )
 
 MEDIA_URL  = '/media/'
-MEDIAFILES_DIRS = (
-	os.path.join(BASE_DIR, "media"),
-)
+# MEDIAFILES_DIRS = (
+# 	os.path.join(BASE_DIR, "media"),
+# )
 MEDIA_ROOT = BASE_DIR + '/media/'
 # secure proxy SSL header and secure cookies
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
