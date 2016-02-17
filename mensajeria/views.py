@@ -211,7 +211,7 @@ def colaboradoreenviar(request,id_colaborador):
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
 						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-						urlimg = 'http://www.lavozdemisclientes.com'+datos.logo.url
+						urlimg = 'http://www.changelabtols.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
 						else:
@@ -219,7 +219,7 @@ def colaboradoreenviar(request,id_colaborador):
 						nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
 						titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 						texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-						url = 'http://www.lavozdemisclientes.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+						url = 'http://www.changelabtols.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 						mensaje = MIMEText(html,"html")
 						msg.attach(mensaje)
@@ -593,6 +593,134 @@ def exportarinterna(request):
 		ws.write(0,20-k,u"Pregunta")
 		ws.write(0,21-k,u"Respuesta numérica (si aplica)")
 		ws.write(0,22-k,u"Respuesta(s)")
+		for i in xrange(lens):
+			k=0
+			ws.write(i+1,0,stream[i].colaborador.nombre)
+			ws.write(i+1,1,stream[i].colaborador.apellido)
+			ws.write(i+1,2,stream[i].colaborador.email)
+			ws.write(i+1,3,stream[i].colaborador.movil)
+			ws.write(i+1,4,stream[i].colaborador.colaboradoresdatos.genero)
+			ws.write(i+1,5,stream[i].colaborador.colaboradoresdatos.area)
+			ws.write(i+1,6,stream[i].colaborador.colaboradoresdatos.cargo)
+			ws.write(i+1,7,stream[i].colaborador.colaboradoresdatos.regional)
+			ws.write(i+1,8,stream[i].colaborador.colaboradoresdatos.ciudad)
+			ws.write(i+1,9,stream[i].colaborador.colaboradoresdatos.niv_academico)
+			ws.write(i+1,10,stream[i].colaborador.colaboradoresdatos.profesion)
+			if stream[i].colaborador.colaboradoresdatos.fec_nacimiento:
+				ws.write(i+1,11,stream[i].colaborador.colaboradoresdatos.fec_nacimiento.isoformat())
+			else:
+				ws.write(i+1,11,u"No registra")
+			ws.write(i+1,12,stream[i].colaborador.colaboradoresdatos.fec_ingreso.isoformat())
+			if(datos.opcional1):
+				ws.write(i+1,13,stream[i].colaborador.colaboradoresdatos.opcional1)
+			else:
+				k +=1
+			if(datos.opcional2):
+				ws.write(i+1,14-k,stream[i].colaborador.colaboradoresdatos.opcional2)
+			else:
+				k +=1
+			if(datos.opcional3):
+				ws.write(i+1,15-k,stream[i].colaborador.colaboradoresdatos.opcional3)
+			else:
+				k +=1
+			if(datos.opcional4):
+				ws.write(i+1,16-k,stream[i].colaborador.colaboradoresdatos.opcional4)
+			else:
+				k +=1
+			if(datos.opcional5):
+				ws.write(i+1,17-k,stream[i].colaborador.colaboradoresdatos.opcional5)
+			else:
+				k +=1
+			ws.write(i+1,18-k,stream[i].fecharespuesta.isoformat())
+			ws.write(i+1,19-k,stream[i].pregunta.variable.nombre)
+			ws.write(i+1,20-k,stream[i].pregunta.texto)
+			if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
+				respuestas = json.loads(stream[i].respuesta)
+				ans = []
+				for respuesta in stream[i].pregunta.respuestas_set.all():
+					if respuesta.texto in respuestas:
+						ans.append(respuesta.numerico)
+				if ans:
+					ws.write(i+1,21-k,json.dumps(ans))
+				else:
+					ws.write(i+1,21-k,u"[]")
+			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
+				for respuesta in stream[i].pregunta.respuestas_set.all():
+					if stream[i].respuesta == respuesta.texto:
+						ws.write(i+1,21-k,respuesta.numerico)
+			else:
+				ws.write(i+1,21-k,"No aplica")
+			if stream[i].respuesta:
+				ws.write(i+1,22-k,stream[i].respuesta)
+			else:
+				ws.write(i+1,22-k,u"")
+		wb.save(response)
+		return response
+	else:
+		render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def importarespuestas_exportarexcel(request):
+	import xlwt
+	date_format = xlwt.XFStyle()
+	date_format.num_format_str = 'dd/mm/yyyy'
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.res_exp:
+		response = HttpResponse(content_type='application/ms-excel')
+		import string
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet("GoAnalytics")
+		datos = proyecto.proyectosdatos
+		stream = Streaming.objects.filter(proyecto=proyecto).select_related(
+				'colaborador__colaboradoresdatos','proyecto__proyectosdatos',
+				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
+		lens = len(stream)
+		k = 0
+		ws.write(0,0,u"Id usuario")
+		ws.write(0,1,u"Nombre")
+		ws.write(0,2,u"Apellido")
+		ws.write(0,3,u"Email")
+		ws.write(0,4,u"Id pregunta")
+		ws.write(0,5,u"Texto de la pregunta")
+		ws.write(0,6,u"Respuesta")
+		ws.write(0,7,u"Móvil")
+		ws.write(0,8,u"Género")
+		ws.write(0,9,u"Área")
+		ws.write(0,10,u"Cargo")
+		ws.write(0,11,u"Regional")
+		ws.write(0,12,u"Ciudad")
+		ws.write(0,12,u"Nivel académico")
+		ws.write(0,13,u"Profesión")
+		ws.write(0,14,u"Fecha de nacimiento",date_format)
+		ws.write(0,15,u"Fecha de ingreso",date_format)
+		if(datos.opcional1):
+			ws.write(0,16,datos.opcional1)
+		else:
+			k +=1
+		if(datos.opcional2):
+			ws.write(0,17-k,datos.opcional2)
+		else:
+			k +=1
+		if(datos.opcional3):
+			ws.write(0,18-k,datos.opcional3)
+		else:
+			k +=1
+		if(datos.opcional4):
+			ws.write(0,19-k,datos.opcional4)
+		else:
+			k +=1
+		if(datos.opcional5):
+			ws.write(0,20-k,datos.opcional5)
+		else:
+			k +=1
+
 		for i in xrange(lens):
 			k=0
 			ws.write(i+1,0,stream[i].colaborador.nombre)

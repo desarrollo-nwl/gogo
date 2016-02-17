@@ -38,14 +38,14 @@ def sendmail(stream_i,stream,tiempo):
 			desde="Team@goanalytics.com"
 			destinatario = colaborador.email
 			msg=MIMEMultipart()
-			urlimg = 'http://www.lavozdemisclientes.com'+stream_i.proyecto.proyectosdatos.logo.url
+			urlimg = 'http://www.changelabtols.com'+stream_i.proyecto.proyectosdatos.logo.url
 			if colaborador.colaboradoresdatos.genero.lower() == "femenino" :
 				genero = "a"
 			else:
 				genero = "o"
 			nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")#cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 			titulo = (stream_i.proyecto.proyectosdatos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
-			url = 'http://www.lavozdemisclientes.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
+			url = 'http://www.changelabtols.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
 			texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 			msg["subject"]=  stream_i.proyecto.proyectosdatos.asunto
 			msg['From'] = email.utils.formataddr(('GoAnalitycs', 'Team@goanalytics.com'))
