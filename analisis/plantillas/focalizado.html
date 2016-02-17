@@ -581,12 +581,12 @@ inicio : function(){
 	}
 
 	$var_g1.change(function(){
-		preguntas = [];
+		var preguntas1 = [];
 		$pre_g1.find('option').remove();
 		if($var_g1.val()){
 			for (var i = 0; i < Datos.length; i++) {
-				if ( !contenido(Datos[i][15],preguntas) && contenido(Datos[i][14],$var_g1.val()) ){
-					preguntas.push(Datos[i][15]);
+				if ( !contenido(Datos[i][15],preguntas1) && contenido(Datos[i][14],$var_g1.val()) ){
+					preguntas1.push(Datos[i][15]);
 					$pre_g1.append($('<option>', {
 						value: Datos[i][15],
 						text : Datos[i][2]
@@ -599,17 +599,15 @@ inicio : function(){
 		$pre_g1.multiselect('updateButtonText');
 	});
 	$var_g2.change(function(){
-		preguntas = [];
+		var preguntas2 = [];
 		$pre_g2.find('option').remove();
-		if($var_g2.val()){
-			for (var i = 0; i < Datos.length; i++) {
-				if ( !contenido(Datos[i][15],preguntas) && contenido(Datos[i][14],$var_g2.val()) ){
-					preguntas.push(Datos[i][15]);
-					$pre_g2.append($('<option>', {
-						value: Datos[i][15],
-						text : Datos[i][2]
-					}));
-				}
+		for (var i = 0; i < Datos.length; i++) {
+			if ( !contenido(Datos[i][15],preguntas2) && Datos[i][14] == $var_g2.val() ){
+				preguntas2.push(Datos[i][15]);
+				$pre_g2.append($('<option>', {
+					value: Datos[i][15],
+					text : Datos[i][2]
+				}));
 			}
 		}
 		$pre_g2.multiselect('rebuild');
@@ -617,17 +615,15 @@ inicio : function(){
 		$pre_g2.multiselect('updateButtonText');
 	});
 	$var_g3.change(function(){
-		preguntas3 = [];
+		var preguntas3 = [];
 		$pre_g3.find('option').remove();
-		if($var_g3.val()){
-			for (var i = 0; i < Datos.length; i++) {
-				if ( !contenido(Datos[i][15],preguntas3) && contenido(Datos[i][14],$var_g3.val()) ){
-					preguntas3.push(Datos[i][15]);
-					$pre_g3.append($('<option>', {
-						value: Datos[i][15],
-						text : Datos[i][2]
-					}));
-				}
+		for (var i = 0; i < Datos.length; i++) {
+			if ( !contenido(Datos[i][15],preguntas3) && Datos[i][14] == $var_g3.val() ){
+				preguntas3.push(Datos[i][15]);
+				$pre_g3.append($('<option>', {
+					value: Datos[i][15],
+					text : Datos[i][2]
+				}));
 			}
 		}
 		$pre_g3.multiselect('rebuild');
@@ -760,8 +756,11 @@ grafica_uno: function(){
 				width: '90%'
 			},
 			vAxis : {
-			   maxValue: maximo_cuestionario,
-			   minValue: 0
+				viewWindowMode:'explicit',
+				viewWindow:{
+                	max:maximo_cuestionario,
+                	min:0
+              }
 		   },
 		}
 	});
