@@ -43,10 +43,10 @@
 		</div>
 	</div>
 </section>
-
+{{ Preguntas_encuesta }}
 <section  id="form" class="form-section">
 {% if Proyecto.pordenadas %}
-{% regroup Preguntas by variable.descripcion as preguntas_list %}
+{% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
 <form  class="form-horizontal" method="POST">{% csrf_token %}
 	{% for variable in preguntas_list %}
     <div class="container">
@@ -63,9 +63,9 @@
 				{% endif %}
 				{%if pregunta.abierta or pregunta.multiple%}{%else%}
 				<select required title="Por favor responda la pregunta" name="{{pregunta.id}}">
-				{%for i in pregunta.respuestas_set.all%}
-					<option value="{{i.texto| escape}}" >{{i.texto | escape}}</option>
-				{% endfor %}
+					{%for i in pregunta.respuestas_set.all%}
+						<option value="{{i.texto| escape}}" >{{i.texto | escape}}</option>
+					{% endfor %}
 				</select>
 				{%endif%}
 			</div>
@@ -74,29 +74,29 @@
 	{% endfor %}
 {% else %}
 <form  class="form-horizontal" method="POST">{% csrf_token %}
-	{% for i in Preguntas %}
+	{% for i in Preguntas_encuesta %}
     <div class="container">
 			<div class="form-group">
-				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.variable.descripcion | escape }}</b>: {{ i.texto| escape}}</legend>
-				{%if i.abierta%}<textarea type="text" max_length="1000" name="{{i.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
-				{%if i.multiple%}
-					{%for j in i.respuestas_set.all%}
-						<input type="checkbox" class="checkbox" name="{{i.id}}" value="{{j.texto|escape}}" >
+				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>: {{ i.pregunta.texto| escape}}</legend>
+				{%if i.pregunta.abierta %}<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
+				{%if i.pregunta.multiple %}
+					{%for j in i.pregunta.respuestas_set.all%}
+						<input type="checkbox" class="checkbox" name="{{i.pregunta.id}}" value="{{j.texto|escape}}" >
 						<label class="light">{{ j.texto | escape }}</label><br>
 					{% endfor %}<br>
 				{% endif %}
-				{%if i.abierta or i.multiple%}{%else%}
-				<select required title="Por favor responda la pregunta" name="{{i.id}}">
-				{%for j in i.respuestas_set.all%}
-					<option value="{{j.texto| escape}}" >{{ j.texto | escape}}</option>
-				{% endfor %}
+				{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}
+				<select required title="Por favor responda la pregunta" name="{{i.pregunta.id}}">
+					{%for j in i.pregunta.respuestas_set.all%}
+						<option value="{{j.texto| escape}}" >{{ j.texto | escape}}</option>
+					{% endfor %}
 				</select>
 				{%endif%}
 			</div>
 	</div>
 	{% endfor %}
-<button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
 {% endif %}
+<button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
 </form>
 </section>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>

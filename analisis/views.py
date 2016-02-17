@@ -17,7 +17,7 @@ import string
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def focalizados(request):
+def focalizado(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
@@ -30,6 +30,28 @@ def focalizados(request):
 				).select_related('proyecto__proyectosdatos',
 				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos').order_by('fecharespuesta')
 		return render_to_response('focalizado.html',{
+		'Activar':'AnalisisResultados','activar':'Focalizados',
+		'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def general(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.res_see:
+		variables = Variables.objects.filter(proyecto_id=proyecto.id)
+		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
+		datos = Streaming.objects.filter(
+				proyecto_id=proyecto.id,pregunta__abierta=False,respuesta__isnull=False
+				).select_related('proyecto__proyectosdatos',
+				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos').order_by('fecharespuesta')
+		return render_to_response('general.html',{
 		'Activar':'AnalisisResultados','activar':'Focalizados',
 		'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
 		}, context_instance=RequestContext(request))
@@ -75,7 +97,7 @@ def wordanalytics(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-			objetosStreaming = Streaming.objects.filter(pregunta__abierta = True,respuesta__isnull = False)
+			objetosStreaming = Streaming.objects.filter(proyecto_id=proyecto.id,pregunta__abierta = True,respuesta__isnull = False)
 			listaPreguntas = []
 			datasetgrafo = []
 			for i in objetosStreaming:

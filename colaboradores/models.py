@@ -15,6 +15,7 @@ class Colaboradores( models.Model ):
 	nombre = models.CharField( max_length = 45 )
 	propension = models.FloatField( default = -1 )
 	proyecto = models.ForeignKey( Proyectos )
+	puntaje = models.FloatField( default = 0 )
 	reenviados = models.PositiveSmallIntegerField( default = 0)
 	res_salud = models.PositiveSmallIntegerField( default = 0 )
 	respuestas = models.PositiveSmallIntegerField( default = 0 )

@@ -834,7 +834,7 @@ def usuarionuevo(request):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.cre_usuarios:
 		if request.method == 'POST':
-			if  User.objects.filter(email=request.POST['email']).exists():
+			if  User.objects.filter(email=request.POST['email'].lower()).exists():
 				return render_to_response('usuarionuevo.html',{
 				'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,
 				'Error':'Ocurrió un error al procesar la solicitud, este correo ya existe'
@@ -851,8 +851,8 @@ def usuarionuevo(request):
 				usuario = User(
 				first_name = request.POST['nombre'],
 				last_name = request.POST['apellido'],
-				email = request.POST['email'],
-				username = request.POST['email'],
+				email = request.POST['email'].lower(),
+				username = request.POST['email'].lower(),
 				is_active = False,
 				last_login = timezone.now())
 				usuario.set_password(clave)

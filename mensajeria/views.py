@@ -123,7 +123,7 @@ def detalladas(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.det_see and permisos.res_see and proyecto.interna:
-		respuestas = Streaming.objects.filter(proyecto = proyecto
+		respuestas = Streaming.objects.filter(proyecto_id = proyecto.id,respuesta__isnull=False,
 						).select_related('colaborador','pregunta__variable')
 
 	elif permisos.consultor and permisos.det_see and permisos.res_see and (not proyecto.interna):
@@ -260,7 +260,7 @@ def encuesta(request,id_proyecto,key):
 					).select_related(
 						'pregunta__variable'
 					).filter(
-						colaborador = encuestado,
+						colaborador_id = encuestado.id,
 						pregunta__estado = True,
 						respuesta__isnull = True
 					).order_by(
@@ -272,22 +272,24 @@ def encuesta(request,id_proyecto,key):
 		total_cuestionario = len(stream)
 	except:
 		return render_to_response('404.html')
-	try:
-		ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
-						proyecto_id=proyecto.id,
-						colaborador_id=encuestado.id,
-						respuesta__isnull=False
-						).latest('fecharespuesta')
-		pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
-		if (pronto_acceso < proyecto.prudenciamin):
-			acceso = False
-		else:
-			acceso = True
-	except:
-		acceso = True
-	acceso =True
+
+	# Esta propiedad evita el pronto acceso desactivada hasta confirmar
+	# try:
+	# 	ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
+	# 					proyecto_id=proyecto.id,
+	# 					colaborador_id=encuestado.id,
+	# 					respuesta__isnull=False
+	# 					).latest('fecharespuesta')
+	# 	pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
+	# 	if (pronto_acceso < proyecto.prudenciamin):
+	# 		acceso = False
+	# 	else:
+	# 		acceso = True
+	# except:
+	# 	acceso = True
+
 	# si hay preguntas sin responder en un proyecto activo y NO es aleatorio
-	if stream and encuestado.proyecto.activo and acceso and proyecto.pordenadas:
+	if stream and encuestado.proyecto.activo and proyecto.pordenadas:
 		if (proyecto.tipo != 'Completa'):
 			len_cuestionario = 0
 			cuestionario =[]
@@ -310,7 +312,7 @@ def encuesta(request,id_proyecto,key):
 				cuestionario_preguntas.append(i.pregunta)
 
 	# si hay preguntas sin responder en un proyecto activo y es aleatorio
-	elif stream and encuestado.proyecto.activo and acceso and (not proyecto.pordenadas):
+	elif stream and encuestado.proyecto.activo and (not proyecto.pordenadas):
 		stream_vect = range(total_cuestionario)
 		if (proyecto.tipo != 'Completa'):
 			len_cuestionario = 0
@@ -320,21 +322,22 @@ def encuesta(request,id_proyecto,key):
 
 			while( len_cuestionario < encuestado.proyecto.can_envio and len_cuestionario < total_cuestionario ):
 				cuestionario.append(stream[stream_vect[len_cuestionario]])
-				cuestionario_preguntas.append(stream[stream_vect[len_cuestionario]].pregunta)
+				# cuestionario_preguntas.append(stream[stream_vect[len_cuestionario]].pregunta)
 				len_cuestionario += 1
-
+			print cuestionario
+			cuestionario_preguntas = cuestionario
+			print cuestionario ,cuestionario_preguntas
 			if not len_cuestionario:
 				try:
 					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
 					return HttpResponseRedirect('http://www.networkslab.co')
-		else:
-			cuestionario = stream
-			len_cuestionario = len(stream)
-			cuestionario_preguntas =[]
-			for i in cuestionario:
-				cuestionario_preguntas.append(i.pregunta)
-
+		# else:
+		# 	cuestionario = stream
+		# 	len_cuestionario = len(stream)
+		# 	cuestionario_preguntas =[]
+		# 	for i in cuestionario:
+		# 		cuestionario_preguntas.append(i.pregunta)
 
 	else:
 		try:
@@ -362,6 +365,7 @@ def encuesta(request,id_proyecto,key):
 			metricas.save()
 			proyecto.save()
 			encuestado.save()
+			print cuestionario
 			for i in cuestionario:
 				i.fecharespuesta = timezone.now()
 				if i.pregunta.abierta:
@@ -369,8 +373,9 @@ def encuesta(request,id_proyecto,key):
 				elif i.pregunta.multiple:
 					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
 					if not r:
-						respuesta = 'Ninguna seleccionada'
-					i.respuesta = r
+						i.respuesta = 'Ninguna seleccionada'
+					else:
+						i.respuesta = r
 				else:
 					i.respuesta = request.POST[str(i.pregunta.id)]
 				i.save()
@@ -380,8 +385,9 @@ def encuesta(request,id_proyecto,key):
 		except:
 			return HttpResponseRedirect('http://networkslab.co')
 
+	print cuestionario_preguntas
 	return render_to_response('encuesta.html',{
-	'Encuestado':encuestado,'Preguntas':cuestionario_preguntas,'Proyecto':proyecto
+	'Encuestado':encuestado,'Preguntas_encuesta':cuestionario_preguntas,'Proyecto':proyecto
 	},	context_instance=RequestContext(request))
 
 

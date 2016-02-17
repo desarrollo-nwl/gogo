@@ -31,6 +31,7 @@ class Preguntas( models.Model ):
 	multiple = models.BooleanField( default = False )
 	numerica = models.BooleanField( default = True )
 	posicion = models.IntegerField()
+	puntaje = models.FloatField( default = 1 )
 	texto = models.CharField( max_length = 255 )
 	variable = models.ForeignKey( Variables )
 	zdel = models.DateTimeField( blank = True, null = True )

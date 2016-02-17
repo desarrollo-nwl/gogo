@@ -63,7 +63,7 @@ def colaboradornuevo(request):
 					nombre = request.POST['nombre'],
 					apellido = request.POST['apellido'],
 					key = key,
-					email = request.POST['email'],
+					email = request.POST['email'].lower(),
 					proyecto = proyecto)
 				try:
 					if(request.POST['estado']):
@@ -321,7 +321,7 @@ def colaboradores_xls(request):
 							nombre=sheet.cell_value(i,0),
 							apellido = sheet.cell_value(i,1),
 							key = key,
-							email=sheet.cell_value(i,2),
+							email=(sheet.cell_value(i,2)).lower(),
 							estado=True,proyecto=proyecto)
 						try:persona.movil = sheet.cell_value(i,3)
 						except:pass

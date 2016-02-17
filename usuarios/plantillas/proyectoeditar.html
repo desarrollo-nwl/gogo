@@ -22,7 +22,8 @@
 						<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8">
 							<select class="select2 form-control" name="empresa" required title="Este campo es obligatorio">
 								<option value="">Seleccione una empresa</option>
-								{%for i in Empresas%}<option {%ifequal i.id Proyecto.empresa_id%}selected{%endifequal%} value="{{i.id}}">{{i}}</option>{%endfor%}
+								<option value="{{ Proyecto.empresa_id }}" selected>{{ Proyecto.empresa }}</option>
+								{%for i in Empresas%}{% ifnotequal i.id Proyecto.empresa_id%}<option {%ifequal i.id Proyecto.empresa_id%}selected{%endifequal%} value="{{i.id}}">{{i}}</option>{% endifnotequal %}{%endfor%}
 							</select>
 						</div>
 					</div>
