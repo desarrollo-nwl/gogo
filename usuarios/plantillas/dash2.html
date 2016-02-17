@@ -85,8 +85,9 @@
 							<li id="EstadoAvance">
 								<a href="#"><i class="l-basic-pencil-ruler"></i><span class="nav-label"><span class="txt"> Estado de avance </span></a>
 								<ul class="sub">
-									<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
-									{%if Permisos.det_see%}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}
+									{%if Proyecto.interna%}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
+									{%if Permisos.det_see%}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}{%endif%}
+									{%if Permisos.pre_add%}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}
 								</ul>
 							</li>
 							<li id="AnalisisResultados">

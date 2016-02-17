@@ -94,6 +94,8 @@ urlpatterns += patterns('mensajeria.views',
 	url(r'^participante/activar2/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivarmensajeria'),
     url(r'^respuestas/exportar/interna/$', 'exportarinterna'),
 	url(r'^respuestas/exportar/externa/$', 'exportarexterna'),
+	url(r'^respuestas/importar/exportar/$', 'importarespuestas_exportar'),
+	url(r'^respuestas/importar/$', 'importarespuestas_preguntas'),
 )
 
 #===============================================================================

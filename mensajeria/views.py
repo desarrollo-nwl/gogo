@@ -211,7 +211,7 @@ def colaboradoreenviar(request,id_colaborador):
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
 						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-						urlimg = 'http://www.changelabtols.com'+datos.logo.url
+						urlimg = 'http://www.changelabtools.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
 						else:
@@ -219,7 +219,7 @@ def colaboradoreenviar(request,id_colaborador):
 						nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
 						titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 						texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-						url = 'http://www.changelabtols.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+						url = 'http://www.changelabtools.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 						mensaje = MIMEText(html,"html")
 						msg.attach(mensaje)
@@ -272,21 +272,6 @@ def encuesta(request,id_proyecto,key):
 		total_cuestionario = len(stream)
 	except:
 		return render_to_response('404.html')
-
-	# Esta propiedad evita el pronto acceso desactivada hasta confirmar
-	# try:
-	# 	ultima_respuesta = Streaming.objects.only('fecharespuesta').filter(
-	# 					proyecto_id=proyecto.id,
-	# 					colaborador_id=encuestado.id,
-	# 					respuesta__isnull=False
-	# 					).latest('fecharespuesta')
-	# 	pronto_acceso = (timezone.now() - ultima_respuesta.fecharespuesta).days
-	# 	if (pronto_acceso < proyecto.prudenciamin):
-	# 		acceso = False
-	# 	else:
-	# 		acceso = True
-	# except:
-	# 	acceso = True
 
 	if request.method == 'POST':
 		ids_streamig = request.POST.getlist('ids_streaming')
@@ -662,7 +647,7 @@ def exportarinterna(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def importarespuestas_exportarexcel(request):
+def importarespuestas_exportar(request):
 	import xlwt
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
@@ -676,12 +661,11 @@ def importarespuestas_exportarexcel(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
-		stream = Streaming.objects.filter(proyecto=proyecto).select_related(
-				'colaborador__colaboradoresdatos','proyecto__proyectosdatos',
-				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
-		lens = len(stream)
+		colaboradores = Colaboradores.objects.filter(proyecto_id=proyecto.id).select_related(
+				'colaboradoresdatos','proyecto__proyectosdatos')
+		lenc = len(colaboradores)
 		k = 0
 		ws.write(0,0,u"Id usuario")
 		ws.write(0,1,u"Nombre")
@@ -696,93 +680,181 @@ def importarespuestas_exportarexcel(request):
 		ws.write(0,10,u"Cargo")
 		ws.write(0,11,u"Regional")
 		ws.write(0,12,u"Ciudad")
-		ws.write(0,12,u"Nivel académico")
-		ws.write(0,13,u"Profesión")
-		ws.write(0,14,u"Fecha de nacimiento",date_format)
-		ws.write(0,15,u"Fecha de ingreso",date_format)
+		ws.write(0,13,u"Nivel académico")
+		ws.write(0,14,u"Profesión")
+		ws.write(0,15,u"Fecha de nacimiento",date_format)
+		ws.write(0,16,u"Fecha de ingreso",date_format)
 		if(datos.opcional1):
-			ws.write(0,16,datos.opcional1)
+			ws.write(0,17,datos.opcional1)
 		else:
 			k +=1
 		if(datos.opcional2):
-			ws.write(0,17-k,datos.opcional2)
+			ws.write(0,18-k,datos.opcional2)
 		else:
 			k +=1
 		if(datos.opcional3):
-			ws.write(0,18-k,datos.opcional3)
+			ws.write(0,19-k,datos.opcional3)
 		else:
 			k +=1
 		if(datos.opcional4):
-			ws.write(0,19-k,datos.opcional4)
+			ws.write(0,20-k,datos.opcional4)
 		else:
 			k +=1
 		if(datos.opcional5):
-			ws.write(0,20-k,datos.opcional5)
+			ws.write(0,21-k,datos.opcional5)
 		else:
 			k +=1
 
-		for i in xrange(lens):
+		for i in xrange(lenc):
 			k=0
-			ws.write(i+1,0,stream[i].colaborador.nombre)
-			ws.write(i+1,1,stream[i].colaborador.apellido)
-			ws.write(i+1,2,stream[i].colaborador.email)
-			ws.write(i+1,3,stream[i].colaborador.movil)
-			ws.write(i+1,4,stream[i].colaborador.colaboradoresdatos.genero)
-			ws.write(i+1,5,stream[i].colaborador.colaboradoresdatos.area)
-			ws.write(i+1,6,stream[i].colaborador.colaboradoresdatos.cargo)
-			ws.write(i+1,7,stream[i].colaborador.colaboradoresdatos.regional)
-			ws.write(i+1,8,stream[i].colaborador.colaboradoresdatos.ciudad)
-			ws.write(i+1,9,stream[i].colaborador.colaboradoresdatos.niv_academico)
-			ws.write(i+1,10,stream[i].colaborador.colaboradoresdatos.profesion)
-			if stream[i].colaborador.colaboradoresdatos.fec_nacimiento:
-				ws.write(i+1,11,stream[i].colaborador.colaboradoresdatos.fec_nacimiento.isoformat())
-			else:
-				ws.write(i+1,11,u"No registra")
-			ws.write(i+1,12,stream[i].colaborador.colaboradoresdatos.fec_ingreso.isoformat())
+			ws.write(i+1,0,colaboradores[i].id)
+			ws.write(i+1,1,colaboradores[i].nombre)
+			ws.write(i+1,2,colaboradores[i].apellido)
+			ws.write(i+1,3,colaboradores[i].email)
+			# ws.write(i+1,4, )
+			# ws.write(i+1,5, )
+			# ws.write(i+1,6, )
+			ws.write(i+1,7,colaboradores[i].movil)
+			ws.write(i+1,8,colaboradores[i].colaboradoresdatos.genero)
+			ws.write(i+1,9,colaboradores[i].colaboradoresdatos.area)
+			ws.write(i+1,10,colaboradores[i].colaboradoresdatos.cargo)
+			ws.write(i+1,11,colaboradores[i].colaboradoresdatos.regional)
+			ws.write(i+1,12,colaboradores[i].colaboradoresdatos.ciudad)
+			ws.write(i+1,13,colaboradores[i].colaboradoresdatos.niv_academico)
+			ws.write(i+1,14,colaboradores[i].colaboradoresdatos.profesion)
+			if colaboradores[i].colaboradoresdatos.fec_nacimiento:
+				ws.write(i+1,15,u'{0}/{1}/{2}'.format(colaboradores[i].colaboradoresdatos.fec_ingreso.day,
+					colaboradores[i].colaboradoresdatos.fec_ingreso.month,
+					colaboradores[i].colaboradoresdatos.fec_ingreso.year))
+
+			ws.write(i+1,16,u'{0}/{1}/{2}'.format(colaboradores[i].colaboradoresdatos.fec_ingreso.day,
+				colaboradores[i].colaboradoresdatos.fec_ingreso.month,
+				colaboradores[i].colaboradoresdatos.fec_ingreso.year))
 			if(datos.opcional1):
-				ws.write(i+1,13,stream[i].colaborador.colaboradoresdatos.opcional1)
+				ws.write(i+1,17,colaboradores[i].colaboradoresdatos.opcional1)
 			else:
 				k +=1
 			if(datos.opcional2):
-				ws.write(i+1,14-k,stream[i].colaborador.colaboradoresdatos.opcional2)
+				ws.write(i+1,18-k,colaboradores[i].colaboradoresdatos.opcional2)
 			else:
 				k +=1
 			if(datos.opcional3):
-				ws.write(i+1,15-k,stream[i].colaborador.colaboradoresdatos.opcional3)
+				ws.write(i+1,19-k,colaboradores[i].colaboradoresdatos.opcional3)
 			else:
 				k +=1
 			if(datos.opcional4):
-				ws.write(i+1,16-k,stream[i].colaborador.colaboradoresdatos.opcional4)
+				ws.write(i+1,20-k,colaboradores[i].colaboradoresdatos.opcional4)
 			else:
 				k +=1
 			if(datos.opcional5):
-				ws.write(i+1,17-k,stream[i].colaborador.colaboradoresdatos.opcional5)
+				ws.write(i+1,21-k,colaboradores[i].colaboradoresdatos.opcional5)
 			else:
 				k +=1
-			ws.write(i+1,18-k,stream[i].fecharespuesta.isoformat())
-			ws.write(i+1,19-k,stream[i].pregunta.variable.nombre)
-			ws.write(i+1,20-k,stream[i].pregunta.texto)
-			if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
-				respuestas = json.loads(stream[i].respuesta)
-				ans = []
-				for respuesta in stream[i].pregunta.respuestas_set.all():
-					if respuesta.texto in respuestas:
-						ans.append(respuesta.numerico)
-				if ans:
-					ws.write(i+1,21-k,json.dumps(ans))
-				else:
-					ws.write(i+1,21-k,u"[]")
-			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
-				for respuesta in stream[i].pregunta.respuestas_set.all():
-					if stream[i].respuesta == respuesta.texto:
-						ws.write(i+1,21-k,respuesta.numerico)
-			else:
-				ws.write(i+1,21-k,"No aplica")
-			if stream[i].respuesta:
-				ws.write(i+1,22-k,stream[i].respuesta)
-			else:
-				ws.write(i+1,22-k,u"")
+
 		wb.save(response)
 		return response
 	else:
 		render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def importarespuestas_preguntas(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.pre_add:
+		error = None
+		if request.method == 'POST':
+			import xlrd,xlwt
+			date_format = xlwt.XFStyle()
+			date_format.num_format_str = 'dd/mm/yyyy'
+			input_excel = request.FILES['docfile']
+			doc = xlrd.open_workbook(file_contents=input_excel.read())
+			sheet = doc.sheet_by_index(0)
+			filas = sheet.nrows
+			var_error = None
+			try:
+				proyecto_datos = proyecto.proyectosdatos
+				with transaction.atomic():
+					for i in xrange(1,filas):
+						var_error = sheet.cell_value(i,1)+' '+sheet.cell_value(i,2)
+						colaborador = Colaboradores.objects.get(id=sheet.cell_value(i,0))
+						colaborador.nombre = sheet.cell_value(i,1)
+						colaborador.apellido = sheet.cell_value(i,2)
+						colaborador.email = sheet.cell_value(i,3)
+
+						if sheet.cell_value(i,7):
+							colaboradores.movil=sheet.cell_value(i,7)
+						if sheet.cell_value(i,15):
+							colaboradores.fec_nacimiento = append(DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,15), 0)))
+
+						datos = ColaboradoresDatos.objects.get(id = colaborador)
+						datos.genero=sheet.cell_value(i,8)
+						datos.area=sheet.cell_value(i,9)
+						datos.cargo=sheet.cell_value(i,10)
+						datos.regional=sheet.cell_value(i,11)
+						datos.ciudad=sheet.cell_value(i,12)
+						datos.niv_academico=sheet.cell_value(i,13)
+						datos.profesion=sheet.cell_value(i,14)
+						datos.fec_ingreso=DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,16), 0))
+
+						if(nacimiento):
+							datos.fec_nacimiento = nacimiento
+						if proyecto_datos.opcional1:
+							datos.opcional1 = sheet.cell_value(i,17)
+						if proyecto_datos.opcional2:
+							datos.opcional2 = sheet.cell_value(i,18)
+						if proyecto_datos.opcional3:
+							datos.opcional3 = sheet.cell_value(i,19)
+						if proyecto_datos.opcional4:
+							datos.opcional4 = sheet.cell_value(i,20)
+						if proyecto_datos.opcional5:
+							datos.opcional5 = sheet.cell_value(i,21)
+						vector_datos.append(datos)
+
+						if sheet.cell_value(i,4) and not Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
+							streaming_crear.append(Streaming(
+								proyecto_id=proyecto.id,
+								colaborador_id=colaborador.id,
+								pregunta_id=sheet.cell_value(i,4),
+								fecharespuesta=timezone.now(),
+								respuesta=sheet.cell_value(i,6),
+								))
+							proyecto.tot_aresponder += 1
+							proyecto.tot_respuestas += 1
+
+						elif sheet.cell_value(i,4) and Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
+							Streaming.objects.filter(
+								proyecto_id=proyecto.id,
+								colaborador_id=colaborador.id,
+								pregunta_id=sheet.cell_value(i,4)).update(
+								fecharespuesta=timezone.now(),
+								respuesta=sheet.cell_value(i,6),
+								)
+							proyecto.tot_respuestas += 1
+						elif not sheet.cell_value(i,4):
+							error = "Cambios realizados con éxito."
+						else:
+							error = "¿Está usted seguro que la pregunta {0} ya fue creada en la herramienta?".format(sheet.cell_value(i,4))
+
+					if(streaming_crear):
+						Streaming.objects.bulk_create(streaming_crear)
+					proyecto.save()
+					cache.set(request.user.username,proyecto,86400)
+				if(permisos.col_see):
+					return HttpResponseRedirect('/respuestas/detalladas/')
+				else:
+					error = "Todos los datos se han subido con éxito"
+			except:
+				error= "Ocurrio un error cuando se procesaba al participante "+var_error
+
+		return render_to_response('importarespuestas.html',{
+		'Activar':'EstadoAvance','activar':'ImportarRespuestas',
+		'Proyecto':proyecto,'Permisos':permisos,'Error':error
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
