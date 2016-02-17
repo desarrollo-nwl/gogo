@@ -20,8 +20,8 @@ from django.utils import timezone
 from django.db import models
 
 if '__main__':
-	antiguo = timezone.now() - timedelta(61)
-	print Colaboradores.objects.filter(zdel__lt = antiguo).delete()
-	print Variables.objects.filter(zdel__lt = antiguo).delete()
-	print Preguntas.objects.filter(zdel__lt = antiguo).delete()
-	print Proyectos.objects.filter(zdel__lt = antiguo).delete()
+	antiguo = timezone.now()# - timedelta(61)
+	Colaboradores.objects.filter(zdel__lt = antiguo).delete()
+	Variables.objects.filter(zdel__lt = antiguo).delete()
+	Preguntas.objects.filter(zdel__lt = antiguo).delete()
+	Proyectos.objects.filter(zdel__lt = antiguo).delete()

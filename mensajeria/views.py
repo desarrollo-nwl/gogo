@@ -288,11 +288,54 @@ def encuesta(request,id_proyecto,key):
 	# except:
 	# 	acceso = True
 
+	if request.method == 'POST':
+		ids_streamig = request.POST.getlist('ids_streaming')
+		cuestionario = Streaming.objects.filter(proyecto_id=proyecto.id, id__in=ids_streamig)
+		len_cuestionario = len(ids_streamig)
+		proyecto.tot_respuestas += len_cuestionario
+		chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+		key = ''.join(random.sample(chars, 64))
+		encuestado.key = key
+		encuestado.respuestas += 1
+		proyecto.total = 100*(1.0*proyecto.tot_respuestas/proyecto.tot_aresponder)
+		metricas = encuestado.colaboradoresmetricas
+		vec_metricas = json.loads(metricas.propension)
+		try:
+			vec_metricas.append((timezone.now()-stream[0].fec_controlenvio).seconds/3600.0)
+			metricas.propension = json.dumps(vec_metricas)
+		except:
+			vec_metricas.append(proyecto.prudenciamin)
+		encuestado.propension = sum(vec_metricas)/len(vec_metricas)
+		metricas.propension = json.dumps(vec_metricas)
+		with transaction.atomic():
+			metricas.save()
+			proyecto.save()
+			encuestado.save()
+			for i in cuestionario:
+				i.fecharespuesta = timezone.now()
+				if i.pregunta.abierta:
+					i.respuesta = request.POST[str(i.pregunta.id)]
+				elif i.pregunta.multiple:
+					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
+					if not r:
+						i.respuesta = 'Ninguna seleccionada'
+					else:
+						i.respuesta = r
+				else:
+					i.respuesta = request.POST[str(i.pregunta.id)]
+				i.save()
+			Streaming.objects.filter(colaborador = encuestado).update(fec_controlenvio=timezone.now())
+		try:
+			return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
+		except:
+			return HttpResponseRedirect('http://networkslab.co')
+
+	cuestionario =[]
+
 	# si hay preguntas sin responder en un proyecto activo y NO es aleatorio
 	if stream and encuestado.proyecto.activo and proyecto.pordenadas:
 		if (proyecto.tipo != 'Completa'):
 			len_cuestionario = 0
-			cuestionario =[]
 			cuestionario_preguntas =[]
 			while( len_cuestionario < encuestado.proyecto.can_envio and len_cuestionario < total_cuestionario ):
 				cuestionario.append(stream[len_cuestionario])
@@ -316,28 +359,24 @@ def encuesta(request,id_proyecto,key):
 		stream_vect = range(total_cuestionario)
 		if (proyecto.tipo != 'Completa'):
 			len_cuestionario = 0
-			cuestionario =[]
 			cuestionario_preguntas =[]
 			random.shuffle(stream_vect)
 
 			while( len_cuestionario < encuestado.proyecto.can_envio and len_cuestionario < total_cuestionario ):
 				cuestionario.append(stream[stream_vect[len_cuestionario]])
-				# cuestionario_preguntas.append(stream[stream_vect[len_cuestionario]].pregunta)
 				len_cuestionario += 1
-			print cuestionario
 			cuestionario_preguntas = cuestionario
-			print cuestionario ,cuestionario_preguntas
 			if not len_cuestionario:
 				try:
 					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
 					return HttpResponseRedirect('http://www.networkslab.co')
-		# else:
-		# 	cuestionario = stream
-		# 	len_cuestionario = len(stream)
-		# 	cuestionario_preguntas =[]
-		# 	for i in cuestionario:
-		# 		cuestionario_preguntas.append(i.pregunta)
+		else:
+			cuestionario = stream
+			len_cuestionario = len(stream)
+			cuestionario_preguntas =[]
+			for i in cuestionario:
+				cuestionario_preguntas.append(i.pregunta)
 
 	else:
 		try:
@@ -345,49 +384,8 @@ def encuesta(request,id_proyecto,key):
 		except:
 			return HttpResponseRedirect('http://networkslab.co')
 
-	if request.method == 'POST':
-		proyecto.tot_respuestas += len_cuestionario
-		chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-		key = ''.join(random.sample(chars, 64))
-		encuestado.key = key
-		encuestado.respuestas += 1
-		proyecto.total = 100*(1.0*proyecto.tot_respuestas/proyecto.tot_aresponder)
-		metricas = encuestado.colaboradoresmetricas
-		vec_metricas = json.loads(metricas.propension)
-		try:
-			vec_metricas.append((timezone.now()-stream[0].fec_controlenvio).seconds/3600.0)
-			metricas.propension = json.dumps(vec_metricas)
-		except:
-			vec_metricas.append(proyecto.prudenciamin)
-		encuestado.propension = sum(vec_metricas)/len(vec_metricas)
-		metricas.propension = json.dumps(vec_metricas)
-		with transaction.atomic():
-			metricas.save()
-			proyecto.save()
-			encuestado.save()
-			print cuestionario
-			for i in cuestionario:
-				i.fecharespuesta = timezone.now()
-				if i.pregunta.abierta:
-					i.respuesta = request.POST[str(i.pregunta.id)]
-				elif i.pregunta.multiple:
-					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
-					if not r:
-						i.respuesta = 'Ninguna seleccionada'
-					else:
-						i.respuesta = r
-				else:
-					i.respuesta = request.POST[str(i.pregunta.id)]
-				i.save()
-			Streaming.objects.filter(colaborador = encuestado).update(fec_controlenvio=timezone.now())
-		try:
-			return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
-		except:
-			return HttpResponseRedirect('http://networkslab.co')
-
-	print cuestionario_preguntas
 	return render_to_response('encuesta.html',{
-	'Encuestado':encuestado,'Preguntas_encuesta':cuestionario_preguntas,'Proyecto':proyecto
+	'Encuestado':encuestado,'Preguntas_encuesta':cuestionario_preguntas,'Proyecto':proyecto,'Cuestionario':cuestionario
 	},	context_instance=RequestContext(request))
 
 

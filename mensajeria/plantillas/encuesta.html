@@ -43,7 +43,7 @@
 		</div>
 	</div>
 </section>
-{{ Preguntas_encuesta }}
+
 <section  id="form" class="form-section">
 {% if Proyecto.pordenadas %}
 {% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
@@ -96,6 +96,9 @@
 	</div>
 	{% endfor %}
 {% endif %}
+<select style="display:none" name="ids_streaming" multiple>
+{% for i in Cuestionario %} <option value="{{i.id}}" selected>{{i.id}}</option>{% endfor %}
+</select>
 <button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
 </form>
 </section>
