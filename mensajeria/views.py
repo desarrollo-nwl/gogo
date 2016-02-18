@@ -791,6 +791,9 @@ def importarespuestas_preguntas(request):
 						colaborador.nombre = sheet.cell_value(i,1)
 						colaborador.apellido = sheet.cell_value(i,2)
 						colaborador.email = sheet.cell_value(i,3)
+						if sheet.cell_value(i,4):
+							var_error = ''.join([var_error, ". Verifique que la pregunta {0} ya fue creada en la herramienta.".format(sheet.cell_value(i,4)) ])
+							pregunta = Preguntas.objects.get(id=sheet.cell_value(i,4))
 
 						if sheet.cell_value(i,7):
 							colaborador.movil=sheet.cell_value(i,7)
@@ -825,7 +828,7 @@ def importarespuestas_preguntas(request):
 						datos.save()
 
 						if sheet.cell_value(i,4) and not Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
-							if not Preguntas.objects.get(id=sheet.cell_value(i,4)).multiple:
+							if not pregunta.multiple:
 								streaming_crear.append(Streaming(
 									proyecto_id=proyecto.id,
 									colaborador_id=colaborador.id,
@@ -850,7 +853,7 @@ def importarespuestas_preguntas(request):
 								proyecto.tot_respuestas += 1
 
 						elif sheet.cell_value(i,4) and Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
-							if not Preguntas.objects.get(id=sheet.cell_value(i,4)).multiple:
+							if not pregunta.multiple:
 								s = Streaming.objects.filter(
 									proyecto_id=proyecto.id,
 									colaborador_id=colaborador.id,
@@ -861,7 +864,6 @@ def importarespuestas_preguntas(request):
 									fecharespuesta=timezone.now(),
 									respuesta=sheet.cell_value(i,6),
 									)
-
 
 							else:
 								r = json.dumps(sheet.cell_value(i,6).split(';'))
@@ -881,7 +883,7 @@ def importarespuestas_preguntas(request):
 						elif not sheet.cell_value(i,4):
 							error = "Cambios realizados con éxito."
 						else:
-							error = "¿Está usted seguro que la pregunta {0} ya fue creada en la herramienta?".format(sheet.cell_value(i,4))
+							error = "Verifique que la pregunta {0} ya fue creada en la herramienta.".format(sheet.cell_value(i,4))
 
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
@@ -892,7 +894,7 @@ def importarespuestas_preguntas(request):
 				else:
 					error = "Todos los datos se han subido con éxito"
 			except:
-				error= "Ocurrio un error cuando se procesaba al participante "+var_error
+				error= ''.join(["Ocurrio un error cuando se procesaba al participante ",var_error])
 
 		return render_to_response('importarespuestas.html',{
 		'Activar':'EstadoAvance','activar':'ImportarRespuestas',
