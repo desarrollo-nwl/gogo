@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from colaboradores.models import Colaboradores,ColaboradoresMetricas
+from colaboradores.models import Colaboradores,ColaboradoresMetricas,ColaboradoresDatos
 from cuestionarios.models import Variables,Preguntas
 from datetime import datetime as DT
 from django.contrib.auth.decorators import login_required
@@ -644,6 +644,9 @@ def exportarinterna(request):
 	else:
 		render_to_response('403.html')
 
+# ==============================================================================
+# 	Importacion de respuestas
+# ==============================================================================
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
@@ -651,6 +654,7 @@ def importarespuestas_exportar(request):
 	import xlwt
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
+	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
@@ -725,11 +729,11 @@ def importarespuestas_exportar(request):
 			if colaboradores[i].colaboradoresdatos.fec_nacimiento:
 				ws.write(i+1,15,u'{0}/{1}/{2}'.format(colaboradores[i].colaboradoresdatos.fec_ingreso.day,
 					colaboradores[i].colaboradoresdatos.fec_ingreso.month,
-					colaboradores[i].colaboradoresdatos.fec_ingreso.year))
+					colaboradores[i].colaboradoresdatos.fec_ingreso.year),str_format)
 
 			ws.write(i+1,16,u'{0}/{1}/{2}'.format(colaboradores[i].colaboradoresdatos.fec_ingreso.day,
 				colaboradores[i].colaboradoresdatos.fec_ingreso.month,
-				colaboradores[i].colaboradoresdatos.fec_ingreso.year))
+				colaboradores[i].colaboradoresdatos.fec_ingreso.year),str_format)
 			if(datos.opcional1):
 				ws.write(i+1,17,colaboradores[i].colaboradoresdatos.opcional1)
 			else:
@@ -778,6 +782,7 @@ def importarespuestas_preguntas(request):
 			filas = sheet.nrows
 			var_error = None
 			try:
+				streaming_crear = []
 				proyecto_datos = proyecto.proyectosdatos
 				with transaction.atomic():
 					for i in xrange(1,filas):
@@ -788,9 +793,10 @@ def importarespuestas_preguntas(request):
 						colaborador.email = sheet.cell_value(i,3)
 
 						if sheet.cell_value(i,7):
-							colaboradores.movil=sheet.cell_value(i,7)
-						if sheet.cell_value(i,15):
-							colaboradores.fec_nacimiento = append(DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,15), 0)))
+							colaborador.movil=sheet.cell_value(i,7)
+						else:
+							colaborador.movil = None
+						colaborador.save()
 
 						datos = ColaboradoresDatos.objects.get(id = colaborador)
 						datos.genero=sheet.cell_value(i,8)
@@ -800,10 +806,12 @@ def importarespuestas_preguntas(request):
 						datos.ciudad=sheet.cell_value(i,12)
 						datos.niv_academico=sheet.cell_value(i,13)
 						datos.profesion=sheet.cell_value(i,14)
-						datos.fec_ingreso=DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,16), 0))
+						datos.fec_ingreso = DT.strptime(sheet.cell_value(i,16), '%d/%m/%Y')
 
-						if(nacimiento):
-							datos.fec_nacimiento = nacimiento
+						if sheet.cell_value(i,15):
+							datos.fec_nacimiento = DT.strptime(sheet.cell_value(i,15), '%d/%m/%Y')
+						else:
+							datos.fec_nacimiento = None
 						if proyecto_datos.opcional1:
 							datos.opcional1 = sheet.cell_value(i,17)
 						if proyecto_datos.opcional2:
@@ -814,28 +822,62 @@ def importarespuestas_preguntas(request):
 							datos.opcional4 = sheet.cell_value(i,20)
 						if proyecto_datos.opcional5:
 							datos.opcional5 = sheet.cell_value(i,21)
-						vector_datos.append(datos)
+						datos.save()
 
 						if sheet.cell_value(i,4) and not Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
-							streaming_crear.append(Streaming(
-								proyecto_id=proyecto.id,
-								colaborador_id=colaborador.id,
-								pregunta_id=sheet.cell_value(i,4),
-								fecharespuesta=timezone.now(),
-								respuesta=sheet.cell_value(i,6),
-								))
-							proyecto.tot_aresponder += 1
-							proyecto.tot_respuestas += 1
+							if not Preguntas.objects.get(id=sheet.cell_value(i,4)).multiple:
+								streaming_crear.append(Streaming(
+									proyecto_id=proyecto.id,
+									colaborador_id=colaborador.id,
+									pregunta_id=sheet.cell_value(i,4),
+									fecharespuesta=timezone.now(),
+									respuesta=sheet.cell_value(i,6),
+									))
+								proyecto.tot_aresponder += 1
+								proyecto.tot_respuestas += 1
+							else:
+								r = json.dumps(sheet.cell_value(i,6).split(';'))
+								if r == '[""]':
+									r = '[]'
+								streaming_crear.append(Streaming(
+									proyecto_id=proyecto.id,
+									colaborador_id=colaborador.id,
+									pregunta_id=sheet.cell_value(i,4),
+									fecharespuesta=timezone.now(),
+									respuesta=r,
+									))
+								proyecto.tot_aresponder += 1
+								proyecto.tot_respuestas += 1
 
 						elif sheet.cell_value(i,4) and Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
-							Streaming.objects.filter(
-								proyecto_id=proyecto.id,
-								colaborador_id=colaborador.id,
-								pregunta_id=sheet.cell_value(i,4)).update(
-								fecharespuesta=timezone.now(),
-								respuesta=sheet.cell_value(i,6),
-								)
-							proyecto.tot_respuestas += 1
+							if not Preguntas.objects.get(id=sheet.cell_value(i,4)).multiple:
+								s = Streaming.objects.filter(
+									proyecto_id=proyecto.id,
+									colaborador_id=colaborador.id,
+									pregunta_id=sheet.cell_value(i,4))
+								if not s[0].respuesta:
+									proyecto.tot_respuestas += 1
+								s.update(
+									fecharespuesta=timezone.now(),
+									respuesta=sheet.cell_value(i,6),
+									)
+
+
+							else:
+								r = json.dumps(sheet.cell_value(i,6).split(';'))
+								if r == '[""]':
+									r = '[]'
+								s = Streaming.objects.filter(
+									proyecto_id=proyecto.id,
+									colaborador_id=colaborador.id,
+									pregunta_id=sheet.cell_value(i,4))
+								if not s[0].respuesta:
+									proyecto.tot_respuestas += 1
+								s.update(
+									fecharespuesta=timezone.now(),
+									respuesta=r,
+									)
+
 						elif not sheet.cell_value(i,4):
 							error = "Cambios realizados con éxito."
 						else:

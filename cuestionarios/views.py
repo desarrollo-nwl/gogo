@@ -404,6 +404,8 @@ def variableclonar(request,id_variable):
 			for pregunta in variable.preguntas_set.all():
 				pregunta.id = None
 				pregunta.variable = variable
+				proyecto.tot_preguntas += 1
+				proyecto.save()
 				pregunta.save()
 				for respuesta in pregunta.respuestas_set.all():
 					respuesta.id = None
@@ -435,6 +437,7 @@ def preguntaclonar(request,id_pregunta):
 			pregunta.posicion = variable.max_preguntas+1
 			with transaction.atomic():
 				pregunta.save()
+				proyecto.tot_preguntas += 1; proyecto.save()
 				variable.max_preguntas += 1; variable.save()
 				respuestas_nuevas = []
 				for respuesta in pregunta.respuestas_set.all():
@@ -444,6 +447,7 @@ def preguntaclonar(request,id_pregunta):
 				Respuestas.objects.bulk_create(respuestas_nuevas)
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la pregunta",descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
 		except:
 			return render_to_response('403.html')
 		return HttpResponseRedirect( '/variable/'+str(variable.id)+'/preguntas/')
@@ -469,12 +473,16 @@ def variableliminar(request,id_variable):
 		if request.method == 'POST':
 			maestro = Proyectos.objects.get(id=1)
 			with transaction.atomic():
-				Variables.objects.filter(id=int(id_variable)).update(proyecto=maestro,zdel=timezone.now())
+				variable = Variables.objects.get(id=id_variable)
+				variable.proyecto=maestro
+				variable.zdel=timezone.now()
+				variable.save()
 				proyecto.max_variables -= 1
+				proyecto.tot_preguntas -= variable.max_preguntas;
 				proyecto.save()
-				cache.set(request.user.username,proyecto,86400)
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la variable",descripcion=variable.nombre)
+			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/variables/')
 		return render_to_response('cue_eliminar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -498,12 +506,15 @@ def preguntaeliminar(request,id_pregunta):
 		if request.method == 'POST':
 			pregunta.variable_id = 1
 			variable.max_preguntas -= 1
+			proyecto.tot_preguntas -= 1
 			pregunta.zdel = timezone.now()
 			nom_log = request.user.first_name+' '+request.user.last_name
 			with transaction.atomic():
 				pregunta.save()
 				variable.save()
+				proyecto.save()
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la pregunta",descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/variable/'+str(variable.id)+'/preguntas/')
 
 		return render_to_response('cue_eliminar.html',{
