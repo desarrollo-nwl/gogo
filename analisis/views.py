@@ -15,6 +15,29 @@ from usuarios.models import Proyectos, Logs
 import grafos as gr
 import string
 
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def participacion(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.res_see:
+		datos = Streaming.objects.filter(
+					proyecto_id=proyecto.id
+				).select_related(
+					'proyecto__proyectosdatos',
+					'colaborador','colaborador__colaboradoresdatos'
+				)
+		return render_to_response('participacion.html',{
+			'Activar':'AnalisisResultados','activar':'Focalizados',
+			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def focalizado(request):
@@ -26,12 +49,17 @@ def focalizado(request):
 		variables = Variables.objects.filter(proyecto_id=proyecto.id)
 		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
 		datos = Streaming.objects.filter(
-				proyecto_id=proyecto.id,pregunta__abierta=False,respuesta__isnull=False
-				).select_related('proyecto__proyectosdatos',
-				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos').order_by('fecharespuesta')
+					proyecto_id=proyecto.id,
+					pregunta__abierta=False,
+					respuesta__isnull=False
+				).select_related(
+					'proyecto__proyectosdatos',
+					'pregunta','pregunta__variable',
+					'colaborador','colaborador__colaboradoresdatos'
+				).order_by('fecharespuesta')
 		return render_to_response('focalizado.html',{
-		'Activar':'AnalisisResultados','activar':'Focalizados',
-		'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
+			'Activar':'AnalisisResultados','activar':'Focalizados',
+			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -48,12 +76,17 @@ def general(request):
 		variables = Variables.objects.filter(proyecto_id=proyecto.id)
 		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
 		datos = Streaming.objects.filter(
-				proyecto_id=proyecto.id,pregunta__abierta=False,respuesta__isnull=False
-				).select_related('proyecto__proyectosdatos',
-				'pregunta','pregunta__variable','colaborador','colaborador__colaboradoresdatos').order_by('fecharespuesta')
+					proyecto_id=proyecto.id,
+					pregunta__abierta=False,
+					respuesta__isnull=False
+				).select_related(
+					'proyecto__proyectosdatos',
+					'pregunta','pregunta__variable',
+					'colaborador','colaborador__colaboradoresdatos'
+				).order_by('fecharespuesta')
 		return render_to_response('general.html',{
-		'Activar':'AnalisisResultados','activar':'Focalizados',
-		'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
+			'Activar':'AnalisisResultados','activar':'Focalizados',
+			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -110,13 +143,13 @@ def wordanalytics(request):
 			grafoPorPregunta,diccionariosPorPregunta,cantidades = gr.Grafos(datasetgrafo)
 			listaPreguntas = gr.preguntas(datasetgrafo)
 			return render_to_response('wordanalytics.html',{
-			'Activar':'AnalisisResultados',
-			'activar':'WordAnalytics',
-			'Proyecto':proyecto,
-			'Permisos':permisos,
-			'activarG':3,
-			'activar':'grafos',
-			'grafos':grafoPorPregunta,'diccionarios':diccionariosPorPregunta,'cantidades':cantidades,'listaPreguntas':listaPreguntas,
+				'Activar':'AnalisisResultados',
+				'activar':'WordAnalytics',
+				'Proyecto':proyecto,
+				'Permisos':permisos,
+				'activarG':3,
+				'activar':'grafos',
+				'grafos':grafoPorPregunta,'diccionarios':diccionariosPorPregunta,'cantidades':cantidades,'listaPreguntas':listaPreguntas,
 			}, context_instance=RequestContext(request))
 
 	else:

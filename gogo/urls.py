@@ -103,9 +103,10 @@ urlpatterns += patterns('mensajeria.views',
 #===============================================================================
 
 urlpatterns += patterns('analisis.views',
-	url(r'^focalizado/$', 'focalizado'),
-	url(r'^general/$', 'general'),
-	url(r'^wordanalytics/$', 'wordanalytics'),
+	url(r'^analisis/participacion/$', 'participacion'),
+	url(r'^analisis/focalizado/$', 'focalizado'),
+	url(r'^analisis/general/$', 'general'),
+	url(r'^analisis/wordanalytics/$', 'wordanalytics'),
 )
 
 #===============================================================================
