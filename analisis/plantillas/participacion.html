@@ -2,7 +2,7 @@
 {% block title %} A. Participación{% endblock %}
 {% block head2 %}
 <link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
-<style media="screen">.multiselect{margin-left: -15px !important;}.panel-body{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
+<style media="screen">.multiselect{margin-left: -15px !important;}</style>
 {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
@@ -10,257 +10,226 @@
 <li><a href="#"><i><span>/ Focalizado</span></i></a></li>
 {%endblock%}
 {% block contenido2 %}
-<div class="row">
-	<div class="panel panel-default toggle m-t-xs ml20 mr20">
-		<div class="panel-heading">
-			<h4 class="panel-title">Promedio general por variable en tiempo real</h4>
-		</div>
-		<div class="panel-body">
-			<div class="col-lg-9">
-				<div align="center">
-					<input id="lastDay" type="button" value="Ultimo Dia" />
-					<input id="lastWeek" type="button" value="Ultima Semana" />
-					<input id="lastMonth" type="button" value="Ultimo Mes" />
+<div class="row m-t-xs mt20 mr5">
+	<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<!-- .col-md-3 -->
+			<div class="panel panel-info tile">
+				<!-- Start .panel -->
+				<div class="panel-heading">
+					<h4 class="panel-title">Finaliza en:</h4>
 				</div>
-				<div style='margin: 0 5px 0 5px' id="grafica_uno_div"></div>
-				<div style='margin: 0 5px 0 5px' id="control_grafica_uno_div"></div>
+				<div class="panel-body pt0">
+					<div class="progressbar-stats-1">
+						<div class="stats">
+							<div class="stats-number" data-from="0" data-to="50">
+								{{ Proyecto.proyectosdatos.ffin | timeuntil }}
+							</div>
+						</div>
+						<div class="progress progress-bar-sm">
+							<div class="progress-bar progress-bar-success" style="width: {{Proyecto.total  |floatformat:"0" }}%;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{Proyecto.total  |floatformat:"0" }}" role="progressbar"></div>
+						</div>
+						<div class="comparison mt10">
+							<p class="mb0">
+								<i class="fa fa-arrow-circle-o-up s20 mr5 pull-left"></i> Llevas un {{Proyecto.total  |floatformat:"-2" }}% de avance.
+							</p>
+						</div>
+					</div>
+				</div>
 			</div>
+		</div>
 
-			<div class="col-lg-3 m-t-xs">
-				<div class="panel panel-default toggle">
-					<!-- Inicio .panel -->
-					<div class="panel-heading">
-						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
-					</div>
-					<div class="panel-body">
-						<ul class="list-unstyled mb0">
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Variables</span>
-								<select id="variables_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr20">Preguntas</span>
-								<select id="preguntas_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
-								<select id="opcional1_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
-								<select id="opcional2_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
-								<select id="opcional3_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
-								<select id="opcional4_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
-								<select id="opcional5_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-						</ul>
-					</div>
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="panel panel-default tile btrr0 bbrr0" data-mh="sales-locations">
+				<div class="panel-heading">
+					<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Ficha técnica </h4>
+				</div>
+				<div class="panel-body pt0">
+					<ul class="list-unstyled mb0">
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de variables:</span> <div style="display:inline" class="color-red">{{ Proyecto.max_variables }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de preguntas:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_preguntas }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de participantes:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_participantes }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Respuestas posibles:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_aresponder }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Respuestas completadas:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_respuestas }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Estado:</span> <div style="display:inline" class="color-red">{% if Proyecto.estado %}Activo{% else %}Inactivo{% endif %} </div>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
+
 	</div>
 
-	<div class="panel panel-default toggle m-t-xs ml20 mr20">
-		<div class="panel-heading">
-			<h4 class="panel-title">Resultados Generales Promedio Por Variable</h4>
-		</div>
-		<div class="panel-body">
-			<div class="col-lg-9">
-				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
-
-
-				<br>
-				<div id="slider"></div>
+	<div class="col-lg-9">
+		<div class="panel panel-default toggle">
+			<div class="panel-heading">
+				<h4 class="panel-title">Gráfica de participación</h4>
 			</div>
+			<div class="panel-body">
+				<div class="col-lg-8">
 
-			<div class="col-lg-3">
-				<div class="panel panel-default toggle">
-					<!-- Inicio .panel -->
-					<div class="panel-heading">
-						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					<div class="text-center mt20">
+						<div id="customer-exp" class="custom-progressbar blue" style="width:300px;height:300px;">
+						<div class="pie-charts green-pie">
+							<div class="pie easyPieChart" data-percent="{{ Proyecto.total | floatformat:"-2" }}" style="width: 300px; height: 300px; line-height: 300px;">
+							</div>
+						</div>
+							<div id="descripcion" class="description m" style="font-size:50px;margin-top:-30px"> 100%</div>
+
+						</div>
 					</div>
-					<div class="panel-body">
-						<ul class="list-unstyled mb0">
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Variables</span>
-								<select id="variables_g2" class="filtros_dos"></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr20">Preguntas</span>
-								<select id="preguntas_g2" class="filtros_dos"></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
-								<select id="opcional1_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
-								<select id="opcional2_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
-								<select id="opcional3_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
-								<select id="opcional4_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
-								<select id="opcional5_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-						</ul>
-					</div>
+					<br>
+					<div id="slider"></div>
 				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="panel panel-default toggle m-t-xs ml20 mr20">
-		<div class="panel-heading">
-			<h4 class="panel-title">Resultados Generales Promedio Por Variable</h4>
-		</div>
-		<div class="panel-body">
-			<div class="col-lg-9">
-				<div style='margin: 0 5px 0 5px' id="grafica_tres_div"></div>
-				<div style='margin: 0 5px 0 5px' id="control_grafica_tres_div"></div>
-			</div>
-
-			<div class="col-lg-3">
-				<div class="panel panel-default toggle">
-					<!-- Inicio .panel -->
-					<div class="panel-heading">
-						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
-					</div>
-					<div class="panel-body">
-						<ul class="list-unstyled mb0">
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Variables</span>
-								<select id="variables_g3" class="filtros_tres"></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr20">Preguntas</span>
-								<select id="preguntas_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
-								<select id="opcional1_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
-								<select id="opcional2_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
-								<select id="opcional3_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
-								<select id="opcional4_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
-								<select id="opcional5_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-						</ul>
+				<div class="col-lg-4 m-t-xs">
+					<div class="panel panel-default toggle">
+						<!-- Inicio .panel -->
+						<div class="panel-heading">
+							<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
+						</div>
+						<div class="panel-body">
+							<ul class="list-unstyled mb0">
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr15">Regionales</span>
+									<select id="regionales" class="filtro" multiple></select>
+								</li>
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr25">Ciudades</span>
+									<select id="ciudades" class="filtro" multiple></select>
+								</li>
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong" style="padding-right:47px">Áreas</span>
+									<select id="areas" class="filtro" multiple></select>
+								</li>
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong" style="padding-right:39px">Cargos</span>
+									<select id="cargos" class="filtro" multiple></select>
+								</li>
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong" style="padding-right:37px">Género</span>
+									<select id="genero" class="filtro" multiple></select>
+								</li>
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr25">Nivel Ac.</span>
+									<select id="niv_academico" class="filtro" multiple></select>
+								</li>
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr25">Profesión</span>
+									<select id="profesion" class="filtro" multiple></select>
+								</li>
+								{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
+									<select id="opcional1" class="filtro" multiple></select>
+								</li>
+								{% endif %}
+								{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
+									<select id="opcional2" class="filtro" multiple></select>
+								</li>
+								{% endif %}
+								{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
+									<select id="opcional3" class="filtro" multiple></select>
+								</li>
+								{% endif %}
+								{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
+									<select id="opcional4" class="filtro" multiple></select>
+								</li>
+								{% endif %}
+								{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+								<li class="mb5 pb5 bbdashed">
+									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
+									<select id="opcional5" class="filtro" multiple></select>
+								</li>
+								{% endif %}
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<!-- col-lg-12 start here -->
+		<div class="panel panel-default plain toggle panelMove panelClose panelRefresh">
+			<!-- Start .panel -->
+			<div class="panel-heading white-bg">
+				<h4 class="panel-title"><i class="fa fa-building fa-2x"></i>Participación por Área / Regional</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="per35">Area / Regional</th>
+							<th class="per15"># Personas Encuestadas</th>
+							<th class="per15">Avance Actual</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Bogotá</td>
+							<td>100</td>
+							<td>
+							<div class="progress animated-bar">
+								<div class="progress-bar progress-bar-success" role="progressbar" data-transitiongoal="40"></div>
+							</div></td>
+						</tr>
+						<tr>
+							<td>Medellín</td>
+							<td>50</td>
+							<td>
+							<div class="progress animated-bar">
+								<div class="progress-bar progress-bar-danger" role="progressbar" data-transitiongoal="80"></div>
+							</div></td>
+						</tr>
+						<tr>
+							<td>Cali</td>
+							<td>60</td>
+							<td>
+							<div class="progress animated-bar">
+								<div class="progress-bar progress-bar-warning" role="progressbar" data-transitiongoal="67"></div>
+							</div></td>
+						</tr>
+						<tr>
+							<td>Barranquilla</td>
+							<td>30</td>
+							<td>
+							<div class="progress animated-bar">
+								<div class="progress-bar progress-bar-info" role="progressbar" data-transitiongoal="7"></div>
+							</div></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% endblock %}
 
 {%block scripts%}
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
-
+<script type="text/javascript" src="{% static 'js/plugins/piechart/jquery.easy-pie-chart.min.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.min.js'%} "></script>
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderDraggable.min.js'%} "></script>
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderBar.min.js'%}"></script>
@@ -269,17 +238,24 @@
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderLabel.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSlider.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-// $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
 var Datos = [{%for i in Datos%}
-['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }}, "{{ i.pregunta.numerica }}" ],{%endfor%}];
-var Cuestionario = [ {% for i in Preguntas %}
-['{{ i.variable.id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}
-];
-
-var sintaxis = [{% for i in Preguntas %}['{{i.id | escape}}',[ {% for j in i.respuestas_set.all %}'{{ j.texto | escape }}',{% endfor %}]],{% endfor %}]
+['{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' ,
+'{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' ,
+'{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' ,
+'{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' ,
+'{{ i.colaborador.colaboradoresdatos.genero | lower | escape }}' ,
+'{{ i.colaborador.colaboradoresdatos.niv_academico | lower | escape }}' ,
+'{{ i.colaborador.colaboradoresdatos.profesion | lower | escape }}' ,
+ {%if i.pregunta %}true{% else %}false{%endif%},
+ {%if i.fecharespuesta %}new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}){% else %}0{% endif %},
+'{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}',
+'{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}',
+'{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}',
+'{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}',
+'{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',
+],{%endfor%}];
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -299,191 +275,93 @@ var limpiar_filas_nulas = function(matriz_datos){
 	return matriz_datos;
 }
 
-var maximo_cuestionario = 5;
-for (var i = 0; i < Cuestionario.length; i++) {
-	for (var key in Cuestionario[i][1]) {
-		if (Cuestionario[i][1].hasOwnProperty(key)){
-			for (var key2 in Cuestionario[i][1][key]) {
-				if (Cuestionario[i][1][key].hasOwnProperty(key2) && Cuestionario[i][1][key][key2] > maximo_cuestionario)
-			 		maximo_cuestionario = Cuestionario[i][1][key][key2];
-			 }
-		}
-	}
-}
-
-var integrarDatos = function(tiempoMin,tiempoMax,matriz_g2,matrizIntegral,respuestas){
-      var matrizIntegrada = matrizIntegral;
-	  for(var m=0;m<matrizIntegrada.length;m++){
-		  for(var i=0;i<matriz_g2.length;i++){
-				if(matriz_g2[i][1]>= tiempoMin && matriz_g2[i][1]<=tiempoMax && matriz_g2[i][0]==matrizIntegrada[m][0]){
-					for(var k = 0; k<respuestas.length; k++){
-						matrizIntegrada[m][k+1] += matriz_g2[i][k+2];
-					}
-			  }
-		}
-	}
-    return matrizIntegrada;
-}
-
-var tiemposIniciales = function(variables){
-	var tiempoMaximo = new Date(2000,1,20).getTime(),
-		tiempoMinimo = new Date(2030,1,20).getTime(),
-		fechaMaxima = new Date(2030,1,20),
-		fechaMinima = new Date(2000,1,20);
-	for(var i=0;i<variables[3].length;i++){
-			var tiempo = variables[3][i].getTime(),
-				fecha = variables[3][i];
-			if(tiempo>tiempoMaximo){
-				tiempoMaximo = tiempo;
-                fechaMaxima = fecha;
-				}
-			if(tiempo<tiempoMinimo){
-				tiempoMinimo = tiempo;
-				fechaMinima = fecha;
-			}
-		}
-    return [tiempoMinimo,tiempoMaximo,fechaMinima,fechaMaxima];
-}
 //==============================================================================
 //   variables GLOBALES
 //==============================================================================
 
-var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[],
-	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
-	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
-	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
+var regionales=[],ciudades=[],areas=[],cargos=[],genero=[],niv_academico=[],profesion=[]
+	$reg = $('#regionales'), $ciu = $('#ciudades'),
+	$are = $('#areas'), $car = $('#cargos'),
+	$gen = $('#genero'), $niv = $("#niv_academico"),
+	$pro = $('#profesion');
 
-{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3_g1 = $('#opcional3_g1'),opcional3=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4_g1 = $('#opcional4_g1'),opcional4=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g1 = $('#opcional5_g1'),opcional5=[];{% endif %}
+	if(Datos) {var fec_minima = Datos[0][8],fec_maxima=Datos[0][8];}
 
-var $var_g2 = $('#variables_g2'), $pre_g2 = $('#preguntas_g2'),
-	$reg_g2 = $('#regionales_g2'), $ciu_g2 = $('#ciudades_g2'),
-	$are_g2 = $('#areas_g2'), $car_g2 = $('#cargos_g2');
-
-{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g2 = $('#opcional1_g2');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2_g2 = $('#opcional2_g2');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3_g2 = $('#opcional3_g2');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4_g2 = $('#opcional4_g2');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g2 = $('#opcional5_g2');{% endif %}
-
-
-var $var_g3 = $('#variables_g3'), $pre_g3 = $('#preguntas_g3'),
-	$reg_g3 = $('#regionales_g3'), $ciu_g3 = $('#ciudades_g3'),
-	$are_g3 = $('#areas_g3'), $car_g3 = $('#cargos_g3');
-
-{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g3 = $('#opcional1_g3');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2_g3 = $('#opcional2_g3');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3_g3 = $('#opcional3_g3');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4_g3 = $('#opcional4_g3');{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5_g3 = $('#opcional5_g3');{% endif %}
-
+{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1 = $('#opcional1'),opcional1=[];{% endif %}
+{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2 = $('#opcional2'),opcional2=[];{% endif %}
+{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3 = $('#opcional3'),opcional3=[];{% endif %}
+{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4 = $('#opcional4'),opcional4=[];{% endif %}
+{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5 = $('#opcional5'),opcional5=[];{% endif %}
 
 var Elementos = {
 //==============================================================================
 //   Selects
 //==============================================================================
+pie: function(){
+	$(".pie").easyPieChart({
+        barColor: '#29b6d8',
+        borderColor: '#29b6d8',
+        trackColor: '#a9e2c6',
+        scaleColor: false,
+        lineCap: 'butt',
+        lineWidth: 40,
+        size: 300,
+        animate: 1500
+    });
+},
+
 inicio : function(){
 
 	for (var i = 0; i < Datos.length; i++) {
 
-		if(!contenido_date(Datos[i][8],fechas)){
-			fechas.push(Datos[i][8]);
-		}
+		if( Datos[i][8] - fec_minima < 0 ) fec_minima = Datos[i][8];
+		if( Datos[i][8] - fec_maxima > 0 ) fec_maxima = Datos[i][8];
 
-		if (!contenido(Datos[i][14],variables)){
-			variables.push(Datos[i][14]);
-			$var_g1.append($('<option>', {
-		        value: Datos[i][14],
-		        text : Datos[i][1]
-		    }));
-			$var_g2.append($('<option>', {
-				value: Datos[i][14],
-				text : Datos[i][1]
-			}));
-			$var_g3.append($('<option>', {
-				value: Datos[i][14],
-				text : Datos[i][1]
-			}));
-		}
-
-		if ( !contenido(Datos[i][15],preguntas) ){
-			if ( Datos[i][14] == variables[0] ){
-				$pre_g3.append($('<option>', {
-					value: Datos[i][15],
-					text : Datos[i][2]
-				}));
-			}
-			if ( Datos[i][14] == variables[0] ){
-				$pre_g2.append($('<option>', {
-					value: Datos[i][15],
-					text : Datos[i][2]
-				}));
-			}
-			$pre_g1.append($('<option>', {
-				value: Datos[i][15],
-				text : Datos[i][2]
-			}));
-			preguntas.push(Datos[i][15]);
-		}
 		if (!contenido(Datos[i][3],regionales)){
 			regionales.push(Datos[i][3]);
-			$reg_g1.append($('<option>', {
-				value: Datos[i][3],
-				text : Datos[i][3]
-			}));
-			$reg_g2.append($('<option>', {
-				value: Datos[i][3],
-				text : Datos[i][3]
-			}));
-			$reg_g3.append($('<option>', {
+			$reg.append($('<option>', {
 				value: Datos[i][3],
 				text : Datos[i][3]
 			}));
 		}
 		if (!contenido(Datos[i][4],ciudades)){
 			ciudades.push(Datos[i][4]);
-			$ciu_g1.append($('<option>', {
-				value: Datos[i][4],
-				text : Datos[i][4]
-			}));
-			$ciu_g2.append($('<option>', {
-				value: Datos[i][4],
-				text : Datos[i][4]
-			}));
-			$ciu_g3.append($('<option>', {
+			$ciu.append($('<option>', {
 				value: Datos[i][4],
 				text : Datos[i][4]
 			}));
 		}
 		if (!contenido(Datos[i][5],areas)){
 			areas.push(Datos[i][5]);
-			$are_g1.append($('<option>', {
-				value: Datos[i][5],
-				text : Datos[i][5]
-			}));
-			$are_g2.append($('<option>', {
-				value: Datos[i][5],
-				text : Datos[i][5]
-			}));
-			$are_g3.append($('<option>', {
+			$are.append($('<option>', {
 				value: Datos[i][5],
 				text : Datos[i][5]
 			}));
 		}
 		if (!contenido(Datos[i][6],cargos)){
 			cargos.push(Datos[i][6]);
-			$car_g1.append($('<option>', {
+			$car.append($('<option>', {
 				value: Datos[i][6],
 				text : Datos[i][6]
 			}));
-			$car_g2.append($('<option>', {
+		}
+		if (!contenido(Datos[i][6],genero)){
+			genero.push(Datos[i][6]);
+			$gen.append($('<option>', {
 				value: Datos[i][6],
 				text : Datos[i][6]
 			}));
-			$car_g3.append($('<option>', {
+		}
+		if (!contenido(Datos[i][6],niv_academico)){
+			niv_academico.push(Datos[i][6]);
+			$niv.append($('<option>', {
+				value: Datos[i][6],
+				text : Datos[i][6]
+			}));
+		}
+		if (!contenido(Datos[i][6],profesion)){
+			profesion.push(Datos[i][6]);
+			$pro.append($('<option>', {
 				value: Datos[i][6],
 				text : Datos[i][6]
 			}));
@@ -492,15 +370,7 @@ inicio : function(){
 		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
 		if (!contenido(Datos[i][9],opcional1)){
 			opcional1.push(Datos[i][9]);
-			$op1_g1.append($('<option>', {
-				value: Datos[i][9],
-				text : Datos[i][9]
-			}));
-			$op1_g2.append($('<option>', {
-				value: Datos[i][9],
-				text : Datos[i][9]
-			}));
-			$op1_g3.append($('<option>', {
+			$op1.append($('<option>', {
 				value: Datos[i][9],
 				text : Datos[i][9]
 			}));
@@ -509,15 +379,7 @@ inicio : function(){
 		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
 		if (!contenido(Datos[i][10],opcional2)){
 			opcional2.push(Datos[i][10]);
-			$op2_g1.append($('<option>', {
-				value: Datos[i][10],
-				text : Datos[i][10]
-			}));
-			$op2_g2.append($('<option>', {
-				value: Datos[i][10],
-				text : Datos[i][10]
-			}));
-			$op2_g3.append($('<option>', {
+			$op2.append($('<option>', {
 				value: Datos[i][10],
 				text : Datos[i][10]
 			}));
@@ -526,15 +388,7 @@ inicio : function(){
 		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
 		if (!contenido(Datos[i][11],opcional3)){
 			opcional3.push(Datos[i][11]);
-			$op3_g1.append($('<option>', {
-				value: Datos[i][11],
-				text : Datos[i][11]
-			}));
-			$op3_g2.append($('<option>', {
-				value: Datos[i][11],
-				text : Datos[i][11]
-			}));
-			$op3_g3.append($('<option>', {
+			$op3.append($('<option>', {
 				value: Datos[i][11],
 				text : Datos[i][11]
 			}));
@@ -543,15 +397,7 @@ inicio : function(){
 		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
 		if (!contenido(Datos[i][12],opcional4)){
 			opcional4.push(Datos[i][12]);
-			$op4_g1.append($('<option>', {
-				value: Datos[i][12],
-				text : Datos[i][12]
-			}));
-			$op4_g2.append($('<option>', {
-				value: Datos[i][12],
-				text : Datos[i][12]
-			}));
-			$op4_g3.append($('<option>', {
+			$op4.append($('<option>', {
 				value: Datos[i][12],
 				text : Datos[i][12]
 			}));
@@ -560,15 +406,7 @@ inicio : function(){
 		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
 		if (!contenido(Datos[i][13],opcional5)){
 			opcional5.push(Datos[i][13]);
-			$op5_g1.append($('<option>', {
-				value: Datos[i][13],
-				text : Datos[i][13]
-			}));
-			$op5_g2.append($('<option>', {
-				value: Datos[i][13],
-				text : Datos[i][13]
-			}));
-			$op5_g3.append($('<option>', {
+			$op5.append($('<option>', {
 				value: Datos[i][13],
 				text : Datos[i][13]
 			}));
@@ -577,567 +415,43 @@ inicio : function(){
 
 	}
 
-	$var_g1.change(function(){
-		var preguntas1 = [];
-		$pre_g1.find('option').remove();
-		if($var_g1.val()){
-			for (var i = 0; i < Datos.length; i++) {
-				if ( !contenido(Datos[i][15],preguntas1) && contenido(Datos[i][14],$var_g1.val()) ){
-					preguntas1.push(Datos[i][15]);
-					$pre_g1.append($('<option>', {
-						value: Datos[i][15],
-						text : Datos[i][2]
-					}));
-				}
-			}
-		}
-		$pre_g1.multiselect('rebuild');
-		$pre_g1.multiselect('selectAll', false);
-		$pre_g1.multiselect('updateButtonText');
-	});
-	$var_g2.change(function(){
-		var preguntas2 = [];
-		$pre_g2.find('option').remove();
-		for (var i = 0; i < Datos.length; i++) {
-			if ( !contenido(Datos[i][15],preguntas2) && Datos[i][14] == $var_g2.val() ){
-				preguntas2.push(Datos[i][15]);
-				$pre_g2.append($('<option>', {
-					value: Datos[i][15],
-					text : Datos[i][2]
-				}));
-			}
-		}
-		$pre_g2.multiselect('rebuild');
-		$pre_g2.selectedIndex = 0;
-		$pre_g2.multiselect('updateButtonText');
-	});
-	$var_g3.change(function(){
-		var preguntas3 = [];
-		$pre_g3.find('option').remove();
-		for (var i = 0; i < Datos.length; i++) {
-			if ( !contenido(Datos[i][15],preguntas3) && Datos[i][14] == $var_g3.val() ){
-				preguntas3.push(Datos[i][15]);
-				$pre_g3.append($('<option>', {
-					value: Datos[i][15],
-					text : Datos[i][2]
-				}));
-			}
-		}
-		$pre_g3.multiselect('rebuild');
-		$pre_g3.multiselect('selectAll', false);
-		$pre_g3.multiselect('updateButtonText');
-	});
-
 	//  UPDATE Selects
-	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '100px',dropRight: true,disableIfEmpty: true	});
 	$('.filtro').multiselect('selectAll', false);
 	$('.filtro').multiselect('updateButtonText');
-	$var_g2.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-	$var_g2.selectedIndex = 0;
-	$var_g2.multiselect('updateButtonText');
-	$pre_g2.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-	$pre_g2.selectedIndex = 0;
-	$pre_g2.multiselect('updateButtonText');
-	$var_g3.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-	$var_g3.selectedIndex = 0;
-	$var_g3.multiselect('updateButtonText');
+},
+
+circulo: function(){
 
 },
 
-//==============================================================================
-//   Grafica UNO
-//==============================================================================
-grafica_uno: function(){
-	// cacheamos las seleccionadas
-	var variables_seleccionadas=$var_g1.val() || [],
-		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g1.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val() || [],{% endif %}
-		preguntas_seleccionadas = $pre_g1.val() || [],
-		regionales_seleccionadas = $reg_g1.val() || [],
-		ciudades_seleccionadas = $ciu_g1.val() || [],
-		areas_seleccionadas = $are_g1.val() || [],
-		cargos_seleccionados = $car_g1.val() || [];
-
-	// inicializamos las variables de la data table
-	var data = new google.visualization.DataTable(),
-		variables_seleccionadas_textos = [], v = $('#variables_g1 option');
-	for(var  i=0; i< v.length; i++){ if(v[i].selected){variables_seleccionadas_textos.push(v[i].text)}};
-	data.addColumn('date', 'Fecha');
-
-	for (var i = 0; i < variables_seleccionadas_textos.length; i++) {
-		data.addColumn('number',variables_seleccionadas_textos[i] );
-	}
-	var matriz_g1 = [],auxiliar=0;
-
-	// inicializamos la date tables
-	for (var i = 0; i < fechas.length; i++) {
-		matriz_g1.push([ fechas[i] ]);
-		// llenamos de ceros la date tables
-		for (var j = 0; j < variables_seleccionadas.length; j++) {
-			matriz_g1[i].push(0);
-		}
-	}
-
-	// contamos
-	for (var i = 0; i < matriz_g1.length; i++) {
-		for (var k = 0; k < variables_seleccionadas.length; k++) {
-			for (var j = 0; j < Datos.length; j++) {
-				if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
-				&& variables_seleccionadas[k] == Datos[j][14]
-				&& Datos[j][16] == "True"
-				&& contenido(Datos[j][15],preguntas_seleccionadas)
-				&& contenido(Datos[j][3],regionales_seleccionadas)
-				&& contenido(Datos[j][4],ciudades_seleccionadas)
-				&& contenido(Datos[j][5],areas_seleccionadas)
-				&& contenido(Datos[j][6],cargos_seleccionados)
-				{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-					&& contenido(Datos[j][9],opcional1_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-					&& contenido(Datos[j][10],opcional2_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-					&& contenido(Datos[j][11],opcional3_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-					&& contenido(Datos[j][12],opcional4_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-					&& contenido(Datos[j][13],opcional5_seleccionadas)
-				{% endif %}
-			){
-					for (var l = 0; l < Cuestionario.length; l++) {
-						if( Cuestionario[l][0] == Datos[j][14] && Cuestionario[l][1][Datos[j][15]] )
-						{
-							for (var m = 0; m < Datos[j][7].length; m++) {
-								if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
-									matriz_g1[i][k+1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
-									auxiliar++;
-								}
-							}
-						}
-					}
-				}
-			}
-
-		if(auxiliar){
-			matriz_g1[i][k+1] = +(Math.round(matriz_g1[i][k+1]/auxiliar+ "e+2")  + "e-2");
-			auxiliar = 0;
-		}
-
-		}
-	}
-
-	matriz_g1 = limpiar_filas_nulas(matriz_g1);
-
-	data.addRows( matriz_g1 );
-
-	var altura = 200;
-	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
-
-	var chart = new google.visualization.ChartWrapper({
-		chartType: 'LineChart',
-		containerId: 'grafica_uno_div',
-		options: {
-			height: altura,
-			legend: 'none',
-			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
-			chartArea: {
-				width: '90%'
-			},
-			vAxis : {
-				viewWindowMode:'explicit',
-				viewWindow:{
-                	max:maximo_cuestionario,
-                	min:0
-              }
-		   },
-		}
-	});
-
-	var control = new google.visualization.ControlWrapper({
-		controlType: 'ChartRangeFilter',
-		containerId: 'control_grafica_uno_div',
-		options: {
-			filterColumnIndex: 0,
-			ui: {
-				chartOptions: {
-					height: 50,
-					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
-					chartArea: {
-						width: '90%'
-					}
-				}
-			}
-		}
-	});
-
-	var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
-	dashboard.bind([control], [chart]);
-	dashboard.draw(data);
-
-	function zoomLastDay () {
-		var range = data.getColumnRange(0);
-		control.setState({
-			range: {
-				start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 1),
-				end: range.max
-			}
-		});
-		control.draw();
-	}
-	function zoomLastWeek () {
-		var range = data.getColumnRange(0);
-		control.setState({
-			range: {
-				start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 7),
-				end: range.max
-			}
-		});
-		control.draw();
-	}
-	function zoomLastMonth () {
-		// zoom here sets the month back 1, which can have odd effects when the last month has more days than the previous month
-		// eg: if the last day is March 31, then zooming last month will give a range of March 3 - March 31, as this sets the start date to February 31, which doesn't exist
-		// you can tweak this to make it function differently if you want
-		var range = data.getColumnRange(0);
-		control.setState({
-			range: {
-				start: new Date(range.max.getFullYear(), range.max.getMonth() - 1, range.max.getDate()),
-				end: range.max
-			}
-		});
-		control.draw();
-	}
-
-	var runOnce = google.visualization.events.addListener(dashboard, 'ready', function () {
-		google.visualization.events.removeListener(runOnce);
-
-		if (document.addEventListener) {
-			document.querySelector('#lastDay').addEventListener('click', zoomLastDay);
-			document.querySelector('#lastWeek').addEventListener('click', zoomLastWeek);
-			document.querySelector('#lastMonth').addEventListener('click', zoomLastMonth);
-		}
-		else if (document.attachEvent) {
-			document.querySelector('#lastDay').attachEvent('onclick', zoomLastDay);
-			document.querySelector('#lastWeek').attachEvent('onclick', zoomLastWeek);
-			document.querySelector('#lastMonth').attachEvent('onclick', zoomLastMonth);
-		}
-		else {
-			document.querySelector('#lastDay').onclick = zoomLastDay;
-			document.querySelector('#lastWeek').onclick = zoomLastWeek;
-			document.querySelector('#lastMonth').onclick = zoomLastMonth;
-		}
-	});
-},
-
-//==============================================================================
-//   Grafica DOS
-//==============================================================================
-grafica_dos : function(dataTable,vector) {
-    var paila = dataTable;
-	var preguntaSelecionada = $pre_g2.val() || [];
-    var data2 = new google.visualization.DataTable();
-	data2.addColumn('string','Area');
-
-	for (var i = 0; i < vector.length; i++) {
-		data2.addColumn('number',vector[i] );
-	}
-
-	data2.addRows(dataTable);
-	var altura = 260;
-	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
-
-	var options = {   height: altura, };
-	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
-	chart.draw(data2, options);
-},
-
-dataTotal : function(){
-
-	    var preguntaSelecionada =  $pre_g2.val() || [],
-		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g2.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g2.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g2.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g2.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g2.val() || [],{% endif %}
-		regionales_seleccionadas = $reg_g2.val() || [],
-		ciudades_seleccionadas = $ciu_g2.val() || [],
-		areas_seleccionadas = $are_g2.val() || [],
-		cargos_seleccionados = $car_g2.val() || [];
-
-		var matriz_g2 = [];
-
-		for (var j = 0; j <sintaxis.length; j++){
-			 if(sintaxis[j][0] == preguntaSelecionada){
-				 var vectorRespuestas = sintaxis[j][1];
-				 var longitudRespuesta = vectorRespuestas.length;
-			 }
-		}
-
-		var cerosRespuestas = []
-		for(var k=0;k<longitudRespuesta;k++){
-			cerosRespuestas.push(0);
-		}
-
-		var matrizIntegral = []
-		for(var m=0;m<areas_seleccionadas.length;m++){
-
-			var vectorMatrizIntegral = [areas_seleccionadas[m]];
-
-			matrizIntegral.push(vectorMatrizIntegral.concat(cerosRespuestas));
-
-			for(var l=0;l<fechas.length;l++){
-			   var a = [areas_seleccionadas[m],fechas[l].getTime()]
-			   matriz_g2.push(a.concat(cerosRespuestas));
-			}
-		}
-
-
-		for(var k=0;k<Datos.length;k++){
-			if(contenido(Datos[k][5],areas_seleccionadas)
-			   && Datos[k][15]==preguntaSelecionada
-			   && contenido(Datos[k][3],regionales_seleccionadas)
-			   && contenido(Datos[k][4],ciudades_seleccionadas)
-			   && contenido(Datos[k][6],cargos_seleccionados)
-			   {%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-				   && contenido(Datos[k][9],opcional1_seleccionadas)
-			   {% endif %}
-			   {%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-				   && contenido(Datos[k][10],opcional2_seleccionadas)
-			   {% endif %}
-			   {%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-				   && contenido(Datos[k][11],opcional3_seleccionadas)
-			   {% endif %}
-			   {%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-				   && contenido(Datos[k][12],opcional4_seleccionadas)
-			   {% endif %}
-			   {%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-				   && contenido(Datos[k][13],opcional5_seleccionadas)
-			   {% endif %}
-			){
-				var numFila = 0;
-				while(numFila<matriz_g2.length && (matriz_g2[numFila][0]!=Datos[k][5] || matriz_g2[numFila][1] != Datos[k][8].getTime() ) ){  //************************************
-					numFila += 1;
-				}
-
-				var respuestas = []
-				for(z=0;z<Datos[k][7].length;z++){
-					var indice = vectorRespuestas.indexOf(Datos[k][7][z]);
-					respuestas.push(indice);
-				}
-
-				if(numFila<matriz_g2.length){
-					for(x=0;x<respuestas.length;x++){
-						var ind = respuestas[x] + 2;
-						matriz_g2[numFila][ind] += 1;
-					}
-				}
-			}
-		}
-        return [matriz_g2,vectorRespuestas,matrizIntegral,fechas]
-},
-//==============================================================================
-//   Grafica TRES
-//==============================================================================
-grafica_tres: function(){
-
-	// cacheamos las seleccionadas
-	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
-		preguntas_seleccionadas = $pre_g3.val() || [],
-		regionales_seleccionadas = $reg_g3.val() || [],
-		ciudades_seleccionadas = $ciu_g3.val() || [],
-		areas_seleccionadas = $are_g3.val() || [],
-		cargos_seleccionados = $car_g3.val() || [];
-
-	// inicializamos las respuestas en la data table
-	var v = document.getElementById("variables_g3"),
-		variable_seleccionada = v.options[v.selectedIndex].value,
-		p = $('#preguntas_g3 option'),
-		respuestas_seleccionadas_textos = [], preguntas_control=[];
-
-	// Obtenemos las posibles respuestas de la encuesta
-	for (var i = 0; i < Cuestionario.length; i++) {
-		if( Cuestionario[i][0] == variable_seleccionada ){
-			for (var j = 0; j < p.length; j++) {
-				if( Cuestionario[i][1][p[j].value] && p[j].selected && ( !contenido( p[j].value, preguntas_control ) ) ){
-					for ( var key in Cuestionario[i][1][p[j].value] ) {
-					  if ( Cuestionario[i][1][p[j].value].hasOwnProperty(key) && !contenido(key,respuestas_seleccionadas_textos) ) {
-					    respuestas_seleccionadas_textos.push(key);
-					  }
-					}
-					preguntas_control.push( p[j].value )
-				}
-			}
-		}
-	}
-
-	// inicializamos la date tables
-	var data3 = new google.visualization.DataTable();
-	data3.addColumn('date', 'Fecha');
-	for (var i = 0; i < respuestas_seleccionadas_textos.length; i++) {
-		data3.addColumn('number',respuestas_seleccionadas_textos[i] );
-	}
-
-	// llenamos de ceros la date tables
-	var matriz_g3 = [];
-	for (var i = 0; i < fechas.length; i++) {
-		matriz_g3.push([ fechas[i] ]);
-		for (var j = 0; j < respuestas_seleccionadas_textos.length; j++) {
-			matriz_g3[i].push(0);
-		}
-	}
-
-	// contamos
-	for (var i = 0; i < matriz_g3.length; i++) {
-		for (var k = 0; k < respuestas_seleccionadas_textos.length; k++) {
-			for (var j = 0; j < Datos.length; j++) {
-				if( matriz_g3[i][0].getTime() === Datos[j][8].getTime()
-				&& variable_seleccionada == Datos[j][14]
-				&& contenido(Datos[j][15],preguntas_seleccionadas)
-				&& contenido(Datos[j][3],regionales_seleccionadas)
-				&& contenido(Datos[j][4],ciudades_seleccionadas)
-				&& contenido(Datos[j][5],areas_seleccionadas)
-				&& contenido(Datos[j][6],cargos_seleccionados)
-				{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-					&& contenido(Datos[j][9],opcional1_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-					&& contenido(Datos[j][10],opcional2_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-					&& contenido(Datos[j][11],opcional3_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-					&& contenido(Datos[j][12],opcional4_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-					&& contenido(Datos[j][13],opcional5_seleccionadas)
-				{% endif %}
-				){
-					for (var l = 0; l < Datos[j][7].length; l++) {
-						if( Datos[j][7][l] == respuestas_seleccionadas_textos[k] ){
-							matriz_g3[i][k+1] += 1;
-						}
-					}
-				}
-			}
-		}
-	}
-	matriz_g3 = limpiar_filas_nulas(matriz_g3);
-
-	data3.addRows( matriz_g3 );
-
-	var altura = 200;
-	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
-
-	var chart3 = new google.visualization.ChartWrapper({
-		chartType: 'AreaChart',
-		containerId: 'grafica_tres_div',
-		options: {
-			isStacked: 'relative',
-			height: altura,
-			legend: {position: 'top', maxLines: 3},
-			vAxis: {
-				minValue: 0,
-				ticks: [0, .25, .5, .75, 1]
-			},
-			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
-			chartArea: {
-				width: '90%'
-			}
-		}
-	});
-
-	var control3 = new google.visualization.ControlWrapper({
-		controlType: 'ChartRangeFilter',
-		containerId: 'control_grafica_tres_div',
-		options: {
-			filterColumnIndex: 0,
-			ui: {
-				chartOptions: {
-					height: 100,
-					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
-					chartArea: {
-						width: '90%'
-					}
-				}
-			}
-		}
-	});
-	var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
-	dashboard.bind([control3], [chart3]);
-	dashboard.draw(data3);
-},
 }
 
 //==============================================================================
 //   Control de mision
 //==============================================================================
 $(document).ready(function() {
+
 	Elementos.inicio();
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+	Elementos.pie();
 
-	var variables = Elementos.dataTotal();
-	var esperanza =  integrarDatos(new Date(2016,0,1).getTime(),new Date(2016,11,31).getTime(),variables[0],variables[2],variables[1]);
-	google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
-
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_tres});
-
-	$('.panel-body').fadeTo('slow',100);
-
-	$('.filtros_uno').change(function(){		Elementos.grafica_uno();	});
-
-	var tiemposInicio_0 = tiemposIniciales(variables);
-	$('.filtros_dos').change(function(){
-		var variables = Elementos.dataTotal();
-		var esperanza =  integrarDatos(tiemposInicio_0[2].getTime(),tiemposInicio_0[3].getTime(),variables[0],variables[2],variables[1]);
-		google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
-	});
-	$('.filtros_tres').change(function(){		Elementos.grafica_tres();	});
-
-	$(window).resize(function() {
-		Elementos.grafica_uno();
-		Elementos.grafica_dos();
-		Elementos.grafica_tres();
-	});
-
+	$('.filtros').change(function(){ Elementos.circulo() });
 
 	$("#slider").dateRangeSlider({
-	    bounds:{
-	      min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
-	      max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
-	    },
-	    defaultValues:{
-	      min: tiemposInicio_0[2],
-	      max: tiemposInicio_0[3]
-	    }
+		bounds:{
+		  min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
+		  max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
+		},
+		defaultValues:{
+		  min: fec_minima,
+		  max: fec_maxima,
+		}
 	});
 
 	$('#slider').on('valuesChanged',function(e,data){
-		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		var espacio = Elementos.dataTotal();
-		Elementos.grafica_dos(integrarDatos(tiempoMin,tiempoMax,espacio[0],espacio[2],espacio[1]),espacio[1]);
-	})
+		Elementos.circulo();
+	});
+	$("#pro").dataTable({"columns" : [{className : "center"}, {className : "center"}, {className : "center"}, {className : "center"}],language : {sProcessing : "Procesando...",sLengthMenu : "Mostrar _MENU_ proyectos",sZeroRecords : "No se encontraron resultados",sEmptyTable : "No posees ningún proyecto creado o asociado.",sInfo : "Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty : "Proyectos del 0 al 0 de un total de 0",sInfoFiltered : "(filtrado de un total de _MAX_ proyectos)",sInfoPostFix : "",sSearch : "Buscar",sUrl : "",sInfoThousands : ",",sLoadingRecords : "Cargando...",oPaginate : {sFirst : "Primero",sLast : "Último",sNext : "Siguiente",sPrevious : "Anterior"},oAria : {sSortAscending : ": Activar para ordenar la columna de manera ascendente",sSortDescending : ": Activar para ordenar la columna de manera descendente"}}});
 });
 </script>
 {%endblock%}
