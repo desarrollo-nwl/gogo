@@ -29,11 +29,11 @@
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Frecuencia mínima:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required title="Este campo es obligatorio" type="number" name="dMin"  class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamin|escape}}">
+						<input required title="Este campo es obligatorio" type="number" name="dMin" min="1" class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamin|escape}}">
 					</div>
 					<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Frecuencia máxima:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
-						<input required title="Este campo es obligatorio" type="number" name="dMax"  class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamax|escape}}">
+						<input required title="Este campo es obligatorio" type="number" name="dMax"  min="2" class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamax|escape}}">
 					</div>
 				</div>
 				{%ifnotequal Proyecto.tipo "Completa"%}<div class="form-group">

@@ -195,7 +195,7 @@ def recuperar(request):
 				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				msg["subject"]=  'Cambio de clave.'
 				msg['From'] = email.utils.formataddr(('Goanalytics', 'Team@goanalytics.com'))
-				url = 'http://www.changelabtols.com/recuperar/'+key
+				url = 'http://www.changelabtools.com/recuperar/'+key
 				html = recuperar_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
@@ -778,7 +778,7 @@ def usuarioreenviar(request,id_usuario):
 					msg=MIMEMultipart()
 					msg["subject"]=  'Registro de cuenta.'
 					msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-					url = 'http://www.changelabtols.com/activar/'+key
+					url = 'http://www.changelabtools.com/activar/'+key
 					nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 					html = crear_cuenta(nombre,url)
 					mensaje = MIMEText(html,"html")
@@ -938,7 +938,7 @@ def usuarionuevo(request):
 				msg=MIMEMultipart()
 				msg["subject"]=  'Registro de cuenta.'
 				msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-				url = 'http://www.changelabtols.com/activar/'+key
+				url = 'http://www.changelabtools.com/activar/'+key
 				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				html = crear_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
