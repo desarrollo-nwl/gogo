@@ -31,7 +31,7 @@ def participacion(request):
 					'colaborador','colaborador__colaboradoresdatos'
 				)
 		return render_to_response('participacion.html',{
-			'Activar':'AnalisisResultados','activar':'Focalizados',
+			'Activar':'AnalisisResultados','activar':'Participacion',
 			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos
 		}, context_instance=RequestContext(request))
 	else:

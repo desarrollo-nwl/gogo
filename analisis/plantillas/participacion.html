@@ -2,49 +2,45 @@
 {% block title %} A. Participación{% endblock %}
 {% block head2 %}
 <link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
-<style media="screen">.multiselect{margin-left: -15px !important;}</style>
+<style media="screen">li{list-style-type:none}.multiselect{margin-left: -15px !important;}span.strong{margin-left: -13px}</style>
 {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
 <li><a href="#"><i><span>/ Análisis</span></i></a></li>
-<li><a href="#"><i><span>/ Focalizado</span></i></a></li>
+<li><a href="#"><i><span>/ Participación</span></i></a></li>
 {%endblock%}
 {% block contenido2 %}
-<div class="row m-t-xs mt20 mr5">
-	<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<!-- .col-md-3 -->
-			<div class="panel panel-info tile">
-				<!-- Start .panel -->
-				<div class="panel-heading">
-					<h4 class="panel-title">Finaliza en:</h4>
-				</div>
-				<div class="panel-body pt0">
-					<div class="progressbar-stats-1">
-						<div class="stats">
-							<div class="stats-number" data-from="0" data-to="50">
-								{{ Proyecto.proyectosdatos.ffin | timeuntil }}
-							</div>
+<div class="row m-t-xs mt20 mr5 ml5">
+	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+		<div class="panel panel-info tile">
+			<div class="panel-heading">
+				<h4 class="panel-title">Finaliza en:</h4>
+			</div>
+			<div class="panel-body pt0">
+				<div class="progressbar-stats-1">
+					<div class="stats">
+						<div class="stats-number" data-from="0" data-to="50">
+							{{ Proyecto.proyectosdatos.ffin | timeuntil }}
 						</div>
-						<div class="progress progress-bar-sm">
-							<div class="progress-bar progress-bar-success" style="width: {{Proyecto.total  |floatformat:"0" }}%;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{Proyecto.total  |floatformat:"0" }}" role="progressbar"></div>
-						</div>
-						<div class="comparison mt10">
-							<p class="mb0">
-								<i class="fa fa-arrow-circle-o-up s20 mr5 pull-left"></i> Llevas un {{Proyecto.total  |floatformat:"-2" }}% de avance.
-							</p>
-						</div>
+					</div>
+					<div class="progress progress-bar-sm">
+						<div class="progress-bar progress-bar-success" style="width: {{Proyecto.total | floatformat:"0" }}%;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{Proyecto.total  |floatformat:"0" }}" role="progressbar"></div>
+					</div>
+					<div class="comparison mt10">
+						<p class="mb0">
+							<i class="fa fa-arrow-circle-o-up s20 mr5 pull-left"></i> Llevas un {{Proyecto.total  |floatformat:"-2" }}% de avance.
+						</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<div class="panel panel-default tile btrr0 bbrr0" data-mh="sales-locations">
-				<div class="panel-heading">
-					<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Ficha técnica </h4>
-				</div>
-				<div class="panel-body pt0">
+		<div class="panel panel-default tile btrr0 bbrr0" data-mh="sales-locations">
+			<div class="panel-heading">
+				<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Ficha técnica </h4>
+			</div>
+			<div class="panel-body pt0">
+				<div class="container-fluid">
 					<ul class="list-unstyled mb0">
 						<li class="mb5 pb5 bbdashed">
 							<span class="strong">Número de variables:</span> <div style="display:inline" class="color-red">{{ Proyecto.max_variables }} </div>
@@ -62,37 +58,39 @@
 							<span class="strong">Respuestas completadas:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_respuestas }} </div>
 						</li>
 						<li class="mb5 pb5 bbdashed">
-							<span class="strong">Estado:</span> <div style="display:inline" class="color-red">{% if Proyecto.estado %}Activo{% else %}Inactivo{% endif %} </div>
+							<span class="strong">Estado:</span> <div style="display:inline" class="color-red">{% if Proyecto.activo %}Activo{% else %}Inactivo{% endif %} </div>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</div>
-
 	</div>
 
-	<div class="col-lg-9">
+	<div class="col-lg-9 col-md-8 col-sm-8 col-xs-12">
 		<div class="panel panel-default toggle">
 			<div class="panel-heading">
 				<h4 class="panel-title">Gráfica de participación</h4>
 			</div>
 			<div class="panel-body">
-				<div class="col-lg-8">
-
+				<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+					{%if Datos.0.proyecto.proyectosdatos.opcional1 %}<br>{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional2 %}<br>{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional3 %}<br>{% endif %}
 					<div class="text-center mt20">
 						<div id="customer-exp" class="custom-progressbar blue" style="width:300px;height:300px;">
 						<div class="pie-charts green-pie">
-							<div class="pie easyPieChart" data-percent="{{ Proyecto.total | floatformat:"-2" }}" style="width: 300px; height: 300px; line-height: 300px;">
+							<div id="descripcion_pie" class="pie easyPieChart" data-percent="0" style="width: 300px; height: 300px; line-height: 300px;">
 							</div>
 						</div>
 							<div id="descripcion" class="description m" style="font-size:50px;margin-top:-30px"> 100%</div>
 
 						</div>
 					</div>
-					<br>
-					<div id="slider"></div>
+					{%if Datos.0.proyecto.proyectosdatos.opcional4 %}<br>{% endif %}
+					{%if Datos.0.proyecto.proyectosdatos.opcional5 %}<br>{% endif %}
+					<div class="m" id="slider"></div><br><br>
 				</div>
-				<div class="col-lg-4 m-t-xs">
+				<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 					<div class="panel panel-default toggle">
 						<!-- Inicio .panel -->
 						<div class="panel-heading">
@@ -100,7 +98,7 @@
 						</div>
 						<div class="panel-body">
 							<ul class="list-unstyled mb0">
-								<li class="mb5 pb5 bbdashed">
+								<li class="pb5 bbdashed">
 									<span class="strong pr15">Regionales</span>
 									<select id="regionales" class="filtro" multiple></select>
 								</li>
@@ -167,8 +165,8 @@
 	</div>
 </div>
 
-<div class="row">
-	<div class="col-lg-12">
+<div class="row mr5 ml5">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 		<!-- col-lg-12 start here -->
 		<div class="panel panel-default plain toggle panelMove panelClose panelRefresh">
 			<!-- Start .panel -->
@@ -180,44 +178,12 @@
 					<thead>
 						<tr>
 							<th class="per35">Area / Regional</th>
-							<th class="per15"># Personas Encuestadas</th>
+							<th class="per15">Personas Encuestadas</th>
+							<th class="per15">Personas contestaron</th>
 							<th class="per15">Avance Actual</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>Bogotá</td>
-							<td>100</td>
-							<td>
-							<div class="progress animated-bar">
-								<div class="progress-bar progress-bar-success" role="progressbar" data-transitiongoal="40"></div>
-							</div></td>
-						</tr>
-						<tr>
-							<td>Medellín</td>
-							<td>50</td>
-							<td>
-							<div class="progress animated-bar">
-								<div class="progress-bar progress-bar-danger" role="progressbar" data-transitiongoal="80"></div>
-							</div></td>
-						</tr>
-						<tr>
-							<td>Cali</td>
-							<td>60</td>
-							<td>
-							<div class="progress animated-bar">
-								<div class="progress-bar progress-bar-warning" role="progressbar" data-transitiongoal="67"></div>
-							</div></td>
-						</tr>
-						<tr>
-							<td>Barranquilla</td>
-							<td>30</td>
-							<td>
-							<div class="progress animated-bar">
-								<div class="progress-bar progress-bar-info" role="progressbar" data-transitiongoal="7"></div>
-							</div></td>
-						</tr>
-					</tbody>
+					<tbody id="tabla"></tbody>
 				</table>
 			</div>
 		</div>
@@ -241,21 +207,8 @@
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
 var Datos = [{%for i in Datos%}
-['{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' ,
-'{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' ,
-'{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' ,
-'{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' ,
-'{{ i.colaborador.colaboradoresdatos.genero | lower | escape }}' ,
-'{{ i.colaborador.colaboradoresdatos.niv_academico | lower | escape }}' ,
-'{{ i.colaborador.colaboradoresdatos.profesion | lower | escape }}' ,
- {%if i.pregunta %}true{% else %}false{%endif%},
- {%if i.fecharespuesta %}new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}){% else %}0{% endif %},
-'{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}',
-'{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}',
-'{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}',
-'{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}',
-'{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',
-],{%endfor%}];
+['{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' ,'{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' ,'{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.genero | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.niv_academico | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.profesion | lower | escape }}' , {%if i.respuesta %}true{% else %}false{%endif%}, {%if i.fecharespuesta %}new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}){% else %}0{% endif %},'{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',],
+{%endfor%}];
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -279,11 +232,13 @@ var limpiar_filas_nulas = function(matriz_datos){
 //   variables GLOBALES
 //==============================================================================
 
-var regionales=[],ciudades=[],areas=[],cargos=[],genero=[],niv_academico=[],profesion=[]
+var regionales=[],ciudades=[],areas=[],cargos=[],genero=[],niv_academico=[],profesion=[],fechas=[],
 	$reg = $('#regionales'), $ciu = $('#ciudades'),
 	$are = $('#areas'), $car = $('#cargos'),
 	$gen = $('#genero'), $niv = $("#niv_academico"),
-	$pro = $('#profesion');
+	$pro = $('#profesion'),$descripcion=$("#descripcion"),
+	$des_pie=$("#descripcion_pie"),$tabla = $("#tabla"),
+	total_areas_personas={},total_regionales_personas={},areas_personas={},regionales_personas={};
 
 	if(Datos) {var fec_minima = Datos[0][8],fec_maxima=Datos[0][8];}
 
@@ -301,7 +256,7 @@ pie: function(){
 	$(".pie").easyPieChart({
         barColor: '#29b6d8',
         borderColor: '#29b6d8',
-        trackColor: '#a9e2c6',
+        trackColor: '#b4cbd1',
         scaleColor: false,
         lineCap: 'butt',
         lineWidth: 40,
@@ -317,46 +272,47 @@ inicio : function(){
 		if( Datos[i][8] - fec_minima < 0 ) fec_minima = Datos[i][8];
 		if( Datos[i][8] - fec_maxima > 0 ) fec_maxima = Datos[i][8];
 
-		if (!contenido(Datos[i][3],regionales)){
-			regionales.push(Datos[i][3]);
+		if (!contenido(Datos[i][0],regionales)){
+			regionales.push(Datos[i][0]);
 			$reg.append($('<option>', {
+				value: Datos[i][0],
+				text : Datos[i][0]
+			}));
+		}
+		if (!contenido(Datos[i][1],ciudades)){
+			ciudades.push(Datos[i][1]);
+			$ciu.append($('<option>', {
+				value: Datos[i][1],
+				text : Datos[i][1]
+			}));
+		}
+		if (!contenido(Datos[i][2],areas)){
+			areas.push(Datos[i][2]);
+			$are.append($('<option>', {
+				value: Datos[i][2],
+				text : Datos[i][2]
+			}));
+		}
+
+		if (!contenido(Datos[i][3],cargos)){
+			cargos.push(Datos[i][3]);
+			$car.append($('<option>', {
 				value: Datos[i][3],
 				text : Datos[i][3]
 			}));
 		}
-		if (!contenido(Datos[i][4],ciudades)){
-			ciudades.push(Datos[i][4]);
-			$ciu.append($('<option>', {
+		if (!contenido(Datos[i][4],genero)){
+			genero.push(Datos[i][4]);
+			$gen.append($('<option>', {
 				value: Datos[i][4],
 				text : Datos[i][4]
 			}));
 		}
-		if (!contenido(Datos[i][5],areas)){
-			areas.push(Datos[i][5]);
-			$are.append($('<option>', {
+		if (!contenido(Datos[i][5],niv_academico)){
+			niv_academico.push(Datos[i][5]);
+			$niv.append($('<option>', {
 				value: Datos[i][5],
 				text : Datos[i][5]
-			}));
-		}
-		if (!contenido(Datos[i][6],cargos)){
-			cargos.push(Datos[i][6]);
-			$car.append($('<option>', {
-				value: Datos[i][6],
-				text : Datos[i][6]
-			}));
-		}
-		if (!contenido(Datos[i][6],genero)){
-			genero.push(Datos[i][6]);
-			$gen.append($('<option>', {
-				value: Datos[i][6],
-				text : Datos[i][6]
-			}));
-		}
-		if (!contenido(Datos[i][6],niv_academico)){
-			niv_academico.push(Datos[i][6]);
-			$niv.append($('<option>', {
-				value: Datos[i][6],
-				text : Datos[i][6]
 			}));
 		}
 		if (!contenido(Datos[i][6],profesion)){
@@ -412,17 +368,97 @@ inicio : function(){
 			}));
 		}
 		{% endif %}
-
 	}
 
 	//  UPDATE Selects
 	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '100px',dropRight: true,disableIfEmpty: true	});
 	$('.filtro').multiselect('selectAll', false);
 	$('.filtro').multiselect('updateButtonText');
+
+	// inicializamos los vectores
+	for (var i = 0; i < regionales.length; i++) {
+		total_regionales_personas[regionales[i]] = 0;
+		regionales_personas[regionales[i]] = 0;
+	}
+	for (var i = 0; i <  areas.length; i++) {
+		total_areas_personas[areas[i]] = 0;
+		areas_personas[areas[i]] = 0;
+	}
+
+	for (var i = 0; i < Datos.length; i++) {
+		if(total_regionales_personas[ Datos[i][0]] != undefined ) total_regionales_personas[ Datos[i][0]]++;
+		if(total_regionales_personas[ Datos[i][0]] != undefined && Datos[i][7]) regionales_personas[ Datos[i][0]]++;
+		if(total_areas_personas[ Datos[i][2]] != undefined ) total_areas_personas[ Datos[i][2]]++;
+		if(total_areas_personas[ Datos[i][2]] != undefined && Datos[i][7]) areas_personas[ Datos[i][2]]++;
+	}
+
+	var cadena_append ='';
+	for (var variable in regionales_personas) {
+		if (regionales_personas.hasOwnProperty(variable) && total_regionales_personas[variable]) {
+			cadena_append += '<tr><td>Regional '+variable+'</td><td>'+total_regionales_personas[variable]+'</td><td>'+regionales_personas[variable]+'</td><td><div class="pull-middle progress active" style="width: 250px;margin: 0 auto;"><div title="'+100*regionales_personas[variable]/total_regionales_personas[variable]+'%" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'+100*regionales_personas[variable]/total_regionales_personas[variable]+'" aria-valuemax="100" aria-valuemin="0" style="width:'+100*regionales_personas[variable]/total_regionales_personas[variable]+'%"></div></div></td></tr>';
+		}
+	}
+	for (var variable in areas_personas) {
+		if (areas_personas.hasOwnProperty(variable) && total_areas_personas[variable]) {
+			cadena_append += '<tr><td>Área '+variable+'</td><td>'+total_areas_personas[variable]+'</td><td>'+areas_personas[variable]+'</td><td><div class="pull-middle progress active" style="width: 250px;margin: 0 auto;"><div title="'+100*areas_personas[variable]/total_areas_personas[variable]+'%" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="'+100*areas_personas[variable]/total_areas_personas[variable]+'" aria-valuemax="100" aria-valuemin="0" style="width:'+100*areas_personas[variable]/total_areas_personas[variable]+'%"></div></div></td></tr>';
+		}
+	}
+	$tabla.append(cadena_append);
 },
 
-circulo: function(){
+circulo: function(min,max){
 
+	// cacheamos las seleccionadas
+	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5.val() || [],{% endif %}
+		regionales_seleccionadas = $reg.val() || [],
+		ciudades_seleccionadas = $ciu.val() || [],
+		areas_seleccionadas = $are.val() || [],
+		cargos_seleccionados = $car.val() || [],
+		generos_seleccionados = $gen.val() || [],
+		niv_academico_seleccionados = $niv.val() || [],
+		profesiones_seleccionadas = $pro.val() || [],
+		participante = 0, todos = 0;
+
+	for (var j = 0; j < Datos.length; j++) {
+		if(contenido(Datos[j][0],regionales_seleccionadas)
+		&& contenido(Datos[j][1],ciudades_seleccionadas)
+		&& contenido(Datos[j][2],areas_seleccionadas)
+		&& contenido(Datos[j][3],cargos_seleccionados)
+		&& contenido(Datos[j][4],generos_seleccionados)
+		&& contenido(Datos[j][5],niv_academico_seleccionados)
+		&& contenido(Datos[j][6],profesiones_seleccionadas)
+		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+			&& contenido(Datos[j][9],opcional1_seleccionadas)
+		{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+			&& contenido(Datos[j][10],opcional2_seleccionadas)
+		{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+			&& contenido(Datos[j][11],opcional3_seleccionadas)
+		{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+			&& contenido(Datos[j][12],opcional4_seleccionadas)
+		{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+			&& contenido(Datos[j][13],opcional5_seleccionadas)
+		{% endif %}
+		){
+			if( Datos[j][7] && Datos[j][8] >= min && Datos[j][8] <= max ) participante++;
+			todos++;
+		}
+	}
+
+	if(todos) var participacion = +(Math.round( (100*participante)/todos + "e+2")  + "e-2");
+	else var participacion = 0;
+	$des_pie.prop('data-percent',participacion);
+	this.pie()
+	$('.pie').data('easyPieChart').update(participacion);
+	participacion += " %";
+	$descripcion.html(participacion);
 },
 
 }
@@ -433,9 +469,6 @@ circulo: function(){
 $(document).ready(function() {
 
 	Elementos.inicio();
-	Elementos.pie();
-
-	$('.filtros').change(function(){ Elementos.circulo() });
 
 	$("#slider").dateRangeSlider({
 		bounds:{
@@ -449,8 +482,13 @@ $(document).ready(function() {
 	});
 
 	$('#slider').on('valuesChanged',function(e,data){
-		Elementos.circulo();
+		Elementos.circulo(data.values.min,data.values.max);
 	});
+
+	$('.filtro').change(function(){
+		Elementos.circulo($("#slider").dateRangeSlider("min"),$("#slider").dateRangeSlider("max"))
+	});
+
 	$("#pro").dataTable({"columns" : [{className : "center"}, {className : "center"}, {className : "center"}, {className : "center"}],language : {sProcessing : "Procesando...",sLengthMenu : "Mostrar _MENU_ proyectos",sZeroRecords : "No se encontraron resultados",sEmptyTable : "No posees ningún proyecto creado o asociado.",sInfo : "Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty : "Proyectos del 0 al 0 de un total de 0",sInfoFiltered : "(filtrado de un total de _MAX_ proyectos)",sInfoPostFix : "",sSearch : "Buscar",sUrl : "",sInfoThousands : ",",sLoadingRecords : "Cargando...",oPaginate : {sFirst : "Primero",sLast : "Último",sNext : "Siguiente",sPrevious : "Anterior"},oAria : {sSortAscending : ": Activar para ordenar la columna de manera ascendente",sSortDescending : ": Activar para ordenar la columna de manera descendente"}}});
 });
 </script>
