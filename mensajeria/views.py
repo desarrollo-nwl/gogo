@@ -917,6 +917,8 @@ def importarespuestas_preguntas(request):
 
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
+					nom_log = request.user.first_name+' '+request.user.last_name
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
 					proyecto.save()
 					cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):
