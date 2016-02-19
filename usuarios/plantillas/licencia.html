@@ -11,7 +11,20 @@
 			<h4 class="panel-title"> Información de la licencia:</h4>
 		</div>
 		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
-			<i class="fa fa-twitter"></i>
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-xs-5 col-sm-4 control-label required">Proyectos Totales de la licencia:</label>
+					<div class="col-lg-4 col-md-6 col-xs-7 col-sm-6">
+						<input  title="Proyectos totales de la licencia" type="text" readonly class="form-control" Value="{{ request.user.permisos.max_proyectos }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-3 col-md-3 col-xs-5 col-sm-4 control-label required">Total de proyectos usados:</label>
+					<div class="col-lg-4 col-md-6 col-xs-7 col-sm-6">
+						<input  title="Número total de proyectos usados (activados) como consulto" type="text" readonly class="form-control" Value="{{ request.user.permisos.max_pro_usados }}">
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

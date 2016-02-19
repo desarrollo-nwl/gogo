@@ -148,7 +148,7 @@ def metricas(request):
 		participantes = Colaboradores.objects.filter(proyecto = proyecto
 						).select_related('colaboradoresdatos',
 						'colaboradoresmetricas')
-		average = Colaboradores.objects.filter(proyecto=proyecto).aggregate(Avg('propension'))
+		average = Colaboradores.objects.filter(proyecto=proyecto).exclude(propension=-1).aggregate(Avg('propension'))
 		return render_to_response('metricas.html',{
 		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
 		'Participantes':participantes,'Average':average
