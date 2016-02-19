@@ -236,6 +236,7 @@ def archivo(request):
 	import xlwt
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
+	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
@@ -250,32 +251,32 @@ def archivo(request):
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet("GoAnalytics")
 		datos = proyecto.proyectosdatos
-		ws.write(0,0,u"Nombre")
-		ws.write(0,1,u"Apellido")
-		ws.write(0,2,u"Email")
-		ws.write(0,3,u"Móvil")
-		ws.write(0,4,u"Género")
-		ws.write(0,5,u"Área")
-		ws.write(0,6,u"Cargo")
-		ws.write(0,7,u"Regional")
-		ws.write(0,8,u"Ciudad")
-		ws.write(0,9,u"Nivel académico")
-		ws.write(0,10,u"Profesión")
-		ws.write(0,11,u"Fecha de nacimiento dd/mm/yyyy",date_format)
-		ws.write(0,12,u"Fecha de ingreso dd/mm/yyyy",date_format)
+		ws.write(0,0,u"Nombre",tit_format)
+		ws.write(0,1,u"Apellido",tit_format)
+		ws.write(0,2,u"Email",tit_format)
+		ws.write(0,3,u"Móvil",tit_format)
+		ws.write(0,4,u"Género",tit_format)
+		ws.write(0,5,u"Área",tit_format)
+		ws.write(0,6,u"Cargo",tit_format)
+		ws.write(0,7,u"Regional",tit_format)
+		ws.write(0,8,u"Ciudad",tit_format)
+		ws.write(0,9,u"Nivel académico",tit_format)
+		ws.write(0,10,u"Profesión",tit_format)
+		ws.write(0,11,u"Fecha de nacimiento dd/mm/yyyy",tit_format)
+		ws.write(0,12,u"Fecha de ingreso dd/mm/yyyy",tit_format)
 		for i in xrange(1,10000):
 			ws.write(i,11,"",date_format)
 			ws.write(i,12,"",date_format)
 		if(datos.opcional1):
-			ws.write(0,13,datos.opcional1)
+			ws.write(0,13,datos.opcional1,tit_format)
 		if(datos.opcional2):
-			ws.write(0,14,datos.opcional2)
+			ws.write(0,14,datos.opcional2,tit_format)
 		if(datos.opcional3):
-			ws.write(0,15,datos.opcional3)
+			ws.write(0,15,datos.opcional3,tit_format)
 		if(datos.opcional4):
-			ws.write(0,16,datos.opcional4)
+			ws.write(0,16,datos.opcional4,tit_format)
 		if(datos.opcional5):
-			ws.write(0,17,datos.opcional5)
+			ws.write(0,17,datos.opcional5,tit_format)
 		wb.save(response)
 		return response
 
