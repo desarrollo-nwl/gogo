@@ -43,19 +43,22 @@
 				<div class="container-fluid">
 					<ul class="list-unstyled mb0">
 						<li class="mb5 pb5 bbdashed">
-							<span class="strong">Número de variables:</span> <div style="display:inline" class="color-red">{{ Proyecto.max_variables }} </div>
+							<span class="strong">Número de variables:</span> <div style="display:inline" class="color-red"> {{ Proyecto.max_variables }} </div>
 						</li>
 						<li class="mb5 pb5 bbdashed">
-							<span class="strong">Número de preguntas:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_preguntas }} </div>
+							<span class="strong">Número de preguntas:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_preguntas }} </div>
 						</li>
 						<li class="mb5 pb5 bbdashed">
-							<span class="strong">Número de participantes:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_participantes }} </div>
+							<span class="strong">Número de participantes:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_participantes }} </div>
 						</li>
 						<li class="mb5 pb5 bbdashed">
-							<span class="strong">Respuestas posibles:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_aresponder }} </div>
+							<span class="strong">Respuestas posibles:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_aresponder }} </div>
 						</li>
 						<li class="mb5 pb5 bbdashed">
-							<span class="strong">Respuestas completadas:</span> <div style="display:inline" class="color-red">{{ Proyecto.tot_respuestas }} </div>
+							<span class="strong">Respuestas completadas:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_respuestas }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Finalizados:</span> <div style="display:inline" class="color-red"> {{ Finalizados }} Colaboradores.</div>
 						</li>
 						<li class="mb5 pb5 bbdashed">
 							<span class="strong">Estado:</span> <div style="display:inline" class="color-red">{% if Proyecto.activo %}Activo{% else %}Inactivo{% endif %} </div>

@@ -145,7 +145,7 @@ def metricas(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.interna:
-		participantes = Colaboradores.objects.filter(proyecto = proyecto
+		participantes = Colaboradores.objects.filter(proyecto = proyecto, estado = True
 						).select_related('colaboradoresdatos',
 						'colaboradoresmetricas')
 		average = Colaboradores.objects.filter(proyecto=proyecto).exclude(propension=-1).aggregate(Avg('propension'))

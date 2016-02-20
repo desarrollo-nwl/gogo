@@ -30,9 +30,13 @@ def participacion(request):
 					'proyecto__proyectosdatos',
 					'colaborador','colaborador__colaboradoresdatos'
 				)
+		if( proyecto.tot_preguntas and proyecto.tot_respuestas ):
+			finalizados = proyecto.tot_respuestas/proyecto.tot_preguntas
+		else:
+			finalizados = 0
 		return render_to_response('participacion.html',{
 			'Activar':'AnalisisResultados','activar':'Participacion',
-			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos
+			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Finalizados':finalizados
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
