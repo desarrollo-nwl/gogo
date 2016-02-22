@@ -35,10 +35,6 @@
 					<div class="panel-body">
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25" >Variables</span>
-								<select id="variables_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">Regionales</span>
 								<select id="regionales_g1" class="filtro filtros_uno" multiple></select>
 							</li>
@@ -265,11 +261,14 @@ var contenido_date = function(a,x){
 	return false;
 }
 var limpiar_filas_nulas = function(matriz_datos){
-	var long_fila = matriz_datos[0].length;
-	for( var i = 1; i < matriz_datos.length; i++ ) {
+	var long_fila = matriz_datos[0].length, i = 0;
+	while ( i < matriz_datos.length ) {
+		var aux = 0;
 		for (var j = 1; j < long_fila; j++)
-			if (matriz_datos[i][j] == 0 )
-				matriz_datos[i][j] = matriz_datos[i-1][j];
+			aux += matriz_datos[i][j];
+
+		if( aux == 0 ) matriz_datos.splice(i,1);
+		else i++;
 	}
 	return matriz_datos;
 }
@@ -285,12 +284,26 @@ for (var i = 0; i < Cuestionario.length; i++) {
 		}
 	}
 }
-//==============================================================================
+var calculePuntaje = function calculePuntaje(idVariable,idPregunta,respuesta){
+	    var total = 0;
+		for(k=0;k<Cuestionario.length;k++){
+			if(idVariable == Cuestionario[k][0] && Cuestionario[k][1].hasOwnProperty(idPregunta)){
+				for(m in Cuestionario[k][1][idPregunta]){
+					if(contenido(m,respuesta)){
+						total  += Cuestionario[k][1][idPregunta][m]
+					}
+				}
+			}
+		}
+	  return total
+}
+
+//==	============================================================================
 //   variables GLOBALES
 //==============================================================================
 
 var regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[], variables = [], preguntas = [],
-	$var_g1=$('#variables_g1'), $reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
+	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
 	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
 
 {%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
@@ -334,10 +347,6 @@ var Elementos = {
 
 			if (!contenido(Datos[i][14],variables)){
 				variables.push(Datos[i][14]);
-				$var_g1.append($('<option>',{
-					value: Datos[i][14],
-					text: Datos[i][1],
-				}))
 				$var_g3.append($('<option>',{
 					value: Datos[i][14],
 					text: Datos[i][1],
@@ -523,7 +532,6 @@ var Elementos = {
 			{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val() || [],{% endif %}
 			{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val() || [],{% endif %}
 			{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val() || [],{% endif %}
-			variables_seleccionadas = $var_g1.val() || [],
 			regionales_seleccionadas = $reg_g1.val() || [],
 			ciudades_seleccionadas = $ciu_g1.val() || [],
 			areas_seleccionadas = $are_g1.val() || [],
@@ -532,18 +540,17 @@ var Elementos = {
 		// inicializamos las variables de la data table
 		var data = new google.visualization.DataTable();
 		data.addColumn('date', 'Fecha');
-		data.addColumn('number', 'Promedio Medición');
+		data.addColumn('number','Promedio Medición' );
 		var matriz_g1 = [],auxiliar=0;
 
 		// inicializamos la date tables
 		for (var i = 0; i < fechas.length; i++)
-			matriz_g1.push([ fechas[i],0.0 ]);
+			matriz_g1.push([ fechas[i],0 ]);
 
 		// contamos
 		for (var i = 0; i < matriz_g1.length; i++) {
 			for (var j = 0; j < Datos.length; j++) {
-				if( contenido( Datos[j][14], variables_seleccionadas )
-				&& matriz_g1[i][0].getTime() === Datos[j][8].getTime()
+				if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
 				&& Datos[j][16] == "True"
 				&& contenido(Datos[j][3],regionales_seleccionadas)
 				&& contenido(Datos[j][4],ciudades_seleccionadas)
@@ -567,7 +574,7 @@ var Elementos = {
 			){
 					for (var l = 0; l < Cuestionario.length; l++) {
 						for (var m = 0; m < Datos[j][7].length; m++) {
-							if( Cuestionario[l][1][Datos[j][15]] && Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
+							if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] != undefined ){
 								matriz_g1[i][1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
 								auxiliar++;
 							}
@@ -583,6 +590,7 @@ var Elementos = {
 
 		}
 
+
 		matriz_g1 = limpiar_filas_nulas(matriz_g1);
 
 		data.addRows( matriz_g1 );
@@ -593,6 +601,9 @@ var Elementos = {
 		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
+
+	    data.addColumn('date', 'Fecha');
+	    data.addColumn('number', 'Promedio Medición');
 
 		var chart = new google.visualization.ChartWrapper({
 			chartType: 'LineChart',
@@ -695,61 +706,28 @@ var Elementos = {
 	//==============================================================================
 	//   Grafica TRES
 	//==============================================================================
-grafica_tres:  function(dataTab3){
+grafica_tres:  function(dataTable){
+	var paila = dataTable;
+	var preguntaSelecionada = $pre_g2.val() || [];
+    var data2 = new google.visualization.DataTable();
+	data2.addColumn('string','Nombre');
+    data2.addColumn('number','Puntaje');
 
-			  // Create our data table.
-			  var data = new  google.visualization.DataTable();
+	data2.addRows(dataTable);
+	var altura = 260;
+	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
-			  data.addColumn('string','Name');
-			  data.addColumn('number','Donuts eaten');
-			  data.addColumn('date','fechas')
-
-			  var dataTab = data.addRows([
-			  ['Puta' , 1,new Date(2010,10,20)],
-			  ['Putaa', 1.5,new Date(2011,10,20)],
-			  ['Eliana',2,new Date(2012,10,20)],
-			  ['Alejandeo',2,new Date(2012,10,20)],
-			  ['lola',2,new Date(2013,10,20)],
-			  ['lola',2,new Date(2013,10,20)],
-			  ['pucha',3,new Date(2011,10,20)],
-		  ])
-			  data.addRows(dataTab);
-
-			  // Create a range slider, passing some options
-			  var donutRangeSlider = new google.visualization.ControlWrapper({
-				'controlType': 'DateRangeFilter',
-				'containerId': 'filter_div',
-				'options': {
-				  'filterColumnLabel': 'fechas'
-				}
-			  });
-
-			  // Create a pie chart, passing some options
-			  var pieChart = new google.visualization.ChartWrapper({
-				'chartType': 'Histogram',
-				'containerId': 'chart_div',
-				'options': {
-				  'width': 300,
-				  'height': 300,
-				  'pieSliceText': 'value',
-				  'legend': 'right'
-			  },
-			   'view': { 'columns': [0, 1] }
-			  });
-
-			  var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard_div'));
-			  // Establish dependencies, declaring that 'filter' drives 'pieChart',
-			  // so that the pie chart will only display entries that are let through
-			  // given the chosen slider range.
-			  dashboard.bind([donutRangeSlider], [pieChart]);
-
-			  // Draw the dashboard.
-			  dashboard.draw(data);
-
-
+	var options = {   height: altura, };
+	var chart = new google.visualization.Histogram(document.getElementById('grafica_tres_div'));
+	chart.draw(data2, options);
 
 	     },
-dataTab3: function(){
+
+dataTab3: function(tiempoInicial,tiempoFinal){
 	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
@@ -762,57 +740,50 @@ dataTab3: function(){
 		areas_seleccionadas = $are_g3.val() || [],
 		cargos_seleccionados = $car_g3.val() || [];
 
-        var vectorFechas = [],personas = [];
+		var matrizDatos = [],personas = [];
 		for(i=0;i<Datos.length;i++){
-			if(!contenido(Datos[i][8].getTime(),vectorFechas)){
-				vectorFechas.push(Datos[i][8].getTime());
-			}
-			if(!contenido(Datos[i][0],personas)){
-				personas.push(Datos[i][0])
-			}
-		}
-        var dataTab3 = [];
-		for(m=0;m<personas.length;i++){
-			for(i=0;i<vectorFechas.length;i++){
-				dataTab3.push([personas[m],vectorFechas[i],0]);
-			}
-		}
+			if(
+				tiempoInicial<=Datos[i][8].getTime()<=tiempoFinal
+				&&contenido(Datos[i][14],variables_seleccionadas)
+				&& Datos[i][16] == "True"
+				&& contenido(Datos[i][15],preguntas_seleccionadas)
+				&& contenido(Datos[i][3],regionales_seleccionadas)
+				&& contenido(Datos[i][4],ciudades_seleccionadas)
+				&& contenido(Datos[i][5],areas_seleccionadas)
+				&& contenido(Datos[i][6],cargos_seleccionados)
+				{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+					&& contenido(Datos[i][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+					&& contenido(Datos[i][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+					&& contenido(Datos[i][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+					&& contenido(Datos[i][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+					&& contenido(Datos[i][13],opcional5_seleccionadas)
+				{% endif %}
 
-
-		for(z=0;z<dataTab3.length;z++){
-			for(i=0;i<Datos.length;i++){
-			    if(
-					Datos[i][8].getTime() == dataTab3[z][1]
-					&& Datos[i][0] == dataTab3[z][0]
-					&&contenido(Datos[i][14],variables_seleccionadas)
-					&& Datos[i][16] == "True"
-					&& contenido(Datos[i][15],preguntas_seleccionadas)
-					&& contenido(Datos[i][3],regionales_seleccionadas)
-					&& contenido(Datos[i][4],ciudades_seleccionadas)
-					&& contenido(Datos[i][5],areas_seleccionadas)
-					&& contenido(Datos[i][6],cargos_seleccionados)
-					{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-						&& contenido(Datos[i][9],opcional1_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-						&& contenido(Datos[i][10],opcional2_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-						&& contenido(Datos[i][11],opcional3_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-						&& contenido(Datos[i][12],opcional4_seleccionadas)
-					{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-						&& contenido(Datos[i][13],opcional5_seleccionadas)
-					{% endif %}
-				){
-
+			){
+						var puntaje = calculePuntaje(Datos[i][14],Datos[i][15],Datos[i][7]);
+						if(!contenido(Datos[i][0],personas)){
+							personas.push(Datos[i][0]);
+							matrizDatos.push([Datos[i][0],puntaje]);
+						}else{
+							var ind = personas.indexOf(Datos[i][0]);
+							matrizDatos[ind][1] += puntaje;
+						}
 				}
-			}
-		}
+        	}
+
+			return matrizDatos
+			// fin funcion dataTab3
 
 },
+
 
 
 //==============================================================================
