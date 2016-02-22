@@ -64,22 +64,23 @@ def gosurvey(request):
 				comprobar = request.POST['activo']
 				streaming_crear =[]
 				if proyecto.interna:
-					if(float(request.POST['dMin']) < float(request.POST['dMax'])):
-						dMax = float(request.POST['dMax'])
-						dMin = float(request.POST['dMin'])
-					else:
-						if(float(request.POST['dMin']) == float(request.POST['dMax'])):
-							dMin = float(request.POST['dMin'])
-							dMax = float(request.POST['dMax'])+1
-						else:
-							dMax = float(request.POST['dMin'])
-							dMin = float(request.POST['dMax'])
-					proyecto.prudenciamin = dMin
-					proyecto.prudenciamax = dMax
-
 					if proyecto.tipo != "Completa":
+						if(float(request.POST['dMin']) < float(request.POST['dMax'])):
+							dMax = float(request.POST['dMax'])
+							dMin = float(request.POST['dMin'])
+						else:
+							if(float(request.POST['dMin']) == float(request.POST['dMax'])):
+								dMin = float(request.POST['dMin'])
+								dMax = float(request.POST['dMax'])+1
+							else:
+								dMax = float(request.POST['dMin'])
+								dMin = float(request.POST['dMax'])
+						proyecto.prudenciamin = dMin
+						proyecto.prudenciamax = dMax
 						proyecto.can_envio = request.POST['can_envio']
-
+					else:
+						proyecto.prudenciamin = 1
+						proyecto.prudenciamax = 2
 					if proyecto.activo:
 						colaboradores = Colaboradores.objects.filter(proyecto=proyecto)
 						variables = proyecto.variables_set.all()
@@ -360,8 +361,7 @@ def encuesta(request,id_proyecto,key):
 			cuestionario = stream
 			len_cuestionario = len(stream)
 			cuestionario_preguntas =[]
-			for i in cuestionario:
-				cuestionario_preguntas.append(i.pregunta)
+			cuestionario_preguntas = stream
 
 	else:
 		try:

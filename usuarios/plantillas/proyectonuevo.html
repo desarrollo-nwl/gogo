@@ -1,5 +1,5 @@
 {% extends "dash.html" %}{%load staticfiles %}
-{% block title %} Home | Licencia{% endblock %}
+{% block title %} Home | Nuevo proyecto{% endblock %}
 {%block head2%}<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 <link href="{% static 'css/plugins/summernote/summernote.min.css' %}">{%endblock%}
 {% block navegacion%}
@@ -91,31 +91,31 @@
 					<div id="opcional1" class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Filtro opcional 1:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input class="form-control" placeholder="Nombre de la variable 1 de los participantes" name="opcional1"  type="text" maxlength="100">
+							<input class="form-control" placeholder="Nombre de el filtro 1 de los participantes" name="opcional1"  type="text" maxlength="100">
 						</div>
 					</div>
 					<div id="opcional2" class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Filtro opcional 2:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input class="form-control" placeholder="Nombre de la variable 2 de los participantes" name="opcional2"  type="text" maxlength="100">
+							<input class="form-control" placeholder="Nombre de el filtro 2 de los participantes" name="opcional2"  type="text" maxlength="100">
 						</div>
 					</div>
 					<div id="opcional3" class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Filtro opcional 3:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input class="form-control" placeholder="Nombre de la variable 3 de los participantes" name="opcional3"  type="text" maxlength="100">
+							<input class="form-control" placeholder="Nombre de el filtro 3 de los participantes" name="opcional3"  type="text" maxlength="100">
 						</div>
 					</div>
 					<div id="opcional4" class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Filtro opcional 4:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input class="form-control" placeholder="Nombre de la variable 4 de los participantes" name="opcional4"  type="text" maxlength="100">
+							<input class="form-control" placeholder="Nombre de el filtro 4 de los participantes" name="opcional4"  type="text" maxlength="100">
 						</div>
 					</div>
 					<div id="opcional5" class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Filtro opcional 5:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							<input class="form-control" placeholder="Nombre de la variable 5 de los participantes" name="opcional5"  type="text" maxlength="100">
+							<input class="form-control" placeholder="Nombre de el filtro 5 de los participantes" name="opcional5"  type="text" maxlength="100">
 						</div>
 					</div>
 					<div id ="muestreo" class="form-group">
@@ -173,24 +173,20 @@ $("#logo").change(function() {
     var val = $(this).val();
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'jpg': case 'png':
-            $("#Go").show();
             break;
         default:
             $(this).val('');
             alert("Por favor seleccione una imagen");
-            $("#Go").hide();
     }
 });
 $("#logoenc").change(function() {
     var val = $(this).val();
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'jpg': case 'png':
-            $("#Go").show();
             break;
         default:
             $(this).val('');
             alert("Por favor seleccione una imagen");
-            $("#Go").hide();
     }
 });
 var nombres =[],$nombre = $("#nombre"),$error=$('#error');
@@ -208,7 +204,7 @@ $nombre.keyup(function(){
 	$nombre.val
 });
 </script>{%endif%}
-<script>$(document).ready(function(){$(".summernote").summernote({height:150,minHeight:null,maxHeight:null}),$("div .note-insert.btn-group").hide(),$("div .note-view.btn-group").hide(),$("div .note-help.btn-group").hide(),$("div .note-table.btn-group").hide(),$("div .note-height.btn-group").hide(),$("#Dm").hide(),$("#Ppe").hide()});var edit=function(){$(".click3edit").summernote({focus:!0})};$("form").submit(function(){return $('input[name="int_encuesta"]').attr("value",$("#summernote1").code()),$('input[name="cue_correo"]').attr("value",$("#summernote3").code()),!0}),$("#logo").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen"),$("#Go").hide()}}),$("#logoenc").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen"),$("#Go").hide()}});var nombres=[],$nombre=$("#nombre"),$error=$("#error");{% for i in Proyectos%}nombres.push('{{i.nombre |escape|safe}}');{%endfor%}nnombres=nombres.length,$nombre.keyup(function(){ban=!1;for(var e=0;nnombres>e;e++)$nombre.val()==nombres[e]&&($error.html('<p id="error" style="color:red">Este nombre ya existe. Favor elegir otro.</p>'),ban=!0),ban||$error.html("");$nombre.val});</script>
+<script>$(document).ready(function(){$(".summernote").summernote({height:150,minHeight:null,maxHeight:null}),$("div .note-insert.btn-group").hide(),$("div .note-view.btn-group").hide(),$("div .note-help.btn-group").hide(),$("div .note-table.btn-group").hide(),$("div .note-height.btn-group").hide(),$("#Dm").hide(),$("#Ppe").hide()});var edit=function(){$(".click3edit").summernote({focus:!0})};$("form").submit(function(){return $('input[name="int_encuesta"]').attr("value",$("#summernote1").code()),$('input[name="cue_correo"]').attr("value",$("#summernote3").code()),!0}),$("#logo").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen")}}),$("#logoenc").change(function(){var e=$(this).val();switch(e.substring(e.lastIndexOf(".")+1).toLowerCase()){case"jpg":case"png":$("#Go").show();break;default:$(this).val(""),alert("Por favor seleccione una imagen")}});var nombres=[],$nombre=$("#nombre"),$error=$("#error");{% for i in Proyectos%}nombres.push('{{i.nombre |escape|safe}}');{%endfor%}nnombres=nombres.length,$nombre.keyup(function(){ban=!1;for(var e=0;nnombres>e;e++)$nombre.val()==nombres[e]&&($error.html('<p id="error" style="color:red">Este nombre ya existe. Favor elegir otro.</p>'),ban=!0),ban||$error.html("");$nombre.val});</script>
 <script>var $interna=$('#interna'),$tipo=$('#tipo'),elementos =[$('#asunto'),$('#cue_correo'),$('#logoenc'),$('#muestreo'),$('#opcional1'),$('#opcional2'),$('#opcional3'),$('#opcional4'),$('#opcional5')],$asuntoinput=$('#asunto-input');
 $tipo.on('change',function(e){
 	if($tipo.val() == "Completa"){for (var i = 0; i < 9; i++){elementos[i].show()};$interna.val(1);$asuntoinput.attr("required",true)}
