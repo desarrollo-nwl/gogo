@@ -750,6 +750,7 @@ grafica_uno: function(){
 			chartArea: {
 				width: '90%'
 			},
+			legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
 			vAxis : {
 				viewWindowMode:'explicit',
 				viewWindow:{
@@ -857,7 +858,10 @@ grafica_dos : function(dataTable,vector) {
 	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
 	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
-	var options = {   height: altura, };
+	var options = {
+		height: altura,
+		legend:{ position: 'top', maxLines: 3, 'alignment':'center' },
+	};
 	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
 	chart.draw(data2, options);
 },
@@ -1054,7 +1058,7 @@ grafica_tres: function(){
 		options: {
 			isStacked: 'relative',
 			height: altura,
-			legend: {position: 'top', maxLines: 3},
+			legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
 			vAxis: {
 				minValue: 0,
 				ticks: [0, .25, .5, .75, 1]
@@ -1093,6 +1097,7 @@ grafica_tres: function(){
 //==============================================================================
 $(document).ready(function() {
 	Elementos.inicio();
+	{% if Datos %}
 	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
 
 	var variables = Elementos.dataTotal();
@@ -1121,7 +1126,7 @@ $(document).ready(function() {
 
 
 	$("#slider").dateRangeSlider({
-	    bounds:{
+		bounds:{
 	      min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
 	      max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
 	    },
@@ -1136,6 +1141,7 @@ $(document).ready(function() {
 		var espacio = Elementos.dataTotal();
 		Elementos.grafica_dos(integrarDatos(tiempoMin,tiempoMax,espacio[0],espacio[2],espacio[1]),espacio[1]);
 	})
+	{% endif %}
 });
 </script>
 {%endblock%}

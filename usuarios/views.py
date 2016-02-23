@@ -1069,6 +1069,19 @@ def reportarerror(request):
 		return render_to_response('403.html')
 
 #===============================================================================
+#    Páginas de legal
+#===============================================================================
+
+@cache_control(no_store=True)
+def terminos(request):
+	return render_to_response('terminos.html')
+
+@cache_control(no_store=True)
+def privacidad(request):
+	return render_to_response('privacidad.html')
+
+
+#===============================================================================
 #    Páginas de errores
 #===============================================================================
 
