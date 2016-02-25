@@ -20,6 +20,7 @@ urlpatterns = patterns('usuarios.views',
 	url(r'^terminos/$', 'terminos'),
 	url(r'^privacidad/$', 'privacidad'),
 	url(r'^reportar/$', 'reportarerror'),
+	url(r'^faq/$', 'faq'),
 	url(r'^salir/$', 'salir')
 )
 

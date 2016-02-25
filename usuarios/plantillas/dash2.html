@@ -120,13 +120,9 @@
 		<!-- / #wrapper -->
         <div id="footer" class="clearfix sidebar-page right-sidebar-page">
             <!-- Start #footer  -->
-            <p class="pull-left">
-                Copyrights &copy; 2016 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.
-            </p>
+            <p class="pull-left">Copyrights &copy; 2016 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.</p>
             <p class="pull-right">
-				<a target="_blank"  href="/terminos/" class="mr5">Términos de uso</a>
-                |
-                <a target="_blank"  href="/privacidad/" class="ml5 mr25">Política de privacidad</a>
+				<a target="_blank"  href="/terminos/" class="mr5">Términos de uso</a> | <a target="_blank"  href="/privacidad/" class="ml5 mr25">Política de privacidad</a>
             </p>
         </div>
         <!-- End #footer  -->
@@ -156,12 +152,7 @@
 		<script src="{% static 'js/jquery.dynamic.min.js' %}"></script>
 		<script src="{% static 'js/main.min.js' %}"></script>
 
-		<script>
-		$('#{{Activar}}').addClass('highlight-menu');
-		$('#{{Activar}} > a').addClass('expand active-state');
-		{% if activar%}$('#{{Activar}} > ul.sub').addClass('show');
-		$(document).ready(function(){$('#{{Activar}} a').click();$('#{{activar}}').addClass('expand activate-state');});{%endif%}
-		</script>
+		<script>$('#{{Activar}}').addClass('highlight-menu');$('#{{Activar}} > a').addClass('expand active-state');{% if activar%}$('#{{Activar}} > ul.sub').addClass('show');$(document).ready(function(){$('#{{Activar}} a').click();$('#{{activar}}').addClass('expand activate-state');});{%endif%}</script>
 		{% block scripts%}{% endblock %}{% endblock %}
 
     </body>

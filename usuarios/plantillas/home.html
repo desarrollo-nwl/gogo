@@ -38,7 +38,7 @@
 							<b>{{i.tot_respuestas}}</b> respuestas en <b>{{i.total |floatformat:"0"}}</b> encuestas.
 							{%endif%}
 						</td>
-						{%if Permisos.consultor%}<td>{%if Permisos.pro_add and Permisos.var_add and Permisos.pre_add%}<a href="/proyecto/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pro_edit%}<a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>{%endif%}
+						{%if Permisos.consultor%}<td>{%if Permisos.pro_add and Permisos.var_add and Permisos.pre_add%}<a href="/proyecto/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pro_edit%}<a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a></td>{%endif%}
 					</tr>{% endfor %}
 				</tbody>
 			</table>

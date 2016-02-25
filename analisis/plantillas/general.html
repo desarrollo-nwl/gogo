@@ -35,6 +35,10 @@
 					<div class="panel-body">
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr25" >Variables</span>
+								<select id="variables_g1" class="filtro filtros_uno" multiple></select>
+							</li>
+							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">Regionales</span>
 								<select id="regionales_g1" class="filtro filtros_uno" multiple></select>
 							</li>
@@ -179,6 +183,12 @@
 					<div class="panel-body">
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr25" >Variables</span>
+								<select id="variables_g3" class="filtro filtros_tres" >
+
+								</select>
+							</li>
+							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">Regionales</span>
 								<select id="regionales_g3" class="filtro filtros_tres" multiple></select>
 							</li>
@@ -189,10 +199,6 @@
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:47px">Áreas</span>
 								<select id="areas_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25" >Variables</span>
-								<select id="variables_g3" class="filtro filtros_tres" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr20" >Preguntas</span>
@@ -244,6 +250,18 @@
 {%block scripts%}
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.min.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderDraggable.min.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderBar.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderHandle.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSliderHandle.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderLabel.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSlider.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
+
 <script type="text/javascript">
 // $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
 var Datos = [{%for i in Datos%}
@@ -261,14 +279,11 @@ var contenido_date = function(a,x){
 	return false;
 }
 var limpiar_filas_nulas = function(matriz_datos){
-	var long_fila = matriz_datos[0].length, i = 0;
-	while ( i < matriz_datos.length ) {
-		var aux = 0;
+	var long_fila = matriz_datos[0].length;
+	for( var i = 1; i < matriz_datos.length; i++ ) {
 		for (var j = 1; j < long_fila; j++)
-			aux += matriz_datos[i][j];
-
-		if( aux == 0 ) matriz_datos.splice(i,1);
-		else i++;
+			if (matriz_datos[i][j] == 0 )
+				matriz_datos[i][j] = matriz_datos[i-1][j];
 	}
 	return matriz_datos;
 }
@@ -298,12 +313,12 @@ var calculePuntaje = function calculePuntaje(idVariable,idPregunta,respuesta){
 	  return total
 }
 
-//==	============================================================================
+//==============================================================================
 //   variables GLOBALES
 //==============================================================================
 
 var regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[], variables = [], preguntas = [],
-	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
+	$var_g1=$('#variables_g1'), $reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
 	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
 
 {%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
@@ -347,10 +362,17 @@ var Elementos = {
 
 			if (!contenido(Datos[i][14],variables)){
 				variables.push(Datos[i][14]);
-				$var_g3.append($('<option>',{
+				$var_g1.append($('<option>',{
 					value: Datos[i][14],
 					text: Datos[i][1],
 				}))
+
+			if(Datos[i][16] == "True"){
+				$var_g3.append($('<option>',{
+					value: Datos[i][14],
+					text: Datos[i][1],
+				             }))
+				}
 			}
 
 			if (!contenido(Datos[i][15],preguntas) ){
@@ -515,10 +537,31 @@ var Elementos = {
 
 		}
 
+		$var_g3.change(function(){
+			var preguntas3 = [];
+			$pre_g3.find('option').remove();
+			for (var i = 0; i < Datos.length; i++) {
+				if ( !contenido(Datos[i][15],preguntas3) && Datos[i][14] == $var_g3.val() ){
+					preguntas3.push(Datos[i][15]);
+					$pre_g3.append($('<option>', {
+						value: Datos[i][15],
+						text : Datos[i][2]
+					}));
+				}
+			}
+			$pre_g3.multiselect('rebuild');
+			$pre_g3.multiselect('selectAll', false);
+			$pre_g3.multiselect('updateButtonText');
+		});
+
+
 		//  UPDATE Selects
 		$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
 		$('.filtro').multiselect('selectAll', false);
 		$('.filtro').multiselect('updateButtonText');
+		$var_g3.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+		$var_g3.selectedIndex = 0;
+		$var_g3.multiselect('updateButtonText');
 
 	},
 
@@ -532,6 +575,7 @@ var Elementos = {
 			{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val() || [],{% endif %}
 			{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val() || [],{% endif %}
 			{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val() || [],{% endif %}
+			variables_seleccionadas = $var_g1.val() || [],
 			regionales_seleccionadas = $reg_g1.val() || [],
 			ciudades_seleccionadas = $ciu_g1.val() || [],
 			areas_seleccionadas = $are_g1.val() || [],
@@ -540,17 +584,18 @@ var Elementos = {
 		// inicializamos las variables de la data table
 		var data = new google.visualization.DataTable();
 		data.addColumn('date', 'Fecha');
-		data.addColumn('number','Promedio Medición' );
+		data.addColumn('number', 'Promedio Medición');
 		var matriz_g1 = [],auxiliar=0;
 
 		// inicializamos la date tables
 		for (var i = 0; i < fechas.length; i++)
-			matriz_g1.push([ fechas[i],0 ]);
+			matriz_g1.push([ fechas[i],0.0 ]);
 
 		// contamos
 		for (var i = 0; i < matriz_g1.length; i++) {
 			for (var j = 0; j < Datos.length; j++) {
-				if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
+				if( contenido( Datos[j][14], variables_seleccionadas )
+				&& matriz_g1[i][0].getTime() === Datos[j][8].getTime()
 				&& Datos[j][16] == "True"
 				&& contenido(Datos[j][3],regionales_seleccionadas)
 				&& contenido(Datos[j][4],ciudades_seleccionadas)
@@ -574,7 +619,7 @@ var Elementos = {
 			){
 					for (var l = 0; l < Cuestionario.length; l++) {
 						for (var m = 0; m < Datos[j][7].length; m++) {
-							if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] != undefined ){
+							if( Cuestionario[l][1][Datos[j][15]] && Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
 								matriz_g1[i][1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
 								auxiliar++;
 							}
@@ -590,7 +635,6 @@ var Elementos = {
 
 		}
 
-
 		matriz_g1 = limpiar_filas_nulas(matriz_g1);
 
 		data.addRows( matriz_g1 );
@@ -601,9 +645,6 @@ var Elementos = {
 		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
-
-	    data.addColumn('date', 'Fecha');
-	    data.addColumn('number', 'Promedio Medición');
 
 		var chart = new google.visualization.ChartWrapper({
 			chartType: 'LineChart',
@@ -702,13 +743,11 @@ var Elementos = {
 	//   Grafica DOS
 	//==============================================================================
 
-
 	//==============================================================================
 	//   Grafica TRES
 	//==============================================================================
 grafica_tres:  function(dataTable){
 	var paila = dataTable;
-	var preguntaSelecionada = $pre_g2.val() || [];
     var data2 = new google.visualization.DataTable();
 	data2.addColumn('string','Nombre');
     data2.addColumn('number','Puntaje');
@@ -733,7 +772,7 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
-		variables_seleccionadas = $var_g3.val() || [],
+		variables_seleccionadas = $var_g3.val(),
 		preguntas_seleccionadas = $pre_g3.val() || [],
 		regionales_seleccionadas = $reg_g3.val() || [],
 		ciudades_seleccionadas = $ciu_g3.val() || [],
@@ -743,8 +782,9 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 		var matrizDatos = [],personas = [];
 		for(i=0;i<Datos.length;i++){
 			if(
-				tiempoInicial<=Datos[i][8].getTime()<=tiempoFinal
-				&&contenido(Datos[i][14],variables_seleccionadas)
+				tiempoInicial<=Datos[i][8].getTime()
+				&& Datos[i][8].getTime()<=tiempoFinal
+				&& Datos[i][14] == variables_seleccionadas
 				&& Datos[i][16] == "True"
 				&& contenido(Datos[i][15],preguntas_seleccionadas)
 				&& contenido(Datos[i][3],regionales_seleccionadas)
@@ -768,7 +808,7 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 				{% endif %}
 
 			){
-						var puntaje = calculePuntaje(Datos[i][14],Datos[i][15],Datos[i][7]);
+						var puntaje = calculePuntaje(Datos[i][14],Datos[i][15],Datos[i][7])/preguntas_seleccionadas.length;
 						if(!contenido(Datos[i][0],personas)){
 							personas.push(Datos[i][0]);
 							matrizDatos.push([Datos[i][0],puntaje]);
@@ -784,8 +824,6 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 
 },
 
-
-
 //==============================================================================
 //   Fin de objeto
 //==============================================================================
@@ -797,15 +835,49 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 $(document).ready(function() {
 	Elementos.inicio();
 	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
-
-
 	$('.panel-body').fadeTo('slow',100);
-
 	$('.filtros_uno').change(function(){	Elementos.grafica_uno();});
 
+	 var dataTotal = Elementos.dataTab3(new Date(2016,01,01).getTime(),new Date(2020,11,22).getTime());
+	 google.setOnLoadCallback(Elementos.grafica_tres(dataTotal))
 
 	$(window).resize(function() {
 		Elementos.grafica_uno();
+		var dataTotal = Elementos.dataTab3(new Date(2016,01,01).getTime(),new Date(2020,11,22).getTime());
+		variables_seleccionadas = $var_g3.val();
+		google.setOnLoadCallback(Elementos.grafica_tres(dataTotal))
+		Elementos.grafica_tres(dataTotal);
+	});
+
+
+
+
+
+	$("#control_grafica_tres_div").dateRangeSlider({
+		bounds:{
+		  min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
+		  max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
+		},
+		defaultValues:{
+		  min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
+		  max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
+		}
+	});
+
+	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){
+		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
+		// var tiempoMin = new Date(2016,02,18), tiempoMax = new Date(2016,02,19);
+		var espacio = Elementos.dataTab3(tiempoMin,tiempoMax);
+		Elementos.grafica_tres(espacio);
+	})
+
+	$('.filtros_tres').change(function(){
+	   $("#control_grafica_tres_div").dateRangeSlider("values", new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}), new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }}));
+       var dataFiltros= Elementos.dataTab3(new Date(2016,01,01).getTime(),new Date(2020,11,22));
+	   Elementos.grafica_tres(dataFiltros);
+       console.log('cambio Filtros!!');
+	   variables_seleccionadas = $var_g3.val();
+	   console.log(variables_seleccionadas);
 	});
 
 });
