@@ -348,8 +348,6 @@ def proyectoclonar(request,id_proyecto):
 		from copy import deepcopy
 		proyecto_back = deepcopy(proyecto)
 		datos = proyecto.proyectosdatos
-		datos.logo = None
-		datos.logoenc = None
 		proyecto.id = None
 		proyecto.nombre = 'Copia de '+proyecto.nombre
 		with transaction.atomic():

@@ -98,10 +98,8 @@
 		<div class="panel-body">
 			<div class="col-lg-9">
 				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
-
-
 				<br>
-				<div id="slider"></div>
+				<div id="grafica_dos_slider"></div>
 			</div>
 
 			<div class="col-lg-3">
@@ -184,9 +182,11 @@
 						<ul class="list-unstyled mb0">
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr25" >Variables</span>
-								<select id="variables_g3" class="filtro filtros_tres" >
-
-								</select>
+								<select id="variables_g3" class="filtros_tres" ></select>
+							</li>
+							<li class="mb5 pb5 bbdashed">
+								<span class="strong pr20" >Preguntas</span>
+								<select id="preguntas_g3" class="filtro filtros_tres" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong pr15">Regionales</span>
@@ -199,10 +199,6 @@
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:47px">Áreas</span>
 								<select id="areas_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr20" >Preguntas</span>
-								<select id="preguntas_g3" class="filtro filtros_tres" multiple></select>
 							</li>
 							<li class="mb5 pb5 bbdashed">
 								<span class="strong" style="padding-right:39px">Cargos</span>
@@ -313,6 +309,26 @@ var calculePuntaje = function calculePuntaje(idVariable,idPregunta,respuesta){
 	  return total
 }
 
+var tiemposIniciales = function(fechas){
+	var tiempoMaximo = new Date(2000,1,20).getTime(),
+		tiempoMinimo = new Date(2030,1,20).getTime(),
+		fechaMaxima = new Date(2030,1,20),
+		fechaMinima = new Date(2000,1,20);
+	for(var i=0;i<fechas.length;i++){
+			var tiempo = fechas[i].getTime(),
+				fecha = fechas[i];
+			if(tiempo>tiempoMaximo){
+				tiempoMaximo = tiempo;
+                fechaMaxima = fecha;
+				}
+			if(tiempo<tiempoMinimo){
+				tiempoMinimo = tiempo;
+				fechaMinima = fecha;
+			}
+		}
+    return [tiempoMinimo,tiempoMaximo,fechaMinima,fechaMaxima];
+}
+
 //==============================================================================
 //   variables GLOBALES
 //==============================================================================
@@ -371,7 +387,7 @@ var Elementos = {
 				$var_g3.append($('<option>',{
 					value: Datos[i][14],
 					text: Datos[i][1],
-				             }))
+				}))
 				}
 			}
 
@@ -742,6 +758,28 @@ var Elementos = {
 	//==============================================================================
 	//   Grafica DOS
 	//==============================================================================
+grafica_dos: function(){
+	var data = google.visualization.arrayToDataTable([
+      ['Variables', 'Promedio Nacional', 'Promedio Filtro'],
+      ['Conciencia',  5.40, 4.50],
+      ['Motivación',  4.70, 3.67],
+      ['Conocimiento',  3.60, 4.50],
+      ['Habilidad',  4.60, 4.50],
+      ['Refuerzo',  5.30, 4.30]
+    ]);
+
+    var options = {
+
+  	//legend: 'none',
+
+   };
+
+  var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+    chart.draw(data, options);
+
+
+},
+
 
 	//==============================================================================
 	//   Grafica TRES
@@ -783,8 +821,8 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 		for(i=0;i<Datos.length;i++){
 			if(
 				tiempoInicial<=Datos[i][8].getTime()
-				&& Datos[i][8].getTime()<=tiempoFinal
-				&& Datos[i][14] == variables_seleccionadas
+				&&Datos[i][8].getTime()<=tiempoFinal
+				&&Datos[i][14]==variables_seleccionadas
 				&& Datos[i][16] == "True"
 				&& contenido(Datos[i][15],preguntas_seleccionadas)
 				&& contenido(Datos[i][3],regionales_seleccionadas)
@@ -838,47 +876,43 @@ $(document).ready(function() {
 	$('.panel-body').fadeTo('slow',100);
 	$('.filtros_uno').change(function(){	Elementos.grafica_uno();});
 
-	 var dataTotal = Elementos.dataTab3(new Date(2016,01,01).getTime(),new Date(2020,11,22).getTime());
+     google.setOnLoadCallback(Elementos.grafica_dos());
+
+	 var tiemposInicio_0 = tiemposIniciales(fechas);
+	 var dataTotal = Elementos.dataTab3(tiemposInicio_0[2],tiemposInicio_0[3])
 	 google.setOnLoadCallback(Elementos.grafica_tres(dataTotal))
-
-	$(window).resize(function() {
-		Elementos.grafica_uno();
-		var dataTotal = Elementos.dataTab3(new Date(2016,01,01).getTime(),new Date(2020,11,22).getTime());
-		variables_seleccionadas = $var_g3.val();
-		google.setOnLoadCallback(Elementos.grafica_tres(dataTotal))
-		Elementos.grafica_tres(dataTotal);
-	});
-
-
-
-
 
 	$("#control_grafica_tres_div").dateRangeSlider({
 		bounds:{
-		  min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
-		  max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
+			min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
+			max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
 		},
 		defaultValues:{
-		  min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
-		  max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
+			min: tiemposInicio_0[2],
+			max: tiemposInicio_0[3]
 		}
 	});
 
 	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){
 		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		// var tiempoMin = new Date(2016,02,18), tiempoMax = new Date(2016,02,19);
 		var espacio = Elementos.dataTab3(tiempoMin,tiempoMax);
 		Elementos.grafica_tres(espacio);
 	})
 
 	$('.filtros_tres').change(function(){
-	   $("#control_grafica_tres_div").dateRangeSlider("values", new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}), new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }}));
-       var dataFiltros= Elementos.dataTab3(new Date(2016,01,01).getTime(),new Date(2020,11,22));
+       var fecha = $('#control_grafica_tres_div').dateRangeSlider('values');
+       var dataFiltros= Elementos.dataTab3(fecha.min.getTime(),fecha.max.getTime());
 	   Elementos.grafica_tres(dataFiltros);
        console.log('cambio Filtros!!');
 	   variables_seleccionadas = $var_g3.val();
 	   console.log(variables_seleccionadas);
 	});
+
+
+	$(window).resize(function() {
+		Elementos.grafica_uno();
+	});
+
 
 });
 </script>
