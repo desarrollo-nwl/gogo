@@ -265,8 +265,11 @@
 
 <script type="text/javascript">
 // $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-var Datos = [{%for i in Datos%}['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }}, "{{ i.pregunta.numerica }}" ],{%endfor%}];
-var Cuestionario = [ {% for i in Preguntas %}['{{ i.variable.id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}];
+var Datos = [{%for i in Datos%}
+['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }}, "{{ i.pregunta.numerica }}" ],{%endfor%}];
+var Cuestionario = [ {% for i in Preguntas %}
+['{{ i.variable.id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}
+];
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -687,8 +690,11 @@ var Elementos = {
 					width: '90%'
 				},
 				vAxis : {
-				   maxValue: maximo_cuestionario,
-				   minValue: 0
+					viewWindowMode:'explicit',
+					viewWindow:{
+						max:maximo_cuestionario,
+						min:0
+				  }
 			   },
 			}
 		});
@@ -777,7 +783,6 @@ grafica_dos: function(dataTable){
 	data2.addColumn('string','Variable');
     data2.addColumn('number','Promedio Total');
 	data2.addColumn('number','Promedio Filtro');
-<<<<<<< HEAD
 
 	data2.addRows(dataTable);
 	var altura = 260;
@@ -788,7 +793,7 @@ grafica_dos: function(dataTable){
 	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
 	var options = {   height: altura,
-					  legend: {position: 'top', maxLines: 1,'alignment':'center'},
+					legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
 	};
 	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
 	chart.draw(data2, options);
@@ -854,79 +859,6 @@ dataTab2: function(fechaInicial,fechaFinal){
                     totalPersonasFiltro += 1;
 					var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
 
-=======
-
-	data2.addRows(dataTable);
-	var altura = 260;
-	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
-	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
-
-	var options = {   height: altura, };
-	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
-	chart.draw(data2, options);
-
-
-},
-dataTab2: function(fechaInicial,fechaFinal){
-	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
-		variables_seleccionadas = $var_g2.val() || [],
-		regionales_seleccionadas = $reg_g2.val() || [],
-		ciudades_seleccionadas = $ciu_g2.val() || [],
-		areas_seleccionadas = $are_g2.val() || [],
- 		cargos_seleccionados = $car_g2.val() || [];
-
-		var matrizTotal= [], variables = [];
-		var puntajeVariables = [], indiceVariables = [];
-
-		for(z=0;z<Datos.length;z++){
-			if(Datos[z][16]=='True'){
-		                var puntajePendejo = calculePuntaje(Datos[z][14],Datos[z][15],Datos[z][7]);
-						if(!contenido(Datos[z][14],indiceVariables)){
-							puntajeVariables.push(puntajePendejo);
-							indiceVariables.push(Datos[z][14]);
-						  }else{
-								var ind1 = indiceVariables.indexOf(Datos[z][14]);
-								puntajeVariables[ind1] += puntajePendejo;
-							}
-			}
-		}
-
-		for(r=0;r<Datos.length;r++){
-            if(
-				fechaInicial<=Datos[r][8].getTime()
-				&&Datos[r][8].getTime()<=fechaFinal
-				&& contenido(Datos[r][14],variables_seleccionadas)
-				&& Datos[r][16] == "True"
-				&& contenido(Datos[r][3],regionales_seleccionadas)
-				&& contenido(Datos[r][4],ciudades_seleccionadas)
-				&& contenido(Datos[r][5],areas_seleccionadas)
-				&& contenido(Datos[r][6],cargos_seleccionados)
-				{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-					&& contenido(Datos[r][9],opcional1_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-					&& contenido(Datos[r][10],opcional2_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-					&& contenido(Datos[r][11],opcional3_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-					&& contenido(Datos[r][12],opcional4_seleccionadas)
-				{% endif %}
-				{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-					&& contenido(Datos[r][13],opcional5_seleccionadas)
-				{% endif %}
-			){
-
-					var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
->>>>>>> 964182998135a4b410c67302f266c4c9ecbf6523
 					if(!contenido(Datos[r][14],variables)){
                         // var ind2 = indiceVariables.indexOf(Datos[i][14]);
 						matrizTotal.push([Datos[r][1],puntajeVariables[indiceVariables.indexOf(Datos[r][14])],puntaje]);
@@ -941,13 +873,9 @@ dataTab2: function(fechaInicial,fechaFinal){
 
 
 		}
-<<<<<<< HEAD
         for(h=0;h<matrizTotal.length;h++){
-			matrizTotal[h][2] = matrizTotal[h][2]/totalPersonasFiltro; 
+			matrizTotal[h][2] = matrizTotal[h][2]/totalPersonasFiltro;
 		}
-=======
-
->>>>>>> 964182998135a4b410c67302f266c4c9ecbf6523
 return matrizTotal
 console.log(matrizTotal);
 },
@@ -970,7 +898,7 @@ grafica_tres:  function(dataTable){
 	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
 	var options = {   height: altura,
-					  legend: {position: 'top', maxLines: 1,'alignment':'center'},
+					  legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
 	};
 	var chart = new google.visualization.Histogram(document.getElementById('grafica_tres_div'));
 	chart.draw(data2, options);
