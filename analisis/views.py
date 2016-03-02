@@ -89,7 +89,7 @@ def general(request):
 					'colaborador','colaborador__colaboradoresdatos'
 				).order_by('fecharespuesta')
 		return render_to_response('general.html',{
-			'Activar':'AnalisisResultados','activar':'Focalizados',
+			'Activar':'AnalisisResultados','activar':'General',
 			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
 		}, context_instance=RequestContext(request))
 	else:

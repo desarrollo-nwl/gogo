@@ -777,6 +777,84 @@ grafica_dos: function(dataTable){
 	data2.addColumn('string','Variable');
     data2.addColumn('number','Promedio Total');
 	data2.addColumn('number','Promedio Filtro');
+<<<<<<< HEAD
+
+	data2.addRows(dataTable);
+	var altura = 260;
+	{%if Datos.0.proyecto.proyectosdatos.opcional1 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional2 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional3 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
+	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
+
+	var options = {   height: altura,
+					  legend: {position: 'top', maxLines: 1,'alignment':'center'},
+	};
+	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+	chart.draw(data2, options);
+
+
+},
+dataTab2: function(fechaInicial,fechaFinal){
+	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
+		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
+		variables_seleccionadas = $var_g2.val() || [],
+		regionales_seleccionadas = $reg_g2.val() || [],
+		ciudades_seleccionadas = $ciu_g2.val() || [],
+		areas_seleccionadas = $are_g2.val() || [],
+ 		cargos_seleccionados = $car_g2.val() || [];
+
+		var matrizTotal= [], variables = [];
+		var puntajeVariables = [], indiceVariables = [];
+        var totalPersonas = Datos.length;
+		for(z=0;z<totalPersonas;z++){
+			if(Datos[z][16]=='True'){
+		                var puntajePendejo = calculePuntaje(Datos[z][14],Datos[z][15],Datos[z][7]);
+						if(!contenido(Datos[z][14],indiceVariables)){
+							puntajeVariables.push(puntajePendejo/totalPersonas);
+							indiceVariables.push(Datos[z][14]);
+						  }else{
+								var ind1 = indiceVariables.indexOf(Datos[z][14]);
+								puntajeVariables[ind1] += puntajePendejo/totalPersonas;
+							}
+			}
+		}
+
+        var totalPersonasFiltro = 0;
+
+		for(r=0;r<totalPersonas;r++){
+            if(
+				fechaInicial<=Datos[r][8].getTime()
+				&&Datos[r][8].getTime()<=fechaFinal
+				&& contenido(Datos[r][14],variables_seleccionadas)
+				&& Datos[r][16] == "True"
+				&& contenido(Datos[r][3],regionales_seleccionadas)
+				&& contenido(Datos[r][4],ciudades_seleccionadas)
+				&& contenido(Datos[r][5],areas_seleccionadas)
+				&& contenido(Datos[r][6],cargos_seleccionados)
+				{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+					&& contenido(Datos[r][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+					&& contenido(Datos[r][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+					&& contenido(Datos[r][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+					&& contenido(Datos[r][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+					&& contenido(Datos[r][13],opcional5_seleccionadas)
+				{% endif %}
+			){
+                    totalPersonasFiltro += 1;
+					var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
+
+=======
 
 	data2.addRows(dataTable);
 	var altura = 260;
@@ -848,6 +926,7 @@ dataTab2: function(fechaInicial,fechaFinal){
 			){
 
 					var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
+>>>>>>> 964182998135a4b410c67302f266c4c9ecbf6523
 					if(!contenido(Datos[r][14],variables)){
                         // var ind2 = indiceVariables.indexOf(Datos[i][14]);
 						matrizTotal.push([Datos[r][1],puntajeVariables[indiceVariables.indexOf(Datos[r][14])],puntaje]);
@@ -862,7 +941,13 @@ dataTab2: function(fechaInicial,fechaFinal){
 
 
 		}
+<<<<<<< HEAD
+        for(h=0;h<matrizTotal.length;h++){
+			matrizTotal[h][2] = matrizTotal[h][2]/totalPersonasFiltro; 
+		}
+=======
 
+>>>>>>> 964182998135a4b410c67302f266c4c9ecbf6523
 return matrizTotal
 console.log(matrizTotal);
 },
@@ -884,7 +969,9 @@ grafica_tres:  function(dataTable){
 	{%if Datos.0.proyecto.proyectosdatos.opcional4 %}altura+=40;{% endif %}
 	{%if Datos.0.proyecto.proyectosdatos.opcional5 %}altura+=40;{% endif %}
 
-	var options = {   height: altura, };
+	var options = {   height: altura,
+					  legend: {position: 'top', maxLines: 1,'alignment':'center'},
+	};
 	var chart = new google.visualization.Histogram(document.getElementById('grafica_tres_div'));
 	chart.draw(data2, options);
 
