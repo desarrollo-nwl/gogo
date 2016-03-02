@@ -272,7 +272,15 @@ def encuesta(request,id_proyecto,key):
 		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto)
 		total_cuestionario = len(stream)
 	except:
-		return render_to_response('404.html')
+		try:
+			return render_to_response('fake.html',{
+			'Pagina':'http://'+str(encuestado.proyecto.empresa.pagina)
+			},	context_instance=RequestContext(request))
+		except:
+			return render_to_response('fake.html',{
+			'Pagina':'http://www.changeamericas.com'
+			},	context_instance=RequestContext(request))
+
 
 	if request.method == 'POST':
 		ids_streamig = request.POST.getlist('ids_streaming')
@@ -312,9 +320,13 @@ def encuesta(request,id_proyecto,key):
 				i.save()
 			Streaming.objects.filter(colaborador = encuestado).update(fec_controlenvio=timezone.now())
 		try:
-			return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
+			return render_to_response('fake.html',{
+			'Pagina':'http://'+str(encuestado.proyecto.empresa.pagina)
+			},	context_instance=RequestContext(request))
 		except:
-			return HttpResponseRedirect('http://networkslab.co')
+			return render_to_response('fake.html',{
+			'Pagina':'http://www.changeamericas.com'
+			},	context_instance=RequestContext(request))
 
 	cuestionario =[]
 

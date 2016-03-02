@@ -83,12 +83,12 @@ def enviar():
 		else:
 			delta = tiempo - stream[i].fec_controlenvio
 			if stream[i].colaborador.propension or stream[i].colaborador.propension>=0:
-				propension = int(stream[i].colaborador.propension/24 - 0.125) #calibrador para que no se mueva a derecha
+				propension = stream[i].colaborador.propension - 3 # nos movemos 3 horas a la derecha
 				if ( delta.days >= stream[i].proyecto.prudenciamin and delta.days >= propension ):  # x > p > m
 					stream = sendmail(stream[i],stream,tiempo)
 					delta = tiempo - stream[i].fec_controlenvio
 					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en bajo lapsus'
-				elif ( delta.days <= stream[i].proyecto.prudenciamax and delta.days >= propension and delta.days >= stream[i].proyecto.prudenciamin): # M > x > p
+				elif ( delta.days <= stream[i].proyecto.prudenciamax and (delta.seconds/3600.0) >= propension and delta.days >= stream[i].proyecto.prudenciamin): # M > x > p
 					stream = sendmail(stream[i],stream,tiempo)
 					delta = tiempo - stream[i].fec_controlenvio
 					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en medio lapsus'

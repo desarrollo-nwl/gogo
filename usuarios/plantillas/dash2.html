@@ -94,7 +94,11 @@
 								<a href="#"><i class="l-ecommerce-graph3"></i><span class="txt">Análisis <span class="txt"></a>
 								<ul class="sub">
 									<li><a id="Participacion" href="/analisis/participacion/"><span class="txt">Participación</span></a></li>
+<<<<<<< HEAD
                                     <li><a id="General" href="/analisis/general/"><span class="txt">General</span></a></li>
+=======
+									<li><a id="General" href="/analisis/general/"><span class="txt"> General</span></a></li>
+>>>>>>> 964182998135a4b410c67302f266c4c9ecbf6523
 									<li><a id="Focalizados" href="/analisis/focalizado/"><span class="txt"> Focalizado</span></a></li>
 									<li><a id="WordAnalytics" href="/analisis/wordanalytics/"><span class="txt"> Grafo Word Analytics </span></a></li>
 									<!-- <li><a id="CruceVariables" href="#"><span class="txt"> Cruce de variables </span></a></li> -->
@@ -121,13 +125,9 @@
 		<!-- / #wrapper -->
         <div id="footer" class="clearfix sidebar-page right-sidebar-page">
             <!-- Start #footer  -->
-            <p class="pull-left">
-                Copyrights &copy; 2015 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.
-            </p>
+            <p class="pull-left">Copyrights &copy; 2016 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.</p>
             <p class="pull-right">
-                <a href="#" class="mr5">Terms of use</a>
-                |
-                <a href="#" class="ml5 mr25">Privacy police</a>
+				<a target="_blank"  href="/terminos/" class="mr5">Términos de uso</a> | <a target="_blank"  href="/privacidad/" class="ml5 mr25">Política de privacidad</a>
             </p>
         </div>
         <!-- End #footer  -->
@@ -157,12 +157,7 @@
 		<script src="{% static 'js/jquery.dynamic.min.js' %}"></script>
 		<script src="{% static 'js/main.min.js' %}"></script>
 
-		<script>
-		$('#{{Activar}}').addClass('highlight-menu');
-		$('#{{Activar}} > a').addClass('expand active-state');
-		{% if activar%}$('#{{Activar}} > ul.sub').addClass('show');
-		$(document).ready(function(){$('#{{Activar}} a').click();$('#{{activar}}').addClass('expand activate-state');});{%endif%}
-		</script>
+		<script>$('#{{Activar}}').addClass('highlight-menu');$('#{{Activar}} > a').addClass('expand active-state');{% if activar%}$('#{{Activar}} > ul.sub').addClass('show');$(document).ready(function(){$('#{{Activar}} a').click();$('#{{activar}}').addClass('expand activate-state');});{%endif%}</script>
 		{% block scripts%}{% endblock %}{% endblock %}
 
     </body>

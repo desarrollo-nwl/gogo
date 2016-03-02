@@ -10,63 +10,12 @@
 <div class="row">
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
-			<h4 class="panel-title"> Participantes del proyecto:</h4>
+			<h4 class="panel-title"> Respuestas del proyecto:</h4>
 		</div>
 		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
-			{%if Permisos.det_see and Permisos.res_see and Proyecto.interna%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
-				<thead>
-					<tr>
-						<th>Participante</th>
-						<th>Email</th>
-						<th>Variable</th>
-						<th>Pregunta</th>
-						<th>Respuesta</th>
-					</tr>
-				</thead>
-				<tbody>
-					{%for i in Participantes%}
-					<tr>
-						<td>{{i.colaborador.nombre | capfirst | escape}} {{i.colaborador.apellido | capfirst | escape}}</td>
-						<td>{{i.colaborador.email | escape}}</td>
-						<td>{{i.pregunta.variable.nombre  | escape}}</td>
-						<td>{{i.pregunta.texto  | escape}}</td>
-						{%if i.pregunta.abierta%}<td>{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}
-						{%if i.pregunta.multiple%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.fecharespuesta%}{%if i.respuesta %}{{i.respuesta| jsonbr |safe}}{%else%}Ninguna seleccionada{%endif%}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
-						{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
-					</tr>{% endfor %}
-				</tbody>
-			</table>{%endif%}
-			{%if Permisos.det_see and Permisos.res_see and not Proyecto.interna%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
-				<thead>
-					<tr>
-						<th>Participante</th>
-						<th>Fecha</th>
-						<th>Variable</th>
-						<th>Pregunta</th>
-						<th>Respuesta</th>
-					</tr>
-				</thead>
-				<tbody>
-					{%for i in Participantes%}
-					<tr>
-						<td>Participante_{{i.colaborador | escape}}</td>
-						<td>{{i.fecharespuesta | date:'Y-m-d D H:i'}}</td>
-						<td>{{i.pregunta.variable.nombre  | escape}}</td>
-						<td>{{i.pregunta.texto  | escape}}</td>
-						{%if i.pregunta.abierta%}<td>{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endif%}
-						{%if i.pregunta.multiple%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.fecharespuesta%}{%if i.respuesta %}{{i.respuesta| jsonbr |safe}}{%else%}Ninguna seleccionada{%endif%}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
-						{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}<td>{%ifequal i.respuesta "0"%}0{%else%}{%if i.respuesta %}{{i.respuesta | escape}}{%else%}No hay respuesta aún{%endif%}</td>{%endifequal%}{%endif%}
-					</tr>{% endfor %}
-				</tbody>
-			</table>{%endif%}
-			{%if Permisos.res_exp%}<div class="container-fluid"><a href={%if Proyecto.interna%}"/respuestas/exportar/interna/"{%else%}"/respuestas/exportar/externa/"{%endif%} class="btn btn-primary pull-right m-t"><i class="fa fa-file-xls"></i> Exportar respuestas</a></div>{%endif%}
+			{%if Permisos.res_exp%}Para exportar las respuestas de tu proyecto presiona el botón de exportar respuestas; se descargará un archivo que contiene todas las respuestas completadas de tu proyecto. Según el tamaño del proyecto esta exportación puede tomar algo de tiempo.
+			<div class="container-fluid"><a href={%if Proyecto.interna%}"/respuestas/exportar/interna/"{%else%}"/respuestas/exportar/externa/"{%endif%} class="btn btn-primary pull-right m-t"><i class="fa fa-file-xls"></i> Exportar respuestas</a></div>{%endif%}
 		</div>
 	</div>
 </div>
 {% endblock %}
-
-{% block scripts%}
-<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "left" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ respuestas",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna respuesta aún.",sInfo:"Respuestas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Respuestas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ respuestas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
-{%endblock%}

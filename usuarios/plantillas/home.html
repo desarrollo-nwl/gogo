@@ -38,7 +38,7 @@
 							<b>{{i.tot_respuestas}}</b> respuestas en <b>{{i.total |floatformat:"0"}}</b> encuestas.
 							{%endif%}
 						</td>
-						{%if Permisos.consultor%}<td>{%if Permisos.pro_add and Permisos.var_add and Permisos.pre_add%}<a href="/proyecto/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pro_edit%}<a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if user.is_staff%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>{%endif%}
+						{%if Permisos.consultor%}<td>{%if Permisos.pro_add and Permisos.var_add and Permisos.pre_add%}<a href="/proyecto/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pro_edit%}<a href="/proyecto/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}<a href="/proyecto/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a></td>{%endif%}
 					</tr>{% endfor %}
 				</tbody>
 			</table>
@@ -49,7 +49,7 @@
 </div>
 {% endblock %}
 {% block scripts%}
-<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
 <script>$(document).ready(function() {$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }{%if Permisos.consultor%},{ className: "center" }{%endif%}],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ proyectos",sZeroRecords:"No se encontraron resultados",sEmptyTable:"No posees ningún proyecto creado o asociado.",sInfo:"Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Proyectos del 0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ proyectos)",sInfoPostFix:"",sSearch:"Buscar",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});});</script>
 {%endblock%}

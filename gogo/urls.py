@@ -17,7 +17,10 @@ urlpatterns = patterns('usuarios.views',
 	url(r'^menu/(?P<id_proyecto>[0-9]{1,10})/$', 'menu'),
 	url(r'^home2/$', 'home2'),
 	url(r'^logs/$', 'logs'),
+	url(r'^terminos/$', 'terminos'),
+	url(r'^privacidad/$', 'privacidad'),
 	url(r'^reportar/$', 'reportarerror'),
+	url(r'^faq/$', 'faq'),
 	url(r'^salir/$', 'salir')
 )
 

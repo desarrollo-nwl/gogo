@@ -1,0 +1,117 @@
+{% extends "dash.html" %}{%load staticfiles %}
+{% block title %} Home | Licencia{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Licencia</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Información de la licencia:</b></h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<div style="text-align:justify" class="row ml10 mr10 pl10 pr10">
+				<h4><b>¿Qué es Talenter?</b></h4><br>
+				Talenter es un concepto novedoso para capturar información en tiempo real y mejorar la toma de decisiones relacionadas con proyectos y gestión de personas, basada en datos e información, el cual se caracteriza por 3 conceptos claves:<br><br>
+				<ol>
+					<li>Medición en tiempo real: a través de la plataforma en nube habilitada 24 – 7 para recibir información de los usuarios, que se recolecta principalmente a través de encuestas.</li>
+					<li>Big data y Analytics: la posibilidad de capturar constantemente grandes volúmenes de información y analizarlos para identificar hallazgos importantes que mejoren las decisiones y las acciones, mostrando un impacto tangible en los resultados.</li>
+					<li>Conexión con la estrategia de la organización: acompañamiento asesor para ayudar a la organización a sacar el mayor provecho de la información capturada y los hallazgos encontrados</li>
+				</ol><br>
+
+				<h4><b>¿Cuáles son los tipos de usuarios de la plataforma?</b></h4><br>
+				<b>Usuario consultor</b>: la persona que opera los proyectos en la plataforma, revisa y analiza los datos y genera informes al respecto.<br>
+				<b>Usuario cliente</b>: los clientes del consultor que obtienen acceso al dashboard (indicadores y gráficas) del proyecto.<br>
+				<b>Usuario administrador</b>: la persona o equipo a cargo de la estabilidad de la plataforma.<br><br>
+
+				<h4><b>¿Cuáles son los tipos de licencias?</b></h4><br>
+				Las licencias son SaaS (Software as a Service) y se definen por proyecto a realizar (máximo hasta 5 usuarios consultores por proyecto y sin límite de usuarios cliente).
+				La compra inicial plantea un mínimo de 3 a 6 meses de uso de la plataforma y a partir de allí el uso es mensual (para cancelar el uso se debe informar por escrito con un mes de anticipación).
+				El tiempo mínimo no aplica para proyectos que requieran una medición única, tema a definir de común acuerdo con el cliente, con base en sus necesidades específicas.<br><br>
+
+				<h4><b>¿Cómo se garantiza la seguridad en el uso y almacenamiento de la información?</b></h4><br>
+				Hay cuatro aspectos de seguridad que se deben tener en cuenta para el manejo de datos e información en los proyectos a través de una solución en nube:<br><br>
+				<ol>
+					<li>Seguridad del sitio: la seguridad que el centro de datos genera al igual que los protocolos para hacer copias (backup) de la información y las capacidades para recuperar la misma en coyunturas específicas.</li>
+
+					<li>Seguridad de la comunicación: cuáles son los requisitos para monitorear la red que se utiliza para transmitir datos, de forma que se identifiquen intentos de intrusión o vulnerabilidad y cuáles son los procedimientos de seguridad para la transmisión de datos.</li>
+
+					<li>Seguridad de la aplicación: cómo el servidor es monitoreado para identificar signos de intrusión o vulnerabilidad, cuáles roles pueden acceder a cuáles procesos, cuáles usuarios pueden acceder a la data, etc.</li>
+
+					<li>Seguridad de las bases de datos: Cómo los datos son almacenados y asegurados.</li>
+				</ol><br>
+				Con base en esto, los aspectos de seguridad que garantiza Talenter son los siguientes:<br><br>
+				<ul>
+					<li>Certificación SSL: El cual asegura que la conexión (la información que va desde el servidor hasta el usuario y viceversa - claves, datos, etc. -) siempre está encriptada.</li>
+					<li>Backup diario y protección contra ataques DOS y DDOS (ataques distribuidos por denegación de servicio).</li>
+					<li>Manejo de puertos responsables (únicamente está abierto al público puertos 80 y 443). Blindaje del servidor por ataque y escaneo de puertos.</li>
+					<li>Garantía en la disponibilidad del servicio (no se generan problemas de conexión o estabilidad cuando varios usuarios acceden al mismo tiempo).</li>
+					<li>Protección de la base de datos por acceso directo desde la plataforma (conexión local con el servidor de forma que terceros no puedan acceder a ella).</li>
+					<li>Protección contra inyección de SQL.</li>
+					<li>Protección contra cross side scripting (XSS) por ataque de clonación.</li>
+					<li>Protección contra intento de inicio de carpeta de sesión que se haya copiado en otra ubicación (cross side request forgery CSRF).</li>
+					<li>Protección contra click jacking o secuestro de clic, técnica para el acceso a información confidencial o que puede llevar al control de un equipo de cómputo, engañando al usuario cuando hace clic en páginas web que, en apariencia, son seguras.</li>
+					<li>Host header verification, el cual evita phising, negando al servidor la posibilidad de responder a URL’s maliciosas que estén direccionadas hacia él.</li>
+					<li>Base de datos resiliente a caídas (backup en vivo para seguir funcionando en caso de alguna caída coyuntural).</li>
+					<li>Talenter asegura que no incluirá código malicioso ni tomará más información de la que se defina para el proceso (no se usan cookies para tomar información que no esté definida en el proceso).</li>
+					<li>Actualizaciones constantes de seguridad del sofware bajo el cual se apoya la herramienta.</li>
+				</ul><br>
+
+				<h4><b>¿Qué requiere la plataforma de la organización cliente para dar inicio?</b></h4><br>
+				De parte del cliente, el proceso simplemente requiere:<br><br>
+				<ul>
+					<li>Deshabilitación del firewall para la dirección web que utiliza la encuesta y sus extensiones asociadas.</li>
+					<li>Garantizar el uso de un anti virus de calidad y reconocido en el mercado.</li>
+					<li>Verificar que los datos mínimos que requiere la plataforma estén disponibles para el proceso (vía archivo plano o conexión directa con la base de datos de donde se extraería esta información).</li>
+					<li>Según el alcance acordado conjuntamente, definir los posibles roles de apoyo que requiera el proceso.</li>
+				</ul>
+				<b>Nota</b>: No se requiere instalación de ningún tipo en los servidores o equipos del cliente.<br><br>
+
+				<h4><b>¿Requiero de un consultor que me guíe para operar Talenter?</b></h4><br>
+				Según el alcance acordado el proceso puede ser auto gestionado o acompañado por parte de profesionales de Talenter.
+				En ambos casos, cualquier proceso contempla una capacitación y aseguramiento de la habilidad de uso en la plataforma, con un servicio constante de soporte.<br><br>
+
+				<h4><b>¿Cómo se recolecta la información?</b></h4><br>
+				<ul>
+					<li>Encuestas que son enviadas a un correo electrónico autorizado por la organización o el usuario final (para los casos en que se deba enviar a un correo personal, se solicitará previamente la aprobación por escrito del participante, con un sencillo documento).</li>
+					<li>La conexión con otros sistemas de información con los que cuente la organización (cuando aplique).</li>
+				</ul><br>
+
+				<h4><b>¿Puedo incluir preguntas propias?</b></h4><br>
+
+				Existen 3 formas de utilizar la plataforma para recolectar información a través de encuestas:<br><br>
+				<ol>
+					<li>Utilizar los instrumentos estándar que propone Talenter.</li>
+					<li>Utilizar los instrumentos estándar permitiendo la inclusión de variables o preguntas adicionales (generales, por rol, etc.).
+					<li>Utilizar un instrumento propio de la organización, cargando la información en la plataforma.</li>
+				</ol><br>
+
+				<h4><b>¿Puedo incluir filtros propios?</b></h4><br>
+				Para cada proyecto, la organización cuenta con la posibilidad de incluir hasta 5 filtros propios para los cuales debe asegurarse que se suba a la plataforma la información requerida para cada filtro.
+				Si se requiere un filtro adicional, se analizará cada situación y en caso de aprobarse se generará un costo relacionado con el desarrollo.<br><br>
+
+				<h4><b>¿Cuál es la validez de los instrumentos estándar que propone Talenter?</b></h4><br>
+				Todos los instrumentos estándar de Talenter (propios y en alianza con terceros) están en constante revisión para garantizar su confiabilidad, consistencia y validez.<br><br>
+
+				<h4><b>¿Se pueden relacionar los resultados de mi proyecto con información previa de otras fuentes?</b></h4><br>
+				De acuerdo con el alcance definido, es posible que el acompañamiento contemple el uso de información de otras bases de datos (otros diagnósticos, encuestas a clientes, etc.) que se pueda cruzar a través de motores analíticos, para generar hallazgos complementarios.<br><br>
+
+				<h4><b>¿Cómo manejar las situaciones de alta rotación y movilidad interna?</b></h4><br>
+				Aunque se debe revisar cada caso específico, es posible actualizar la base de datos cada vez que se presenten novedades que cambien los correos o las variables (área, cargo, regional, etc.) de los participantes.<br><br>
+
+				<h4><b>¿Qué barreras pueden presentarse para que las personas contesten y en general para que la organización mantenga la tasa y frecuencia de respuesta que se requiere?</b></h4><br>
+				Mantener un nivel representativo de participación es uno de los desafíos más importantes de una organización. Se debe revisar cada caso en particular (atendiendo a particularidades en la cultura y los procesos de la organización) aunque se pueden tener en cuenta las siguientes mejores prácticas:<br><br>
+				<ul>
+					<li>Realizar una campaña de sensibilización que conecte emocionalmente y de a entender la importancia de involucrarse activamente en el proceso.</li>
+					<li>Aclarar la metodología haciendo énfasis en las pocas preguntas que se contestarán en cada envío, para evitar fatiga o desinterés.</li>
+					<li>Definir un plan de comunicación consistente que envíe periódicamente mensajes de refuerzo tanto de lo comunicado en la campaña de sensibilización, como de hallazgos específicos para audiencias específicas, con tips de mejoramiento o refuerzo según sea el caso.</li>
+					<li>Activar un proceso de reconocimiento a la participación que puede consistir en la generación de premios (simbólicos o tangibles) a canjear a medida que se obtienen puntos por participar o reconocimientos de otras personas (según el tipo de proyecto). Estos reconocimientos deben ser fuertemente comunicados para mantener la conexión emocional con el proceso.</li>
+					<li>Mostrar victorias (tempranas y continuas) que le permitan a los participantes ver con claridad que sus sugerencias o calificaciones son tenidas en cuenta y generan cambios de valor de acuerdo con cada tema particular que se esté tratando en el proyecto.</li>
+					<li>Conectar las victorias o los hallazgos con indicadores KPI que sean de interés para los patrocinadores y líderes de la organización, de forma que se conviertan en activos promotores del proceso de levantamiento de información..</li>
+				</ul><br>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

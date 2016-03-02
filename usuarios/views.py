@@ -521,16 +521,16 @@ def proyectoeliminar(request,id_proyecto):
 				return render_to_response('403.html')
 		if request.method == 'POST':
 			proyecto.zdel = timezone.now()
-			try:
-				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
-				os.system(command)
-			except:
-				pass
-			try:
-				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
-				os.system(command)
-			except:
-				pass
+			# try:
+			# 	command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
+			# 	os.system(command)
+			# except:
+			# 	pass
+			# try:
+			# 	command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
+			# 	os.system(command)
+			# except:
+			# 	pass
 			with transaction.atomic():
 				proyecto.usuarios.clear()
 				proyecto.save()
@@ -1067,6 +1067,27 @@ def reportarerror(request):
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
+
+#===============================================================================
+#    Páginas de legal
+#===============================================================================
+
+@cache_control(no_store=True)
+def terminos(request):
+	return render_to_response('terminos.html')
+
+@cache_control(no_store=True)
+def privacidad(request):
+	return render_to_response('privacidad.html')
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def faq(request):
+	cache.delete(request.user)
+	permisos = request.user.permisos
+	return render_to_response('faq.html',{
+	'Activar':'CentroDeAyuda','activar':'Faq','Permisos':permisos,
+	}, context_instance=RequestContext(request))
 
 #===============================================================================
 #    Páginas de errores
