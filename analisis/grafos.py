@@ -54,7 +54,7 @@ palabrasRestringidas = ['que', 'los', 'del', 'las', 'por', 'para', 'con', 'una',
 						'against','between','into','through','during','from','up','down','out','off','over','under','further','then','once','here','there','when','where','why','how',
 						'all','any','both','each','few','more','most','other','some','such','nor','not','only','own','same','than','can','will','just','don','should','now']
 
-palabrasAutorizadas = ['no',  'si', 'mi', 'a' , 'os' , 'as']
+palabrasAutorizadas = ['no',  'si', 'mi' ]
 
 
 def depuracionDiccionario(lista):
