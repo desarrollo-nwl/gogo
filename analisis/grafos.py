@@ -28,14 +28,42 @@ def creaDiccionario(dataset):
 	return  list(conjuntoPalabras)
 
 # diccPrueba = creaDiccionario(listaRespuestas)
+palabrasRestringidas = ['que', 'los', 'del', 'las', 'por', 'para', 'con', 'una',
+						'pero', 'sus', 'este', 'porque', 'esta', 'entre', 'cuando', 'sobre', 'tambien', 'hasta', 'hay',
+						'donde', 'quien', 'desde', 'todo', 'nos', 'durante', 'todos', 'uno', 'les', 'ni', 'contra', 'otros', 'ese', 'eso', 'ante',
+						'ellos', 'esto', 'antes', 'algunos', 'que', 'unos', 'otro', 'otras', 'otra', 'tanto', 'esa', 'estos', 'quienes',
+						'muchos', 'cual', 'poco', 'ella', 'estar', 'estas', 'algunas', 'algo', 'nosotros', 'mis', 'tus',
+						'ellas', 'nosotras', 'vosostros', 'vosostras', 'mio', 'mia', 'mios', 'mias', 'tuyo', 'tuya', 'tuyos', 'tuyas', 'suyo', 'suya',
+						'suyos', 'suyas', 'nuestro', 'nuestra', 'nuestros', 'nuestras', 'vuestro', 'vuestra', 'vuestros', 'vuestras', 'esos', 'esas', 'estoy',
+						'estas', 'esta', 'estamos', 'estais', 'estan', 'este', 'estes', 'estemos', 'esteis', 'esten', 'estare', 'estaras', 'estara', 'estaremos',
+						'estareis', 'estaran', 'estaria', 'estarias', 'estariamos', 'estariais', 'estarian', 'estaba', 'estabas', 'estabamos', 'estabais', 'estaban',
+						'estuve', 'estuviste', 'estuvo', 'estuvimos', 'estuvisteis', 'estuvieron', 'estuviera', 'estuvieras', 'estuvieramos', 'estuvierais', 'estuvieran',
+						'estuviese', 'estuvieses', 'estuviesemos', 'estuvieseis', 'estuviesen', 'estando', 'estado', 'estada', 'estados', 'estadas', 'estad', 'has',
+						'hemos', 'habeis', 'han', 'haya', 'hayas', 'hayamos', 'hayais', 'hayan', 'habre', 'habras', 'habra', 'habremos', 'habreis', 'habran', 'habria',
+						'habrias', 'habriamos', 'habriais', 'habrian', 'habia', 'habias', 'habiamos', 'habiais', 'habian', 'hube', 'hubiste', 'hubo', 'hubimos', 'hubisteis', 'hubieron',
+						'hubiera', 'hubieras', 'hubieramos', 'hubierais', 'hubieran', 'hubiese', 'hubieses', 'hubiesemos', 'hubieseis', 'hubiesen', 'habiendo', 'habido', 'habida',
+					   	'habidos', 'habidas', 'soy', 'eres','somos', 'sois', 'son', 'sea', 'seas', 'seamos', 'seais', 'sean', 'sere', 'seras', 'sera', 'seremos', 'sereis', 'seran',
+						'seria', 'serias', 'seriamos', 'seriais', 'serian', 'era', 'eras', 'eramos', 'erais', 'eran', 'fui', 'fuiste', 'fue', 'fuimos', 'fuisteis', 'fueron', 'fuera',
+						'fueras', 'fueramos', 'fuerais', 'fueran', 'fuese', 'fueses', 'fuesemos', 'fueseis', 'fuesen', 'sintiendo', 'sentido', 'sentida', 'sentidos', 'sentidas', 'siente',
+						'sentid', 'tengo', 'tienes', 'tiene', 'tenemos', 'teneis', 'tienen', 'tenga', 'tengas', 'tengamos', 'tengais', 'tengan', 'tendre', 'tendras', 'tendra', 'tendremos',
+						'tendreis', 'tendran', 'tendria', 'tendrias', 'tendriamos', 'tendriais', 'tendrian', 'tenia', 'tenias', 'teniamos', 'teniais', 'tenian', 'tuve', 'tuviste', 'tuvo', 'tuvimos',
+						'tuvisteis', 'tuvieron', 'tuviera', 'tuvieras', 'tuvieramos', 'tuvierais', 'tuvieran', 'tuviese', 'tuvieses', 'tuviesemos', 'tuvieseis', 'tuviesen', 'teniendo', 'tenido', 'tenida',
+						'tenidos', 'tenidas', 'tened','myself','our','ours','ourselves','you','your','yours','yourself','yourselves','him','his','himself','she','her',
+						'hers','herself','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','are','was','were','be',
+						'been','being','have','has','had','having','does','did','doing','the','and','but','because','until','while','for','with','about',
+						'against','between','into','through','during','from','up','down','out','off','over','under','further','then','once','here','there','when','where','why','how',
+						'all','any','both','each','few','more','most','other','some','such','nor','not','only','own','same','than','can','will','just','don','should','now']
+
+palabrasAutorizadas = ['no',  'si', 'mi', 'a' , 'os' , 'as']
+
 
 def depuracionDiccionario(lista):
 	z = []
 	for i in range(len(lista)):
-		if len(lista[i])>4:
+		if len(lista[i])>2 and lista[i] not in palabrasRestringidas:
 			z.append(lista[i])
-	z.append("no")
-	z.append("si")
+	for m in palabrasAutorizadas:
+		z.append(m)
 	return z
 
 # diccPruebaDepurado = depuracionDiccionario(diccPrueba)
