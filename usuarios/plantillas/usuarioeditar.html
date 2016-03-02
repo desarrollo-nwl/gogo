@@ -53,10 +53,10 @@
 									<td class="center">Puede activar variables</td>
 									<td class="center"><input {%if Permisos.act_variables%}{%else%}disabled{%endif%} {%if Usuario.permisos.act_variables%}checked{%endif%} id="variables" type="checkbox" name="act_variables" class="switch" ></td>
 								</tr>
-								<tr>
+								<!-- <tr>
 									<td class="center">Puede ver respuestas detalladas</td>
 									<td class="center"><input {%if Permisos.det_see%}{%else%}disabled{%endif%} {%if Usuario.permisos.det_see%}checked{%endif%} id="detalles" type="checkbox" name="det_see" class="switch" ></td>
-								</tr>
+								</tr> -->
 								<tr>
 									<td class="center">Puede exportar respuestas</td>
 									<td class="center"><input {%if Permisos.res_exp%}{%else%}disabled{%endif%} {%if Usuario.permisos.res_exp%}checked{%endif%} id="exportar" type="checkbox" name="res_exp" class="switch" ></td>
