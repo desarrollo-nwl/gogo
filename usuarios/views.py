@@ -102,10 +102,14 @@ def home(request):
 	permisos = request.user.permisos
 	cache.delete(request.user)
 	if request.user.is_superuser:
-		proyectos = Proyectos.objects.all().select_related('empresa__nombre')
+		proyectos = Proyectos.objects.only('nombre','empresa__nombre','interna',
+											'tot_respuestas','tot_aresponder',
+											'total','activo').all().select_related('empresa__nombre')
 	else:
 		if permisos.pro_see or permisos.res_see:
-			proyectos = Proyectos.objects.select_related('empresa__nombre').filter( usuarios = request.user)
+			proyectos = Proyectos.objects.only('nombre','empresa__nombre','interna',
+												'tot_respuestas','tot_aresponder',
+												'total','activo').select_related('empresa__nombre').filter( usuarios = request.user)
 		else:
 			proyectos = []
 	return render_to_response('home.html',{

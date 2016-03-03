@@ -32,7 +32,7 @@
 					<tr>
 						<td>{{i.respuestas | escape}}</td>
 						<td>{{i.enviados   | escape}}</td>
-						<td>{% ifequal i.propension -1 %} 1000 {% else %}{{i.propension |floatformat:"2" | safe}}{% endifequal %}</td>
+						<td>{% ifequal i.propension -1 %} Sin propensión {% else %}{{i.propension |floatformat:"2" | safe}}{% endifequal %}</td>
 						<td>{{i.reenviados | escape}}</td>
 						<td>{{i.nombre     | capfirst | escape}}</td>
 						<td>{{i.apellido   | capfirst | escape}}</td>
