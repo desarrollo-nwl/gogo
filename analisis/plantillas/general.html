@@ -33,58 +33,80 @@
 						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
 					</div>
 					<div class="panel-body">
-						<ul class="list-unstyled mb0">
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25" >Variables</span>
-								<select id="variables_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{%if PDatos.opcional1 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional1 | escape }}</span>
-								<select id="opcional1_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional2 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional2 | escape }}</span>
-								<select id="opcional2_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional3 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional3 | escape }}</span>
-								<select id="opcional3_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional4 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional4 | escape }}</span>
-								<select id="opcional4_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional5 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional5 | escape }}</span>
-								<select id="opcional5_g1" class="filtro filtros_uno" multiple></select>
-							</li>
-							{% endif %}
-						</ul>
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{%if PDatos.opcional1 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional2 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional3 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional4 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional5 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -100,6 +122,7 @@
 				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
 				<br>
 				<div id="control_grafica_dos_div"></div>
+				<br><br>
 			</div>
 
 			<div class="col-lg-3">
@@ -109,59 +132,80 @@
 						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
 					</div>
 					<div class="panel-body">
-						<ul class="list-unstyled mb0">
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25" >Variables</span>
-								<select id="variables_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{%if PDatos.opcional1 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional1 | escape }}</span>
-								<select id="opcional1_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional2 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional2 | escape }}</span>
-								<select id="opcional2_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional3 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional3 | escape }}</span>
-								<select id="opcional3_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional4 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional4 | escape }}</span>
-								<select id="opcional4_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional5 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional5 | escape }}</span>
-								<select id="opcional5_g2" class="filtro filtros_dos" multiple></select>
-							</li>
-							{% endif %}
-						</ul>
-
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{%if PDatos.opcional1 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional2 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional3 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional4 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional5 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -175,7 +219,9 @@
 		<div class="panel-body">
 			<div class="col-lg-9">
 				<div style='margin: 0 5px 0 5px' id="grafica_tres_div"></div>
+				<br>
 				<div style='margin: 0 5px 0 5px' id="control_grafica_tres_div"></div>
+				<br><br>
 			</div>
 
 			<div class="col-lg-3">
@@ -184,62 +230,86 @@
 						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
 					</div>
 					<div class="panel-body">
-						<ul class="list-unstyled mb0">
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25" >Variables</span>
-								<select id="variables_g3" class="filtros_tres" ></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr20" >Preguntas</span>
-								<select id="preguntas_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">Regionales</span>
-								<select id="regionales_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr25">Ciudades</span>
-								<select id="ciudades_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:47px">Áreas</span>
-								<select id="areas_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong" style="padding-right:39px">Cargos</span>
-								<select id="cargos_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{%if PDatos.opcional1 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional1 | escape }}</span>
-								<select id="opcional1_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional2 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional2 | escape }}</span>
-								<select id="opcional2_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional3 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional3 | escape }}</span>
-								<select id="opcional3_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional4 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional4 | escape }}</span>
-								<select id="opcional4_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-							{%if PDatos.opcional5 %}
-							<li class="mb5 pb5 bbdashed">
-								<span class="strong pr15">{{ PDatos.opcional5 | escape }}</span>
-								<select id="opcional5_g3" class="filtro filtros_tres" multiple></select>
-							</li>
-							{% endif %}
-						</ul>
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g3" class="filtros_tres form-control"></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Preguntas</label>
+									<div class="col-xs-2">
+										<select id="preguntas_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{%if PDatos.opcional1 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional2 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional3 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional4 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional5 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -798,11 +868,11 @@ grafica_dos: function(dataTable){
 
 },
 dataTab2: function(fechaInicial,fechaFinal){
-	var {%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
-		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
-		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
-		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
-		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
+	var {%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g2.val() || [],{% endif %}
+		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g2.val() || [],{% endif %}
+		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g2.val() || [],{% endif %}
+		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g2.val() || [],{% endif %}
+		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g2.val() || [],{% endif %}
 		variables_seleccionadas = $var_g2.val() || [],
 		regionales_seleccionadas = $reg_g2.val() || [],
 		ciudades_seleccionadas = $ciu_g2.val() || [],
