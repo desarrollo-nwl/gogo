@@ -1011,7 +1011,7 @@ def logs(request):
 	permisos = request.user.permisos
 	if permisos.consultor:
 		usuarios_creados = IndiceUsuarios.objects.filter(usuario=request.user
-							).select_related('usuario').get_descendants(include_self=True)
+							).get_descendants(include_self=True).select_related('usuario')
 		aux = []
 		for  i in usuarios_creados:
 			aux.append(i.usuario.username)

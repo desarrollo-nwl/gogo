@@ -31,7 +31,9 @@ def colaboradores_ind(request):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_see:
 		participantes = Colaboradores.objects.filter(proyecto=proyecto
-						).only('nombre','apellido','email','colaboradoresdatos__cargo'
+						).only(
+							'nombre','apellido','email',
+							'colaboradoresdatos__cargo','estado'
 						).select_related('colaboradoresdatos')
 		return render_to_response('colaboradores_ind.html',{
 		'Activar':'Configuracion','activar':'Individual',

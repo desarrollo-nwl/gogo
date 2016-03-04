@@ -15,7 +15,7 @@ from usuarios.models import Proyectos, Logs
 import grafos as gr
 import string
 
-import part,gener
+import part,gener,focal
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
@@ -75,39 +75,39 @@ def focalizado(request):
 	if permisos.res_see:
 		variables = Variables.objects.filter(proyecto_id=proyecto.id)
 		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
-		datos = Streaming.objects.only(
-				'respuesta','fecharespuesta',
-				'pregunta__texto',
-				'pregunta__numerica',
-				'pregunta__multiple',
-				'pregunta__abierta',
-				'pregunta__variable__nombre',
-				'proyecto__proyectosdatos__opcional1',
-				'proyecto__proyectosdatos__opcional2',
-				'proyecto__proyectosdatos__opcional3',
-				'proyecto__proyectosdatos__opcional4',
-				'proyecto__proyectosdatos__opcional5',
-				'colaborador__colaboradoresdatos__regional',
-				'colaborador__colaboradoresdatos__ciudad',
-				'colaborador__colaboradoresdatos__area',
-				'colaborador__colaboradoresdatos__cargo',
-				'colaborador__colaboradoresdatos__niv_academico',
-				'colaborador__colaboradoresdatos__profesion',
-				'colaborador__colaboradoresdatos__opcional1',
-			    'colaborador__colaboradoresdatos__opcional2',
-			    'colaborador__colaboradoresdatos__opcional3',
-			    'colaborador__colaboradoresdatos__opcional4',
-			    'colaborador__colaboradoresdatos__opcional5'
-				).filter(
-					proyecto_id=proyecto.id,
-					pregunta__abierta=False,
-					respuesta__isnull=False
-				).select_related(
-					'proyecto__proyectosdatos',
-					'pregunta','pregunta__variable',
-					'colaborador','colaborador__colaboradoresdatos'
-				).order_by('fecharespuesta')
-		# datos = gener.query(str(proyecto.id))
+		# datos = Streaming.objects.only(
+		# 		'respuesta','fecharespuesta',
+		# 		'pregunta__texto',
+		# 		'pregunta__numerica',
+		# 		'pregunta__multiple',
+		# 		'pregunta__abierta',
+		# 		'pregunta__variable__nombre',
+		# 		'proyecto__proyectosdatos__opcional1',
+		# 		'proyecto__proyectosdatos__opcional2',
+		# 		'proyecto__proyectosdatos__opcional3',
+		# 		'proyecto__proyectosdatos__opcional4',
+		# 		'proyecto__proyectosdatos__opcional5',
+		# 		'colaborador__colaboradoresdatos__regional',
+		# 		'colaborador__colaboradoresdatos__ciudad',
+		# 		'colaborador__colaboradoresdatos__area',
+		# 		'colaborador__colaboradoresdatos__cargo',
+		# 		'colaborador__colaboradoresdatos__niv_academico',
+		# 		'colaborador__colaboradoresdatos__profesion',
+		# 		'colaborador__colaboradoresdatos__opcional1',
+		# 	    'colaborador__colaboradoresdatos__opcional2',
+		# 	    'colaborador__colaboradoresdatos__opcional3',
+		# 	    'colaborador__colaboradoresdatos__opcional4',
+		# 	    'colaborador__colaboradoresdatos__opcional5'
+		# 		).filter(
+		# 			proyecto_id=proyecto.id,
+		# 			pregunta__abierta=False,
+		# 			respuesta__isnull=False
+		# 		).select_related(
+		# 			'proyecto__proyectosdatos',
+		# 			'pregunta','pregunta__variable',
+		# 			'colaborador','colaborador__colaboradoresdatos'
+		# 		).order_by('fecharespuesta')
+		datos = focal.query(str(proyecto.id))
 		return render_to_response('focalizado.html',{
 			'Activar':'AnalisisResultados','activar':'Focalizados','PDatos':pdatos,
 			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
@@ -208,7 +208,15 @@ def wordanalytics(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-			objetosStreaming = Streaming.objects.filter(proyecto_id=proyecto.id,pregunta__abierta = True,respuesta__isnull = False)
+			objetosStreaming = Streaming.objects.filter(
+									proyecto_id=proyecto.id,
+									pregunta__abierta = True,
+									respuesta__isnull = False
+								).select_related(
+									'pregunta'
+								).prefetch_related(
+									'pregunta__respuestas_set'
+								)
 			listaPreguntas = []
 			datasetgrafo = []
 			for i in objetosStreaming:

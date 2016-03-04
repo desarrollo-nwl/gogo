@@ -1793,8 +1793,6 @@ body.fixed-right-sidebar:not(.fixed-header) #right-sidebar.rstop {
 	right: 0;
 	position: relative !important;
 }
- #footer p {
-   margin-bottom: 0;
 #footer p {
   margin-bottom: 0;
 }
@@ -2975,7 +2973,7 @@ fieldset[disabled] .pricing-table.yellow .pricing-bottom .price .btn.active {
   margin-right: 15px;
 }
 .progressbar-stats-1 .stats-number {
-  font-size: 42px;
+  font-size: 32px;
   margin-top: -10px;
 }
 .money:before {

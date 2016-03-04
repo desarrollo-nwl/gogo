@@ -351,3 +351,7 @@ ul.navbar-nav > li > a > i > span {
 .sidebar-panel-title{
 	margin-left:5px;
 }
+
+.dataTables_wrapper{
+	padding: 20px;
+}
