@@ -265,8 +265,7 @@
 
 <script type="text/javascript">
 // $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-var Datos = [{%for i in Datos%}
-['{{ i.colaborador.nombre | escape}}'+'{{ i.colaborador.apellido  | escape }}' , '{{ i.pregunta.variable.nombre | escape }}' , '{{ i.pregunta.texto | escape }}' , '{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' , '{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' , '{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' , {%if i.pregunta.multiple%}{%ifequal i.respuesta "0"%}['0'],{%else%}{{ i.respuesta | safe | escape }},{%endifequal%}{%endif%} {%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}{%ifequal i.respuesta "0"%}['0'],{%else%}['{{ i.respuesta | escape}}'],{%endifequal%}{%endif%} new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}), '{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',{{ i.pregunta.variable.id }},{{ i.pregunta.id }}, "{{ i.pregunta.numerica }}" ],{%endfor%}];
+var Datos = {{ Datos }};
 var Cuestionario = [ {% for i in Preguntas %}['{{ i.variable_id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}];
 
 var contenido = function(a,x){

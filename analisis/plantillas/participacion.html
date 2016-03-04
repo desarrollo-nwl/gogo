@@ -2,7 +2,7 @@
 {% block title %} A. Participación{% endblock %}
 {% block head2 %}
 <link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
-<style media="screen">li{list-style-type:none}.multiselect{margin-left: -15px !important;}span.strong{margin-left: -13px}#cargando{opacity: 0%}</style>
+<style media="screen">li{list-style-type:none}.multiselect{margin-left: -15px !important;}span.strong{margin-left: -13px}</style>
 {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
@@ -14,7 +14,7 @@
 	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
 		<div class="panel panel-info tile">
 			<div class="panel-heading">
-				<h4 class="panel-title">Finaliza en:</h4>
+				<h4 class="panel-title" style="font-size:30px">Finaliza en:</h4>
 			</div>
 			<div class="panel-body pt0">
 				<div class="progressbar-stats-1">
@@ -209,7 +209,7 @@
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = [{%for i in Datos%}['{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' ,'{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' ,'{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.genero | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.niv_academico | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.profesion | lower | escape }}' , {%if i.respuesta %}true{% else %}false{%endif%}, {%if i.fecharespuesta %}new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}){% else %}0{% endif %},'{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',],{%endfor%}];
+var Datos = {{ Datos }}
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -241,7 +241,7 @@ var regionales=[],ciudades=[],areas=[],cargos=[],genero=[],niv_academico=[],prof
 	$des_pie=$("#descripcion_pie"),$tabla = $("#tabla"),
 	total_areas_personas={},total_regionales_personas={},areas_personas={},regionales_personas={};
 
-	if(Datos) {var fec_minima = Datos[0][8],fec_maxima=Datos[0][8];}
+	if(Datos) {var fec_minima = new Date(2050,1,1),fec_maxima= new Date(2011,1,1);}
 
 {%if PDatos.opcional1 %}var $op1 = $('#opcional1'),opcional1=[];{% endif %}
 {%if PDatos.opcional2 %}var $op2 = $('#opcional2'),opcional2=[];{% endif %}
@@ -267,7 +267,7 @@ pie: function(){
 },
 
 inicio : function(){
-
+		var aux = [];
 	for (var i = 0; i < Datos.length; i++) {
 
 		if( Datos[i][8] - fec_minima < 0 ) fec_minima = Datos[i][8];
@@ -470,7 +470,7 @@ circulo: function(min,max){
 $(document).ready(function() {
 
 	Elementos.inicio();
-	$("#cargando").fadeIn();
+
 	$("#slider").dateRangeSlider({
 		bounds:{
 		  min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
