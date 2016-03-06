@@ -800,6 +800,7 @@ grafica_dos: function(dataTable){
 
 
 },
+
 dataTab2: function(fechaInicial,fechaFinal){
 	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
 		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
@@ -814,24 +815,28 @@ dataTab2: function(fechaInicial,fechaFinal){
 
 		var matrizTotal= [], variables = [];
 		var puntajeVariables = [], indiceVariables = [];
+		var  personas = [], personasFiltro = [];
         var totalPersonas = Datos.length;
-		for(z=0;z<totalPersonas;z++){
-			if(Datos[z][16]=='True'){
-		                var puntajePendejo = calculePuntaje(Datos[z][14],Datos[z][15],Datos[z][7]);
-						if(!contenido(Datos[z][14],indiceVariables)){
-							puntajeVariables.push(puntajePendejo/totalPersonas);
-							indiceVariables.push(Datos[z][14]);
-						  }else{
-								var ind1 = indiceVariables.indexOf(Datos[z][14]);
-								puntajeVariables[ind1] += puntajePendejo/totalPersonas;
-							}
-			}
-		}
-
-        var totalPersonasFiltro = 0;
 
 		for(r=0;r<totalPersonas;r++){
-            if(
+
+			if(Datos[r][16]=='True'){
+
+						if(!contenido(Datos[r][1],personas)){
+							personas.push(Datos[r][1])
+						}
+
+					    var puntajePendejo = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
+						if(!contenido(Datos[r][14],indiceVariables)){
+							puntajeVariables.push(puntajePendejo);
+							indiceVariables.push(Datos[r][14]);
+						  }else{
+								var ind1 = indiceVariables.indexOf(Datos[r][14]);
+								puntajeVariables[ind1] += puntajePendejo;
+							}
+			   }
+
+		    if(
 				fechaInicial<=Datos[r][8].getTime()
 				&&Datos[r][8].getTime()<=fechaFinal
 				&& contenido(Datos[r][14],variables_seleccionadas)
@@ -856,12 +861,15 @@ dataTab2: function(fechaInicial,fechaFinal){
 					&& contenido(Datos[r][13],opcional5_seleccionadas)
 				{% endif %}
 			){
-                    totalPersonasFiltro += 1;
+                    if(!contenido(Datos[r][1], personasFiltro  )){
+						personasFiltro.push(Datos[r][1]);
+					}
+
 					var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
 
 					if(!contenido(Datos[r][14],variables)){
                         // var ind2 = indiceVariables.indexOf(Datos[i][14]);
-						matrizTotal.push([Datos[r][1],puntajeVariables[indiceVariables.indexOf(Datos[r][14])],puntaje]);
+						matrizTotal.push([Datos[r][1],puntaje]);
 						variables.push(Datos[r][14]);
 
 					}else{
@@ -869,13 +877,9 @@ dataTab2: function(fechaInicial,fechaFinal){
 						matrizTotal[ind][2] += puntaje;
 					}
 			}
-
-
-
 		}
-        for(h=0;h<matrizTotal.length;h++){
-			matrizTotal[h][2] = matrizTotal[h][2]/totalPersonasFiltro;
-		}
+
+
 return matrizTotal
 console.log(matrizTotal);
 },
@@ -899,9 +903,17 @@ grafica_tres:  function(dataTable){
 
 	var options = {   height: altura,
 					  legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+					  hAxis: {
+      								maxValue: 5,
+									minValue: 1
+      						},
+
 	};
+
 	var chart = new google.visualization.Histogram(document.getElementById('grafica_tres_div'));
 	chart.draw(data2, options);
+
+
 
 	     },
 
@@ -960,6 +972,7 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 
 			return matrizDatos
 			// fin funcion dataTab3
+
 
 },
 
