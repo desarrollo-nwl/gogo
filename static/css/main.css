@@ -1785,13 +1785,13 @@ body.fixed-right-sidebar:not(.fixed-header) #right-sidebar.rstop {
    Page footer
 ----------------------------------------- */
 #footer {
-  padding: 9px 20px;
-  border-top: 1px solid #e3e3e3;
-  height: 35px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  position: relative !important;
+	padding: 9px 20px;
+	border-top: 1px solid #e3e3e3;
+	height: 35px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	position: relative !important;
 }
 #footer p {
   margin-bottom: 0;
@@ -2973,7 +2973,7 @@ fieldset[disabled] .pricing-table.yellow .pricing-bottom .price .btn.active {
   margin-right: 15px;
 }
 .progressbar-stats-1 .stats-number {
-  font-size: 42px;
+  font-size: 32px;
   margin-top: -10px;
 }
 .money:before {

@@ -2,7 +2,7 @@
 {% block title %} A. Participación{% endblock %}
 {% block head2 %}
 <link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
-<style media="screen">li{list-style-type:none}.multiselect{margin-left: -15px !important;}span.strong{margin-left: -13px}</style>
+<style media="screen">li{list-style-type:none}.multiselect{margin-left: -15px !important;}span.strong{margin-left: -13px}#cargando{opacity: 0;}</style>
 {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
@@ -14,7 +14,7 @@
 	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
 		<div class="panel panel-info tile">
 			<div class="panel-heading">
-				<h4 class="panel-title">Finaliza en:</h4>
+				<h4 class="panel-title" style="font-size:30px">Finaliza en:</h4>
 			</div>
 			<div class="panel-body pt0">
 				<div class="progressbar-stats-1">
@@ -74,92 +74,118 @@
 			<div class="panel-heading">
 				<h4 class="panel-title">Gráfica de participación</h4>
 			</div>
-			<div class="panel-body">
+			<div  class="panel-body">
 				<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-					{%if Datos.0.proyecto.proyectosdatos.opcional1 %}<br>{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional2 %}<br>{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional3 %}<br>{% endif %}
-					<div class="text-center mt20">
-						<div id="customer-exp" class="custom-progressbar blue" style="width:300px;height:300px;">
+					{%if PDatos.opcional1 %}<br>{% endif %}
+					{%if PDatos.opcional2 %}<br>{% endif %}
+					{%if PDatos.opcional3 %}<br>{% endif %}
+					<div class="text-center mt20 ml50" >
+						<div id="customer-exp" class="custom-progressbar blue" style="width:300px;height:300px;margin-left:20%;color:#1c9aa7">
 						<div class="pie-charts green-pie">
 							<div id="descripcion_pie" class="pie easyPieChart" data-percent="0" style="width: 300px; height: 300px; line-height: 300px;">
 							</div>
 						</div>
-							<div id="descripcion" class="description m" style="font-size:50px;margin-top:-30px"> 100%</div>
+							<div id="descripcion" class="description m" style="font-size:50px;margin-top:-10%"> 100%</div>
 
 						</div>
 					</div>
-					{%if Datos.0.proyecto.proyectosdatos.opcional4 %}<br>{% endif %}
-					{%if Datos.0.proyecto.proyectosdatos.opcional5 %}<br>{% endif %}
+					{%if PDatos.opcional4 %}<br>{% endif %}
+					{%if PDatos.opcional5 %}<br>{% endif %}
 					<div class="m" id="slider"></div><br><br>
 				</div>
-				<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+				<div id="cargando" class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
 					<div class="panel panel-default toggle">
 						<!-- Inicio .panel -->
 						<div class="panel-heading">
 							<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
 						</div>
 						<div class="panel-body">
-							<ul class="list-unstyled mb0">
-								<li class="pb5 bbdashed">
-									<span class="strong pr15">Regionales</span>
-									<select id="regionales" class="filtro" multiple></select>
-								</li>
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr25">Ciudades</span>
-									<select id="ciudades" class="filtro" multiple></select>
-								</li>
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong" style="padding-right:47px">Áreas</span>
-									<select id="areas" class="filtro" multiple></select>
-								</li>
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong" style="padding-right:39px">Cargos</span>
-									<select id="cargos" class="filtro" multiple></select>
-								</li>
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong" style="padding-right:37px">Género</span>
-									<select id="genero" class="filtro" multiple></select>
-								</li>
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr25">Nivel Ac.</span>
-									<select id="niv_academico" class="filtro" multiple></select>
-								</li>
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr25">Profesión</span>
-									<select id="profesion" class="filtro" multiple></select>
-								</li>
-								{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional1 | escape }}</span>
-									<select id="opcional1" class="filtro" multiple></select>
-								</li>
-								{% endif %}
-								{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional2 | escape }}</span>
-									<select id="opcional2" class="filtro" multiple></select>
-								</li>
-								{% endif %}
-								{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional3 | escape }}</span>
-									<select id="opcional3" class="filtro" multiple></select>
-								</li>
-								{% endif %}
-								{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional4 | escape }}</span>
-									<select id="opcional4" class="filtro" multiple></select>
-								</li>
-								{% endif %}
-								{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
-								<li class="mb5 pb5 bbdashed">
-									<span class="strong pr15">{{ Datos.0.proyecto.proyectosdatos.opcional5 | escape }}</span>
-									<select id="opcional5" class="filtro" multiple></select>
-								</li>
-								{% endif %}
-							</ul>
+							<div class="row">
+								<div class="form-horizontal">
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Regionales</label>
+										<div class="col-xs-2">
+											<select id="regionales" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Ciudades</label>
+										<div class="col-xs-2">
+											<select id="ciudades" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Áreas</label>
+										<div class="col-xs-2">
+											<select id="areas" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Cargos</label>
+										<div class="col-xs-2">
+											<select id="cargos" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Género</label>
+										<div class="col-xs-2">
+											<select id="genero" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Nivel Ac.</label>
+										<div class="col-xs-2">
+											<select id="niv_academico" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Profesión</label>
+										<div class="col-xs-2">
+											<select id="profesion" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									{%if PDatos.opcional1 %}
+									<div class="form-group">
+										<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+										<div class="col-xs-2">
+											<select id="opcional1" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									{% endif %}
+									{%if PDatos.opcional2 %}
+									<div class="form-group">
+										<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+										<div class="col-xs-2">
+											<select id="opcional2" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									{% endif %}
+									{%if PDatos.opcional3 %}
+									<div class="form-group">
+										<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+										<div class="col-xs-2">
+											<select id="opcional3" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									{% endif %}
+									{%if PDatos.opcional4 %}
+									<div class="form-group">
+										<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+										<div class="col-xs-2">
+											<select id="opcional4" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									{% endif %}
+									{%if PDatos.opcional5 %}
+									<div class="form-group">
+										<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+										<div class="col-xs-2">
+											<select id="opcional5" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									{% endif %}
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -209,9 +235,7 @@
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = [{%for i in Datos%}
-['{{ i.colaborador.colaboradoresdatos.regional | lower | escape}}' ,'{{ i.colaborador.colaboradoresdatos.ciudad | lower | escape}}' ,'{{ i.colaborador.colaboradoresdatos.area | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.cargo | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.genero | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.niv_academico | lower | escape }}' ,'{{ i.colaborador.colaboradoresdatos.profesion | lower | escape }}' , {%if i.respuesta %}true{% else %}false{%endif%}, {%if i.fecharespuesta %}new Date({{ i.fecharespuesta.year }},{{ i.fecharespuesta.month | add:-1 }},{{ i.fecharespuesta.day }}){% else %}0{% endif %},'{{ i.colaborador.colaboradoresdatos.opcional1 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional2 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional3 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional4 | escape }}','{{ i.colaborador.colaboradoresdatos.opcional5 | escape }}',],
-{%endfor%}];
+var Datos = {{ Datos }}
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -243,13 +267,13 @@ var regionales=[],ciudades=[],areas=[],cargos=[],genero=[],niv_academico=[],prof
 	$des_pie=$("#descripcion_pie"),$tabla = $("#tabla"),
 	total_areas_personas={},total_regionales_personas={},areas_personas={},regionales_personas={};
 
-	if(Datos) {var fec_minima = Datos[0][8],fec_maxima=Datos[0][8];}
+	if(Datos) {var fec_minima = new Date(2050,1,1),fec_maxima= new Date(2011,1,1);}
 
-{%if Datos.0.proyecto.proyectosdatos.opcional1 %}var $op1 = $('#opcional1'),opcional1=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional2 %}var $op2 = $('#opcional2'),opcional2=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional3 %}var $op3 = $('#opcional3'),opcional3=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional4 %}var $op4 = $('#opcional4'),opcional4=[];{% endif %}
-{%if Datos.0.proyecto.proyectosdatos.opcional5 %}var $op5 = $('#opcional5'),opcional5=[];{% endif %}
+{%if PDatos.opcional1 %}var $op1 = $('#opcional1'),opcional1=[];{% endif %}
+{%if PDatos.opcional2 %}var $op2 = $('#opcional2'),opcional2=[];{% endif %}
+{%if PDatos.opcional3 %}var $op3 = $('#opcional3'),opcional3=[];{% endif %}
+{%if PDatos.opcional4 %}var $op4 = $('#opcional4'),opcional4=[];{% endif %}
+{%if PDatos.opcional5 %}var $op5 = $('#opcional5'),opcional5=[];{% endif %}
 
 var Elementos = {
 //==============================================================================
@@ -269,7 +293,7 @@ pie: function(){
 },
 
 inicio : function(){
-
+		var aux = [];
 	for (var i = 0; i < Datos.length; i++) {
 
 		if( Datos[i][8] - fec_minima < 0 ) fec_minima = Datos[i][8];
@@ -326,7 +350,7 @@ inicio : function(){
 			}));
 		}
 
-		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+		{%if PDatos.opcional1 %}
 		if (!contenido(Datos[i][9],opcional1)){
 			opcional1.push(Datos[i][9]);
 			$op1.append($('<option>', {
@@ -335,7 +359,7 @@ inicio : function(){
 			}));
 		}
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+		{%if PDatos.opcional2 %}
 		if (!contenido(Datos[i][10],opcional2)){
 			opcional2.push(Datos[i][10]);
 			$op2.append($('<option>', {
@@ -344,7 +368,7 @@ inicio : function(){
 			}));
 		}
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+		{%if PDatos.opcional3 %}
 		if (!contenido(Datos[i][11],opcional3)){
 			opcional3.push(Datos[i][11]);
 			$op3.append($('<option>', {
@@ -353,7 +377,7 @@ inicio : function(){
 			}));
 		}
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+		{%if PDatos.opcional4 %}
 		if (!contenido(Datos[i][12],opcional4)){
 			opcional4.push(Datos[i][12]);
 			$op4.append($('<option>', {
@@ -362,7 +386,7 @@ inicio : function(){
 			}));
 		}
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+		{%if PDatos.opcional5 %}
 		if (!contenido(Datos[i][13],opcional5)){
 			opcional5.push(Datos[i][13]);
 			$op5.append($('<option>', {
@@ -412,11 +436,11 @@ inicio : function(){
 circulo: function(min,max){
 
 	// cacheamos las seleccionadas
-	var {%if Datos.0.proyecto.proyectosdatos.opcional1 %}opcional1_seleccionadas = $op1.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}opcional2_seleccionadas = $op2.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}opcional3_seleccionadas = $op3.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}opcional4_seleccionadas = $op4.val() || [],{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}opcional5_seleccionadas = $op5.val() || [],{% endif %}
+	var {%if PDatos.opcional1 %}opcional1_seleccionadas = $op1.val() || [],{% endif %}
+		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2.val() || [],{% endif %}
+		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3.val() || [],{% endif %}
+		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4.val() || [],{% endif %}
+		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5.val() || [],{% endif %}
 		regionales_seleccionadas = $reg.val() || [],
 		ciudades_seleccionadas = $ciu.val() || [],
 		areas_seleccionadas = $are.val() || [],
@@ -434,19 +458,19 @@ circulo: function(min,max){
 		&& contenido(Datos[j][4],generos_seleccionados)
 		&& contenido(Datos[j][5],niv_academico_seleccionados)
 		&& contenido(Datos[j][6],profesiones_seleccionadas)
-		{%if Datos.0.proyecto.proyectosdatos.opcional1 %}
+		{%if PDatos.opcional1 %}
 			&& contenido(Datos[j][9],opcional1_seleccionadas)
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional2 %}
+		{%if PDatos.opcional2 %}
 			&& contenido(Datos[j][10],opcional2_seleccionadas)
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional3 %}
+		{%if PDatos.opcional3 %}
 			&& contenido(Datos[j][11],opcional3_seleccionadas)
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional4 %}
+		{%if PDatos.opcional4 %}
 			&& contenido(Datos[j][12],opcional4_seleccionadas)
 		{% endif %}
-		{%if Datos.0.proyecto.proyectosdatos.opcional5 %}
+		{%if PDatos.opcional5 %}
 			&& contenido(Datos[j][13],opcional5_seleccionadas)
 		{% endif %}
 		){
@@ -472,11 +496,11 @@ circulo: function(min,max){
 $(document).ready(function() {
 
 	Elementos.inicio();
-
+	document.getElementById("cargando").style.opacity = 1;
 	$("#slider").dateRangeSlider({
 		bounds:{
-		  min: new Date({{ Datos.0.proyecto.proyectosdatos.finicio.year }},{{ Datos.0.proyecto.proyectosdatos.finicio.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.finicio.day }}),
-		  max: new Date({{ Datos.0.proyecto.proyectosdatos.ffin.year }},{{ Datos.0.proyecto.proyectosdatos.ffin.month | add:-1 }},{{ Datos.0.proyecto.proyectosdatos.ffin.day }})
+		  min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
+		  max: new Date({{ PDatos.ffin.year }},{{ PDatos.ffin.month | add:-1 }},{{ PDatos.ffin.day }})
 		},
 		defaultValues:{
 		  min: fec_minima,
