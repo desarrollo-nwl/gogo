@@ -26,8 +26,8 @@ string fecha(string entrada){
 string query(string id_proyecto) {
 	string output ="[ ";
 	try {
-		connection C("dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432");
-
+		// connection C("dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432");
+		connection C("dbname=gogo user=suidi password='Su1357*-' hostaddr=127.0.0.1 port=5432");
 		if (C.is_open()) {
 
 			try {

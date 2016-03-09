@@ -381,6 +381,24 @@ var calculePuntaje = function calculePuntaje(idVariable,idPregunta,respuesta){
 	  return total
 }
 
+var minimoMaximoVariables = function minimoMaximoVariables(cuestionario){
+   var min = 100000000, max = -1000000000;
+	for(z=0;z<cuestionario.length;z++){
+		for(key in cuestionario[z][1]){
+			for(key2 in cuestionario[z][1][key]){
+				if(cuestionario[z][1][key][key2]<=min){
+					min = cuestionario[z][1][key][key2];
+				}
+				if(cuestionario[z][1][key][key2]>=max){
+					max = cuestionario[z][1][key][key2];
+				}
+			}
+		}
+	}
+	console.log([min,max]);
+	return [min,max];
+}
+
 var tiemposIniciales = function(fechas){
 	var tiempoMaximo = new Date(2000,1,20).getTime(),
 		tiempoMinimo = new Date(2030,1,20).getTime(),
@@ -845,11 +863,11 @@ var Elementos = {
 	//==============================================================================
 	//   Grafica DOS
 	//==============================================================================
-grafica_dos: function(dataTable){
+grafica_dos: function(dataTable,max,min){
     var data2 = new google.visualization.DataTable();
 	data2.addColumn('string','Variable');
-    data2.addColumn('number','Promedio Total');
 	data2.addColumn('number','Promedio Filtro');
+	data2.addColumn('number','Promedio Total');
 
 	data2.addRows(dataTable);
 	var altura = 260;
@@ -860,7 +878,11 @@ grafica_dos: function(dataTable){
 	{%if PDatos.opcional5 %}altura+=40;{% endif %}
 
 	var options = {   height: altura,
-					legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+					  legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+					  vAxis : {
+							maxValue: max,
+							minValue: min
+							},
 	};
 	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
 	chart.draw(data2, options);
@@ -882,79 +904,87 @@ dataTab2: function(fechaInicial,fechaFinal){
 
 		var matrizTotal= [], variables = [];
 		var puntajeVariables = [], indiceVariables = [];
-		var  personas = [], personasFiltro = [];
+		var cantidadVariables = [], cantidadVariablesFiltros = [];
         var totalPersonas = Datos.length;
 
 		for(r=0;r<totalPersonas;r++){
 
-			if(Datos[r][16]=='True'){
+						if(Datos[r][16]=='True'){
 
-						if(!contenido(Datos[r][1],personas)){
-							personas.push(Datos[r][1])
+								    var puntajePendejo = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
+									if(!contenido(Datos[r][14],indiceVariables)){
+										puntajeVariables.push(puntajePendejo);
+										cantidadVariables.push(1);
+										indiceVariables.push(Datos[r][14]);
+									  }else{
+											var ind1 = indiceVariables.indexOf(Datos[r][14]);
+											puntajeVariables[ind1] += puntajePendejo;
+											cantidadVariables[ind1] += 1;
+										}
+						   }
+
+					    if(
+							fechaInicial<=Datos[r][8].getTime()
+							&&Datos[r][8].getTime()<=fechaFinal
+							&& contenido(Datos[r][14],variables_seleccionadas)
+							&& Datos[r][16] == "True"
+							&& contenido(Datos[r][3],regionales_seleccionadas)
+							&& contenido(Datos[r][4],ciudades_seleccionadas)
+							&& contenido(Datos[r][5],areas_seleccionadas)
+							&& contenido(Datos[r][6],cargos_seleccionados)
+							{%if PDatos.opcional1 %}
+								&& contenido(Datos[r][9],opcional1_seleccionadas)
+							{% endif %}
+							{%if PDatos.opcional2 %}
+								&& contenido(Datos[r][10],opcional2_seleccionadas)
+							{% endif %}
+							{%if PDatos.opcional3 %}
+								&& contenido(Datos[r][11],opcional3_seleccionadas)
+							{% endif %}
+							{%if PDatos.opcional4 %}
+								&& contenido(Datos[r][12],opcional4_seleccionadas)
+							{% endif %}
+							{%if PDatos.opcional5 %}
+								&& contenido(Datos[r][13],opcional5_seleccionadas)
+							{% endif %}
+						){
+
+								var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
+
+								if(!contenido(Datos[r][14],variables)){
+									matrizTotal.push([Datos[r][1],puntaje]);
+									cantidadVariablesFiltros.push(1);
+									variables.push(Datos[r][14]);
+
+								}else{
+									var ind = variables.indexOf(Datos[r][14]);
+									matrizTotal[ind][1] += puntaje;
+									cantidadVariablesFiltros[ind] += 1
+								}
 						}
 
-					    var puntajePendejo = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
-						if(!contenido(Datos[r][14],indiceVariables)){
-							puntajeVariables.push(puntajePendejo);
-							indiceVariables.push(Datos[r][14]);
-						  }else{
-								var ind1 = indiceVariables.indexOf(Datos[r][14]);
-								puntajeVariables[ind1] += puntajePendejo;
-							}
-			   }
+	//    fin del for de datos
+		}
 
-		    if(
-				fechaInicial<=Datos[r][8].getTime()
-				&&Datos[r][8].getTime()<=fechaFinal
-				&& contenido(Datos[r][14],variables_seleccionadas)
-				&& Datos[r][16] == "True"
-				&& contenido(Datos[r][3],regionales_seleccionadas)
-				&& contenido(Datos[r][4],ciudades_seleccionadas)
-				&& contenido(Datos[r][5],areas_seleccionadas)
-				&& contenido(Datos[r][6],cargos_seleccionados)
-				{%if PDatos.opcional1 %}
-					&& contenido(Datos[r][9],opcional1_seleccionadas)
-				{% endif %}
-				{%if PDatos.opcional2 %}
-					&& contenido(Datos[r][10],opcional2_seleccionadas)
-				{% endif %}
-				{%if PDatos.opcional3 %}
-					&& contenido(Datos[r][11],opcional3_seleccionadas)
-				{% endif %}
-				{%if PDatos.opcional4 %}
-					&& contenido(Datos[r][12],opcional4_seleccionadas)
-				{% endif %}
-				{%if PDatos.opcional5 %}
-					&& contenido(Datos[r][13],opcional5_seleccionadas)
-				{% endif %}
-			){
-                    if(!contenido(Datos[r][1], personasFiltro  )){
-						personasFiltro.push(Datos[r][1]);
-					}
-
-					var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
-
-					if(!contenido(Datos[r][14],variables)){
-                        // var ind2 = indiceVariables.indexOf(Datos[i][14]);
-						matrizTotal.push([Datos[r][1],puntaje]);
-						variables.push(Datos[r][14]);
-
-					}else{
-						var ind = variables.indexOf(Datos[r][14]);
-						matrizTotal[ind][2] += puntaje;
-					}
-			}
+        for(n= 0;n<puntajeVariables.length;n++){
+			puntajeVariables[n]= puntajeVariables[n]/cantidadVariables[n]
+		}
+		for(l=0;l<matrizTotal.length;l++){
+			matrizTotal[l][1] = matrizTotal[l][1]/cantidadVariablesFiltros[l];
+			var indiceFinal = indiceVariables.indexOf(variables[l]);
+			matrizTotal[l].push(puntajeVariables[indiceFinal]);
 		}
 
 
+		console.log(matrizTotal);
+
 return matrizTotal
-console.log(matrizTotal);
 },
 
 	//==============================================================================
 	//   Grafica TRES
 	//==============================================================================
-grafica_tres:  function(dataTable){
+grafica_tres:  function(dataTable,minMaxCuestionario1,minMaxCuestionario2){
 	var paila = dataTable;
     var data2 = new google.visualization.DataTable();
 	data2.addColumn('string','Nombre');
@@ -971,8 +1001,8 @@ grafica_tres:  function(dataTable){
 	var options = {   height: altura,
 					  legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
 					  hAxis: {
-      								maxValue: 5,
-									minValue: 1
+      								maxValue: minMaxCuestionario1,
+									minValue: minMaxCuestionario2
       						},
 
 	};
@@ -1056,7 +1086,7 @@ $(document).ready(function() {
 	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
 	$('.panel-body').fadeTo('slow',100);
 	$('.filtros_uno').change(function(){	Elementos.grafica_uno();});
-
+	var minMaxCuestionario = minimoMaximoVariables(Cuestionario);
     //  google.setOnLoadCallback(Elementos.grafica_dos());
 
 	 var tiemposInicio_0 = tiemposIniciales(fechas);
@@ -1064,7 +1094,7 @@ $(document).ready(function() {
 
     //   GRAFICA 2
      var dataTotal2 = Elementos.dataTab2(tiemposInicio_0[2],tiemposInicio_0[3]);
-	 google.setOnLoadCallback(Elementos.grafica_dos(dataTotal2));
+ 	 google.setOnLoadCallback(Elementos.grafica_dos(dataTotal2,minMaxCuestionario[1],minMaxCuestionario[0]));
     //  INICIO SLIDER
 	 $("#control_grafica_dos_div").dateRangeSlider({
  		bounds:{
@@ -1081,14 +1111,14 @@ $(document).ready(function() {
 	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){
 		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
 		var espacio = Elementos.dataTab2(tiempoMin,tiempoMax);
-		Elementos.grafica_dos(espacio);
+		Elementos.grafica_dos(espacio,minMaxCuestionario[1],minMaxCuestionario[0]);
 
 	})
 
 	$('.filtros_dos').change(function(){
        var fecha = $('#control_grafica_dos_div').dateRangeSlider('values');
        var dataFiltros= Elementos.dataTab2(fecha.min.getTime(),fecha.max.getTime());
-	   Elementos.grafica_dos(dataFiltros);
+	   Elementos.grafica_dos(dataFiltros,minMaxCuestionario[1],minMaxCuestionario[0]);
 	//    variables_seleccionadas = $var_g3.val();
 	});
 
@@ -1096,7 +1126,7 @@ $(document).ready(function() {
      ///GRAFICA 3
 
 	var dataTotal = Elementos.dataTab3(tiemposInicio_0[2],tiemposInicio_0[3]);
-	google.setOnLoadCallback(Elementos.grafica_tres(dataTotal));
+	google.setOnLoadCallback(Elementos.grafica_tres(dataTotal,minMaxCuestionario[1],minMaxCuestionario[0]));
 	// INICIO SLIDER
 	$("#control_grafica_tres_div").dateRangeSlider({
 		bounds:{
@@ -1112,14 +1142,14 @@ $(document).ready(function() {
 	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){
 		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
 		var espacio = Elementos.dataTab3(tiempoMin,tiempoMax);
-		Elementos.grafica_tres(espacio);
+		Elementos.grafica_tres(espacio,minMaxCuestionario[1],minMaxCuestionario[0]);
 
 	})
 
 	$('.filtros_tres').change(function(){
        var fecha = $('#control_grafica_tres_div').dateRangeSlider('values');
        var dataFiltros= Elementos.dataTab3(fecha.min.getTime(),fecha.max.getTime());
-	   Elementos.grafica_tres(dataFiltros);
+	   Elementos.grafica_tres(dataFiltros,minMaxCuestionario[1],minMaxCuestionario[0]);
 	   variables_seleccionadas = $var_g3.val();
 	});
 
