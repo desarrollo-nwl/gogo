@@ -1,0 +1,52 @@
+{% extends "dash_360.html" %}
+{% block title %} Proyecto | Dimensiones{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Dimensiones</span></i></a></li>
+{% endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Dimensiones del proyecto:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th style="width:10%">Posición</th>
+						<th style="max-width:40%">Texto de visualización encuesta</th>
+						<th> Nombre (Privado)</th>
+						<th>Estado</th>
+						<th style="width:150px">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in Variables %}
+					<tr>
+						<td>{{ i.posicion  }}</td>
+						<td>{{ i.descripcion  }}</td>
+						<td><a href="/variable/{{i.id}}/preguntas/">{{ i.nombre  }}</a></td>
+						<td>{% if i.estado%}<span style="color:#1d9d73">Activa</span>{% else %}<span style="color:#cd1e21">Inactiva</span>{% endif %}</td>
+						<td>{% if Permisos.pre_add%}<a href="/dimension/{{i.id}}/variable/nueva/"><i class="fa fa-plus m-r" title="agregar pregunta"></i></a>{% endif %}{% if Permisos.act_variables %}<a href="/dimension/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{% endif %}{% if Permisos.var_add %}{% if Permisos.pre_add %}<a href="/dimension/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{% endif %}{% endif %}{% if Permisos.var_edit %}<a href="/dimension/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/dimension/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
+					</tr>{% endfor %}
+				</tbody>
+			</table>
+			<form class="" action="index.html" method="post">
+				<div style="display:none">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+</div>
+			</form>
+
+			{% if Permisos.var_add %}<div class="container-fluid"><a href="/variable/nueva/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar variable</a></div>{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ variables",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna variable.",sInfo:"Variables de la _START_ a la _END_ de un total de _TOTAL_",sInfoEmpty:"Variables de la  0 a la 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ variables)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{% endblock%}

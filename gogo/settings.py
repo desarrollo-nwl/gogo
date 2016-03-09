@@ -42,6 +42,7 @@ INSTALLED_APPS = (
 	'cuestionarios',
 	'mensajeria',
 	'usuarios',
+	'cuestionarios_360',
 	'mptt',
 	'debug_toolbar',
 
@@ -75,10 +76,20 @@ TEMPLATES = [
 				'django.template.context_processors.debug',
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
-				'django.contrib.messages.context_processors.messages',
+				# 'django.contrib.messages.context_processors.messages',
 			],
 		},
 	},
+	{
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [
+			BASE_DIR+'/cuestionarios_360/plantillas/',
+        ],
+		'APP_DIRS': True,
+        'OPTIONS': {
+			'environment': 'gogo.jinja2.environment',
+		},
+    },
 ]
 
 WSGI_APPLICATION = 'gogo.wsgi.application'
@@ -141,6 +152,8 @@ CACHES = {
 		 'LOCATION': BASE_DIR,
 	 }
 }
+
+
 
 # CACHES = {
 #  	'default':{

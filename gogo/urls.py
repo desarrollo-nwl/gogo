@@ -112,6 +112,33 @@ urlpatterns += patterns('analisis.views',
 	url(r'^analisis/wordanalytics/$', 'wordanalytics'),
 )
 
+
+#===============================================================================
+# urls de cuestionarios 360
+#===============================================================================
+
+urlpatterns += patterns('cuestionarios_360.views',
+	url(r'^dimensiones/$', 'dimensiones'),
+	# url(r'^dimension/(?P<id_dimension>[0-9]{1,10})/variable/nueva/$', 'variablenueva'),
+	# url(r'^dimension/(?P<id_dimension>[0-9]{1,10})/variables/$', 'variables'),
+	# url(r'^dimension/activar/(?P<id_dimension>[0-9]{1,10})/$', 'dimensionactivar'),
+	# url(r'^dimension/editar/(?P<id_dimension>[0-9]{1,10})/$', 'dimensioneditar'),
+	# url(r'^dimension/eliminar/(?P<id_dimension>[0-9]{1,10})/$', 'dimensioneliminar'),
+	# url(r'^dimension/nueva/$', 'dimensionueva'),
+	# url(r'^pregunta/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntaeditar'),
+	# url(r'^pregunta/activar/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntactivar'),
+	# url(r'^pregunta/clonar/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntaclonar'),
+	# url(r'^pregunta/eliminar/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntaeliminar'),
+	# url(r'^proyecto/clonar/(?P<id_proyecto>[0-9]{1,10})/$', 'proyectoclonar'),
+	# url(r'^variable/(?P<id_variable>[0-9]{1,10})/pregunta/nueva/$', 'preguntanueva'),
+	# url(r'^variable/(?P<id_variable>[0-9]{1,10})/preguntas/$', 'preguntas'),
+	# url(r'^variable/activar/(?P<id_variable>[0-9]{1,10})/$', 'variableactivar'),
+	# url(r'^variable/clonar/(?P<id_variable>[0-9]{1,10})/$', 'variableclonar'),
+	# url(r'^variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar'),
+	# url(r'^variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar'),
+)
+
+
 #===============================================================================
 # urls de errores
 #===============================================================================
