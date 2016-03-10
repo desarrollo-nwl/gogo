@@ -19,7 +19,7 @@ from django.template.backends.utils import csrf_token_lazy
 # indices
 #===============================================================================
 
-# @cache_control(no_store=True)
+@cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def dimensiones(request):
 	proyecto = cache.get(request.user.username)
