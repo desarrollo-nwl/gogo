@@ -2,7 +2,7 @@
 {% block title %} A. Focalizado{% endblock %}
 {% block head2 %}
 <link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
-<style media="screen">div.charts-tooltip div{border-color: #ccc !important;background-color: #fff !important}.multiselect{margin-left: -15px !important;}.panel-body{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
+<style media="screen">div.charts-tooltip div{border-color: #ccc !important;background-color: #fff !important}.multiselect{margin-left: -15px !important;}.panel-body .panel{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
 {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
@@ -430,7 +430,7 @@ var tiemposIniciales = function(variables){
 var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[],
 	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
 	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
-	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
+	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[];
 
 {%if PDatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
 {%if PDatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];{% endif %}
@@ -1171,6 +1171,79 @@ grafica_tres: function(){
 	dashboard.bind([control3], [chart3]);
 	dashboard.draw(data3);
 },
+verifica_uno: function(){
+
+	try {
+			{%if PDatos.opcional1 %}$op1_g1.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g1.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g1.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g1.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g1.val().length{% endif %}
+			$var_g1.val().length
+			$pre_g1.val().length
+			$reg_g1.val().length
+			$ciu_g1.val().length
+			$are_g1.val().length
+			$car_g1.val().length
+			google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+		}
+		catch(e){
+			$("#grafica_uno_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_uno_div").html('');
+		}
+},
+
+verifica_dos: function(){
+
+	try {
+			{%if PDatos.opcional1 %}$op1_g2.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g2.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g2.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g2.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g2.val().length{% endif %}
+			$var_g2.val().length
+			$pre_g2.val().length
+			$reg_g2.val().length
+			$ciu_g2.val().length
+			$are_g2.val().length
+			$car_g2.val().length
+			document.getElementById("slider").style.opacity = 1;
+
+			var fecha = $('#slider').dateRangeSlider('values'),
+				tiempoMin = fecha.min.getTime(), tiempoMax = fecha.max.getTime(),
+				variables = this.dataTotal(),
+				esperanza =  integrarDatos(tiempoMin,tiempoMax,variables[0],variables[2],variables[1]);
+				google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
+
+		 }
+		catch(e){
+			$("#grafica_dos_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			document.getElementById("slider").style.opacity = 0;
+		}
+},
+
+verifica_tres: function(){
+
+	try {
+			{%if PDatos.opcional1 %}$op1_g3.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g3.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g3.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g3.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g3.val().length{% endif %}
+			$pre_g3.val().length
+			$reg_g3.val().length
+			$ciu_g3.val().length
+			$are_g3.val().length
+			$car_g3.val().length
+			document.getElementById("control_grafica_tres_div").style.opacity = 1;
+			google.load('visualization', '1', {packages:['controls'], callback: this.grafica_tres});
+
+		 }
+		catch(e){
+			$("#grafica_tres_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			document.getElementById("control_grafica_tres_div").style.opacity = 0;
+		}
+},
 }
 
 //==============================================================================
@@ -1179,32 +1252,11 @@ grafica_tres: function(){
 $(document).ready(function() {
 	Elementos.inicio();
 	{% if Datos %}
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+	Elementos.verifica_uno();
+	$('.panel-body .panel').fadeTo(100,100);
+	$('.filtros_uno').change(function(){ Elementos.verifica_uno(); });
 
-	var variables = Elementos.dataTotal();
-	var esperanza =  integrarDatos(new Date(2016,0,1).getTime(),new Date(2016,11,31).getTime(),variables[0],variables[2],variables[1]);
-	google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
-
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_tres});
-
-	$('.panel-body').fadeTo('slow',100);
-
-	$('.filtros_uno').change(function(){		Elementos.grafica_uno();	});
-
-	var tiemposInicio_0 = tiemposIniciales(variables);
-	$('.filtros_dos').change(function(){
-		var variables = Elementos.dataTotal();
-		var esperanza =  integrarDatos(tiemposInicio_0[2].getTime(),tiemposInicio_0[3].getTime(),variables[0],variables[2],variables[1]);
-		google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
-	});
-	$('.filtros_tres').change(function(){		Elementos.grafica_tres();	});
-
-	$(window).resize(function() {
-		Elementos.grafica_uno();
-		Elementos.grafica_tres();
-		Elementos.grafica_dos();
-	});
-
+	tiemposInicio_0 = tiemposIniciales(variables);
 
 	$("#slider").dateRangeSlider({
 		bounds:{
@@ -1217,11 +1269,19 @@ $(document).ready(function() {
 	    }
 	});
 
-	$('#slider').on('valuesChanged',function(e,data){
-		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		var espacio = Elementos.dataTotal();
-		Elementos.grafica_dos(integrarDatos(tiempoMin,tiempoMax,espacio[0],espacio[2],espacio[1]),espacio[1]);
-	})
+	Elementos.verifica_dos();
+	$('#slider').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
+	$('.filtros_dos').change(function(){ Elementos.verifica_dos(); });
+
+	Elementos.verifica_tres();
+	$('.filtros_tres').change(function(){ Elementos.verifica_tres(); });
+
+	$(window).resize(function() {
+		Elementos.verifica_uno();
+		Elementos.verifica_tres();
+		Elementos.verifica_dos();
+	});
+
 	{% endif %}
 });
 </script>

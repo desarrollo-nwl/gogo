@@ -2,7 +2,7 @@
 {% block title %} A. General{% endblock %}
 {% block head2 %}
 <link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
-<style media="screen">.multiselect{margin-left: -15px !important;}.panel-body{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
+<style media="screen">.multiselect{margin-left: -15px !important;}.panel-body .panel{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
 {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
@@ -356,17 +356,6 @@ var limpiar_filas_nulas = function(matriz_datos){
 	return matriz_datos;
 }
 
-var maximo_cuestionario = 5;
-for (var i = 0; i < Cuestionario.length; i++) {
-	for (var key in Cuestionario[i][1]) {
-		if (Cuestionario[i][1].hasOwnProperty(key)){
-			for (var key2 in Cuestionario[i][1][key]) {
-				if (Cuestionario[i][1][key].hasOwnProperty(key2) && Cuestionario[i][1][key][key2] > maximo_cuestionario)
-			 		maximo_cuestionario = Cuestionario[i][1][key][key2];
-			 }
-		}
-	}
-}
 var calculePuntaje = function calculePuntaje(idVariable,idPregunta,respuesta){
 	    var total = 0;
 		for(k=0;k<Cuestionario.length;k++){
@@ -395,7 +384,7 @@ var minimoMaximoVariables = function minimoMaximoVariables(cuestionario){
 			}
 		}
 	}
-	console.log([min,max]);
+
 	return [min,max];
 }
 
@@ -425,7 +414,7 @@ var tiemposIniciales = function(fechas){
 
 var regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[], variables = [], preguntas = [],
 	$var_g1=$('#variables_g1'), $reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
-	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1');
+	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[],minMaxCuestionario=[];
 
 {%if PDatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
 {%if PDatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];{% endif %}
@@ -777,7 +766,7 @@ var Elementos = {
 				vAxis : {
 					viewWindowMode:'explicit',
 					viewWindow:{
-						max:maximo_cuestionario,
+						max:minMaxCuestionario[1],
 						min:0
 				  }
 			   },
@@ -975,9 +964,6 @@ dataTab2: function(fechaInicial,fechaFinal){
 			matrizTotal[l].push(puntajeVariables[indiceFinal]);
 		}
 
-
-		console.log(matrizTotal);
-
 return matrizTotal
 },
 
@@ -1072,7 +1058,77 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 
 
 },
+verifica_uno: function(){
 
+	try {
+			{%if PDatos.opcional1 %} $op1_g1.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g1.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g1.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g1.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g1.val().length{% endif %}
+			$var_g1.val().length
+			$reg_g1.val().length
+			$ciu_g1.val().length
+			$are_g1.val().length
+			$car_g1.val().length
+			google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+		}
+		catch(e){
+			$("#grafica_uno_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_uno_div").html('');
+		}
+},
+
+verifica_dos: function(){
+
+	try {
+			{%if PDatos.opcional1 %} $op1_g2.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g2.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g2.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g2.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g2.val().length{% endif %}
+			$var_g2.val().length
+			$reg_g2.val().length
+			$ciu_g2.val().length
+			$are_g2.val().length
+			$car_g2.val().length
+			document.getElementById("control_grafica_dos_div").style.opacity = 1;
+			var fecha = $('#control_grafica_dos_div').dateRangeSlider('values');
+	        var dataTotal2= this.dataTab2(fecha.min.getTime(),fecha.max.getTime());
+	    	google.setOnLoadCallback(this.grafica_dos(dataTotal2,minMaxCuestionario[0],minMaxCuestionario[1]));
+
+		 }
+		catch(e){
+			$("#grafica_dos_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			document.getElementById("control_grafica_dos_div").style.opacity = 0;
+		}
+},
+
+verifica_tres: function(){
+
+	try {
+			{%if PDatos.opcional1 %} $op1_g3.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g3.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g3.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g3.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g3.val().length{% endif %}
+			$var_g3.val().length
+			$pre_g3.val().length
+			$reg_g3.val().length
+			$ciu_g3.val().length
+			$are_g3.val().length
+			$car_g3.val().length
+			document.getElementById("control_grafica_tres_div").style.opacity = 1;
+			var fecha = $('#control_grafica_tres_div').dateRangeSlider('values');
+	        var dataFiltros= this.dataTab3(fecha.min.getTime(),fecha.max.getTime());
+	    	google.setOnLoadCallback(this.grafica_tres(dataFiltros,minMaxCuestionario[0],minMaxCuestionario[1]));
+
+		 }
+		catch(e){
+			$("#grafica_tres_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			document.getElementById("control_grafica_tres_div").style.opacity = 0;
+		}
+},
 //==============================================================================
 //   Fin de objeto
 //==============================================================================
@@ -1083,19 +1139,16 @@ dataTab3: function(tiempoInicial,tiempoFinal){
 //==============================================================================
 $(document).ready(function() {
 	Elementos.inicio();
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
-	$('.panel-body').fadeTo('slow',100);
-	$('.filtros_uno').change(function(){	Elementos.grafica_uno();});
-	var minMaxCuestionario = minimoMaximoVariables(Cuestionario);
-    //  google.setOnLoadCallback(Elementos.grafica_dos());
+	Elementos.verifica_uno();
 
-	 var tiemposInicio_0 = tiemposIniciales(fechas);
+	$('.panel-body .panel').fadeTo(100,100);
+	$('.filtros_uno').change(function(){	Elementos.verifica_uno();});
+	minMaxCuestionario = minimoMaximoVariables(Cuestionario);
 
+	// Grafica 2
+	tiemposInicio_0 = tiemposIniciales(fechas);
 
-    //   GRAFICA 2
-     var dataTotal2 = Elementos.dataTab2(tiemposInicio_0[2],tiemposInicio_0[3]);
- 	 google.setOnLoadCallback(Elementos.grafica_dos(dataTotal2,minMaxCuestionario[1],minMaxCuestionario[0]));
-    //  INICIO SLIDER
+    // Slider
 	 $("#control_grafica_dos_div").dateRangeSlider({
  		bounds:{
  			min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
@@ -1107,27 +1160,10 @@ $(document).ready(function() {
  		}
  	});
 
+	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
+	$('.filtros_dos').change(function(){ Elementos.verifica_dos(); });
 
-	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){
-		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		var espacio = Elementos.dataTab2(tiempoMin,tiempoMax);
-		Elementos.grafica_dos(espacio,minMaxCuestionario[1],minMaxCuestionario[0]);
-
-	})
-
-	$('.filtros_dos').change(function(){
-       var fecha = $('#control_grafica_dos_div').dateRangeSlider('values');
-       var dataFiltros= Elementos.dataTab2(fecha.min.getTime(),fecha.max.getTime());
-	   Elementos.grafica_dos(dataFiltros,minMaxCuestionario[1],minMaxCuestionario[0]);
-	//    variables_seleccionadas = $var_g3.val();
-	});
-
-
-     ///GRAFICA 3
-
-	var dataTotal = Elementos.dataTab3(tiemposInicio_0[2],tiemposInicio_0[3]);
-	google.setOnLoadCallback(Elementos.grafica_tres(dataTotal,minMaxCuestionario[1],minMaxCuestionario[0]));
-	// INICIO SLIDER
+	// Grafica 3
 	$("#control_grafica_tres_div").dateRangeSlider({
 		bounds:{
 			min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
@@ -1139,25 +1175,14 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){
-		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		var espacio = Elementos.dataTab3(tiempoMin,tiempoMax);
-		Elementos.grafica_tres(espacio,minMaxCuestionario[1],minMaxCuestionario[0]);
-
-	})
-
-	$('.filtros_tres').change(function(){
-       var fecha = $('#control_grafica_tres_div').dateRangeSlider('values');
-       var dataFiltros= Elementos.dataTab3(fecha.min.getTime(),fecha.max.getTime());
-	   Elementos.grafica_tres(dataFiltros,minMaxCuestionario[1],minMaxCuestionario[0]);
-	   variables_seleccionadas = $var_g3.val();
-	});
-
+	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){ Elementos.verifica_tres(); })
+	$('.filtros_tres').change(function(){ Elementos.verifica_tres(); });
 
 	$(window).resize(function() {
 		Elementos.grafica_uno();
+		Elementos.verifica_dos();
+		Elementos.verifica_tres();
 	});
-
 
 });
 </script>
