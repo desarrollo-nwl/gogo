@@ -34,6 +34,7 @@ def index(request):
 		try:
 			if( request.POST['variable'] == request.POST['captcha']):
 				server=smtplib.SMTP('smtp.mandrillapp.com',587)
+				# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 				server.ehlo()
 				server.starttls()
 				server.login('no-reply@gochangeanalytics.com','anVgUmTPhGyqT8J9D5yM1A')
@@ -185,9 +186,11 @@ def recuperar(request):
 				from strings import recuperar_cuenta
 				from mensajeria.corrector import salvar_html
 				server=smtplib.SMTP('smtp.mandrillapp.com',587)
+				# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 				server.ehlo()
 				server.starttls()
 				server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+				# server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 				key = ''.join(random.sample(chars, 96))
 				Recuperar.objects.filter(usuario=usuario).delete()
@@ -198,12 +201,14 @@ def recuperar(request):
 				msg=MIMEMultipart()
 				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				msg["subject"]=  'Cambio de clave.'
-				msg['From'] = email.utils.formataddr(('Goanalytics', 'Team@goanalytics.com'))
+				msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+				# msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
 				url = 'http://www.changelabtools.com/recuperar/'+key
 				html = recuperar_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
 				server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+				# server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 				server.quit()
 				return HttpResponseRedirect('/acceder/')
 			else:
@@ -771,9 +776,11 @@ def usuarioreenviar(request,id_usuario):
 					chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 					key = ''.join(random.sample(chars, 96))
 					server=smtplib.SMTP('smtp.mandrillapp.com',587)
+					# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 					server.ehlo()
 					server.starttls()
 					server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+					# server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 					Recuperar.objects.filter(usuario=usuario).delete()
 					Recuperar.objects.create(usuario=usuario,link=key)
 					nom_log =request.user.first_name+' '+request.user.last_name
@@ -782,12 +789,14 @@ def usuarioreenviar(request,id_usuario):
 					msg=MIMEMultipart()
 					msg["subject"]=  'Registro de cuenta.'
 					msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+					# msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
 					url = 'http://www.changelabtools.com/activar/'+key
 					nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 					html = crear_cuenta(nombre,url)
 					mensaje = MIMEText(html,"html")
 					msg.attach(mensaje)
 					server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+					# server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 					server.quit()
 					alerta = 'Correo enviado exitosamente.'
 				return render_to_response('usuarioreenviar.html',{
@@ -846,9 +855,11 @@ def usuarionuevo(request):
 			else:
 				from strings import crear_cuenta
 				server=smtplib.SMTP('smtp.mandrillapp.com',587)
+				# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 				server.ehlo()
 				server.starttls()
 				server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+				# server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 				clave = ''.join(random.sample(chars, 16))
 				key = ''.join(random.sample(chars, 96))
@@ -942,12 +953,14 @@ def usuarionuevo(request):
 				msg=MIMEMultipart()
 				msg["subject"]=  'Registro de cuenta.'
 				msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+				# msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
 				url = 'http://www.changelabtools.com/activar/'+key
 				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				html = crear_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
 				server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+				# server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 				server.quit()
 				return HttpResponseRedirect('/usuarios/')
 		return render_to_response('usuarionuevo.html',{
@@ -1048,6 +1061,7 @@ def reportarerror(request):
 				error.save()
 				aviso = "ok"
 			server=smtplib.SMTP('smtp.mandrillapp.com',587)
+			# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 			server.ehlo()
 			server.starttls()
 			server.login('no-reply@gochangeanalytics.com','anVgUmTPhGyqT8J9D5yM1A')
