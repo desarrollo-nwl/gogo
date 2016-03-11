@@ -1,3 +1,4 @@
 from django.contrib import admin
+from cuestionarios_360.models import *
 
-# Register your models here.
+admin.site.register(Instrumentos_360)

@@ -13,18 +13,18 @@
 		</div>
 		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
 			<form class="form-horizontal" method="POST">{%csrf_token%}
-				{%if Error%}<div class="form-group">
-					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required"></label>
-					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
-						<span style="color:#cd1e21">{{Error}}</span>
-					</div>
-				</div>{%endif%}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
 						<input id="nombre" required title="Este campo es obligatorio" type="text" name="nombre" class="form-control" maxlength="30" placeholder="Nombre del usuario para editar" value="{{Usuario.first_name}}">
 					</div>
 				</div>
+				{%if Error%}<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required"></label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<span style="color:#cd1e21">{{Error}}</span>
+					</div>
+				</div>{%endif%}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Apellido</label>
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
@@ -57,7 +57,7 @@
 									<td class="center"><input {%if Permisos.cre_usuarios%}{%else%}disabled{%endif%} {%if Usuario.permisos.cre_usuarios%}checked{%endif%} id="crear" type="checkbox" name="cre_usuarios" class="switch" ></td>
 								</tr>
 								<tr>
-									<td class="center">Puede activar variables</td>
+									<td class="center">Puede activar/desactivar instrumentos y sus elementos</td>
 									<td class="center"><input {%if Permisos.act_variables%}{%else%}disabled{%endif%} {%if Usuario.permisos.act_variables%}checked{%endif%} id="variables" type="checkbox" name="act_variables" class="switch" ></td>
 								</tr>
 								<!-- <tr>

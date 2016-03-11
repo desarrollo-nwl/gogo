@@ -35,7 +35,7 @@ class Proyectos( models.Model ):
 	iniciable = models.BooleanField( default = False )
 	interna = models.BooleanField( default = False )
 	pordenadas = models.BooleanField( default = False )
-	max_variables = models.PositiveSmallIntegerField( default = 0 )
+	max_variables = models.PositiveSmallIntegerField( default = 0 ) #Intrumentos para Go2.1+
 	nombre =  models.CharField( max_length = 255 )
 	prudenciamax = models.FloatField( default = 2 )
 	prudenciamin = models.FloatField( default = 1 )

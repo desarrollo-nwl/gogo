@@ -13,33 +13,44 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import Empresas, Proyectos, Logs
 
-from django.template.backends.utils import csrf_token_lazy
-
 #===============================================================================
 # indices
 #===============================================================================
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def dimensiones(request):
+def instrumentos(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.var_see:
+		instrumentos = Instrumentos_360.objects.filter(proyecto_id = proyecto.id)
+		return render_to_response('instrumentos.html',{
+			'Activar':'Contenido','activar':'Instrumentos','Instrumentos':instrumentos,
+			'Proyecto':proyecto,'Permisos':permisos,
+			}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def dimensiones(request,id_instrumento):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
 		dimensiones = Dimensiones_360.objects.filter(proyecto_id = proyecto.id)
-
-		this = render_to_string('dimensiones.html',{
-			'Activar':'Configuracion',
-			'activar':'Dimensiones',
-			'Dimensiones':dimensiones,
-			'Proyecto':proyecto,
-			'Permisos':permisos,
-			'csrf_token':csrf_token_lazy(request)})
-		return HttpResponse(this)
+		return render_to_response('dimensiones.html',{
+			'Activar':'Contenido','activar':'INstrumentos',
+			'Proyecto':proyecto,'Permisos':permisos,'Dimensiones':dimensiones,
+			}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
-#
+
+
 # @cache_control(no_store=True)
 # @login_required(login_url='/acceder/')
 # def variables(request,id_dimension):
@@ -74,12 +85,54 @@ def dimensiones(request):
 # 		}, context_instance=RequestContext(request))
 # 	else:
 # 		return render_to_response('403.html')
-#
-#
-# #===============================================================================
-# # nuevos
-# #===============================================================================
-#
+
+
+#===============================================================================
+# nuevos
+#===============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def instrumentonuevo(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.var_add:
+		instrumentos = Instrumentos_360.objects.only('nombre').filter(proyecto_id=proyecto.id)
+		if request.method == 'POST':
+
+			if(Instrumentos_360.objects.filter(nombre=request.POST['nombre']).exists()):
+				return render_to_response('instrumento.html',{
+				'Activar':'Contenido','activar':'Dimensiones','Proyecto':proyecto,'Instrumentos':instrumentos,
+				'Permisos':permisos,'accion':'registrar',"Error":"Este instrumento ya existe"
+				},context_instance=RequestContext(request))
+
+			with transaction.atomic():
+				instrumento = Instrumentos_360(
+					nombre = request.POST['nombre'],
+					proyecto = proyecto)
+				try:
+					if(request.POST['estado']):
+						instrumento.estado = True
+				except:
+						instrumento.estado = False
+				instrumento.save()
+				proyecto.max_variables += 1
+				proyecto.save()
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el instrumento",descripcion=instrumento.nombre)
+				cache.set(request.user.username,proyecto,86400)
+				return HttpResponseRedirect(''.join(['/360/instrumento/',str(instrumento.id),'/dimension/nueva/']))
+
+		return render_to_response('instrumento.html',{
+			'Activar':'Contenido','activar':'Dimensiones','Proyecto':proyecto,
+			'Permisos':permisos,'accion':'registrar','Instrumentos':instrumentos
+			}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
 # @cache_control(no_store=True)
 # @login_required(login_url='/acceder/')
 # def variablenueva(request):
@@ -240,11 +293,53 @@ def dimensiones(request):
 # 		return HttpResponseRedirect('/variable/'+str(variable.id)+'/preguntas/')
 # 	else:
 # 		return render_to_response('403.html')
-#
+
+
 # #===============================================================================
 # # editar
 # #===============================================================================
-#
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def instrumentoeditar(request,id_instrumento):
+	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.var_add:
+		try:instrumento = Instrumentos_360.objects.filter(proyecto_id=proyecto.id).get(id=id_instrumento)
+		except:render_to_response('404.html')
+		instrumentos = Instrumentos_360.objects.only('nombre').filter(proyecto_id=proyecto.id).exclude(id=id_instrumento)
+		if request.method == 'POST':
+
+			if(Instrumentos_360.objects.exclude(id=id_instrumento).filter(nombre=request.POST['nombre']).exists()):
+				return render_to_response('instrumento.html',{
+				'Activar':'Contenido','activar':'Dimensiones','Proyecto':proyecto,'Instrumentos':instrumentos,
+				'Permisos':permisos,'accion':'editar','Instrumento':instrumento,"Error":"Este instrumento ya existe"
+				},context_instance=RequestContext(request))
+
+			with transaction.atomic():
+				instrumento.nombre = request.POST['nombre']
+				try:
+					if(request.POST['estado']):
+						instrumento.estado = True
+				except:
+						instrumento.estado = False
+				instrumento.save()
+				nom_log = request.user.first_name+' '+request.user.last_name
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó el instrumento",descripcion=instrumento.nombre)
+				return HttpResponseRedirect('/360/instrumentos/')
+
+		return render_to_response('instrumento.html',{
+			'Activar':'Contenido','activar':'Dimensiones','Proyecto':proyecto,
+			'Permisos':permisos,'accion':'editar','Instrumento':instrumento,
+			'Instrumentos':instrumentos
+			}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
 # @cache_control(no_store=True)
 # @login_required(login_url='/acceder/')
 # def variableditar(request,id_variable):

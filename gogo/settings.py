@@ -54,7 +54,7 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-	# 'django.contrib.messages.middleware.MessageMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 )
@@ -69,27 +69,18 @@ TEMPLATES = [
 				BASE_DIR+'/colaboradores/plantillas/',
 				BASE_DIR+'/cuestionarios/plantillas/',
 				BASE_DIR+'/mensajeria/plantillas/',
-				BASE_DIR+'/usuarios/plantillas/'],
+				BASE_DIR+'/usuarios/plantillas/',
+				BASE_DIR+'/cuestionarios_360/plantillas/',],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
 				'django.template.context_processors.debug',
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
-				# 'django.contrib.messages.context_processors.messages',
+				'django.contrib.messages.context_processors.messages',
 			],
 		},
 	},
-	{
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [
-			BASE_DIR+'/cuestionarios_360/plantillas/',
-        ],
-		'APP_DIRS': True,
-        'OPTIONS': {
-			'environment': 'gogo.jinja2.environment',
-		},
-    },
 ]
 
 WSGI_APPLICATION = 'gogo.wsgi.application'
