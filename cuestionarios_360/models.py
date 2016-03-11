@@ -5,11 +5,28 @@ from django.contrib.auth.models import User
 from usuarios.models import Proyectos
 
 
+class Instrumento_360( models.Model ):
+	id = models.AutoField( primary_key = True )
+	max_dimensiones = models.PositiveSmallIntegerField( default = 0 )
+	nombre =  models.CharField( max_length = 255 )
+	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
+	zdel = models.DateTimeField( blank = True, null = True )
+
+	def __unicode__(self):
+		return self.nombre
+
+	class Meta:
+		managed = True
+		db_table = 'cuestionarios_360_instrumentos'
+		verbose_name_plural = 'Instrumentos 360'
+
+
 class Dimensiones_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	descripcion = models.TextField( blank = True, null = True , max_length = 255 )
 	estado = models.BooleanField( default = True )
-	max_preguntas = models.PositiveSmallIntegerField( default = 0 )
+	instrumento = models.ForeignKey( Instrumento_360, blank = True, null = True )
+	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	posicion = models.PositiveSmallIntegerField( blank = True, null = True )
 	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
@@ -27,11 +44,12 @@ class Dimensiones_360( models.Model ):
 class Variables_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	descripcion = models.TextField( blank = True, null = True , max_length = 255 )
+	dimension = models.ForeignKey( Dimensiones_360, blank = True, null = True )
 	estado = models.BooleanField( default = True )
 	max_preguntas = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	posicion = models.PositiveSmallIntegerField( blank = True, null = True )
-	dimension = models.ForeignKey( Dimensiones_360, blank = True, null = True )
+	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
 	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):

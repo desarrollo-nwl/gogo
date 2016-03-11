@@ -89,7 +89,7 @@
 							<li id="Configuracion">
 								<a href="#"><i class="l-basic-gear"></i><span class="nav-label"><span class="txt"> Configuración </span></a>
 								<ul class="sub">
-									{%if Permisos.var_see or Permisos.pre_see%}
+									{%if Permisos.var_see %}
 									<li><a id="Variables" href="/variables/"><span class="txt"> Variables y preguntas </span></a></li>{%endif%}
 									{%if Proyecto.interna%}{%if Permisos.col_add%}
 									<li><a id="AcrhivoPlano" href="/participantes/archivo/"><span class="txt"> Múltiples participantes </span></a></li>
@@ -101,9 +101,9 @@
 							<li id="EstadoAvance">
 								<a href="#"><i class="l-basic-pencil-ruler"></i><span class="nav-label"><span class="txt"> Estado de avance </span></a>
 								<ul class="sub">
-									{%if Proyecto.interna%}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
-									{%if Permisos.det_see%}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}{%endif%}
-									{%if Permisos.pre_add%}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}
+									{% if Proyecto.interna %}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
+									{% if Permisos.res_exp %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}{%endif%}
+									{% if Permisos.var_add %}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}
 								</ul>
 							</li>
 							<li id="AnalisisResultados">

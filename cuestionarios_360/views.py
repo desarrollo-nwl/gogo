@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 # from django.db import connection
-from cuestionarios.models import *
+from cuestionarios_360.models import *
 from django.db import transaction
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
@@ -27,8 +27,7 @@ def dimensiones(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
-		dimensiones = []#proyecto.dimensiones_set.all()
-
+		dimensiones = Dimensiones_360.objects.filter(proyecto_id = proyecto.id)
 
 		this = render_to_string('dimensiones.html',{
 			'Activar':'Configuracion',
@@ -65,7 +64,7 @@ def dimensiones(request):
 # 	if not proyecto:
 # 		return render_to_response('423.html')
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pre_see:
+# 	if permisos.consultor:
 # 		try:variable = Variables.objects.prefetch_related('preguntas_set'
 # 						).get(id=id_variable)
 # 		except:return render_to_response('403.html')
@@ -148,7 +147,7 @@ def dimensiones(request):
 # def preguntanueva(request,id_variable):
 # 	proyecto = cache.get(request.user.username)
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pre_add:
+# 	if permisos.consultor and permisos.var_add:
 # 		try:variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id = int(id_variable))
 # 		except:return render_to_response('403.html')
 # 		if request.method == 'POST':
@@ -224,7 +223,7 @@ def dimensiones(request):
 # 	if not proyecto:
 # 		return render_to_response('423.html')
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.act_variables and permisos.pre_edit:
+# 	if permisos.consultor and permisos.act_variables and permisos.var_edit:
 # 		try:
 # 			pregunta = Preguntas.objects.get(id=int(id_pregunta))
 # 			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
@@ -284,7 +283,7 @@ def dimensiones(request):
 # def preguntaeditar(request,id_pregunta):
 # 	proyecto = cache.get(request.user.username)
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pre_edit:
+# 	if permisos.consultor and permisos.var_edit:
 # 		try:
 # 			pregunta = Preguntas.objects.get(id=int(id_pregunta))
 # 			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
@@ -368,7 +367,7 @@ def dimensiones(request):
 # 					).get(id=int(id_proyecto))
 # 	except:return render_to_response('403.html')
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.var_add and permisos.pre_add and permisos.pro_add:
+# 	if permisos.consultor and permisos.var_add and permisos.pro_add:
 # 		from copy import deepcopy
 # 		proyecto_back = deepcopy(proyecto)
 # 		datos = proyecto.proyectosdatos
@@ -410,7 +409,7 @@ def dimensiones(request):
 # def variableclonar(request,id_variable):
 # 	proyecto = cache.get(request.user.username)
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.var_add and permisos.pre_add:
+# 	if permisos.consultor and permisos.var_add:
 # 		try:
 # 			variable = Variables.objects.select_related('proyecto__max_variables'
 # 						).prefetch_related('preguntas_set__respuestas_set'
@@ -448,7 +447,7 @@ def dimensiones(request):
 # def preguntaclonar(request,id_pregunta):
 # 	proyecto = cache.get(request.user.username)
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pre_add:
+# 	if permisos.consultor and permisos.var_add:
 # 		try:
 # 			pregunta = Preguntas.objects.prefetch_related('respuestas_set'
 # 						).get(id = int(id_pregunta))
@@ -519,7 +518,7 @@ def dimensiones(request):
 # def preguntaeliminar(request,id_pregunta):
 # 	proyecto = cache.get(request.user.username)
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pre_del:
+# 	if permisos.consultor and permisos.var_del:
 # 		try:
 # 			pregunta = Preguntas.objects.get(id=int(id_pregunta))
 # 			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
@@ -555,7 +554,7 @@ def dimensiones(request):
 # def preencuesta(request):
 # 	proyecto = cache.get(request.user.username)
 # 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pro_see and permisos.var_see and permisos.pre_see:
+# 	if permisos.consultor and permisos.pro_see and permisos.var_see:
 # 		cuestionario = Proyectos.objects.prefetch_related(
 # 		'variables_set__preguntas_set__respuestas_set').get(id=proyecto.id)
 # 		return render_to_response('preencuesta.html',{

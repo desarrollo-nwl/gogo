@@ -123,11 +123,11 @@ def detalladas(request):
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.det_see and permisos.res_see and proyecto.interna:
+	if permisos.consultor and permisos.res_exp and proyecto.interna:
 		respuestas = Streaming.objects.filter(proyecto_id = proyecto.id,respuesta__isnull=False,
 						).select_related('colaborador','pregunta__variable')
 
-	elif permisos.consultor and permisos.det_see and permisos.res_see and (not proyecto.interna):
+	elif permisos.consultor and permisos.res_exp and (not proyecto.interna):
 		respuestas = Externa.objects.filter(proyecto = proyecto).select_related('pregunta__variable')
 	else:
 		return render_to_response('403.html')
@@ -817,7 +817,7 @@ def importarespuestas_preguntas(request):
 	if not proyecto.interna:
 		return render_to_response('404.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_add:
+	if permisos.consultor and permisos.var_add:
 		error = None
 		if request.method == 'POST':
 			import xlrd,xlwt

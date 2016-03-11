@@ -133,10 +133,15 @@ def menu(request,id_proyecto):
 		else:
 			return render_to_response('403.html')
 		cache.set(request.user.username,proyecto,86400)
-		if(permisos.consultor):
+		if( permisos.consultor and proyecto.tipo != "Lineal 360" and proyecto.tipo != "Redes 360" ):
 			return HttpResponseRedirect('/respuestas/metricas')
+		elif( permisos.consultor and ( proyecto.tipo == "Lineal 360" or proyecto.tipo == "Redes 360" ) ):
+			return HttpResponseRedirect('/360/respuestas/metricas')
+		elif( proyecto.tipo == "Lineal 360" or proyecto.tipo == "Redes 360" ):
+			return HttpResponseRedirect('/360/focalizado/')
 		else:
 			return HttpResponseRedirect('/focalizado/')
+
 	except:
 		return render_to_response('403.html')
 
@@ -530,16 +535,6 @@ def proyectoeliminar(request,id_proyecto):
 				return render_to_response('403.html')
 		if request.method == 'POST':
 			proyecto.zdel = timezone.now()
-			# try:
-			# 	command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
-			# 	os.system(command)
-			# except:
-			# 	pass
-			# try:
-			# 	command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
-			# 	os.system(command)
-			# except:
-			# 	pass
 			with transaction.atomic():
 				proyecto.usuarios.clear()
 				proyecto.save()
@@ -588,8 +583,15 @@ def usuarioeditar(request,id_usuario):
 			usuario = User.objects.select_related('permisos').get(id=int(id_usuario))
 			if usuario.indiceusuarios in usuarios:
 				if request.method == 'POST':
+					if  User.objects.filter(email=request.POST['email'].lower()).exists():
+						return render_to_response('usuarioeditar.html',{
+						'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,'Usuario':usuario,
+						'Error':'Ocurrió un error al procesar la solicitud, este correo ya existe'
+						}, context_instance=RequestContext(request))
 					usuario.first_name = request.POST['nombre']
 					usuario.last_name = request.POST['apellido']
+					usuario.email = request.POST['email'].lower()
+					usuario.username = request.POST['email'].lower()
 					with transaction.atomic():
 						try:
 							if(request.POST['activo']):usuario.is_active = True
@@ -687,26 +689,26 @@ def usuarioeditar(request,id_usuario):
 								if(request.POST['var_del']):usu_perm.var_del = True
 							except:
 								usu_perm.var_del = False
-						if permisos.pre_see:
+						if permisos.red_see:
 							try:
-								if(request.POST['pre_see']):usu_perm.pre_see = True
+								if(request.POST['red_see']):usu_perm.red_see = True
 							except:
-								usu_perm.pre_see = False
-						if permisos.pre_add:
+								usu_perm.red_see = False
+						if permisos.red_add:
 							try:
-								if(request.POST['pre_add']):usu_perm.pre_add = True
+								if(request.POST['red_add']):usu_perm.red_add = True
 							except:
-								usu_perm.pre_add = False
-						if permisos.pre_edit:
+								usu_perm.red_add = False
+						if permisos.red_edit:
 							try:
-								if(request.POST['pre_edit']):usu_perm.pre_edit = True
+								if(request.POST['red_edit']):usu_perm.red_edit = True
 							except:
-								usu_perm.pre_edit = False
-						if permisos.pre_del:
+								usu_perm.red_edit = False
+						if permisos.red_del:
 							try:
-								if(request.POST['pre_del']):usu_perm.pre_del = True
+								if(request.POST['red_del']):usu_perm.red_del = True
 							except:
-								usu_perm.pre_del = False
+								usu_perm.red_del = False
 						usu_perm.save()
 						nom_log =request.user.first_name+' '+request.user.last_name
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
@@ -929,16 +931,16 @@ def usuarionuevo(request):
 						if(request.POST['var_del']):usu_perm.var_del = True
 					except:pass
 					try:
-						if(request.POST['pre_see']):usu_perm.pre_see = True
+						if(request.POST['red_see']):usu_perm.red_see = True
 					except:pass
 					try:
-						if(request.POST['pre_add']):usu_perm.pre_add = True
+						if(request.POST['red_add']):usu_perm.red_add = True
 					except:pass
 					try:
-						if(request.POST['pre_edit']):usu_perm.pre_edit = True
+						if(request.POST['red_edit']):usu_perm.red_edit = True
 					except:pass
 					try:
-						if(request.POST['pre_del']):usu_perm.pre_del = True
+						if(request.POST['red_del']):usu_perm.red_del = True
 					except:pass
 					usu_perm.save()
 					IndiceUsuarios.objects.create(

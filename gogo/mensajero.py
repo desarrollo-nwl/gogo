@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-import os,django
+import os,django,time
 import sys
 sys.path.append('/home/ubuntu/gogo/')
 sys.path.append('/home/ubuntu/gogo/gogo/')
@@ -61,6 +61,7 @@ def sendmail(stream_i,stream,tiempo):
 			server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
 			# server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 			# print 'Enviado.'
+			time.sleep(.2)
 			for j in stream:
 				if j.colaborador_id == colaborador.id:
 					j.fec_controlenvio = tiempo

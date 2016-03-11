@@ -29,7 +29,7 @@
 						<td>{{i.descripcion | capfirst | escape}}</td>
 						<td><a href="/variable/{{i.id | escape}}/preguntas/">{{i.nombre | capfirst | escape}}</a></td>
 						<td>{%if i.estado%}<span style="color:#1d9d73">Activa</span>{%else%}<span style="color:#cd1e21">Inactiva</span>{%endif%}</td>
-						<td>{%if Permisos.pre_add%}<a href="/variable/{{i.id}}/pregunta/nueva/"><i class="fa fa-plus m-r" title="agregar pregunta"></i></a>{%endif%}{%if Permisos.act_variables%}<a href="/variable/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{%endif%}{%if Permisos.var_add%}{%if Permisos.pre_add%}<a href="/variable/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%endif%}{%if Permisos.var_edit%}<a href="/variable/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.var_del%}<a href="/variable/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>
+						<td>{%if Permisos.var_add%}<a href="/variable/{{i.id}}/pregunta/nueva/"><i class="fa fa-plus m-r" title="agregar pregunta"></i></a>{%endif%}{%if Permisos.act_variables%}<a href="/variable/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{%endif%}{%if Permisos.var_add%}{%if Permisos.var_add%}<a href="/variable/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%endif%}{%if Permisos.var_edit%}<a href="/variable/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.var_del%}<a href="/variable/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>
