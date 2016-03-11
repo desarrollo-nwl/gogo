@@ -391,16 +391,18 @@ for (var i = 0; i < Cuestionario.length; i++) {
 }
 
 var integrarDatos = function(tiempoMin,tiempoMax,matriz_g2,matrizIntegral,respuestas){
-      var matrizIntegrada = matrizIntegral;
+      var matrizIntegrada = matrizIntegral,suma=0;
 	  for(var m=0;m<matrizIntegrada.length;m++){
 		  for(var i=0;i<matriz_g2.length;i++){
 				if(matriz_g2[i][1]>= tiempoMin && matriz_g2[i][1]<=tiempoMax && matriz_g2[i][0]==matrizIntegrada[m][0]){
 					for(var k = 0; k<respuestas.length; k++){
 						matrizIntegrada[m][k+1] += matriz_g2[i][k+2];
+						suma += matriz_g2[i][k+2];
 					}
 			  }
 		}
 	}
+	if(suma === 0) throw "Sin datos";
     return matrizIntegrada;
 }
 
@@ -430,7 +432,9 @@ var tiemposIniciales = function(variables){
 var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[],
 	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
 	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
-	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[];
+	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[],
+	variables_str="",preguntas_str_lig="",preguntas_str="",regionales_str="",ciudades_str="",areas_str="",cargos_str="",
+	opcional1_str="",opcional2_str="",opcional3_str="",opcional4_str="",opcional5_str="";
 
 {%if PDatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
 {%if PDatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];{% endif %}
@@ -468,193 +472,110 @@ inicio : function(){
 
 	for (var i = 0; i < Datos.length; i++) {
 
-		if(!contenido_date(Datos[i][8],fechas)){
-			fechas.push(Datos[i][8]);
-		}
+		if(!contenido_date(Datos[i][8],fechas)) fechas.push(Datos[i][8]);
 
 		if (!contenido(Datos[i][14],variables)){
 			variables.push(Datos[i][14]);
-			$var_g1.append($('<option>', {
-		        value: Datos[i][14],
-		        text : Datos[i][1]
-		    }));
-			$var_g2.append($('<option>', {
-				value: Datos[i][14],
-				text : Datos[i][1]
-			}));
-			$var_g3.append($('<option>', {
-				value: Datos[i][14],
-				text : Datos[i][1]
-			}));
+			variables_str += "<option value='"+Datos[i][14]+"'>"+Datos[i][1]+"</option>"
 		}
 
 		if ( !contenido(Datos[i][15],preguntas) ){
-			if ( Datos[i][14] == variables[0] ){
-				$pre_g3.append($('<option>', {
-					value: Datos[i][15],
-					text : Datos[i][2]
-				}));
-			}
-			if ( Datos[i][14] == variables[0] ){
-				$pre_g2.append($('<option>', {
-					value: Datos[i][15],
-					text : Datos[i][2]
-				}));
-			}
-			$pre_g1.append($('<option>', {
-				value: Datos[i][15],
-				text : Datos[i][2]
-			}));
+			if ( Datos[i][14] == variables[0] ) preguntas_str_lig += "<option value='"+Datos[i][15]+"'>"+Datos[i][2]+"</option>"
+			preguntas_str += "<option value='"+Datos[i][15]+"'>"+Datos[i][2]+"</option>"
 			preguntas.push(Datos[i][15]);
 		}
 		if (!contenido(Datos[i][3],regionales)){
 			regionales.push(Datos[i][3]);
-			$reg_g1.append($('<option>', {
-				value: Datos[i][3],
-				text : Datos[i][3]
-			}));
-			$reg_g2.append($('<option>', {
-				value: Datos[i][3],
-				text : Datos[i][3]
-			}));
-			$reg_g3.append($('<option>', {
-				value: Datos[i][3],
-				text : Datos[i][3]
-			}));
+			regionales_str += "<option value='"+Datos[i][3]+"'>"+Datos[i][3]+"</option>"
 		}
 		if (!contenido(Datos[i][4],ciudades)){
 			ciudades.push(Datos[i][4]);
-			$ciu_g1.append($('<option>', {
-				value: Datos[i][4],
-				text : Datos[i][4]
-			}));
-			$ciu_g2.append($('<option>', {
-				value: Datos[i][4],
-				text : Datos[i][4]
-			}));
-			$ciu_g3.append($('<option>', {
-				value: Datos[i][4],
-				text : Datos[i][4]
-			}));
+			ciudades_str += "<option value='"+Datos[i][4]+"'>"+Datos[i][4]+"</option>"
 		}
 		if (!contenido(Datos[i][5],areas)){
 			areas.push(Datos[i][5]);
-			$are_g1.append($('<option>', {
-				value: Datos[i][5],
-				text : Datos[i][5]
-			}));
-			$are_g2.append($('<option>', {
-				value: Datos[i][5],
-				text : Datos[i][5]
-			}));
-			$are_g3.append($('<option>', {
-				value: Datos[i][5],
-				text : Datos[i][5]
-			}));
+			areas_str += "<option value='"+Datos[i][5]+"'>"+Datos[i][5]+"</option>"
 		}
 		if (!contenido(Datos[i][6],cargos)){
 			cargos.push(Datos[i][6]);
-			$car_g1.append($('<option>', {
-				value: Datos[i][6],
-				text : Datos[i][6]
-			}));
-			$car_g2.append($('<option>', {
-				value: Datos[i][6],
-				text : Datos[i][6]
-			}));
-			$car_g3.append($('<option>', {
-				value: Datos[i][6],
-				text : Datos[i][6]
-			}));
+			cargos_str += "<option value='"+Datos[i][6]+"'>"+Datos[i][6]+"</option>"
 		}
 
 		{%if PDatos.opcional1 %}
 		if (!contenido(Datos[i][9],opcional1)){
 			opcional1.push(Datos[i][9]);
-			$op1_g1.append($('<option>', {
-				value: Datos[i][9],
-				text : Datos[i][9]
-			}));
-			$op1_g2.append($('<option>', {
-				value: Datos[i][9],
-				text : Datos[i][9]
-			}));
-			$op1_g3.append($('<option>', {
-				value: Datos[i][9],
-				text : Datos[i][9]
-			}));
+			opcional1_str += "<option value='"+Datos[i][9]+"'>"+Datos[i][9]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional2 %}
 		if (!contenido(Datos[i][10],opcional2)){
 			opcional2.push(Datos[i][10]);
-			$op2_g1.append($('<option>', {
-				value: Datos[i][10],
-				text : Datos[i][10]
-			}));
-			$op2_g2.append($('<option>', {
-				value: Datos[i][10],
-				text : Datos[i][10]
-			}));
-			$op2_g3.append($('<option>', {
-				value: Datos[i][10],
-				text : Datos[i][10]
-			}));
+			opcional2_str += "<option value='"+Datos[i][10]+"'>"+Datos[i][10]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional3 %}
 		if (!contenido(Datos[i][11],opcional3)){
 			opcional3.push(Datos[i][11]);
-			$op3_g1.append($('<option>', {
-				value: Datos[i][11],
-				text : Datos[i][11]
-			}));
-			$op3_g2.append($('<option>', {
-				value: Datos[i][11],
-				text : Datos[i][11]
-			}));
-			$op3_g3.append($('<option>', {
-				value: Datos[i][11],
-				text : Datos[i][11]
-			}));
+			opcional3_str += "<option value='"+Datos[i][11]+"'>"+Datos[i][11]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional4 %}
 		if (!contenido(Datos[i][12],opcional4)){
 			opcional4.push(Datos[i][12]);
-			$op4_g1.append($('<option>', {
-				value: Datos[i][12],
-				text : Datos[i][12]
-			}));
-			$op4_g2.append($('<option>', {
-				value: Datos[i][12],
-				text : Datos[i][12]
-			}));
-			$op4_g3.append($('<option>', {
-				value: Datos[i][12],
-				text : Datos[i][12]
-			}));
+			opcional4_str += "<option value='"+Datos[i][12]+"'>"+Datos[i][12]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional5 %}
 		if (!contenido(Datos[i][13],opcional5)){
 			opcional5.push(Datos[i][13]);
-			$op5_g1.append($('<option>', {
-				value: Datos[i][13],
-				text : Datos[i][13]
-			}));
-			$op5_g2.append($('<option>', {
-				value: Datos[i][13],
-				text : Datos[i][13]
-			}));
-			$op5_g3.append($('<option>', {
-				value: Datos[i][13],
-				text : Datos[i][13]
-			}));
+			opcional5_str += "<option value='"+Datos[i][13]+"'>"+Datos[i][13]+"</option>"
 		}
 		{% endif %}
-
 	}
+
+	$var_g1.append(variables_str);
+	$var_g2.append(variables_str);
+	$var_g3.append(variables_str);
+	$pre_g1.append(preguntas_str);
+	$pre_g2.append(preguntas_str_lig);
+	$pre_g3.append(preguntas_str_lig);
+	$reg_g1.append(regionales_str);
+	$reg_g2.append(regionales_str);
+	$reg_g3.append(regionales_str);
+	$ciu_g1.append(ciudades_str);
+	$ciu_g2.append(ciudades_str);
+	$ciu_g3.append(ciudades_str);
+	$are_g1.append(areas_str);
+	$are_g2.append(areas_str);
+	$are_g3.append(areas_str);
+	$car_g1.append(cargos_str);
+	$car_g2.append(cargos_str);
+	$car_g3.append(cargos_str);
+{% if PDatos.opcional1 %}
+	$op1_g1.append(opcional1_str);
+	$op1_g2.append(opcional1_str);
+	$op1_g3.append(opcional1_str);
+{% endif %}
+{% if PDatos.opcional2 %}
+	$op2_g1.append(opcional2_str);
+	$op2_g2.append(opcional2_str);
+	$op2_g3.append(opcional2_str);
+{% endif %}
+{% if PDatos.opcional3 %}
+	$op3_g1.append(opcional3_str);
+	$op3_g2.append(opcional3_str);
+	$op3_g3.append(opcional3_str);
+{% endif %}
+{% if PDatos.opcional4 %}
+	$op4_g1.append(opcional4_str);
+	$op4_g2.append(opcional4_str);
+	$op4_g3.append(opcional4_str);
+{% endif %}
+{% if PDatos.opcional5 %}
+	$op5_g1.append(opcional5_str);
+	$op5_g2.append(opcional5_str);
+	$op5_g3.append(opcional5_str);
+{% endif %}
 
 	$var_g1.change(function(){
 		var preguntas1 = [];
@@ -1010,6 +931,7 @@ dataTotal : function(){
 				   && contenido(Datos[k][13],opcional5_seleccionadas)
 			   {% endif %}
 			){
+
 				var numFila = 0;
 				while(numFila<matriz_g2.length && (matriz_g2[numFila][0]!=Datos[k][5] || matriz_g2[numFila][1] != Datos[k][8].getTime() ) ){  //************************************
 					numFila += 1;
@@ -1022,6 +944,7 @@ dataTotal : function(){
 				}
 
 				if(numFila<matriz_g2.length){
+
 					for(x=0;x<respuestas.length;x++){
 						var ind = respuestas[x] + 2;
 						matriz_g2[numFila][ind] += 1;
@@ -1029,6 +952,7 @@ dataTotal : function(){
 				}
 			}
 		}
+
         return [matriz_g2,vectorRespuestas,matrizIntegral,fechas]
 },
 //==============================================================================
@@ -1196,18 +1120,19 @@ verifica_uno: function(){
 verifica_dos: function(){
 
 	try {
-			{%if PDatos.opcional1 %}$op1_g2.val().length{% endif %}
-			{%if PDatos.opcional2 %}$op2_g2.val().length{% endif %}
-			{%if PDatos.opcional3 %}$op3_g2.val().length{% endif %}
-			{%if PDatos.opcional4 %}$op4_g2.val().length{% endif %}
-			{%if PDatos.opcional5 %}$op5_g2.val().length{% endif %}
+			var altura = 260;
+			{%if PDatos.opcional1 %}$op1_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional2 %}$op2_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional3 %}$op3_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional4 %}$op4_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional5 %}$op5_g2.val().length;altura+=40;{% endif %}
 			$var_g2.val().length
 			$pre_g2.val().length
 			$reg_g2.val().length
 			$ciu_g2.val().length
 			$are_g2.val().length
 			$car_g2.val().length
-			document.getElementById("slider").style.opacity = 1;
+			$("#slider").css("margin-top","0px");
 
 			var fecha = $('#slider').dateRangeSlider('values'),
 				tiempoMin = fecha.min.getTime(), tiempoMax = fecha.max.getTime(),
@@ -1217,8 +1142,8 @@ verifica_dos: function(){
 
 		 }
 		catch(e){
-			$("#grafica_dos_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
-			document.getElementById("slider").style.opacity = 0;
+			$("#grafica_dos_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#slider").css("margin-top",altura+"px");
 		}
 },
 
@@ -1256,6 +1181,7 @@ $(document).ready(function() {
 	$('.panel-body .panel').fadeTo(100,100);
 	$('.filtros_uno').change(function(){ Elementos.verifica_uno(); });
 
+	variables = Elementos.dataTotal(),
 	tiemposInicio_0 = tiemposIniciales(variables);
 
 	$("#slider").dateRangeSlider({
