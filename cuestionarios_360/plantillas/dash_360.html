@@ -6,26 +6,25 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
 		<!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
-		{% load staticfiles %}
-		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+		<link href="{{ static('css/bootstrap.min.css') }}" rel="stylesheet" />
 		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script>window.jQuery || document.write('<script src="{% static 'js/libs/jquery-2.1.1.min.js' %}">\x3C/script>')</script>
+		<script>window.jQuery || document.write('<script src="{{ static('js/libs/jquery-2.1.1.min.js') }}">\x3C/script>')</script>
 		<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
-		<script>window.jQuery || document.write('<script src="{% static 'js/libs/jquery-ui-1.10.4.min.js' %}">\x3C/script>')</script>
-		<link rel="shortcut icon" href="{% static 'img/ico/favicon.ico' %}"/>
+		<script>window.jQuery || document.write('<script src="{{ static('js/libs/jquery-ui-1.10.4.min.js') }}">\x3C/script>')</script>
+		<link rel="shortcut icon" href="{{ static('img/ico/favicon.ico') }}"/>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 		<link href='https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>
-		<link href="{% static 'css/icons.min.css' %}" rel="stylesheet" />
-		<!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" /> -->
-		<link href="{% static 'css/plugins.min.css' %}" rel="stylesheet" />
-		<link href="{% static 'css/main.min.css' %}" rel="stylesheet" />
-		<link href="{% static 'css/custom.min.css' %}" rel="stylesheet" />
-		<link href="{% static 'css/icons.min.css' %}" rel="stylesheet" />
+		<link href="{{ static('css/icons.min.css') }}" rel="stylesheet" />
+		<!-- <link href="{{ static('css/bootstrap.min.css') }}" rel="stylesheet" /> -->
+		<link href="{{ static('css/plugins.min.css') }}" rel="stylesheet" />
+		<link href="{{ static('css/main.min.css') }}" rel="stylesheet" />
+		<link href="{{ static('css/custom.min.css') }}" rel="stylesheet" />
+		<link href="{{ static('css/icons.min.css') }}" rel="stylesheet" />
 		<!-- Fav and touch icons -->
-		<link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/ico/favicon144.png' %}">
-		<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/ico/favicon114.png' %}">
-		<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/ico/favicon72.png' %}">
-		<link rel="apple-touch-icon" href="{% static 'img/ico/favicon57.png' %}">
+		<link rel="apple-touch-icon" sizes="144x144" href="{{ static('img/ico/favicon144.png') }}">
+		<link rel="apple-touch-icon" sizes="114x114" href="{{ static('img/ico/favicon114.png') }}">
+		<link rel="apple-touch-icon" sizes="72x72" href="{{ static('img/ico/favicon72.png') }}">
+		<link rel="apple-touch-icon" href="{{ static('img/ico/favicon57.png') }}">
 		<!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
 		<meta name="msapplication-TileColor" content="#3399cc" />
 		{%block head2%}{%endblock%}
@@ -38,8 +37,8 @@
         <div id="header" class="page-navbar">
             <!-- .navbar-brand -->
             <a href="/index/" class="navbar-brand hidden-xs hidden-sm">
-                <img src="{% static 'img/logo.png' %}" class="logo hidden-xs" alt="Dynamic logo" style="margin:5px 0px 0px -10px">
-                <img src="{% static 'img/logosm.png' %}" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo" style="margin:5px 0px 0px -5px">
+                <img src="{{ static('img/logo.png') }}" class="logo hidden-xs" alt="Dynamic logo" style="margin:5px 0px 0px -10px">
+                <img src="{{ static('img/logosm.png') }}" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo" style="margin:5px 0px 0px -5px">
             </a>
             <!-- / navbar-brand -->
             <!-- .no-collapse -->
@@ -80,7 +79,7 @@
                     <div class="sidebar-scrollarea">
                         <!--  .sidebar-panel -->
                         <div class="sidebar-panel">
-                            <h5 class="sidebar-panel-title">{{Proyecto.nombre |capfirst | escape |truncatechars:60}} </h5>
+                            <h5 class="sidebar-panel-title">{{Proyecto.nombre }} </h5>
                         </div>
                         <!-- / .sidebar-panel -->
                         <!-- .side-nav -->
@@ -148,26 +147,26 @@
         </div>
         <!-- Javascripts -->
         <!-- Load pace first -->
-        <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+        <script src="{{ static('js/plugins/pace/pace.min.js') }}"></script>
 		<!--[if lt IE 9]>
-		<script type="text/javascript" src="{% static 'js/libs/excanvas.min.js' %}"></script>
+		<script type="text/javascript" src="{{ static('js/libs/excanvas.min.js') }}"></script>
 		<script type="text/javascript" src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<script type="text/javascript" src="{% static 'js/libs/respond.min.js' ""%}></script>
+		<script type="text/javascript" src="{{ static('js/libs/respond.min.js') }}></script>
 		<![endif]-->
-		<script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
-		<script src="{% static 'js/libs/modernizr.custom.min.js' %}"></script>
+		<script src="{{ static('js/bootstrap/bootstrap.min.js') }}"></script>
+		<script src="{{ static('js/libs/modernizr.custom.min.js') }}"></script>
 		<!-- Handle responsive view functions -->
-		<script src="{% static 'js/jRespond.min.js' %}"></script>
+		<script src="{{ static('js/jRespond.min.js') }}"></script>
 		<!-- Custom scroll for sidebars,tables and etc. -->
-		<script src="{% static 'plugins/core/slimscroll/jquery.slimscroll.min.js' %}"></script>
-		<script src="{% static 'plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js' %}"></script>
+		<script src="{{ static('plugins/core/slimscroll/jquery.slimscroll.min.js') }}"></script>
+		<script src="{{ static('plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js') }}"></script>
 		<!-- Remove click delay in touch -->
-		<script src="{% static 'plugins/core/fastclick/fastclick.min.js' %}"></script>
+		<script src="{{ static('plugins/core/fastclick/fastclick.min.js') }}"></script>
 		<!-- Increase jquery animation speed -->
-		<script src="{% static 'plugins/core/velocity/jquery.velocity.min.js' %}"></script>
-        <!-- <script src="{% static 'plugins/ui/bootbox/bootbox.min.js' %}"></script> -->
-		<script src="{% static 'js/jquery.dynamic.min.js' %}"></script>
-		<script src="{% static 'js/main.min.js' %}"></script>
+		<script src="{{ static('plugins/core/velocity/jquery.velocity.min.js') }}"></script>
+        <!-- <script src="{{ static('plugins/ui/bootbox/bootbox.min.js') }}"></script> -->
+		<script src="{{ static('js/jquery.dynamic.min.js') }}"></script>
+		<script src="{{ static('js/main.min.js') }}"></script>
 
 		<script>$('#{{Activar}}').addClass('highlight-menu');$('#{{Activar}} > a').addClass('expand active-state');{% if activar%}$('#{{Activar}} > ul.sub').addClass('show');$(document).ready(function(){$('#{{Activar}} a').click();$('#{{activar}}').addClass('expand activate-state');});{%endif%}</script>
 		{% block scripts%}{% endblock %}

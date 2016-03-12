@@ -203,16 +203,19 @@ def colaboradoreenviar(request,id_colaborador):
 						from usuarios.strings import correo_standar
 						from corrector import salvar_html
 						import unicodedata
-						server=smtplib.SMTP('smtp.mandrillapp.com',587)
+						# server=smtplib.SMTP('smtp.mandrillapp.com',587)
+						server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 						server.ehlo()
 						server.starttls()
-						server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+						# server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+						server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 						nom_log =request.user.first_name+' '+request.user.last_name
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
-						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+						# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+						msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
 						urlimg = 'http://www.changelabtools.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
@@ -229,7 +232,8 @@ def colaboradoreenviar(request,id_colaborador):
 							colaborador.reenviados = colaborador.reenviados + 1
 							Streaming.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
 							colaborador.save()
-							server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+							# server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+							server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 						server.quit()
 						alerta = 'Correo enviado exitosamente.'
 					else:
