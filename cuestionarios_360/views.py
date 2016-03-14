@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import Empresas, Proyectos, Logs
 from django.db.models import F
+from django.http import JsonResponse
 
 #===============================================================================
 # indices
@@ -321,7 +322,7 @@ def instrumentoactivar(request,id_instrumento):
 			Dimensiones_360.objects.filter(instrumento_id=instrumento.id).update(estado=instrumento.estado)
 			Variables_360.objects.filter(instrumento_id=instrumento.id).update(estado=instrumento.estado)
 			Preguntas_360.objects.filter(instrumento_id=instrumento.id).update(estado=instrumento.estado)
-		return HttpResponseRedirect('/360/instrumentos/')
+		return JsonResponse({'id': id_instrumento,'estado':int(instrumento.estado)})
 	else:
 		return render_to_response('403.html')
 
@@ -346,7 +347,7 @@ def dimensionactivar(request,id_dimension):
 			Dimensiones_360.objects.filter(id=dimension.id).update(estado=dimension.estado)
 			Variables_360.objects.filter(dimension_id=dimension.id).update(estado=dimension.estado)
 			Preguntas_360.objects.filter(dimension_id=dimension.id).update(estado=dimension.estado)
-		return HttpResponseRedirect(''.join(['/360/instrumento/',str(dimension.instrumento_id),'/dimensiones/']))
+		return JsonResponse({'id': id_dimension,'estado':int(dimension.estado)})
 	else:
 		return render_to_response('403.html')
 
@@ -370,7 +371,7 @@ def variableactivar_360(request,id_variable):
 		with transaction.atomic():
 			Variables_360.objects.filter(id=variable.id).update(estado=variable.estado)
 			Preguntas_360.objects.filter(variable_id=variable.id).update(estado=variable.estado)
-		return HttpResponseRedirect(''.join(['/360/dimension/',str(variable.dimension_id),'/variables/']))
+		return JsonResponse({'id': id_variable,'estado':int(variable.estado)})
 	else:
 		return render_to_response('403.html')
 
@@ -386,12 +387,12 @@ def preguntactivar_360(request,id_pregunta):
 		try:
 			pregunta = Preguntas_360.objects.only('id','estado').filter(proyecto_id=proyecto.id).get(id=id_pregunta)
 		except:
-			return render_to_response('404.html')
+			return HttpResponse('404')
 		if(pregunta.estado):
 			Preguntas_360.objects.filter(id=pregunta.id).update(estado=False)
 		else:
 			Preguntas_360.objects.filter(id=pregunta.id).update(estado=True)
-		return HttpResponseRedirect(''.join(['/360/variable/',str(pregunta.variable_id),'/preguntas/']))
+		return JsonResponse({'id': id_pregunta,'estado':1-int(pregunta.estado)})
 	else:
 		return render_to_response('403.html')
 
