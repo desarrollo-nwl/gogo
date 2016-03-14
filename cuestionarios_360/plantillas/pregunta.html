@@ -1,0 +1,184 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Preguntas{% endblock %}
+{%block head2%}<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />{%endblock%}
+{% block navegacion%}
+{% if "registrar" == accion %}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
+<li><a href="/360/instrumento/{{Instrumento_id}}/dimensiones/"><i><span>/ Dimensiones</span></i></a></li>
+<li><a href="/360/dimension/{{Dimension_id}}/variables/"><i><span>/ Variables</span></i></a></li>
+<li><a href="/360/variable/{{Variable.id}}/preguntas/"><i><span>/ Preguntas</span></i></a></li>
+<li><a href="#"><i><span>/ {{accion|capfirst}}</span></i></a></li>
+{% else %}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
+<li><a href="/360/instrumento/{{Pregunta.instrumento_id}}/dimensiones/"><i><span>/ Dimensiones</span></i></a></li>
+<li><a href="/360/dimension/{{Pregunta.dimension_id}}/variables/"><i><span>/ Variables</span></i></a></li>
+<li><a href="/360/variable/{{Pregunta.variable_id}}/preguntas/"><i><span>/ Preguntas</span></i></a></li>
+<li><a href="#"><i><span>/ {{accion|capfirst}}</span></i></a></li>
+{% endif %}
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Complete los siguientes campos para agregar una nueva pregunta:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Texto:</label>
+					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8">
+						<textarea  id="texto" required title="Introduzca el texto de la pregunta" type="text" name="texto" class="form-control" maxlength="254" placeholder="Texto de la pregunta">{{Pregunta.texto}}</textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
+					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8">
+						<input  id="posicion" required title="Este campo es obligatorio" type="number" name="posicion" min="1" max="99999" class="form-control" maxlength="254" placeholder="Posición dentro de la variable" {% if "registrar" == accion %}value="{{Variable.max_preguntas |add:1}}"{% else %}value="{{Pregunta.posicion}}"{% endif %} >
+					</div>
+				</div>
+
+				{% if "registrar" == accion %}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activa:</label>
+					<div class="col-lg-1 col-md-2 col-xs-2 col-sm-2">
+						<input id="activa" {%if Variable.estado%}checked{%else%}disabled{%endif%} type="checkbox" name="estado" class="switch" >
+					</div>
+					 {%if not Variable.estado%}<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<span>No se pueden crear preguntas activas de variables inactivas</span>
+					</div>{%endif%}
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Tipo de pregunta:</label>
+					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8" >
+						<select id="tipo" class="select2 form-control" name="tipo">
+							<option selected value="Unica">Única respuesta</option>
+							<option value="Numerica">Única respuesta con valor numérico</option>
+							<option value="Multiple">Múltiple respuesta</option>
+							<option value="MultipleNumerica">Múltiple respuesta con valor numérico</option>
+							<option value="Abierta">Abierta</option>
+						</select>
+					</div>
+				</div>
+				<div id="contenedor">
+					<div id="0" class="form-group">
+						<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta 1:</label>
+						<div class="col-lg-5 col-md-5 col-xs-6 col-sm-6">
+							<input required title="Es obligatoria una respuesta" type="text" name="respuesta0" class="form-control" maxlength="254" placeholder="Texto de la opción">
+						</div>
+						<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica oculto">Numérico:</label>
+						<div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica oculto">
+							<input title="Este campo es obligatorio" type="number" name="numerico0" class="form-control numerica oculto" maxlength="254" placeholder="Valor">
+						</div>
+					</div>
+				</div>
+				{% else %}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activa:</label>
+					<div class="col-lg-1 col-md-2 col-xs-2 col-sm-2">
+						<input id="activa" {%if Pregunta.estado%}checked{%endif%} type="checkbox" name="estado" class="switch" >
+					</div>
+					 {%if not Variable.estado%}<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
+						<span>No se pueden crear preguntas activas de variables inactivas</span>
+					</div>{%endif%}
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label required">Tipo de pregunta:</label>
+					<div class="col-lg-5 col-md-7 col-xs-9 col-sm-8" >
+						<select id="tipo" class="select2 form-control" name="tipo">
+							<option {%if not Pregunta.abierta%}{%if not Pregunta.multiple%}{%if not Pregunta.numerica%}selected{%endif%}{%endif%}{%endif%} value="Unica">Única respuesta</option>
+							<option {%if not Pregunta.abierta%}{%if not Pregunta.multiple%}{%if Pregunta.numerica%}selected{%endif%}{%endif%}{%endif%} value="Numerica">Única respuesta con valor numérico</option>
+							<option {%if not Pregunta.abierta%}{%if Pregunta.multiple%}{%if not Pregunta.numerica%}selected{%endif%}{%endif%}{%endif%} value="Multiple">Múltiple respuesta</option>
+							<option {%if not Pregunta.abierta%}{%if Pregunta.multiple%}{%if Pregunta.numerica%}selected{%endif%}{%endif%}{%endif%} value="MultipleNumerica">Múltiple respuesta con valor numérico</option>
+							<option {%if Pregunta.abierta%}selected{%endif%} value="Abierta">Abierta</option>
+						</select>
+					</div>
+				</div>
+				<div id="contenedor">
+					{%if not Pregunta.abierta%}{%for i in Pregunta.respuestas_360_set.all %}
+					<div id="{{forloop.counter0}}" class="form-group">
+						<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta {{forloop.counter}}:</label>
+						<div class="col-lg-5 col-md-5 col-xs-6 col-sm-6">
+							<input required type="text" name="respuesta{{forloop.counter0}}" class="form-control" maxlength="254" placeholder="Texto de la opción" value="{{i.texto|escape}}">
+						</div>
+						<label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica {%if not Pregunta.numerica%}oculto{%endif%}">Numérico:</label>
+						<div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica {%if not Pregunta.numerica%}oculto{%endif%}">
+							<input type="number" name="numerico{{forloop.counter0}}" class="form-control numerica {%if not Pregunta.numerica%}oculto{%endif%}" maxlength="254" placeholder="Valor" value="{{i.numerico|escape}}">
+						</div>
+					</div>{%endfor%}{%endif%}
+				</div>
+				{% endif %}
+				<input id="contador" type="hidden" name="contador" value="{{numero_respuestas}}">
+				<div class="container-fluid">
+					<span id="agregar" class="btn btn-info pull-left m-t"><i class="fa fa-plus"></i> Agregar respuesta</span>
+					<span id="eliminar" class="btn btn-warning pull-left m-t m-l"><i class="fa fa-trash"></i> Eliminar respuesta</span>
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> {{accion|capfirst}} pregunta</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script>$('.select2').select2()</script>
+<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	var $tipo=$("#tipo"),$contenedor=$('#contenedor'),$agregar=$('#agregar'),
+	$eliminar=$('#eliminar'),aux_cantidad={{numero_respuestas}},cantidad={{numero_respuestas}},$contador=$('#contador');
+	$tipo.change(function(){
+		$('.numerica').addClass('oculto');
+		switch ($tipo[0].selectedIndex) {
+			case 4:
+				$contenedor.html('');
+				aux_cantidad = 0;
+				cantidad = 0;
+				break;
+			case 3:
+				$('.numerica').removeClass('oculto');
+				$('.numerica').prop('required',true);
+				break;
+			case 2:
+				$('.numerica').addClass('oculto');
+				$('.numerica').prop('required',false);
+				break;
+			case 1:
+				$('.numerica').removeClass('oculto');
+				$('.numerica').prop('required',true);
+				break;
+			case 0:
+				$('.numerica').addClass('oculto');
+				$('.numerica').prop('required',false);
+				break;
+		}
+	});
+	$agregar.click(function(){
+		if( ($tipo[0].selectedIndex == 1 || $tipo[0].selectedIndex == 3) && cantidad < 13){
+			aux_cantidad +=1;
+			$contenedor.append('<div id="'+cantidad+'" class="form-group"><label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta '+aux_cantidad+':</label><div class="col-lg-5 col-md-5 col-xs-6 col-sm-6"><input required title="Este campo es obligatorio" type="text" name="respuesta'+cantidad+'" class="form-control" maxlength="254" placeholder="Texto de la opción"></div><label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica">Numérico:</label><div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica"><input required  title="Este campo es obligatorio" type="number" name="numerico'+cantidad+'" class="form-control" maxlength="254" placeholder="Valor"></div></div>')
+			cantidad +=1;
+			$contador.val(cantidad);
+		}
+		else if(($tipo[0].selectedIndex == 0 || $tipo[0].selectedIndex == 2) && cantidad < 13){
+			aux_cantidad +=1;
+			$contenedor.append('<div id="'+cantidad+'" class="form-group"><label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta '+aux_cantidad+':</label><div class="col-lg-5 col-md-5 col-xs-6 col-sm-6"><input required title="Este campo es obligatorio" type="text" name="respuesta'+cantidad+'" class="form-control" maxlength="254" placeholder="Texto de la opción"></div><label class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label required numerica oculto">Numérico:</label><div class="col-lg-3 col-md-3 col-xs-2 col-sm-2 numerica oculto"><input title="Este campo es obligatorio" type="number" name="numerico'+cantidad+'" class="form-control" maxlength="254" placeholder="Valor"></div></div>')
+			cantidad +=1;
+			$contador.val(cantidad);
+		}
+	});
+	$eliminar.click(function(){
+		if(cantidad >0){
+		cantidad -=1;
+		aux_cantidad -=1;
+		$("#"+cantidad).remove();
+		$contador.val(cantidad);}
+	});
+	$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});
+});
+</script>
+{%endblock%}

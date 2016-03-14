@@ -32,7 +32,10 @@
 						<input id="estado" {% if "registrar" == accion %}checked{% else %}{% if Instrumento.estado %}checked{% endif %}{% endif %} {% if not Permisos.act_variables %}disabled{% endif %} type="checkbox" name="estado" class="switch" >
 					</div>
 				</div>
-				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> {{ accion | title }} instrumento</button></div>
+				<div class="container-fluid">
+					<a href="/360/instrumentos/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Cancelar </a>
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> {{ accion | title }} instrumento</button>
+				</div>
 			</form>
 		</div>
 	</div>

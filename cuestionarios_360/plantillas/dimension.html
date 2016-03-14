@@ -1,0 +1,57 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Dimensiones{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
+<li><a href="/360/instrumento/{{Instrumento.id}}/dimensiones/"><i><span>/ Dimensiones</span></i></a></li>
+<li><a href="#"><i><span>/ {{accion | capfirst}}</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Complete los siguientes campos para agregar una nueva dimensión:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  id="nombre" required title="Se requiere un nombre" type="text" name="nombre" class="form-control" maxlength="254" placeholder="Nombre privado de la dimensión a registrar" value="{{Dimension.nombre}}">
+					</div>
+
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label norequired">Texto encuesta:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  id="nombre" title="Se requiere un texto para la encuesta" type="text" name="descripcion" class="form-control" maxlength="254" placeholder="Texto que aparecerá en la encuesta" value="{{Dimension.descripcion}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  required title="Se requiere una posición" type="number" name="posicion" class="form-control" maxlength="30" min="1" max="999" placeholder="Posición dentro del proyecto" {% if "registrar" == accion %}value="{{Instrumento.max_dimensiones |add:1}}"{% else %}value="{{Dimension.posicion}}"{% endif %} >
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activa:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="estado" {% if "registrar" == accion %}checked{% else %}{% if Dimension.estado %}checked{% endif %}{% endif %} {% if not Permisos.act_variables %}disabled{% endif %} type="checkbox" name="estado" class="switch" >
+					</div>
+				</div>
+				<div class="container-fluid">
+					<a href="/360/instrumento/{{Instrumento.id}}/dimensiones/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Cancelar </a>
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> {{accion | capfirst}} dimensión</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+{%endblock%}

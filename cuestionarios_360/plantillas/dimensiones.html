@@ -3,6 +3,7 @@
 {% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
 <li><a href="#"><i><span>/ Dimensiones</span></i></a></li>
 {% endblock%}
 {% block contenido2 %}
@@ -23,23 +24,18 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for i in Variables %}
+					{% for i in Dimensiones %}
 					<tr>
 						<td>{{ i.posicion  }}</td>
 						<td>{{ i.descripcion  }}</td>
-						<td><a href="/variable/{{i.id}}/preguntas/">{{ i.nombre  }}</a></td>
+						<td><a href="/360/dimension/{{i.id}}/variables/">{{ i.nombre  }}</a></td>
 						<td>{% if i.estado%}<span style="color:#1d9d73">Activa</span>{% else %}<span style="color:#cd1e21">Inactiva</span>{% endif %}</td>
-						<td>{% if Permisos.var_add%}<a href="/dimension/{{i.id}}/variable/nueva/"><i class="fa fa-plus m-r" title="agregar pregunta"></i></a>{% endif %}{% if Permisos.act_variables %}<a href="/dimension/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{% endif %}{% if Permisos.var_add %}<a href="/dimension/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{% endif %}{% if Permisos.var_edit %}<a href="/dimension/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/dimension/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
+						<td>{% if Permisos.var_add%}<a href="/360/dimension/{{i.id}}/variable/nueva/"><i class="fa fa-plus m-r" title="agregar variable"></i></a>{% endif %}{% if Permisos.act_variables %}<a href="/360/dimension/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{% endif %}{% if Permisos.var_edit %}<a href="/360/dimension/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/360/dimension/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>
-			<form class="" action="index.html" method="post">
-				<div style="display:none">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-</div>
-			</form>
 
-			{% if Permisos.var_add %}<div class="container-fluid"><a href="/variable/nueva/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar variable</a></div>{% endif %}
+			{% if Permisos.var_add %}<div class="container-fluid"><a href="/360/instrumento/{{Instrumento.id}}/dimension/nueva/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar dimensión</a></div>{% endif %}
 		</div>
 	</div>
 </div>
@@ -48,5 +44,5 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ variables",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna variable.",sInfo:"Variables de la _START_ a la _END_ de un total de _TOTAL_",sInfoEmpty:"Variables de la  0 a la 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ variables)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ dimensiones",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna dimensión.",sInfo:"Dimensiones de la _START_ a la _END_ de un total de _TOTAL_",sInfoEmpty:"Dimensiones de la  0 a la 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ dimensiones)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {% endblock%}

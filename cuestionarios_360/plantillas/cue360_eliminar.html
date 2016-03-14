@@ -1,0 +1,27 @@
+{% extends "dash2.html" %}{% load staticfiles%}
+{% block title %} Proyecto | Eliminar {% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Eliminar</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> {{user.first_name | capfirst | escape }}, favor proceda con precaución:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%ifequal objeto "Pregunta"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una pregunta ocasiona que los siguientes elementos asociados:<br><br><ul><li>Respuestas</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la pregunta <strong>"{{Pregunta.texto | escape}}"</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Variable"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una variable ocasiona que los siguientes elementos asociados:<br><br><ul><li>Preguntas con sus respuestas</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la variable <strong>{{Variable.nombre | escape}}</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Dimension"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una dimensión ocasiona que los siguientes elementos asociados:<br><br><ul><li>Variables</li><li>Preguntas con sus respuestas</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar la dimensión <strong>{{Dimension.nombre | escape}}</strong>?</div>{%endifequal%}
+			{%ifequal objeto "Instrumento"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar un instrumento ocasiona que los siguientes elementos asociados:<br><br><ul><li>Dimensiones</li><li>Variables</li><li>Preguntas con sus respuestas</li><li>Respuestas de los participantes</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar el instrumento <strong>{{Instrumento.nombre | escape}}</strong>?</div>{%endifequal%}
+			<form  method="POST">{%csrf_token%}
+            	<div class="container-fluid">
+					<span onClick="javascript:history.go(-1);" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</span>
+					<button type="submit" class="btn btn-danger pull-right m-t"><i class="fa fa-trash"></i> Eliminar definitivamente</button>
+				</div>
+            </form>
+		</div>
+	</div>
+</div>
+{% endblock %}
