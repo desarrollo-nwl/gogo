@@ -103,7 +103,7 @@ class Permisos( models.Model ):
 	pro_del = models.BooleanField( default = False )
 	pro_edit = models.BooleanField( default = False )
 	pro_see = models.BooleanField( default = False )
-	red_add = models.BooleanField( default = False )
+	red_add = models.BooleanField( default = False ) #Columna_Agregar antes pre (preguntas)
 	red_del = models.BooleanField( default = False )
 	red_edit = models.BooleanField( default = False )
 	red_see = models.BooleanField( default = False )#redes

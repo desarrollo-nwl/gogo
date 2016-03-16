@@ -1,0 +1,41 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Roles{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Roles</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Roles del proyecto:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Permisos.col_see%}
+			<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>{% for i in Roles %}
+					<tr>
+						<td>{{ i.nombre }}</td>
+						<td>{% if Permisos.var_edit %}<a href="/360/rol/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/360/rol/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
+					</tr>{% endif %}
+				</tbody>
+			</table>{%endif%}
+
+			{%if Permisos.var_add%}<div class="container-fluid"><a href="/360/rol/nuevo/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar Rol</a></div>{%endif%}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún rol.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%endblock%}

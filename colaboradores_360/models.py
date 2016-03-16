@@ -7,7 +7,7 @@ from cuestionarios_360.models import Proyectos,Instrumentos_360
 class Colaboradores_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	apellido = models.CharField( max_length = 45 )
-	descripcion = models.CharField( max_length = 255, default=u'Ninguna' )
+	descripcion = models.CharField( max_length = 255, blank=True, null=True )
 	email = models.EmailField( )
 	enviados = models.PositiveSmallIntegerField( default = 0 )
 	estado = models.BooleanField( default = True)
@@ -82,6 +82,7 @@ class ColaboradorAvance_360( models.Model ):
 class ColaboradoresMetricas_360( models.Model ):
 	id = models.OneToOneField( Colaboradores_360, primary_key=True )
 	propension = models.TextField( default=u'[]' )
+	ord_instrumentos = models.TextField( default=u'[]' )
 
 	def __unicode__(self):
 		return '%s' % (self.id)
@@ -90,3 +91,17 @@ class ColaboradoresMetricas_360( models.Model ):
 		managed = True
 		db_table = 'colaboradores_360_metricas'
 		verbose_name_plural = 'Metricas propension 360'
+
+
+class Roles_360( models.Model ):
+	id =  models.AutoField( primary_key = True )
+	nombre = models.CharField( max_length = 128 )
+	proyecto = models.ForeignKey( Proyectos )
+
+	def __unicode__(self):
+		return '%s' % (self.id)
+
+	class Meta:
+		managed = True
+		db_table = 'colaboradores_360_roles'
+		verbose_name_plural = 'Roles 360'

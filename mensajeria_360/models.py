@@ -7,7 +7,9 @@ from django.utils import timezone
 
 class Streaming_360( models.Model ):
 	id = models.AutoField( primary_key = True)
-	colaborador = models.ForeignKey( Colaboradores_360 )
+	colaborador = models.ForeignKey( Colaboradores_360, related_name="colaborador")
+	evaluado = models.ForeignKey( Colaboradores_360, related_name="evaluado", blank=True, null=True )
+	rol = models.CharField( max_length = 120 )
 	instrumento = models.ForeignKey( Instrumentos_360 )
 	pregunta = models.ForeignKey( Preguntas_360 )
 	proyecto = models.ForeignKey( Proyectos )

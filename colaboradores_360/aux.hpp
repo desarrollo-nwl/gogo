@@ -5,8 +5,8 @@
 using namespace std;
 using namespace pqxx;
 
-void escape(std::string& data) {
-    std::string buffer;
+void escape(string& data) {
+    string buffer;
     buffer.reserve(data.size());
     for(size_t pos = 0; pos != data.size(); ++pos) {
         switch(data[pos]) {
@@ -42,8 +42,8 @@ int insertar( string sql )
 	  W.commit();
 
 	  C.disconnect ();
-   }catch (const std::exception &e){
-	  cerr << e.what() << std::endl;
+   }catch (const exception &e){
+	  cerr << e.what() << endl;
 	  return 1;
    }
 
@@ -72,8 +72,8 @@ result leer( string sql )
 	  C.disconnect ();
 	  return R;
 
-   } catch (const std::exception &e){
-	  cerr << e.what() << std::endl;
+   } catch (const exception &e){
+	  cerr << e.what() << endl;
 	  result R;
 	  return R;
    }
@@ -105,8 +105,8 @@ int actualizar(string sql)
 
 		C.disconnect ();
 
-	} catch (const std::exception &e){
-	  cerr << e.what() << std::endl;
+	} catch (const exception &e){
+	  cerr << e.what() << endl;
 	  return 1;
 	}
 

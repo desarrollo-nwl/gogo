@@ -14,6 +14,7 @@ django.setup()
 from colaboradores.models import Colaboradores
 from cuestionarios.models import Preguntas,Variables
 from cuestionarios_360.models import Instrumentos_360,Dimensiones_360,Preguntas_360,Variables_360
+from django.contrib.sessions.models import Session
 from usuarios.models import Proyectos
 from django.db import transaction
 from datetime import datetime,timedelta
@@ -31,3 +32,4 @@ if '__main__':
 	Dimensiones_360.objects.filter(zdel__lt = antiguo).delete()
 	Variables_360.objects.filter(zdel__lt = antiguo).delete()
 	Preguntas_360.objects.filter(zdel__lt = antiguo).delete()
+	Session.objects.filter(expire_date__lt = timezone.now()).delete()

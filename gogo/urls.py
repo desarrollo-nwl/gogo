@@ -153,7 +153,10 @@ urlpatterns += patterns('colaboradores_360.views',
 	url(r'^360/participante/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreditar_360'),
 	url(r'^360/participante/activar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivar_360'),
 	url(r'^360/archivo/$', 'archivo_360'),
-
+	url(r'^360/roles/$', 'roles_360'),
+	url(r'^360/rol/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'roleditar_360'),
+	url(r'^360/rol/eliminar/(?P<id_colaborador>[0-9]{1,10})/$', 'roleliminar_360'),
+	url(r'^360/rol/nuevo/(?P<id_colaborador>[0-9]{1,10})/$', 'rolnuevo_360'),
 )
 
 
