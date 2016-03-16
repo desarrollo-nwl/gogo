@@ -814,25 +814,14 @@ dataTab2: function(fechaInicial,fechaFinal){
 		for(r=0;r<totalPersonas;r++){
 
 						if(Datos[r][16]=='True'){
-
-<<<<<<< HEAD
-								    var puntajePendejo = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
-									if(!contenido(Datos[r][14],indiceVariables)){
-										puntajeVariables.push(puntajePendejo);
-=======
 								    var puntajeDummy = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
 									if(!contenido(Datos[r][14],indiceVariables)){
 										puntajeVariables.push(puntajeDummy);
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 										cantidadVariables.push(1);
 										indiceVariables.push(Datos[r][14]);
 									  }else{
 											var ind1 = indiceVariables.indexOf(Datos[r][14]);
-<<<<<<< HEAD
-											puntajeVariables[ind1] += puntajePendejo;
-=======
 											puntajeVariables[ind1] += puntajeDummy;
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 											cantidadVariables[ind1] += 1;
 										}
 						   }
@@ -862,11 +851,7 @@ dataTab2: function(fechaInicial,fechaFinal){
 								&& contenido(Datos[r][13],opcional5_seleccionadas)
 							{% endif %}
 						){
-<<<<<<< HEAD
-
-=======
 								suma = true;
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 								var puntaje = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
 
 								if(!contenido(Datos[r][14],variables)){
@@ -883,20 +868,7 @@ dataTab2: function(fechaInicial,fechaFinal){
 
 	//    fin del for de datos
 		}
-<<<<<<< HEAD
 
-        for(n= 0;n<puntajeVariables.length;n++){
-			puntajeVariables[n]= puntajeVariables[n]/cantidadVariables[n]
-		}
-		for(l=0;l<matrizTotal.length;l++){
-			matrizTotal[l][1] = matrizTotal[l][1]/cantidadVariablesFiltros[l];
-			var indiceFinal = indiceVariables.indexOf(variables[l]);
-			matrizTotal[l].push(puntajeVariables[indiceFinal]);
-		}
-
-
-		console.log(matrizTotal);
-=======
 		if(!suma) throw "Sin datos";
         for(n= 0;n<puntajeVariables.length;n++){
 			puntajeVariables[n]= puntajeVariables[n]/cantidadVariables[n]
@@ -906,7 +878,6 @@ dataTab2: function(fechaInicial,fechaFinal){
 			var indiceFinal = indiceVariables.indexOf(variables[l]);
 			matrizTotal[l].push(puntajeVariables[indiceFinal]);
 		}
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 
 return matrizTotal
 },
@@ -1086,15 +1057,7 @@ verifica_tres: function(){
 //==============================================================================
 $(document).ready(function() {
 	Elementos.inicio();
-<<<<<<< HEAD
-	google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
-	$('.panel-body').fadeTo('slow',100);
-	$('.filtros_uno').change(function(){	Elementos.grafica_uno();});
-	var minMaxCuestionario = minimoMaximoVariables(Cuestionario);
-    //  google.setOnLoadCallback(Elementos.grafica_dos());
-=======
 	Elementos.verifica_uno();
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 
 	$('.panel-body .panel').fadeTo(100,100);
 	$('.filtros_uno').change(function(){	Elementos.verifica_uno();});
@@ -1103,14 +1066,7 @@ $(document).ready(function() {
 	// Grafica 2
 	tiemposInicio_0 = tiemposIniciales(fechas);
 
-<<<<<<< HEAD
-    //   GRAFICA 2
-     var dataTotal2 = Elementos.dataTab2(tiemposInicio_0[2],tiemposInicio_0[3]);
- 	 google.setOnLoadCallback(Elementos.grafica_dos(dataTotal2,minMaxCuestionario[1],minMaxCuestionario[0]));
-    //  INICIO SLIDER
-=======
     // Slider
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 	 $("#control_grafica_dos_div").dateRangeSlider({
  		bounds:{
  			min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
@@ -1125,30 +1081,7 @@ $(document).ready(function() {
 	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
 	$('.filtros_dos').change(function(){ Elementos.verifica_dos(); });
 
-<<<<<<< HEAD
-	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){
-		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		var espacio = Elementos.dataTab2(tiempoMin,tiempoMax);
-		Elementos.grafica_dos(espacio,minMaxCuestionario[1],minMaxCuestionario[0]);
-
-	})
-
-	$('.filtros_dos').change(function(){
-       var fecha = $('#control_grafica_dos_div').dateRangeSlider('values');
-       var dataFiltros= Elementos.dataTab2(fecha.min.getTime(),fecha.max.getTime());
-	   Elementos.grafica_dos(dataFiltros,minMaxCuestionario[1],minMaxCuestionario[0]);
-	//    variables_seleccionadas = $var_g3.val();
-	});
-
-
-     ///GRAFICA 3
-
-	var dataTotal = Elementos.dataTab3(tiemposInicio_0[2],tiemposInicio_0[3]);
-	google.setOnLoadCallback(Elementos.grafica_tres(dataTotal,minMaxCuestionario[1],minMaxCuestionario[0]));
-	// INICIO SLIDER
-=======
 	// Grafica 3
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 	$("#control_grafica_tres_div").dateRangeSlider({
 		bounds:{
 			min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
@@ -1160,25 +1093,8 @@ $(document).ready(function() {
 		}
 	});
 
-<<<<<<< HEAD
-	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){
-		var tiempoMin = data.values.min.getTime(), tiempoMax = data.values.max.getTime();
-		var espacio = Elementos.dataTab3(tiempoMin,tiempoMax);
-		Elementos.grafica_tres(espacio,minMaxCuestionario[1],minMaxCuestionario[0]);
-
-	})
-
-	$('.filtros_tres').change(function(){
-       var fecha = $('#control_grafica_tres_div').dateRangeSlider('values');
-       var dataFiltros= Elementos.dataTab3(fecha.min.getTime(),fecha.max.getTime());
-	   Elementos.grafica_tres(dataFiltros,minMaxCuestionario[1],minMaxCuestionario[0]);
-	   variables_seleccionadas = $var_g3.val();
-	});
-
-=======
 	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){ Elementos.verifica_tres(); })
 	$('.filtros_tres').change(function(){ Elementos.verifica_tres(); });
->>>>>>> 1a62fb8ef3eebfd007d7f087829a31059bb89dfb
 
 	$(window).resize(function() {
 		Elementos.grafica_uno();
