@@ -1,20 +1,19 @@
 # -*- encoding: utf-8 -*-
-from colaboradores.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import transaction
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import Proyectos, Logs
 from datetime import datetime as DT
-from cuestionarios.models import  Preguntas, Variables
-from colaboradores.models import Colaboradores
-from mensajeria.models import Streaming
-import random
+from cuestionarios_360.models import *
+from colaboradores_360.models import *
+from mensajeria_360.models import Streaming_360
+import random, colabora
 #===============================================================================
 # indices
 #===============================================================================
@@ -22,22 +21,24 @@ import random
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradores_ind(request):
+def colaboradores_ind_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_see:
-		participantes = Colaboradores.objects.filter(proyecto=proyecto
-						).only(
-							'nombre','apellido','email',
-							'colaboradoresdatos__cargo','estado'
-						).select_related('colaboradoresdatos')
-		return render_to_response('colaboradores_ind.html',{
-		'Activar':'Configuracion','activar':'Individual',
-		'Proyecto':proyecto,'Permisos':permisos,'Participantes':participantes
+		# participantes = Colaboradores_360.objects.filter(proyecto=proyecto
+		# 				).only(
+		# 					'nombre','apellido','email',
+		# 					'colaboradoresdatos_360__cargo','estado'
+		# 				).select_related('colaboradoresdatos_360')
+		tabla = colabora.ver_colaboradores(str(proyecto.id),permisos.col_edit,permisos.col_del)
+		print tabla
+		return render_to_response('colaboradores_ind_360.html',{
+		'Activar':'Contenido','activar':'Individual',
+		'Proyecto':proyecto,'Permisos':permisos,'Tabla':tabla
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -48,44 +49,56 @@ def colaboradores_ind(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradornuevo(request):
+def colaboradornuevo_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
-		emails = Colaboradores.objects.only('email').filter(proyecto=proyecto)
+		emails = Colaboradores_360.objects.only('email').filter(proyecto_id=proyecto.id)
 		if request.method == 'POST':
 			chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 			key = ''.join(random.sample(chars, 64))
-			if not Colaboradores.objects.filter(proyecto=proyecto,email=request.POST['email']).exists():
-				participante = Colaboradores(
-					nombre = request.POST['nombre'],
-					apellido = request.POST['apellido'],
-					key = key,
-					email = request.POST['email'].lower(),
-					proyecto = proyecto)
+			if not Colaboradores_360.objects.filter(proyecto=proyecto,email=request.POST['email']).exists():
+				participante = Colaboradores_360(
+								nombre = request.POST['nombre'],
+								apellido = request.POST['apellido'],
+								key = key,
+								key_old = 'HACK',
+								email = request.POST['email'].lower(),
+								genero = request.POST['genero'],
+								proyecto_id = proyecto.id)
+
 				try:
 					if(request.POST['estado']):
 						participante.estado = True
 				except:
 					participante.estado = False
-				try:participante.movil = request.POST['movil']
-				except:pass
+
+				try:
+					if(request.POST['externo']):
+						participante.externo = True
+				except:
+					participante.externo = False
+
+				try: participante.descripcion = request.POST['descripcion']
+				except: participante.descripcion = None
+
 				with transaction.atomic():
 					participante.save()
-					datos = ColaboradoresDatos(
+					datos = ColaboradoresDatos_360(
 						id = participante,
 						area = request.POST['area'],
 						cargo = request.POST['cargo'],
 						ciudad = request.POST['ciudad'],
 						fec_ingreso = DT.strptime(str(request.POST['fec_ingreso']),'%d/%m/%Y'),
-						genero = request.POST['genero'],
-						niv_academico = request.POST['niv_academico'],
-						profesion = request.POST['profesion'],
 						regional = request.POST['regional'])
+					try:datos.niv_academico = request.POST['niv_academico']
+					except:pass
+					try:datos.profesion = request.POST['profesion']
+					except:pass
 					try:
 						if(request.POST['fec_nacimiento']):
 							datos.fec_nacimiento = DT.strptime(str(request.POST['fec_nacimiento']),'%d/%m/%Y')
@@ -105,30 +118,36 @@ def colaboradornuevo(request):
 					proyecto.tot_participantes += 1
 					streaming_crear = []
 					datos.save()
-					ColaboradoresMetricas.objects.create(id=participante)
-					variables = proyecto.variables_set.all()
-					preguntas = Preguntas.objects.filter(variable__in=variables)
-					for j in preguntas:
-						try:
-							streaming_crear.append(Streaming(proyecto=proyecto,colaborador=participante,pregunta=j))
-							proyecto.tot_aresponder += 1
-						except:
-							pass
-					if(proyecto.tot_aresponder):
-						proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
-					else:
-						proyecto.total = 0.0
-					if(streaming_crear):
-						Streaming.objects.bulk_create(streaming_crear)
-					proyecto.save()
+					ColaboradoresMetricas_360.objects.create(id=participante)
+					#  dependiendo del tipo se ejecuta auto o no
+					if (proyecto.tipo =="360 unico"):
+						instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id )[0]
+						preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
+						for j in preguntas:
+							try:
+								streaming_crear.append(Streaming_360(
+														proyecto_id=proyecto.id,
+														instrumento_id=instrumento.id,
+														colaborador_id=participante.id,
+														pregunta_id=j.id))
+								proyecto.tot_aresponder += 1
+							except:
+								pass
+						if(proyecto.tot_aresponder):
+							proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
+						else:
+							proyecto.total = 0.0
+						if(streaming_crear):
+							Streaming_360.objects.bulk_create(streaming_crear)
+						proyecto.save()
+						cache.set(request.user.username,proyecto,86400)
 					nom_log = request.user.first_name+' '+request.user.last_name
 					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 					accion="Creó al participante",descripcion=participante.nombre+' '+participante.apellido)
-					cache.set(request.user.username,proyecto,86400)
-				return HttpResponseRedirect('/participantes/individual')
+				return HttpResponseRedirect('/360/participantes/individual')
 
-		return render_to_response('colaboradornuevo.html',{
-		'Activar':'Configuracion','activar':'Individual',
+		return render_to_response('colaborador.html',{
+		'Activar':'Contenido','activar':'Individual','accion':'registrar',
 		'Proyecto':proyecto,'Permisos':permisos,'Emails':emails
 		}, context_instance=RequestContext(request))
 	else:
@@ -141,30 +160,38 @@ def colaboradornuevo(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradoreditar(request,id_colaborador):
+def colaboradoreditar_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
-	if not proyecto.interna:
-		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_edit:
-		try:participante = Colaboradores.objects.filter(proyecto=proyecto
-							).select_related('colaboradoresdatos').get(id=int(id_colaborador))
+		try:participante = Colaboradores_360.objects.filter(proyecto=proyecto
+							).select_related('colaboradoresdatos_360').get(id=id_colaborador)
 		except:return render_to_response('403.html')
-		emails = Colaboradores.objects.only('email').filter(proyecto=proyecto).exclude(id=id_colaborador)
+		emails = Colaboradores_360.objects.only('email').filter(proyecto=proyecto).exclude(id=id_colaborador)
 		if request.method == 'POST':
-			if not Colaboradores.objects.exclude(id=id_colaborador).filter(proyecto=proyecto,email=request.POST['email']).exists():
+			if not Colaboradores_360.objects.exclude(id=id_colaborador).filter(proyecto=proyecto,email=request.POST['email']).exists():
 				participante.nombre = request.POST['nombre']
 				participante.apellido = request.POST['apellido']
 				participante.email = request.POST['email']
-				participante.movil = request.POST['movil']
+				participante.genero = request.POST['genero']
 				try:
 					if(request.POST['estado']):
 						participante.estado = True
 				except:
 					participante.estado = False
-				datos = participante.colaboradoresdatos
+				try:
+					if(request.POST['externo']):
+						participante.externo = True
+				except:
+					participante.externo = False
+				try:
+					if(request.POST['descripcion']):
+						participante.descripcion = True
+				except:
+					participante.descripcion = False
+				datos = participante.colaboradoresdatos_360
 				datos.area = request.POST['area']
 				datos.cargo = request.POST['cargo']
 				datos.ciudad = request.POST['ciudad']
@@ -174,7 +201,6 @@ def colaboradoreditar(request,id_colaborador):
 						datos.fec_nacimiento = DT.strptime(str(request.POST['fec_nacimiento']),'%d/%m/%Y')
 				except:
 					datos.fec_nacimiento = None
-				datos.genero = request.POST['genero']
 				datos.niv_academico = request.POST['niv_academico']
 				datos.profesion = request.POST['profesion']
 				datos.regional = request.POST['regional']
@@ -195,9 +221,9 @@ def colaboradoreditar(request,id_colaborador):
 					nom_log = request.user.first_name+' '+request.user.last_name
 					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 					accion="Editó al participante",descripcion=participante.nombre+' '+participante.apellido)
-				return HttpResponseRedirect('/participantes/individual')
-		return render_to_response('colaboradoreditar.html',{
-		'Activar':'Configuracion','activar':'Individual',
+				return HttpResponseRedirect('/360/participantes/individual')
+		return render_to_response('colaborador.html',{
+		'Activar':'Contenido','activar':'Individual','accion':'editar',
 		'Proyecto':proyecto,'Permisos':permisos,'Participante':participante,'Emails':emails,
 		}, context_instance=RequestContext(request))
 	else:
@@ -209,22 +235,19 @@ def colaboradoreditar(request,id_colaborador):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradoractivar(request,id_colaborador):
+def colaboradoractivar_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
-	if not proyecto.interna:
-		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_edit:
-		try:participante = Colaboradores.objects.only('estado').filter(proyecto=proyecto).get(id=int(id_colaborador))
+		try:participante = Colaboradores_360.objects.only('estado').filter(proyecto=proyecto).get(id=id_colaborador)
 		except:return render_to_response('403.html')
 		if(participante.estado):
-			participante.estado = False
+			 Colaboradores_360.objects.filter(id=id_colaborador).update(estado=False)
 		else:
-			participante.estado = True
-		participante.save()
-		return HttpResponseRedirect('/participantes/individual/')
+			Colaboradores_360.objects.filter(id=id_colaborador).update(estado=True)
+		return JsonResponse({'id': id_colaborador,'estado':1-int(participante.estado)})
 	else:
 		return render_to_response('403.html')
 
@@ -234,13 +257,13 @@ def colaboradoractivar(request,id_colaborador):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def archivo(request):
+def archivo_360(request):
 	import xlwt
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -251,34 +274,39 @@ def archivo(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		ws = wb.add_sheet("Participantes")
 		datos = proyecto.proyectosdatos
 		ws.write(0,0,u"Nombre",tit_format)
 		ws.write(0,1,u"Apellido",tit_format)
 		ws.write(0,2,u"Email",tit_format)
-		ws.write(0,3,u"Móvil",tit_format)
-		ws.write(0,4,u"Género",tit_format)
-		ws.write(0,5,u"Área",tit_format)
-		ws.write(0,6,u"Cargo",tit_format)
-		ws.write(0,7,u"Regional",tit_format)
-		ws.write(0,8,u"Ciudad",tit_format)
-		ws.write(0,9,u"Nivel académico",tit_format)
-		ws.write(0,10,u"Profesión",tit_format)
-		ws.write(0,11,u"Fecha de nacimiento dd/mm/yyyy",tit_format)
-		ws.write(0,12,u"Fecha de ingreso dd/mm/yyyy",tit_format)
+		ws.write(0,3,u"Género",tit_format)
+		ws.write(0,4,u"Área",tit_format)
+		ws.write(0,5,u"Cargo",tit_format)
+		ws.write(0,6,u"Regional",tit_format)
+		ws.write(0,7,u"Ciudad",tit_format)
+		ws.write(0,8,u"Nivel académico",tit_format)
+		ws.write(0,9,u"Profesión",tit_format)
+		ws.write(0,10,u"Fecha de nacimiento dd/mm/yyyy",tit_format)
+		ws.write(0,11,u"Fecha de ingreso dd/mm/yyyy",tit_format)
 		for i in xrange(1,10000):
+			ws.write(i,10,"",date_format)
 			ws.write(i,11,"",date_format)
-			ws.write(i,12,"",date_format)
 		if(datos.opcional1):
-			ws.write(0,13,datos.opcional1,tit_format)
+			ws.write(0,12,datos.opcional1,tit_format)
 		if(datos.opcional2):
-			ws.write(0,14,datos.opcional2,tit_format)
+			ws.write(0,13,datos.opcional2,tit_format)
 		if(datos.opcional3):
-			ws.write(0,15,datos.opcional3,tit_format)
+			ws.write(0,14,datos.opcional3,tit_format)
 		if(datos.opcional4):
-			ws.write(0,16,datos.opcional4,tit_format)
+			ws.write(0,15,datos.opcional4,tit_format)
 		if(datos.opcional5):
-			ws.write(0,17,datos.opcional5,tit_format)
+			ws.write(0,16,datos.opcional5,tit_format)
+		ws = wb.add_sheet("Evaluadores externos")
+		ws.write(0,0,u"Nombre",tit_format)
+		ws.write(0,1,u"Apellido",tit_format)
+		ws.write(0,2,u"Email",tit_format)
+		ws.write(0,3,u"Género",tit_format)
+		ws.write(0,4,u"Descripción",tit_format)
 		wb.save(response)
 		return response
 
@@ -288,9 +316,9 @@ def archivo(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradores_xls(request):
+def colaboradores_xls_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -305,12 +333,15 @@ def colaboradores_xls(request):
 			doc = xlrd.open_workbook(file_contents=input_excel.read())
 			sheet = doc.sheet_by_index(0)
 			filas = sheet.nrows
+			ext_sheet = doc.sheet_by_index(1)
+			ext_filas = ext_sheet.nrows
 			var_error = None
 			try:
 				proyecto_datos = proyecto.proyectosdatos
 				vector_personas = []
 				vector_ignorar = []
 				nacimientos_arreglados =[]
+				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 				for i in xrange(1,filas):
 					if Colaboradores.objects.filter(proyecto=proyecto,email=sheet.cell_value(i,2)).exists():
 						vector_ignorar.append(i)
@@ -318,13 +349,12 @@ def colaboradores_xls(request):
 						nacimientos_arreglados.append(0)
 					else:
 						var_error = sheet.cell_value(i,0)+' '+sheet.cell_value(i,1)
-						chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 						key = ''.join(random.sample(chars, 64))
-						persona = Colaboradores(
+						persona = Colaboradores_360(
 							nombre=sheet.cell_value(i,0),
 							apellido = sheet.cell_value(i,1),
 							key = key,
-							email=(sheet.cell_value(i,2)).lower(),
+							email=sheet.cell_value(i,2).lower(),
 							estado=True,proyecto=proyecto)
 						try:persona.movil = sheet.cell_value(i,3)
 						except:pass
@@ -333,6 +363,19 @@ def colaboradores_xls(request):
 							nacimientos_arreglados.append(DT(*xlrd.xldate_as_tuple(sheet.cell_value(i,11), 0)))
 						except:
 							nacimientos_arreglados.append(0)
+				colaboradores_externos = []
+				for i in xrange(1,ext_filas):
+					if not ColaboradoresExternos_360.objects.filter(proyecto_id=proyecto.id,email=sheet.cell_value(i,2)).exists():
+						key = ''.join(random.sample(chars, 64))
+						colaboradores_externos.append( ColaboradoresExternos_360(
+												nombre=sheet.cell_value(i,0),
+												apellido = sheet.cell_value(i,1),
+												key = key,
+												email=sheet.cell_value(i,2).lower(),
+												genero=sheet.cell_value(i,3).capitalize(),
+												descripcion=sheet.cell_value(i,4),
+												estado=True,proyecto=proyecto)
+												)
 				vector_datos = []
 				vector_metricas = []
 				streaming_crear = []
@@ -345,7 +388,7 @@ def colaboradores_xls(request):
 							vector_personas[i-1].save()
 							vector_metricas.append(ColaboradoresMetricas(id=vector_personas[i-1]))
 							datos = ColaboradoresDatos(id = vector_personas[i-1],
-								genero=sheet.cell_value(i,4),
+								genero=sheet.cell_value(i,4).capitalize(),
 								area=sheet.cell_value(i,5),
 								cargo=sheet.cell_value(i,6),
 								regional=sheet.cell_value(i,7),
@@ -384,8 +427,8 @@ def colaboradores_xls(request):
 			except:
 				error= "Ocurrio un error cuando se procesaba al participante "+var_error
 
-		return render_to_response('colaboradores_xls.html',{
-		'Activar':'Configuracion','activar':'AcrhivoPlano',
+		return render_to_response('colaboradores_xls_360.html',{
+		'Activar':'Contenido','activar':'AcrhivoPlano',
 		'Proyecto':proyecto,'Permisos':permisos,'Error':error
 		}, context_instance=RequestContext(request))
 	else:
@@ -397,9 +440,9 @@ def colaboradores_xls(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def colaboradoreliminar(request,id_colaborador):
+def colaboradoreliminar_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -427,7 +470,7 @@ def colaboradoreliminar(request,id_colaborador):
 				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/participantes/individual/')
 	return render_to_response('col_eliminar.html',{
-	'Activar':'Configuracion','activar':'Individual',
+	'Activar':'Contenido','activar':'Individual',
 	'objeto':'Participante','Participante':participante,
 	'Proyecto':proyecto,'Permisos':permisos,
 	}, context_instance=RequestContext(request))

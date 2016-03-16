@@ -34,7 +34,7 @@ from django.db.models import Max
 @login_required(login_url='/acceder/')
 def gosurvey(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	datos = proyecto.proyectosdatos
@@ -120,7 +120,7 @@ def gosurvey(request):
 @login_required(login_url='/acceder/')
 def detalladas(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp and proyecto.interna:
@@ -142,7 +142,7 @@ def detalladas(request):
 @login_required(login_url='/acceder/')
 def metricas(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.interna:
@@ -169,7 +169,7 @@ def metricas(request):
 @login_required(login_url='/acceder/')
 def colaboradoractivarmensajeria(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_edit:
@@ -189,7 +189,7 @@ def colaboradoractivarmensajeria(request,id_colaborador):
 @login_required(login_url='/acceder/')
 def colaboradoreenviar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.activo:
@@ -481,7 +481,7 @@ def exportarexterna(request):
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -555,7 +555,7 @@ def exportarinterna(request):
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -703,7 +703,7 @@ def importarespuestas_exportar(request):
 	date_format.num_format_str = 'dd/mm/yyyy'
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -812,7 +812,7 @@ def importarespuestas_exportar(request):
 @login_required(login_url='/acceder/')
 def importarespuestas_preguntas(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')

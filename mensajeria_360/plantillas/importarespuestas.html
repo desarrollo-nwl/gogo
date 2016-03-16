@@ -1,0 +1,49 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Participantes{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Participantes</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Agregar respuestas y actualizar datos de colaboradores en archivo plano:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Error%}<p id="esconder" class="center"><strong class="btn btn-info">{{Error}}</strong></p><br><br>{%endif%}
+			{%if Permisos.col_add%}
+			<p> El sistema genera un archivo excel (.xls) el cual usted podrá descargar y completar para grabar respuestas a sus participantes, así como actualizar sus datos. Para obtener el archivo presione el botón descargar</p><br>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/respuestas/importar/exportar/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
+			<p><strong>Recomendaciones: </strong><p><br>
+				<ol>
+					<li> La columna <b>Id pregunta</b> corresponde al número que muestra la herramienta al intentar editar una pregunta.</li><br>
+					<li> En caso de que la pregunta sea de respuesta multiple, las respuestas deben ir separadas por punto y coma <b>respuesta1;respuesta2;respuesta3</b> . En caso de no haber seleccionado ninguna respuesta deje el campo vacío.</li><br>
+					<li> <b>Mantenga los formatos de las celdas con los cuales se descarga el archivo.</b> </li><br>
+					<li> La fecha de nacimiento es muy importante, pero si por motivos ajenos a usted no la conoce, no la coloque.</li><br>
+					<li> A la hora de ingresar el móvil (opcional) recuerde colocar el indicativo del país, para Colombia es 57 y el número correcto es ej: 573163025922</li><br>
+					<li> Tenga en cuenta la distinción entre mayúsculas y minúsculas, en donde "Ejecutivo" y "ejecutivo", son palabras distintas para el sistema.</li><br>
+					<li> Para el género se debe determinar entre Masculino y Femenino. La primera letra debe ser en mayúscula.</li><br>
+					<li> El esquema recomendado de niveles académicos es:<br><br>
+						<ul>
+							<li>Primaria</li>
+							<li>Bachillerato</li>
+							<li>Tecnología/Tecnólogo</li>
+							<li>Profesional</li>
+							<li>Maestría</li>
+							<li>Doctorado</li>
+						</ul>
+					</li>
+				</ol><br>
+			<p>Ahora suba su archivo (.xls) editado:</p><br>
+			<form  enctype="multipart/form-data" method='POST'>{% csrf_token %}
+	            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"></div>
+				<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><input id="id_docfile" type="file" name="docfile" required /></div><br><br>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-paper-plane-o"></i>Enviar</buton></div>{%endif%}
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{%if Error%}{%block scripts%}<script>$(document).ready(function(){var $esconder=$('#esconder');$esconder.click(function(){$esconder.hide();});});</script>{%endblock%}{%endif%}

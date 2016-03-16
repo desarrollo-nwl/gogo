@@ -21,7 +21,7 @@ from usuarios.models import Empresas, Proyectos, Logs
 @login_required(login_url='/acceder/')
 def variables(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
@@ -38,7 +38,7 @@ def variables(request):
 @login_required(login_url='/acceder/')
 def preguntas(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
@@ -61,7 +61,7 @@ def preguntas(request,id_variable):
 @login_required(login_url='/acceder/')
 def variablenueva(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_add:
@@ -99,7 +99,7 @@ def variablenueva(request):
 @login_required(login_url='/acceder/')
 def variableactivar(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.act_variables:
@@ -197,7 +197,7 @@ def preguntanueva(request,id_variable):
 @login_required(login_url='/acceder/')
 def preguntactivar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.act_variables and permisos.var_edit:
@@ -226,7 +226,7 @@ def preguntactivar(request,id_pregunta):
 @login_required(login_url='/acceder/')
 def variableditar(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_edit:
@@ -337,52 +337,6 @@ def preguntaeditar(request,id_pregunta):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def proyectoclonar(request,id_proyecto):
-	try:proyecto = Proyectos.objects.filter(usuarios=request.user
-					).select_related('proyectosdatos'
-					).prefetch_related('variables_set__preguntas_set__respuestas_set'
-					).get(id=int(id_proyecto))
-	except:return render_to_response('403.html')
-	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_add and permisos.pro_add:
-		from copy import deepcopy
-		proyecto_back = deepcopy(proyecto)
-		datos = proyecto.proyectosdatos
-		proyecto.id = None
-		proyecto.nombre = 'Copia de '+proyecto.nombre
-		with transaction.atomic():
-			proyecto.tot_preguntas = proyecto_back.tot_preguntas
-			proyecto.tot_participantes = 0
-			proyecto.tot_aresponder = 0
-			proyecto.tot_respuestas = 0
-			proyecto.total = 0
-			proyecto.save()
-			datos.id = proyecto
-			datos.save()
-			proyecto.usuarios.add(*proyecto_back.usuarios.all())
-			respuestas_nuevas = []
-			for variable in proyecto.variables_set.all():
-				variable.id = None
-				variable.proyecto = proyecto
-				variable.save()
-				for pregunta in variable.preguntas_set.all():
-					pregunta.id = None
-					pregunta.variable = variable
-					pregunta.save()
-					for respuesta in pregunta.respuestas_set.all():
-						respuesta.id = None
-						respuesta.pregunta = pregunta
-						respuestas_nuevas.append(respuesta)
-			Respuestas.objects.bulk_create(respuestas_nuevas)
-			nom_log = request.user.first_name+' '+request.user.last_name
-			Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó el proyecto",descripcion=proyecto.nombre)
-		return HttpResponseRedirect('/home/')
-	else:
-		return render_to_response('403.html')
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
 def variableclonar(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
@@ -460,7 +414,7 @@ def preguntaclonar(request,id_pregunta):
 @login_required(login_url='/acceder/')
 def variableliminar(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_del:

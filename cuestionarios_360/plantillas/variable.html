@@ -4,7 +4,8 @@
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
 <li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
 <li><a href="/360/instrumento/{{Instrumento_id}}/dimensiones/"><i><span>/ Dimensiones</span></i></a></li>
-<li><a href="/360/dimension/{{Dimension.id}}/variables/"><i><span>/ Variables</span></i></a></li>
+{% if "registrar" == accion %}<li><a href="/360/dimension/{{Dimension.id}}/variables/"><i><span>/ Variables</span></i></a></li>
+{% else %}<li><a href="/360/dimension/{{Dimension_id}}/variables/"><i><span>/ Variables</span></i></a></li>{% endif %}
 <li><a href="#"><i><span>/ {{accion | capfirst}}</span></i></a></li>
 {%endblock%}
 {% block contenido2 %}

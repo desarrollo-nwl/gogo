@@ -1,0 +1,76 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Iniciar detener{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Iniciar Detener</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> {%if Permisos.act_surveys%}Active y desactive el proyecto, al igual que inícielo y deténgalo.{%else%}Inicie y detenga el proyecto.{%endif%}</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<p> El estado actual del proyecto es {%if Proyecto.activo%}<span style="color:#1d9d73">Activo</span>{%else%}<span style="color:#cd1e21">Inactivo</span>{%endif%}</p>
+
+			{%if Proyecto.iniciable%}<form class="form-horizontal" method="POST">{%csrf_token%}
+				<input hidden value="1" name="activo">
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Fecha de inicio:</label>
+					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+						<input required title="Este campo es obligatorio" type="text" name="fec_inicio" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="DD/MM/AAAA" value="{{Proyecto.proyectosdatos.finicio |date:"d/m/Y" |escape}}">
+					</div>
+					<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Fecha de finalizacion:</label>
+					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+						<input required title="Este campo es obligatorio" type="text" name="fec_fin" data-date-format="dd/mm/yyyy" class="form-control fecha" maxlength="254" placeholder="DD/MM/AAAA" value="{{Proyecto.proyectosdatos.ffin |date:"d/m/Y" |escape}}">
+					</div>
+				</div>
+				{%if Proyecto.interna%}
+				{% ifequal Proyecto.tipo "Fragmentada"%}
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Frecuencia mínima:</label>
+					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+						<input required title="Este campo es obligatorio" type="number" name="dMin" min="1" class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamin|escape}}">
+					</div>
+					<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Frecuencia máxima:</label>
+					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+						<input required title="Este campo es obligatorio" type="number" name="dMax"  min="2" class="form-control" maxlength="16" placeholder="De reenvío (días)" value="{{Proyecto.prudenciamax|escape}}">
+					</div>
+				</div>{%endifequal%}
+				{%ifnotequal Proyecto.tipo "Completa"%}<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Preguntas por envío:</label>
+					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+						<input required title="Este campo es obligatorio" type="number" name="can_envio"  class="form-control" maxlength="16" placeholder="Máximo número por envío" value="{{Proyecto.can_envio|escape}}">
+					</div>
+				</div>{%endifnotequal%}
+				{%else%}
+				<div class="form-group">
+					<div class="center"><a href="http://www.changelabtools.com/externa/{{Proyecto.id}}/{{Proyecto.key}}">www.changelabtools.com/externa/{{Proyecto.id}}/{{Proyecto.key}}</div>
+				</div>
+				{%endif%}
+				<div class="container-fluid center m-t-xl m-r-xl">{%if Proyecto.activo%}<button type="submit" class="btn btn-warning"><i class="fa fa-pause m-r"></i>Desactivar</button>{%else%}<button type="submit" class="btn btn-primary"><i class="fa fa-play m-r"></i>Activar</button>{%endif%}</div>
+			</form>{%else%}{%if Permisos.act_surveys%}
+			<br><p> Al conceder permiso de activación a un proyecto, este inmediatamente se descuenta del cupo de proyectos activables. Realice la activación solo si está seguro:</p><br>
+			<form class="form-horizontal" method="POST">{%csrf_token%}
+				<div class="form-group">
+					<label class="col-lg-3 col-md-4 col-xs-4 col-sm-4 control-label required">Comprendo las implicaciones:</label>
+					<div class="col-lg-5 col-md-5 col-xs-8 col-sm-8 m-t-xs">
+						<input type="checkbox" required title="Este campo es obligatorio">
+					</div>
+				</div>
+				<input hidden name="iniciable" >
+				<div class="container-fluid center m-t-xl"><button type="submit" class="btn btn-info"><i class="fa fa-play m-r"></i>Conceder permiso de inicio</button></div>
+			</form>
+			{%else%}<p> Para poder iniciar el proyecto consulte con su consultor de confianza o compre una <a href="#">licencia de Go Analytics</a>.{%endif%}{%endif%}
+			{%if Error%}<br><p>{{Error}}</p>{%endif%}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="{% static 'js/plugins/datepicker/datepicker.min.js' %}"></script>
+<script>$(document).ready(function(){$('.fecha').datepicker({startView: 1,todayBtn: "linked",keyboardNavigation: false,forceParse: false,autoclose: true}); });</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+{%endblock%}

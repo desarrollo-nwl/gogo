@@ -1,0 +1,78 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% load custom_filters %}
+{% block title %} Proyecto | Respuestas detalladas{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Envios y respuestas</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Métricas de propensión del proyecto:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Proyecto.interna%}
+			{%if Permisos.col_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th style="width:35px">Respondió</th>
+						<th style="width:35px">Enviados</th>
+						<th style="width:35px">Lapsus</th>
+						<th style="width:35px">Reenviados</th>
+						<th>Apellido</th>
+						<th>Nombre</th>
+						<th>Área</th>
+						<th>A/D</th>
+					</tr>
+				</thead>
+				<tbody>
+					{%for i in Participantes%}
+					<tr>
+						<td>{{i.respuestas | escape}}</td>
+						<td>{{i.enviados   | escape}}</td>
+						<td>{% ifequal i.propension -1 %} Sin propensión {% else %}{{i.propension |floatformat:"2" | safe}}{% endifequal %}</td>
+						<td>{{i.reenviados | escape}}</td>
+						<td>{{i.nombre     | capfirst | escape}}</td>
+						<td>{{i.apellido   | capfirst | escape}}</td>
+						<td>{{i.colaboradoresdatos.area  | escape}}</td>
+						<td>{%if Permisos.col_edit%}<a href="/participante/activar2/{{i.id}}/"><i title="Activar/Desactivar" class="fa fa-retweet m-r" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a>{%endif%}{%if Proyecto.activo%}<a href="/respuestas/forzar/{{i.id}}/"><i title="Forzar envío" class="fa fa-envelope-o m-r" style="color:{%if i.estado%}#1d9d73{%else%}#cd1e21{%endif%}"></i></a>{%endif%}</td>
+					</tr>{% endfor %}
+				</tbody>
+			</table>{%endif%}
+
+			<br><br><p>Propensión Global: {{Average.propension__avg |floatformat:"2"}} recuerde que un lapsus global muy alto es perjudicial para el correcto desarrollo del proyecto. <br><br>Nota: La calificación lapsus es el promedio de los días que tarda cada participante en responder. La herramienta internamente minimiza estos tiempos por medio de algoritmos de envío, sin embargo manualmente puede forzar un envío en casos particulares. Para una cifra orientativa el nivel de lapsus debe rondar en <strong>1</strong> o menor para ser excelente y <strong>23</strong> para una muy baja frecuencia de respuesta en el proyecto. Es decir menos es mejor. </p>
+			{%else%}
+			{%if Permisos.col_see%}<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th>Fecha</th>
+						<th>Encuestados</th>
+						<th>Acumulado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{%for i in Metricas%}
+					<tr>
+						<td>{{i.fecha | date:'Y-m-d'}}</td>
+						<td>{{i.encuestados | escape}}</td>
+						<td>{{i.acumulado  | escape}}</td>
+					</tr>{% endfor %}
+				</tbody>
+			</table>{%endif%}
+
+			{% if Average.encuestados__avg %}<br><p>Encuestas promedio por día: <strong>{{Average.encuestados__avg |floatformat:"2"}}</strong>.{%endif%}
+			{%endif%}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+{%if Proyecto.interna%}<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ],[ 1, "asc" ],[ 2, "asc" ]],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ métricas",sZeroRecords:"No se encontraron métricas",sEmptyTable:"El Proyecto no posee ninguna respuesta aún.",sInfo:"Métricas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Métricas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ métricas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%else%}<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ],[ 1, "asc" ]],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ métricas",sZeroRecords:"No se encontraron métricas",sEmptyTable:"El Proyecto no posee ninguna respuesta aún.",sInfo:"Métricas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Métricas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ métricas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%endif%}
+{%endblock%}

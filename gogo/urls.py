@@ -64,11 +64,10 @@ urlpatterns += patterns('cuestionarios.views',
 	url(r'^variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar'),
 	url(r'^variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar'),
 	url(r'^variable/activar/(?P<id_variable>[0-9]{1,10})/$', 'variableactivar'),
-	url(r'^proyecto/clonar/(?P<id_proyecto>[0-9]{1,10})/$', 'proyectoclonar'),
 )
 
 #===============================================================================
-# urls de errores
+# urls de participantes
 #===============================================================================
 
 urlpatterns += patterns('colaboradores.views',
@@ -139,6 +138,22 @@ urlpatterns += patterns('cuestionarios_360.views',
 	url(r'^360/variable/(?P<id_variable>[0-9]{1,10})/preguntas/$', 'preguntas_360'),
 	url(r'^360/variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar_360'),
 	url(r'^360/variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar_360'),
+)
+
+
+#===============================================================================
+# urls de participantes_360
+#===============================================================================
+
+urlpatterns += patterns('colaboradores_360.views',
+	url(r'^360/participante/eliminar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreliminar_360'),
+	url(r'^360/participantes/individual/$', 'colaboradores_ind_360'),
+	url(r'^360/participantes/archivo/$', 'colaboradores_xls_360'),
+	url(r'^360/participante/nuevo/$', 'colaboradornuevo_360'),
+	url(r'^360/participante/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreditar_360'),
+	url(r'^360/participante/activar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivar_360'),
+	url(r'^360/archivo/$', 'archivo_360'),
+
 )
 
 

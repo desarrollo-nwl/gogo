@@ -133,9 +133,9 @@ def menu(request,id_proyecto):
 		else:
 			return render_to_response('403.html')
 		cache.set(request.user.username,proyecto,86400)
-		if( permisos.consultor and proyecto.tipo != "Lineal 360" and proyecto.tipo != "Redes 360" ):
+		if( permisos.consultor and proyecto.tipo != "360 unico" and proyecto.tipo != "360 redes" ):
 			return HttpResponseRedirect('/respuestas/metricas')
-		elif( permisos.consultor and ( proyecto.tipo == "Lineal 360" or proyecto.tipo == "Redes 360" ) ):
+		elif( permisos.consultor and ( proyecto.tipo == "360 unico" or proyecto.tipo == "360 redes" ) ):
 			return HttpResponseRedirect('/360/respuestas/metricas')
 		elif( proyecto.tipo == "Lineal 360" or proyecto.tipo == "Redes 360" ):
 			return HttpResponseRedirect('/360/focalizado/')
@@ -420,7 +420,12 @@ def proyectonuevo(request):
 				nom_log =request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el proyecto",descripcion=proyecto.nombre)
 			cache.set(request.user.username,proyecto,86400)
-			return HttpResponseRedirect('/variable/nueva/')
+
+			if( proyecto.tipo == "360 unico" or proyecto.tipo == "360 redes" ):
+				return HttpResponseRedirect('/360/instrumento/nuevo')
+			else:
+				return HttpResponseRedirect('/variable/nueva/')
+
 		return render_to_response('proyectonuevo.html',{
 		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
 		'Usuarios':usuarios,'Permisos':permisos,
@@ -454,10 +459,6 @@ def proyectoeditar(request,id_proyecto):
 			with transaction.atomic():
 				proyecto.empresa_id = request.POST['empresa']
 				proyecto.nombre = request.POST['nombre']
-				try:
-					proyecto.tipo = request.POST['tipo']
-				except:
-					pass
 				try:
 					if(request.POST['pordenadas']):proyecto.pordenadas = True
 				except:
@@ -540,6 +541,14 @@ def proyectoeliminar(request,id_proyecto):
 				proyecto.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
+			try:
+				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
+				os.system(command)
+			except:pass
+			try:
+				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
+				os.system(command)
+			except:pass
 			return HttpResponseRedirect('/home/')
 		return render_to_response('eliminar.html',{
 		'Activar':'MisProyectos','objeto':'Proyecto','Permisos':permisos,

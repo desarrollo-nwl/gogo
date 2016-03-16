@@ -9,6 +9,7 @@ class Instrumentos_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	estado = models.BooleanField( default = True )
 	max_dimensiones = models.PositiveSmallIntegerField( default = 0 )
+	max_preguntas = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255, db_index = True)
 	proyecto = models.ForeignKey( Proyectos, blank = True, null = True )
 	zdel = models.DateTimeField( blank = True, null = True )

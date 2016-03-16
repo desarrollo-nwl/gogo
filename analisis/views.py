@@ -22,7 +22,7 @@ import part,gener,focal
 def participacion(request):
 	proyecto = cache.get(request.user.username)
 	pdatos = proyecto.proyectosdatos
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
@@ -69,7 +69,7 @@ def participacion(request):
 def focalizado(request):
 	proyecto = cache.get(request.user.username)
 	pdatos = proyecto.proyectosdatos
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
@@ -121,7 +121,7 @@ def focalizado(request):
 def general(request):
 	proyecto = cache.get(request.user.username)
 	pdatos = proyecto.proyectosdatos
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
@@ -204,7 +204,7 @@ def solucion(a):
 @login_required(login_url='/acceder/')
 def wordanalytics(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:

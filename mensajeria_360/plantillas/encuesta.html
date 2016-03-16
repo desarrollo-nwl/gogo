@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" id="Networks Lab">
+<head>
+	<title>Encuesta</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{%load staticfiles%}
+	<link href="https://fonts.googleapis.com/css?family=Nunito:400,300" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static 'css/encuesta/normalize.min.css' %}" charset="utf-8">
+	<link rel="stylesheet" href="{% static 'css/encuesta/encuestaestilohad.min.css' %}" charset="utf-8">
+	<link rel="shortcut icon" href="{% static 'img/ico/favicon.ico' %}"/>
+	<link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/ico/favicon144.png' %}">
+	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/ico/favicon114.png' %}">
+	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/ico/favicon72.png' %}">
+	<link rel="apple-touch-icon" href="{% static 'img/ico/favicon57.png' %}">
+	<style media="screen">label.error{margin:-30px 0 7px 0;color:#a62727}input.error,select.error,textarea.error{border:1px solid #db5565;box-shadow:inset 0 1px 1px rgba(0,0,0,.075)}</style>
+</head>
+<body>
+<!-- Estandar Section -->
+<section id="intro" class="intro-section">
+	<div class="container-one">
+		<div class="row">
+			<div class="col-lg-12">
+				<div><img id="had-banner" src="{% static 'img/encuesta/had_banner.png' %}" alt="banner" style="width:100%;">
+				</div>
+				{%if Proyecto.interno %}
+				<div>
+					{%if Encuestado.proyecto.proyectosdatos.logoenc%}<img id="had-logo" src="{{Encuestado.proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
+					{%else%}<img id="had-logo" src="{{Encuestado.proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
+				{%else%}
+					{%if Proyecto.proyectosdatos.logoenc%}<img id="had-logo" src="{{Proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
+					{%else%}<img  id="had-logo" src="{{Proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
+				</div>
+				{%endif%}
+			</div>
+		</div>
+
+</section>
+<!-- Questions Section -->
+<section id="human-body" class="human-body-section">
+	<div class="container-two">
+		<div class="row">
+			<!-- Human Body Section -->
+			<div class="col-lg-12 project">
+				{%if Encuestado.proyecto.interno%}<h1><p>Hola <b>{{Encuestado.nombre | escape |capfirst}}</b>:</p></h1>{%endif%}
+				{%if not Proyecto.interno%}<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>{%endif%}
+			</div>
+		</div>
+	</div>
+</section>
+
+<section  id="form" class="form-section">
+{% if Proyecto.pordenadas %}
+{% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
+<form  class="form-horizontal" method="POST">{% csrf_token %}
+	{% for variable in preguntas_list %}
+    <div class="container">
+		<h1><legend class="m-t m-b">{{ variable.grouper | capfirst}}</legend></h1>
+			{% for pregunta in variable.list|dictsort:"posicion" %}
+			<div class="form-group">
+				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
+				{%if pregunta.abierta%}<textarea type="text" max_length="1000" name="{{pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
+				{%if pregunta.multiple%}
+					{%for i in pregunta.respuestas_set.all%}
+						<input type="checkbox" class="checkbox" name="{{pregunta.id}}" value="{{i.texto|escape}}" >
+						<label class="light">{{i.texto|escape}}</label><br>
+					{% endfor %}<br>
+				{% endif %}
+				{%if pregunta.abierta or pregunta.multiple%}{%else%}
+				<select required title="Por favor responda la pregunta" name="{{pregunta.id}}">
+					{%for i in pregunta.respuestas_set.all%}
+						<option value="{{i.texto| escape}}" >{{i.texto | escape}}</option>
+					{% endfor %}
+				</select>
+				{%endif%}
+			</div>
+			{% endfor %}
+	</div>
+	{% endfor %}
+{% else %}
+<form  class="form-horizontal" method="POST">{% csrf_token %}
+	{% for i in Preguntas_encuesta %}
+    <div class="container">
+			<div class="form-group">
+				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>: {{ i.pregunta.texto| escape}}</legend>
+				{%if i.pregunta.abierta %}<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
+				{%if i.pregunta.multiple %}
+					{%for j in i.pregunta.respuestas_set.all%}
+						<input type="checkbox" class="checkbox" name="{{i.pregunta.id}}" value="{{j.texto|escape}}" >
+						<label class="light">{{ j.texto | escape }}</label><br>
+					{% endfor %}<br>
+				{% endif %}
+				{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}
+				<select required title="Por favor responda la pregunta" name="{{i.pregunta.id}}">
+					{%for j in i.pregunta.respuestas_set.all%}
+						<option value="{{j.texto| escape}}" >{{ j.texto | escape}}</option>
+					{% endfor %}
+				</select>
+				{%endif%}
+			</div>
+	</div>
+	{% endfor %}
+{% endif %}
+<select style="display:none" name="ids_streaming" multiple>
+{% for i in Cuestionario %} <option value="{{i.id}}" selected>{{i.id}}</option>{% endfor %}
+</select>
+<button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
+</form>
+</section>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-2.1.1.min.js">\x3C/script>')</script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-ui-1.10.4.min.js">\x3C/script>')</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+</body>
+</html>
