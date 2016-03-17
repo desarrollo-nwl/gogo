@@ -42,7 +42,6 @@ INSTALLED_APPS = (
 	'cuestionarios',
 	'mensajeria',
 	'usuarios',
-	'cuestionarios_360',
 	'mptt',
 	'debug_toolbar',
 
@@ -80,16 +79,6 @@ TEMPLATES = [
 			],
 		},
 	},
-	{
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [
-			BASE_DIR+'/cuestionarios_360/plantillas/',
-        ],
-		'APP_DIRS': True,
-        'OPTIONS': {
-			'environment': 'gogo.jinja2.environment',
-		},
-    },
 ]
 
 WSGI_APPLICATION = 'gogo.wsgi.application'
