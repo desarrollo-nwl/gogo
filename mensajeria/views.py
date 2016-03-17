@@ -214,8 +214,8 @@ def colaboradoreenviar(request,id_colaborador):
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
-						# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-						msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
+						# msg['From'] = email.utils.formataddr((proyecto.nombre, 'Team@goanalytics.com'))
+						msg['From'] = email.utils.formataddr((proyecto.nombre, 'team@bigtalenter.com'))
 						urlimg = 'http://www.changelabtools.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
@@ -278,8 +278,9 @@ def encuesta(request,id_proyecto,key):
 		total_cuestionario = len(stream)
 	except:
 		try:
+			pagina = Proyectos.objects.only('id','empresa__pagina').select_related('empresa').get(id=id_proyecto).empresa.pagina
 			return render_to_response('fake.html',{
-			'Pagina':'http://'+str(encuestado.proyecto.empresa.pagina)
+			'Pagina':''.join(['http://',pagina ])
 			},	context_instance=RequestContext(request))
 		except:
 			return render_to_response('fake.html',{
@@ -490,7 +491,8 @@ def exportarexterna(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		a = string.replace(proyecto.nombre,' ','')
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Externa.objects.filter(proyecto=proyecto).select_related(
 				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
@@ -564,7 +566,8 @@ def exportarinterna(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		a = string.replace(proyecto.nombre,' ','')
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Streaming.objects.filter(proyecto=proyecto,respuesta__isnull=False).select_related(
 				'colaborador__colaboradoresdatos','proyecto__proyectosdatos',
