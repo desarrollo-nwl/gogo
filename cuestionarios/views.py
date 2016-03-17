@@ -23,6 +23,7 @@ def variables(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
 		variables = proyecto.variables_set.all()
@@ -40,6 +41,7 @@ def preguntas(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_see:
 		try:variable = Variables.objects.prefetch_related('preguntas_set'
@@ -63,6 +65,7 @@ def variablenueva(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_add:
 		if request.method == 'POST':
@@ -101,6 +104,7 @@ def variableactivar(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.act_variables:
 		try:
@@ -123,6 +127,9 @@ def variableactivar(request,id_variable):
 @login_required(login_url='/acceder/')
 def preguntanueva(request,id_variable):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_add:
 		try:variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id = int(id_variable))
@@ -199,6 +206,7 @@ def preguntactivar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.act_variables and permisos.pre_edit:
 		try:
@@ -228,6 +236,7 @@ def variableditar(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_edit:
 		try:variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=int(id_variable))
@@ -259,6 +268,9 @@ def variableditar(request,id_variable):
 @login_required(login_url='/acceder/')
 def preguntaeditar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_edit:
 		try:
@@ -385,6 +397,9 @@ def proyectoclonar(request,id_proyecto):
 @login_required(login_url='/acceder/')
 def variableclonar(request,id_variable):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_add and permisos.pre_add:
 		try:
@@ -423,6 +438,9 @@ def variableclonar(request,id_variable):
 @login_required(login_url='/acceder/')
 def preguntaclonar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_add:
 		try:
@@ -462,6 +480,7 @@ def variableliminar(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_del:
 		try:
@@ -494,6 +513,9 @@ def variableliminar(request,id_variable):
 @login_required(login_url='/acceder/')
 def preguntaeliminar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
+	if not proyecto:
+		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pre_del:
 		try:
