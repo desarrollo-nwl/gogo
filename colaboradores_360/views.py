@@ -1,18 +1,19 @@
 # -*- encoding: utf-8 -*-
+from colaboradores_360.models import *
+from cuestionarios_360.models import *
+from datetime import datetime as DT
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import transaction
+from django.db.models import F
 from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
-from usuarios.models import Proyectos, Logs
-from datetime import datetime as DT
-from cuestionarios_360.models import *
-from colaboradores_360.models import *
 from mensajeria_360.models import Streaming_360
+from usuarios.models import Proyectos, Logs
 import random, colabora
 #===============================================================================
 # indices
@@ -116,7 +117,7 @@ def colaboradornuevo_360(request):
 					if proyecto_datos.opcional5:
 						try:datos.opcional5 = request.POST['opcional5']
 						except:pass
-					proyecto.tot_participantes += 1
+					Proyectos.objects.filter(id=proyecto.id).update(tot_participantes=F("tot_participantes")+1)
 					datos.save()
 					ColaboradoresMetricas_360.objects.create(id=participante)
 
@@ -125,6 +126,7 @@ def colaboradornuevo_360(request):
 						instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id )[0]
 						preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
 						streaming_crear = []
+						adicionales = 0
 						for j in preguntas:
 							try:
 								streaming_crear.append(Streaming_360(
@@ -132,17 +134,17 @@ def colaboradornuevo_360(request):
 														instrumento_id=instrumento.id,
 														colaborador_id=participante.id,
 														pregunta_id=j.id))
-								proyecto.tot_aresponder += 1
+								adicionales += 1
 							except:
 								pass
 						if(proyecto.tot_aresponder):
-							proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
-						else:
-							proyecto.total = 0.0
+							total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
+							Proyectos.objects.filter(id=proyecto.id).update(total=total	)
 
 						if(streaming_crear):
 							Streaming_360.objects.bulk_create(streaming_crear)
-					proyecto.save()
+							Proyectos.objects.filter(id=proyecto.id).update(tot_aresponder=F("tot_aresponder")+adicionales)
+					proyecto = Proyectos.objects.get(id=proyecto.id)
 					cache.set(request.user.username,proyecto,86400)
 					nom_log = request.user.first_name+' '+request.user.last_name
 					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
@@ -321,6 +323,7 @@ def colaboradores_xls_360(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		error = None
@@ -362,9 +365,10 @@ def colaboradores_xls_360(request):
 				vector_datos = []
 				vector_metricas = []
 				with transaction.atomic():
+					participantes_conteo = 0
 					for i in xrange(1,filas):
 						if i not in vector_ignorar:
-							proyecto.tot_participantes += 1
+							participantes_conteo += 1
 							vector_personas[i-1].save()
 							vector_metricas.append(ColaboradoresMetricas_360(id=vector_personas[i-1]))
 							datos = ColaboradoresDatos_360(id = vector_personas[i-1])
@@ -400,6 +404,7 @@ def colaboradores_xls_360(request):
 								instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id )[0]
 								preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
 								streaming_crear = []
+								adicionales = 0
 								for j in preguntas:
 									try:
 										streaming_crear.append(Streaming_360(
@@ -407,20 +412,21 @@ def colaboradores_xls_360(request):
 																instrumento_id=instrumento.id,
 																colaborador_id=vector_personas[i-1].id,
 																pregunta_id=j.id))
-										proyecto.tot_aresponder += 1
+										adicionales += 1
 									except:
 										pass
 								if(proyecto.tot_aresponder):
-									proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
-								else:
-									proyecto.total = 0.0
+									val = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
+									Proyectos.objects.filter(id=proyecto.id).update(total=val)
 
 								if(streaming_crear):
 									Streaming_360.objects.bulk_create(streaming_crear)
+									Proyectos.objects.filter(id=proyecto.id).update(tot_aresponder=F("tot_aresponder")+adicionales)
 					ColaboradoresDatos_360.objects.bulk_create(vector_datos)
 					ColaboradoresMetricas_360.objects.bulk_create(vector_metricas)
-					proyecto.save()
-					cache.set(request.user.username,proyecto,86400)
+					Proyectos.objects.filter(id=proyecto.id).update(tot_participantes=F("tot_participantes")+participantes_conteo)
+				proyecto = Proyectos.objects.get(id=proyecto.id)
+				cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/360/participantes/individual/')
 				else:
@@ -445,6 +451,7 @@ def colaboradoreliminar_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_del:
 		try:
@@ -453,15 +460,14 @@ def colaboradoreliminar_360(request,id_colaborador):
 			return render_to_response('403.html')
 		if request.method == 'POST':
 			maestro = Proyectos.objects.get(id=1)
-			proyecto.tot_participantes -= 1
-			proyecto.tot_aresponder -= Streaming_360.objects.filter(proyecto=proyecto,colaborador_id=id_colaborador).count()
-			proyecto.tot_respuestas -= Streaming_360.objects.filter(proyecto=proyecto,colaborador_id=id_colaborador,respuesta__isnull=False).count()
-			if(proyecto.tot_aresponder):
-				proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
-			else:
-				proyecto.total = 0.0
+
 			with transaction.atomic():
 				Colaboradores_360.objects.filter(id=id_colaborador).delete()
+				proyecto.tot_participantes = Colaboradores_360.objects.filter(proyecto=proyecto.id).count()
+				proyecto.tot_aresponder = Streaming_360.objects.filter(proyecto=proyecto).count()
+				proyecto.tot_respuestas = Streaming_360.objects.filter(proyecto=proyecto,respuesta__isnull=False).count()
+				if(proyecto.tot_aresponder):
+					proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)
