@@ -338,10 +338,11 @@ def colaboradores_xls(request):
 				streaming_crear = []
 				variables = proyecto.variables_set.all()
 				preguntas = Preguntas.objects.filter(variable__in=variables)
-				proyecto.tot_participantes += filas-1
+
 				with transaction.atomic():
 					for i in xrange(1,filas):
 						if i not in vector_ignorar:
+							proyecto.tot_participantes += 1
 							vector_personas[i-1].save()
 							vector_metricas.append(ColaboradoresMetricas(id=vector_personas[i-1]))
 							datos = ColaboradoresDatos(id = vector_personas[i-1],

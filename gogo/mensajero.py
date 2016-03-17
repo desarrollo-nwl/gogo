@@ -56,6 +56,8 @@ def sendmail(stream_i,stream,tiempo):
 			parte2=MIMEText(html,"html")
 			msg.attach(parte2)
 			colaborador.enviados +=1
+			if( colaborador.propension == -1):
+				colaborador.propension = 0
 			colaborador.save()
 			Streaming.objects.filter(colaborador=colaborador,proyecto=stream_i.proyecto).update(fec_controlenvio=tiempo)
 			# server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
