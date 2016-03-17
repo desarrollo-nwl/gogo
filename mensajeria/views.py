@@ -214,8 +214,8 @@ def colaboradoreenviar(request,id_colaborador):
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
-						# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-						msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
+						# msg['From'] = email.utils.formataddr((proyecto.nombre, 'Team@goanalytics.com'))
+						msg['From'] = email.utils.formataddr((proyecto.nombre, 'team@bigtalenter.com'))
 						urlimg = 'http://www.changelabtools.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
@@ -490,7 +490,8 @@ def exportarexterna(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		a = string.replace(proyecto.nombre,' ','')
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Externa.objects.filter(proyecto=proyecto).select_related(
 				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
@@ -564,7 +565,8 @@ def exportarinterna(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		a = string.replace(proyecto.nombre,' ','')
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Streaming.objects.filter(proyecto=proyecto,respuesta__isnull=False).select_related(
 				'colaborador__colaboradoresdatos','proyecto__proyectosdatos',

@@ -50,8 +50,8 @@ def sendmail(stream_i,stream,tiempo):
 			url = 'http://www.changelabtools.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
 			texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 			msg["subject"]=  stream_i.proyecto.proyectosdatos.asunto
-			# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-			msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
+			# msg['From'] = email.utils.formataddr((stream_i.proyecto.nombre, 'Team@goanalytics.com'))
+			msg['From'] = email.utils.formataddr((stream_i.proyecto.nombre, 'team@bigtalenter.com'))
 			html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 			parte2=MIMEText(html,"html")
 			msg.attach(parte2)
