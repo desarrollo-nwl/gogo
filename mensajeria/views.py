@@ -278,8 +278,9 @@ def encuesta(request,id_proyecto,key):
 		total_cuestionario = len(stream)
 	except:
 		try:
+			pagina = Proyectos.objects.only('id','empresa__pagina').select_related('empresa').get(id=id_proyecto).empresa.pagina
 			return render_to_response('fake.html',{
-			'Pagina':'http://'+str(encuestado.proyecto.empresa.pagina)
+			'Pagina':''.join(['http://',pagina ])
 			},	context_instance=RequestContext(request))
 		except:
 			return render_to_response('fake.html',{
