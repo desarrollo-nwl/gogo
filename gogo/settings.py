@@ -45,6 +45,7 @@ INSTALLED_APPS = (
 	'cuestionarios_360',
 	'mensajeria_360',
 	'colaboradores_360',
+	'redes_360',
 	'mptt',
 	'debug_toolbar',
 
@@ -74,7 +75,8 @@ TEMPLATES = [
 				BASE_DIR+'/usuarios/plantillas/',
 				BASE_DIR+'/cuestionarios_360/plantillas/',
 				BASE_DIR+'/mensajeria_360/plantillas/',
-				BASE_DIR+'/colaboradores_360/plantillas/',],
+				BASE_DIR+'/colaboradores_360/plantillas/',
+				BASE_DIR+'/redes_360/plantillas/',],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [

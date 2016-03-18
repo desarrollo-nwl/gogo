@@ -1,6 +1,6 @@
 {%extends "dash.html" %}{% load staticfiles%}
 {%block title%} Home | Empresas {%endblock%}
-{%block head2%}<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />{%endblock%}
+{%block head2%}<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />{%endblock%}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
 <li><a href="/empresas"><i><span>/ Empresas </span></i></a></li>
@@ -94,7 +94,7 @@
 {% endblock %}
 
 {% block scripts%}
-<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript" src="{% static 'js/plugins/ciudades/ciudades.min.js' %}"></script>
 <script >populateCountries("country", "state");</script>
 <script>$('.select2').select2()</script>

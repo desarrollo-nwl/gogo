@@ -93,6 +93,11 @@
 									{%if Permisos.col_add%}
 									<li><a id="AcrhivoPlano" href="/360/participantes/archivo/"><span class="txt"> Múltiples participantes </span></a></li>{%endif%}
 									{%if Permisos.col_see%}
+									{% if Proyecto.tipo == "360 redes" %}
+										<li><a id="Roles" href="/360/roles/"><span class="txt"> Roles </span></a></li>
+										<li><a id="RedesIndividual" href="/360/redes/"><span class="txt"> Redes </span></a></li>
+										<li><a id="RedesArchivo" href="/360/roles/archivo/"><span class="txt"> Redes Archivo </span></a></li>
+									{% endif %}
 									<li><a id="Individual" href="/360/participantes/individual/"><span class="txt"> Participantes Individual </span></a></li>{%endif%}
 									<li><a id="IniciarDetener" href="/360/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
 								</ul>

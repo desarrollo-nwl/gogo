@@ -1039,7 +1039,7 @@ def logs(request):
 		aux = []
 		for  i in usuarios_creados:
 			aux.append(i.usuario.username)
-		print aux
+
 		logs = Logs.objects.filter(usuario_username__in=aux)
 		return render_to_response('logs.html',{
 		'Activar':'Configuracion','activar':'Logs','Logs':logs,'Permisos':permisos

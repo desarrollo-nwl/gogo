@@ -26,6 +26,8 @@ def colaboradores_ind_360(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_see:
 		tabla = colabora.ver_colaboradores(str(proyecto.id),permisos.col_edit,permisos.col_del)
@@ -46,6 +48,8 @@ def colaboradornuevo_360(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		emails = Colaboradores_360.objects.only('email').filter(proyecto_id=proyecto.id)
@@ -269,6 +273,8 @@ def archivo_360(request):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
+	if not proyecto.interna:
+		return render_to_response('404.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_add:
 		response = HttpResponse(content_type='application/ms-excel')
@@ -480,65 +486,52 @@ def colaboradoreliminar_360(request,id_colaborador):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def roles_360(request):
+def roles_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_see:
+	if permisos.consultor and permisos.col_see:
 		roles = Roles_360.objects.filter(proyecto=proyecto)
-		return render_to_response('roles.html',{
-		'Activar':'Contenido','activar':'Roles',
-		'Roles':roles,'Proyecto':proyecto,'Permisos':permisos,
-		}, context_instance=RequestContext(request))
+		return render_to_response('roles.html')
 	else:
 		return render_to_response('403.html')
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def rolnuevo_360(request):
+def rolnuevo_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_add:
-		if request.method == "POST":
-			if not Roles_360.objects.filter(nombre=request.POST['nombre'],proyecto_id=proyecto.id).exists():
-				rol = Roles_360.objects.create(nombre=request.POST['nombre'],proyecto_id=proyecto.id)
-				return JsonResponse({'id':rol.id,'nombre':request.POST['nombre'],'estado':1})
-			else:
-				return HttpResponse(0)
-		return render_to_response('404.html')
+	if permisos.consultor and permisos.col_see:
+		roles = Roles_360.objects.filter(proyecto=proyecto)
+		return render_to_response('roles.html')
 	else:
 		return render_to_response('403.html')
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def roleditar_360(request,id_rol):
+def roleditar_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_edit:
-		if request.method == 'POST':
-			if not Roles_360.objects.exclude(id=id_rol).filter(nombre=request.POST['nombre'],proyecto_id=proyecto.id).exists():
-				with transaction.atomic():
-					Roles_360.objects.filter(proyecto_id=proyecto.id,id=id_rol).update(nombre=request.POST['nombre'])
-					Redes_360.objects.filter(proyecto_id=proyecto.id,rol_idn=id_rol).update(rol=request.POST['nombre'])
-					return JsonResponse({'id':id_rol,'nombre':request.POST['nombre'],'estado':1})
-		return HttpResponse(0)
+	if permisos.consultor and permisos.col_see:
+		roles = Roles_360.objects.filter(proyecto=proyecto)
+		return render_to_response('roles.html')
 	else:
 		return render_to_response('403.html')
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def roleliminar_360(request,id_rol):
+def roleliminar_360(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_del:
-		Roles_360.objects.filter(proyecto_id=proyecto.id,id=id_rol).delete()
-		return JsonResponse({'id':id_rol,'estado':1})
+	if permisos.consultor and permisos.col_see:
+		roles = Roles_360.objects.filter(proyecto=proyecto)
+		return render_to_response('roles.html')
 	else:
 		return render_to_response('403.html')

@@ -154,11 +154,22 @@ urlpatterns += patterns('colaboradores_360.views',
 	url(r'^360/participante/activar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivar_360'),
 	url(r'^360/archivo/$', 'archivo_360'),
 	url(r'^360/roles/$', 'roles_360'),
-	url(r'^360/rol/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'roleditar_360'),
-	url(r'^360/rol/eliminar/(?P<id_colaborador>[0-9]{1,10})/$', 'roleliminar_360'),
-	url(r'^360/rol/nuevo/(?P<id_colaborador>[0-9]{1,10})/$', 'rolnuevo_360'),
+	url(r'^360/rol/editar/(?P<id_rol>[0-9]{1,10})/$', 'roleditar_360'),
+	url(r'^360/rol/eliminar/(?P<id_rol>[0-9]{1,10})/$', 'roleliminar_360'),
+	url(r'^360/rol/nuevo/$', 'rolnuevo_360'),
 )
 
+#===============================================================================
+# urls de redes_360
+#===============================================================================
+
+urlpatterns += patterns('redes_360.views',
+	# url(r'^360/archivo/$', 'archivo_360'),
+	url(r'^360/redes/$', 'redes_360'),
+	# url(r'^360/red/editar/(?P<id_red>[0-9]{1,10})/$', 'rededitar_360'),
+	# url(r'^360/red/eliminar/(?P<id_red>[0-9]{1,10})/$', 'redeliminar_360'),
+	url(r'^360/red/nueva/$', 'rednueva_360'),
+)
 
 #===============================================================================
 # urls de errores
