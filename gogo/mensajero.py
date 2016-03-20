@@ -33,7 +33,7 @@ server.starttls()
 # server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
 server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 
-def sendmail(stream_i,stream,tiempo):
+def sendmail(stream_i,stream,tiempo,indice):
 	try:
 		with transaction.atomic():
 			colaborador = stream_i.colaborador
@@ -63,10 +63,8 @@ def sendmail(stream_i,stream,tiempo):
 			# server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
 			server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 			# print 'Enviado.'
-			for j in stream:
-				if j.colaborador_id == colaborador.id:
-					j.fec_controlenvio = tiempo
-					break
+			stream_i.fec_controlenvio = tiempo
+
 		return stream
 	except:
 		return stream
@@ -84,26 +82,26 @@ def enviar():
 	# print lens
 	for i in xrange(lens):
 		if not stream[i].fec_controlenvio:#no se ha enviado?
-			stream = sendmail(stream[i],stream,tiempo)
+			stream = sendmail(stream[i],stream,tiempo,i)
 			# print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
 		else:
 			delta = tiempo - stream[i].fec_controlenvio
-			if stream[i].colaborador.propension or stream[i].colaborador.propension>=0:
-				propension = stream[i].colaborador.propension - 3 # nos movemos 3 horas a la derecha
-				if ( delta.days >= stream[i].proyecto.prudenciamin and delta.days >= propension ):  # x > p > m
-					stream = sendmail(stream[i],stream,tiempo)
+			if stream[i].colaborador.propension > 0:
+				propension = stream[i].colaborador.propension - 1 # nos movemos 1 hora a la derecha
+				# delta2 = tiempo - Streaming.objects.only('fecharespuesta').filter(colaborador_id=stream[i].colaborador_id).latest('fecharespuesta').fecharespuesta
+
+				if delta.days >= stream[i].proyecto.prudenciamin and (24*delta.days + delta.seconds/3600.0) >= propension:
+					stream = sendmail(stream[i],stream,tiempo,i)
 					delta = tiempo - stream[i].fec_controlenvio
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en bajo lapsus'
-				elif ( delta.days <= stream[i].proyecto.prudenciamax and (delta.seconds/3600.0) >= propension and delta.days >= stream[i].proyecto.prudenciamin): # M > x > p
-					stream = sendmail(stream[i],stream,tiempo)
+					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en A'
+
+				elif delta.days >= stream[i].proyecto.prudenciamax:
+					stream = sendmail(stream[i],stream,tiempo,i)
 					delta = tiempo - stream[i].fec_controlenvio
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en medio lapsus'
-				elif delta.days >= stream[i].proyecto.prudenciamax: # x > M con propension
-					stream = sendmail(stream[i],stream,tiempo)
-					delta = tiempo - stream[i].fec_controlenvio
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
+					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en B'
+
 			elif delta.days >= stream[i].proyecto.prudenciamax: # x > M sin propension
-				stream = sendmail(stream[i],stream,tiempo)
+				stream = sendmail(stream[i],stream,tiempo,i)
 				delta = tiempo - stream[i].fec_controlenvio
 				# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 enviar()

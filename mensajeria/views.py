@@ -301,7 +301,8 @@ def encuesta(request,id_proyecto,key):
 		metricas = encuestado.colaboradoresmetricas
 		vec_metricas = json.loads(metricas.propension)
 		try:
-			vec_metricas.append((timezone.now()-stream[0].fec_controlenvio).seconds/3600.0)
+			delta = timezone.now()-stream[0].fec_controlenvio
+			vec_metricas.append( (24*delta.days + delta.seconds/3600.0) )
 			metricas.propension = json.dumps(vec_metricas)
 		except:
 			vec_metricas.append(proyecto.prudenciamin)
