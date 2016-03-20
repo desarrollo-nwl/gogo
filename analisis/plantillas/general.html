@@ -384,6 +384,7 @@ var minimoMaximoVariables = function minimoMaximoVariables(cuestionario){
 			}
 		}
 	}
+
 	return [min,max];
 }
 
@@ -814,6 +815,7 @@ dataTab2: function(fechaInicial,fechaFinal){
 		for(r=0;r<totalPersonas;r++){
 
 						if(Datos[r][16]=='True'){
+
 								    var puntajeDummy = calculePuntaje(Datos[r][14],Datos[r][15],Datos[r][7]);
 									if(!contenido(Datos[r][14],indiceVariables)){
 										puntajeVariables.push(puntajeDummy);
@@ -868,7 +870,6 @@ dataTab2: function(fechaInicial,fechaFinal){
 
 	//    fin del for de datos
 		}
-
 		if(!suma) throw "Sin datos";
         for(n= 0;n<puntajeVariables.length;n++){
 			puntajeVariables[n]= puntajeVariables[n]/cantidadVariables[n]
