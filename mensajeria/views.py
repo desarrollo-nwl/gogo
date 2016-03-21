@@ -284,7 +284,7 @@ def encuesta(request,id_proyecto,key):
 			},	context_instance=RequestContext(request))
 		except:
 			return render_to_response('fake.html',{
-			'Pagina':'http://www.changeamericas.com'
+			'Pagina':'https://www.networkslab.co/'
 			},	context_instance=RequestContext(request))
 
 
@@ -332,7 +332,7 @@ def encuesta(request,id_proyecto,key):
 			},	context_instance=RequestContext(request))
 		except:
 			return render_to_response('fake.html',{
-			'Pagina':'http://www.changeamericas.com'
+			'Pagina':'https://www.networkslab.co'
 			},	context_instance=RequestContext(request))
 
 	cuestionario =[]
@@ -351,7 +351,7 @@ def encuesta(request,id_proyecto,key):
 				try:
 					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
-					return HttpResponseRedirect('http://www.networkslab.co')
+					return HttpResponseRedirect('https://www.networkslab.co')
 		else:
 			cuestionario = stream
 			len_cuestionario = len(stream)
@@ -375,7 +375,7 @@ def encuesta(request,id_proyecto,key):
 				try:
 					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
-					return HttpResponseRedirect('http://www.networkslab.co')
+					return HttpResponseRedirect('https://www.networkslab.co')
 		else:
 			cuestionario = stream
 			len_cuestionario = len(stream)
@@ -386,7 +386,7 @@ def encuesta(request,id_proyecto,key):
 		try:
 			return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 		except:
-			return HttpResponseRedirect('http://networkslab.co')
+			return HttpResponseRedirect('https://networkslab.co')
 
 	return render_to_response('encuesta.html',{
 	'Encuestado':encuestado,'Preguntas_encuesta':cuestionario_preguntas,'Proyecto':proyecto,'Cuestionario':cuestionario
