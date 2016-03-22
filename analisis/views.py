@@ -15,7 +15,7 @@ from usuarios.models import Proyectos, Logs
 import grafos as gr
 import string
 
-# import part,gener,focal
+import part,gener,focal
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
