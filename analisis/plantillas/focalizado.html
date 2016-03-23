@@ -345,7 +345,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = {{ Datos }}
+var Datos = {{ Datos | safe}}
 var Cuestionario = [ {% for i in Preguntas %}['{{ i.variable_id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}];
 var sintaxis = [{% for i in Preguntas %}[`{{i.id | escape}}`,[ {% for j in i.respuestas_set.all %}`{{ j.texto | escape }}`,{% endfor %}]],{% endfor %}]
 

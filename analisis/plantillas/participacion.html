@@ -235,7 +235,7 @@
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = {{ Datos }}
+var Datos = {{ Datos | safe }}
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;

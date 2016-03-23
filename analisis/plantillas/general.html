@@ -335,7 +335,7 @@
 
 <script type="text/javascript">
 // $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-var Datos = {{ Datos }};
+var Datos = {{ Datos | safe }};
 var Cuestionario = [ {% for i in Preguntas %}['{{ i.variable_id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}];
 
 var contenido = function(a,x){
