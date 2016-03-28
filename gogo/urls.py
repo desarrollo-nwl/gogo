@@ -166,8 +166,8 @@ urlpatterns += patterns('colaboradores_360.views',
 urlpatterns += patterns('redes_360.views',
 	# url(r'^360/archivo/$', 'archivo_360'),
 	url(r'^360/redes/$', 'redes_360'),
-	# url(r'^360/red/editar/(?P<id_red>[0-9]{1,10})/$', 'rededitar_360'),
-	# url(r'^360/red/eliminar/(?P<id_red>[0-9]{1,10})/$', 'redeliminar_360'),
+	url(r'^360/red/editar/(?P<id_red>[0-9]{1,10})/$', 'reditar_360'),
+	url(r'^360/red/eliminar/(?P<id_red>[0-9]{1,10})/$', 'redeliminar_360'),
 	url(r'^360/red/nueva/$', 'rednueva_360'),
 )
 

@@ -110,26 +110,26 @@
 				<div class="form-group">{%if Proyecto.proyectosdatos.opcional1%}
 					<label id="opcional1_label" class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label {% if not Participante.externo %}required{% else %}norequired{% endif%}">{{Proyecto.proyectosdatos.opcional1 |capfirst}}</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input id="opcional1" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional1" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos_360.opcional1}}">
+						<input id="opcional1" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional1" class="form-control" maxlength="200" value="{% if Participante.colaboradoresdatos_360.opcional1 %}{{Participante.colaboradoresdatos_360.opcional1}}{% endif %}">
 					</div>
 					{%endif%}
 					{%if Proyecto.proyectosdatos.opcional2%}
 					<label id="opcional2_label" class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label {% if not Participante.externo %}required{% else %}norequired{% endif%}">{{Proyecto.proyectosdatos.opcional2 |capfirst}}</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input id="opcional2" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional2" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos_360.opcional2}}">
+						<input id="opcional2" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional2" class="form-control" maxlength="200" value="{% if Participante.colaboradoresdatos_360.opcional2 %}{{Participante.colaboradoresdatos_360.opcional2}}{% endif %}">
 					</div>
 					{%endif%}
 				</div>
 				<div class="form-group">{%if Proyecto.proyectosdatos.opcional3%}
 					<label id="opcional3_label" class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label {% if not Participante.externo %}required{% else %}norequired{% endif%}">{{Proyecto.proyectosdatos.opcional3 |capfirst}}</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input id="opcional3" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional3" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos_360.opcional3}}">
+						<input id="opcional3" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional3" class="form-control" maxlength="200" value="{% if Participante.colaboradoresdatos_360.opcional3 %}{{Participante.colaboradoresdatos_360.opcional3}}{% endif %}">
 					</div>
 					{%endif%}
 					{%if Proyecto.proyectosdatos.opcional4%}
 					<label id="opcional4_label" class="col-lg-1 col-md-1 col-xs-2 col-sm-2 control-label {% if not Participante.externo %}required{% else %}norequired{% endif%}">{{Proyecto.proyectosdatos.opcional4 |capfirst}}</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input id="opcional4" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional4" class="form-control" maxlength="200" value="{{Participante.colaboradoresdatos_360.opcional4}}">
+						<input id="opcional4" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional4" class="form-control" maxlength="200" value="{% if Participante.colaboradoresdatos_360.opcional4 %}{{Participante.colaboradoresdatos_360.opcional4}}{% endif %}">
 					</div>
 					{%endif%}
 				</div>
@@ -137,7 +137,7 @@
 					{%if Proyecto.proyectosdatos.opcional5%}
 					<label id="opcional5_label" class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label {% if not Participante.externo %}required{% else %}norequired{% endif%}">{{Proyecto.proyectosdatos.opcional5 |capfirst}}</label>
 					<div class="col-lg-4 col-md-4 col-xs-4 col-sm-4">
-						<input id="opcional5" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional5" class="form-control" maxlength="200"  value="{{Participante.colaboradoresdatos_360.opcional5}}">
+						<input id="opcional5" {% if not Participante.externo %}required{% endif%} title="Es campo es obligatorio" type="text" name="opcional5" class="form-control" maxlength="200"  value="{% if Participante.colaboradoresdatos_360.opcional5 %}{{Participante.colaboradoresdatos_360.opcional5}}{% endif %}">
 					</div>
 					{%endif%}
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activo:</label>

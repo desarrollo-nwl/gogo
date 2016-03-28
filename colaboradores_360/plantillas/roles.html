@@ -24,9 +24,9 @@
 					<form id="form" class="form-horizontal"  method="post">{% csrf_token %}
 						<div class="form-group">
 							<label class="col-xs-2 control-label required">Nombre del nuevo rol:</label>
-							<div class="col-xs-6"><input name="nombre" type="text" class="form-control" maxlength="127" required title="Este campo es obligatorio"></div>
+							<div class="col-xs-6"><input id="nombre" name="nombre" type="text" class="form-control" maxlength="127" required title="Este campo es obligatorio"></div>
 							<div class="col-xs-4">
-								<span id="enviar" class="btn btn-primary"><i class="fa fa-plus"></i> Agregar Rol</span>
+								<span id="enviar" class="btn btn-primary" onclick="acciones.nuevo()"><i class="fa fa-plus"></i> Agregar Rol</span>
 							</div>
 						</div>
 						<div id ="my_error" style="display:none" class="form-group">
@@ -39,53 +39,113 @@
 					{% endif %}
 				</div>
 <script type="text/javascript">
-var $error=$("#my_error"),$error_div = $('#my_error_div');
-var anuncio = function() { $error.slideDown(function() { setTimeout(function() { $error.slideUp(); }, 2500); });}
-{%if Permisos.var_del%}
-var eliminar = function(id){ $("#del"+id).show(); $("#can"+id).show(); $("#act"+id).hide(); $("#d"+id).hide(); };
-var cancelar = function(id,nombre){ $("#del"+id).hide(); $("#can"+id).hide(); $("#env"+id).hide(); $("#act"+id).show(); $("#d"+id).show(); $("#td"+id).html(nombre)};
-var confirmado = function(id){
-	$.ajax({url:"/360/rol/eliminar/"+id}).done(function( e ) {
-		if(e['estado']) {
-			$('#pro').dataTable().fnDestroy();
-			$('#tr'+e['id']).remove();
-			$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún rol.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
-		}
-	});
-}
-var actualizar = function(id,nombre){
-	$("#can"+id).show(); $("#env"+id).show(); $("#act"+id).hide(); $("#d"+id).hide();
-	$("#td"+id).html("<form id='form"+id+"' method='POST'><input id='in"+id+"' style='min-width:85%!important' type='text' name='nombre' class='form-control' value='"+nombre+"'/> {% csrf_token %}</form>");
-	$("#form"+id).on('submit',function(event){
-		event.preventDefault();
-		$("#env"+id).click();
-	});
-}
+var $error=$("#my_error"),
+	$error_div = $('#my_error_div'),
+	anuncio = function() { $error.slideDown(function() { setTimeout(function() { $error.slideUp(); }, 2500); });}
+ 	acciones = {
+		cancelar : function(id, nombre){
+						$("#del"+id).hide();
+						$("#can"+id).hide();
+						$("#env"+id).hide();
+						$("#act"+id).show();
+						$("#d"+id).show();
+						$("#td"+id).html(nombre)
+					},
 
-var enviar = function(id){
-	if ($("#in"+id).val().length >0){
-		var u = "/360/rol/editar/"+id+"/";
-		$.ajax({
-			type: "POST",
-			url: u,
-			data: $("#form"+id).serialize(),
-		}).done(function( e ) {
-			if(e['estado']){
-				$('#td'+e['id']).html(e['nombre']);
-				var str = '{%if Permisos.var_edit%}<span id="act'+e['id']+'" style="cursor:pointer;color:#0bacd3" onclick="actualizar('+e['id']+',`'+e['nombre']+'`)"><i class="fa fa-edit mr20" title="Editar"></i></span>{%endif%}';
-				str += '{%if Permisos.var_del%}<span id="d'+e['id']+'" style="cursor:pointer;color:#0bacd3" onclick="eliminar('+e['id']+')"><i class="fa fa-trash ml20" title="Eliminar"></i></span>';
-				str += '<span id="del'+e['id']+'" style="display:none" class="btn btn-danger ml20" onclick="confirmado('+e['id']+')">Confirmar</span>';
-				str += '<span id="can'+e['id']+'" style="display:none" class="btn btn-warning ml20" onclick="cancelar('+e['id']+',`'+e['nombre']+'`)">Cancelar</span>';
-				str += '<span id="env'+e['id']+'" style="display:none" class="btn btn-success ml20" onclick="enviar('+e['id']+')">Confirmar</span>{% endif %}';
-				$('#tdb'+e['id']).html(str);
-				$("#del"+id).hide(); $("#can"+id).hide(); $("#env"+id).hide(); $("#act"+id).show(); $("#d"+id).show(); $("#td"+id).html(e['nombre']);
-			}
-			else { $error_div.html('<b>Este rol ya existe</b>'); anuncio(); }
-		});
+		{% if Permisos.var_del %}
 
-		 }
-	 }
-{% endif %}
+		eliminar : function(id){
+						$("#del"+id).show();
+						$("#can"+id).show();
+						$("#act"+id).hide();
+						$("#d"+id).hide();
+					},
+
+		confirmado : function(id){
+						$.ajax({
+							url:"/360/rol/eliminar/"+id
+						}).done(function( json ) {
+							if(json['id']) {
+								$('#pro').dataTable().fnDestroy();
+								$('#tr'+json['id']).remove();
+								$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún rol.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
+							}
+						});
+					},
+
+		{% endif %}{% if Permisos.var_edit %}
+
+		actualizar : function(id,nombre){
+							$("#can"+id).show(); $("#env"+id).show(); $("#act"+id).hide(); $("#d"+id).hide();
+							$("#td"+id).html("<form id='form"+id+"' method='POST'><input id='in"+id+"' style='min-width:85%!important' type='text' name='nombre' class='form-control' value='"+nombre+"'/> {% csrf_token %}</form>");
+							$("#form"+id).on('submit',function(event){
+								event.preventDefault();
+								$("#env"+id).click();
+							});
+						},
+
+		enviar : function(id){
+					if ($("#in"+id).val().length >0){
+						var u = "/360/rol/editar/"+id+"/";
+						$.ajax({
+							type: "POST",
+							url: u,
+							data: $("#form"+id).serialize(),
+						}).done(function( json ) {
+							if(json['id']){
+								$('#td'+json['id']).html(json['nombre']);
+								var str = '{%if Permisos.var_edit%}<span id="act'+json['id']+'" style="cursor:pointer;color:#0bacd3" onclick="acciones.actualizar('+json['id']+',`'+json['nombre']+'`)"><i class="fa fa-edit mr20" title="Editar"></i></span>{%endif%}';
+								str += '{%if Permisos.var_del%}<span id="d'+json['id']+'" style="cursor:pointer;color:#0bacd3" onclick="acciones.eliminar('+json['id']+')"><i class="fa fa-trash ml20" title="Eliminar"></i></span>';
+								str += '<span id="del'+json['id']+'" style="display:none" class="btn btn-danger ml20" onclick="acciones.confirmado('+json['id']+')">Confirmar</span>';
+								str += '<span id="can'+json['id']+'" style="display:none" class="btn btn-warning ml20" onclick="acciones.cancelar('+json['id']+',`'+json['nombre']+'`)">Cancelar</span>';
+								str += '<span id="env'+json['id']+'" style="display:none" class="btn btn-success ml20" onclick="acciones.enviar('+json['id']+')">Confirmar</span>{% endif %}';
+								$('#tdb'+json['id']).html(str);
+								$("#del"+id).hide(); $("#can"+id).hide(); $("#env"+id).hide(); $("#act"+id).show(); $("#d"+id).show(); $("#td"+id).html(json['nombre']);
+							}
+							else { $error_div.html('<b>Este rol ya existe</b>'); anuncio(); }
+						});
+
+					} else {
+						$error_div.html('<b>Este campo no puede estar vacío</b>');
+	 					anuncio();
+					}
+			 	},
+
+		 {% endif %}{% if Permisos.var_add %}
+
+		 nuevo : function(){
+			 var $form = $('#form'), $tbody = $('#tbody'), $nombre = $("#nombre");
+			 if( $form.valid() ){
+	 			$.ajax({
+	 			  type: "POST",
+	 			  url: '/360/rol/nuevo/',
+	 			  data: $form.serialize(),
+	 		  }).done(function( json ){
+	 			  if(json['id']){
+	 					$table.fnDestroy();
+	 					var str = '<tr id="tr'+json['id']+'">';
+	 					str +='<td id="td'+json['id']+'">'+json['nombre']+'</td>';
+	 					str += '<td id="tdb'+json['id']+'">{%if Permisos.var_edit%}<span id="act'+json['id']+'" style="cursor:pointer;color:#0bacd3" onclick="acciones.actualizar('+json['id']+',`'+json['nombre']+'`)"><i class="fa fa-edit mr20" title="Editar"></i></span>{%endif%}';
+	 					str += '{%if Permisos.var_del%}<span id="d'+json['id']+'" style="cursor:pointer;color:#0bacd3" onclick="acciones.eliminar('+json['id']+')"><i class="fa fa-trash ml20" title="Eliminar"></i></span>';
+	 					str += '<span id="del'+json['id']+'" style="display:none" class="btn btn-danger ml20" onclick="acciones.confirmado('+json['id']+')">Confirmar</span>';
+	 					str += '<span id="can'+json['id']+'" style="display:none" class="btn btn-warning ml20" onclick="acciones.cancelar('+json['id']+',`'+json['nombre']+'`)">Cancelar</span>';
+	 					str += '<span id="env'+json['id']+'" style="display:none" class="btn btn-success ml20" onclick="acciones.enviar('+json['id']+')">Confirmar</span>{% endif %}</td></tr>';
+	 					$tbody.append(str);
+	 					$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún rol.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
+						$error_div.html('<b>Rol creado correctamente</b>');
+	 					anuncio();
+	 			  } else {
+	 					$error_div.html('<b>Este rol ya existe</b>');
+	 					anuncio();
+	 			  }
+	 		  }).fail(function(e){
+	 			  $error_div.html('<b>Ha ocurrido un error procesando la solicitud<b>');
+	 			  anuncio();
+	 		  })
+	 		}
+	 	},
+	{% endif %}
+	};
 </script>
 				<div class="col-ls-12 col-md-12 col-sm-12 col-xs-12">
 					<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
@@ -98,11 +158,12 @@ var enviar = function(id){
 						<tbody id="tbody">{% for i in Roles %}
 							<tr id="tr{{i.id|safe}}">
 								<td id="td{{i.id|safe}}">{{ i.nombre }}</td>
-								<td id="tdb{{i.id|safe}}">{%if Permisos.var_edit%}<span id="act{{i.id|safe}}" style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id|safe}},'{{i.nombre}}')"><i class="fa fa-edit mr20" title="Editar"></i></span>{%endif%}
-									{%if Permisos.var_del%}<span id="d{{i.id|safe}}" style="cursor:pointer;color:#0bacd3" onclick="eliminar({{i.id|safe}})"><i class="fa fa-trash ml20" title="Eliminar"></i></span>
-									<span id="del{{i.id|safe}}" style="display:none" class="btn btn-danger ml20" onclick="confirmado({{i.id|safe}})">Confirmar</span>
-									<span id="can{{i.id|safe}}" style="display:none" class="btn btn-warning ml20" onclick="cancelar({{i.id|safe}},'{{i.nombre}}')">Cancelar</span>
-									<span id="env{{i.id|safe}}" style="display:none" class="btn btn-success ml20" onclick="enviar({{i.id|safe}})">Confirmar</span>{% endif %}</td></tr>{% endfor %}
+								<td id="tdb{{i.id|safe}}">
+									{% if Permisos.var_edit %}<span id="act{{i.id|safe}}" style="cursor:pointer;color:#0bacd3" onclick="acciones.actualizar({{i.id|safe}},'{{i.nombre}}')"><i class="fa fa-edit mr20" title="Editar"></i></span>{%endif%}
+									{% if Permisos.var_del  %}<span id="d{{i.id|safe}}" style="cursor:pointer;color:#0bacd3" onclick="acciones.eliminar({{i.id|safe}})"><i class="fa fa-trash ml20" title="Eliminar"></i></span>{% endif %}
+									<span id="del{{i.id|safe}}" style="display:none" class="btn btn-danger ml20" onclick="acciones.confirmado({{i.id|safe}})">Confirmar</span>
+									<span id="can{{i.id|safe}}" style="display:none" class="btn btn-warning ml20" onclick="acciones.cancelar({{i.id|safe}},'{{i.nombre}}')">Cancelar</span>
+									<span id="env{{i.id|safe}}" style="display:none" class="btn btn-success ml20" onclick="acciones.enviar({{i.id|safe}})">Confirmar</span></td></tr>{% endfor %}
 						</tbody>
 					</table>
 				</div>
@@ -117,48 +178,15 @@ var enviar = function(id){
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-	var $form = $('#form'),$tbody=$('#tbody'),$enviar=$("#enviar");
+	var $form = $('#form'),
+		$tbody=$('#tbody'),
+		$enviar=$("#enviar");
+
 	$form.validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});
 	$form.on('submit',function(event){
 		event.preventDefault();
 		$enviar.click();
 	});
-
-	{%if Permisos.var_add%}
-	$enviar.click(function(){
-		if( $form.valid() ){
-
-			$.ajax({
-			  type: "POST",
-			  url: '/360/rol/nuevo/',
-			  data: $form.serialize(),
-		  }).done(function(e){
-			  if(e['estado']){
-					$table.fnDestroy();
-					var str = '<tr id="tr'+e['id']+'">';
-					str +='<td id="td'+e['id']+'">'+e['nombre']+'</td>';
-					str += '<td id="tdb'+e['id']+'">{%if Permisos.var_edit%}<span id="act'+e['id']+'" style="cursor:pointer;color:#0bacd3" onclick="actualizar('+e['id']+',`'+e['nombre']+'`)"><i class="fa fa-edit mr20" title="Editar"></i></span>{%endif%}';
-					str += '{%if Permisos.var_del%}<span id="d'+e['id']+'" style="cursor:pointer;color:#0bacd3" onclick="eliminar('+e['id']+')"><i class="fa fa-trash ml20" title="Eliminar"></i></span>';
-					str += '<span id="del'+e['id']+'" style="display:none" class="btn btn-danger ml20" onclick="confirmado('+e['id']+')">Confirmar</span>';
-					str += '<span id="can'+e['id']+'" style="display:none" class="btn btn-warning ml20" onclick="cancelar('+e['id']+',`'+e['nombre']+'`)">Cancelar</span>';
-					str += '<span id="env'+e['id']+'" style="display:none" class="btn btn-success ml20" onclick="enviar('+e['id']+')">Confirmar</span>{% endif %}</td></tr>';
-					$tbody.append(str);
-					$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún rol.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
-					$error_div.html('<b>Rol creado correctamente</b>');
-					anuncio();
-			  } else {
-					$error_div.html('<b>Este rol ya existe</b>');
-					anuncio();
-			  }
-		  }).fail(function(e){
-			  $error_div.html('<b>Ha ocurrido un error procesando la solicitud<b>');
-			  anuncio();
-		  })
-		}
-	});
-
-	{% endif %}
-
 });
 </script>
 {%endblock%}

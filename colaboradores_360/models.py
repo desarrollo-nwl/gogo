@@ -83,6 +83,7 @@ class ColaboradoresMetricas_360( models.Model ):
 	id = models.OneToOneField( Colaboradores_360, primary_key=True )
 	propension = models.TextField( default=u'[]' )
 	ord_instrumentos = models.TextField( default=u'[]' )
+	ins_actual = models.PositiveIntegerField( default = 0 )
 
 	def __unicode__(self):
 		return '%s' % (self.id)

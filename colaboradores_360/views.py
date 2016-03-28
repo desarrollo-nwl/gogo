@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from mensajeria_360.models import Streaming_360
 from usuarios.models import Proyectos, Logs
+from redes_360.models import Redes_360
 import random, colabora
 #===============================================================================
 # indices
@@ -505,7 +506,7 @@ def rolnuevo_360(request):
 		if request.method == "POST":
 			if not Roles_360.objects.filter(nombre=request.POST['nombre'],proyecto_id=proyecto.id).exists():
 				rol = Roles_360.objects.create(nombre=request.POST['nombre'],proyecto_id=proyecto.id)
-				return JsonResponse({'id':rol.id,'nombre':request.POST['nombre'],'estado':1})
+				return JsonResponse({'id':rol.id,'nombre':request.POST['nombre']})
 			else:
 				return HttpResponse(0)
 		return render_to_response('404.html')
@@ -525,7 +526,7 @@ def roleditar_360(request,id_rol):
 				with transaction.atomic():
 					Roles_360.objects.filter(proyecto_id=proyecto.id,id=id_rol).update(nombre=request.POST['nombre'])
 					Redes_360.objects.filter(proyecto_id=proyecto.id,rol_idn=id_rol).update(rol=request.POST['nombre'])
-					return JsonResponse({'id':id_rol,'nombre':request.POST['nombre'],'estado':1})
+					return JsonResponse({'id':id_rol,'nombre':request.POST['nombre']})
 		return HttpResponse(0)
 	else:
 		return render_to_response('403.html')
@@ -539,6 +540,6 @@ def roleliminar_360(request,id_rol):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_del:
 		Roles_360.objects.filter(proyecto_id=proyecto.id,id=id_rol).delete()
-		return JsonResponse({'id':id_rol,'estado':1})
+		return JsonResponse({'id':id_rol})
 	else:
 		return render_to_response('403.html')

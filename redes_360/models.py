@@ -19,5 +19,5 @@ class Redes_360( models.Model ):
 
 	class Meta:
 		managed = True
-		db_table = 'redes_360_Redes'
+		db_table = 'redes_360_redes'
 		verbose_name_plural = 'Redes 360'

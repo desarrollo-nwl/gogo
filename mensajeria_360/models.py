@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib import admin
 from cuestionarios_360.models import Proyectos, Instrumentos_360, Preguntas_360
 from colaboradores_360.models import Colaboradores_360
+from redes_360.models import Redes_360
 from django.utils import timezone
 
 class Streaming_360( models.Model ):
@@ -13,6 +14,7 @@ class Streaming_360( models.Model ):
 	instrumento = models.ForeignKey( Instrumentos_360 )
 	pregunta = models.ForeignKey( Preguntas_360 )
 	proyecto = models.ForeignKey( Proyectos )
+	red = models.ForeignKey( Redes_360 )
 	fec_controlenvio = models.DateTimeField( blank = True, null = True  )
 	fecharespuesta = models.DateTimeField( blank = True, null = True  )
 	respuesta = models.TextField( blank = True, null = True )

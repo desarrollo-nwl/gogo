@@ -29,13 +29,15 @@ def redes_360(request):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.red_see:
 		redes = Redes_360.objects.only(
-				'colaborador__nombre','colaborador__apellido','rol_idn',
+				'colaborador__nombre','colaborador__apellido','rol_idn','rol',
 				'evaluado__nombre','evaluado__apellido','instrumento__nombre'
 				).filter(proyecto_id = proyecto.id
-				).select_related('colaborador','instrumento')
+				).select_related('colaborador','instrumento','evaluado')
 		roles = Roles_360.objects.filter(proyecto_id=proyecto.id)
 		instrumentos = Instrumentos_360.objects.only('nombre').filter(proyecto_id=proyecto.id)
 		personas = redes_cpp.ver_personas(str(proyecto.id))
+		redes = redes_cpp.ver_redes(str(proyecto.id),permisos.red_edit,permisos.red_del)
+		print redes
 		return render_to_response('redes_ind.html',{
 		'Activar':'Contenido','activar':'RedesIndividual',
 		'Proyecto':proyecto,'Permisos':permisos,
@@ -45,6 +47,7 @@ def redes_360(request):
 	else:
 		return render_to_response('403.html')
 
+
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def rednueva_360(request):
@@ -52,13 +55,13 @@ def rednueva_360(request):
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if all([permisos.consultor, permisos.red_add]):
+	if permisos.consultor and permisos.red_add:
 		if request.method == 'POST':
 			if not Redes_360.objects.filter(
 				colaborador_id=request.POST['colaborador'],
 				evaluado_id=request.POST['evaluado'],
 				proyecto_id=proyecto.id).exists():
-				print 'rol',request.POST['rol']
+
 				rol = Roles_360.objects.filter(proyecto_id=proyecto.id).get(id=request.POST['rol'])
 
 				red = Redes_360.objects.create(
@@ -68,21 +71,95 @@ def rednueva_360(request):
 					rol_idn = request.POST['rol'],
 					rol = rol.nombre,
 					proyecto_id=proyecto.id)
-				print 'rrol',red
+
 				red = Redes_360.objects.only(
-						'colaborador__nombre','colaborador__apellido','instrumento__nombre'
-						'evaluador__nombre','evaluador__apellido','rol','rol_idn'
-						).filter(id=red.id).select_related(
-						'colaborador','evaluado','instrumento')
+						'colaborador_id','evaluado_id','instrumento_id',
+						'colaborador__nombre','colaborador__apellido','instrumento__nombre',
+						'evaluado__nombre','evaluado__apellido','rol','rol_idn'
+						).filter(id=red.id,proyecto_id=proyecto.id).select_related(
+						'colaborador','evaluado','instrumento')[0]
+
 				return JsonResponse({
 							'id':red.id,
-							'col_nombre':red.colaborador.nombre,
-							'col_apellido':red.colaborador.apellido,
-							'eva_nombre':red.evaluador.nombre,
-							'eva_apellido':red.evaluador.apellido,
+							'id_col':red.colaborador_id,
+							'nom_col':' '.join([red.colaborador.nombre,red.colaborador.apellido]),
+							'id_eval':red.evaluado_id,
+							'nom_eval':' '.join([red.evaluado.nombre,red.evaluado.apellido]),
+							'id_inst':red.instrumento_id,
+							'nom_inst':red.instrumento.nombre,
 							'rol':red.rol,
 							'rol_idn':red.rol_idn,
-							'estado':1})
+							})
 		return render_to_response('403.html')
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def reditar_360(request,id_red):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	print "request"
+	if permisos.consultor and permisos.red_edit:
+		if request.method == 'POST':
+			if not Redes_360.objects.filter(
+				colaborador_id=request.POST['colaborador'],
+				evaluado_id=request.POST['evaluado'],
+				proyecto_id=proyecto.id).exclude(id=id_red).exists():
+
+				rol = Roles_360.objects.filter(proyecto_id=proyecto.id).get(id=request.POST['rol'])
+
+				Redes_360.objects.filter(id=id_red).update(
+					colaborador_id=request.POST['colaborador'],
+					evaluado_id=request.POST['evaluado'],
+					instrumento_id=request.POST['instrumento'],
+					rol_idn = request.POST['rol'],
+					rol = rol.nombre,
+					proyecto_id=proyecto.id)
+
+				red = Redes_360.objects.only(
+						'colaborador_id','evaluado_id','instrumento_id',
+						'colaborador__nombre','colaborador__apellido','instrumento__nombre',
+						'evaluado__nombre','evaluado__apellido','rol','rol_idn'
+						).filter(id=id_red,proyecto_id=proyecto.id).select_related(
+						'colaborador','evaluado','instrumento')[0]
+
+				return JsonResponse({
+							'id':red.id,
+							'id_col':red.colaborador_id,
+							'nom_col':' '.join([red.colaborador.nombre,red.colaborador.apellido]),
+							'id_eval':red.evaluado_id,
+							'nom_eval':' '.join([red.evaluado.nombre,red.evaluado.apellido]),
+							'id_inst':red.instrumento_id,
+							'nom_inst':red.instrumento.nombre,
+							'rol':red.rol,
+							'rol_idn':red.rol_idn,
+							})
+			return JsonResponse({'id':0})
+		return render_to_response('403.html')
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def redeliminar_360(request,id_red):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.red_add:
+
+		if Redes_360.objects.filter(id=id_red,proyecto_id=proyecto.id).exists():
+			with transaction.atomic():
+				Redes_360.objects.filter(id=id_red).delete()
+				Streaming_360.objects.filter(red_id=id_red).delete()
+			return JsonResponse({'id':id_red})
+		else:
+			return JsonResponse({'id':0})
+
 	else:
 		return render_to_response('403.html')
