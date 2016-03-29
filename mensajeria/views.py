@@ -211,11 +211,11 @@ def colaboradoreenviar(request,id_colaborador):
 						server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 						nom_log =request.user.first_name+' '+request.user.last_name
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
-						destinatario = [colaborador.email]
+						destinatario = colaborador.email
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
-						# msg['From'] = email.utils.formataddr((proyecto.nombre, 'Team@goanalytics.com'))
-						msg['From'] = email.utils.formataddr((proyecto.nombre, 'team@bigtalenter.com'))
+						# msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'Team@goanalytics.com'))
+						msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
 						urlimg = 'http://www.changelabtools.com'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
