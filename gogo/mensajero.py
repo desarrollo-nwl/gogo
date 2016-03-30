@@ -72,7 +72,7 @@ def sendmail(stream_i,stream,tiempo):
 
 def enviar():
 	#solo postgresql soporta el distinct() de django
-	tiempo = datetime.datetime.now()
+	tiempo = timezone.now()
 	stream = Streaming.objects.select_related('colaborador__colaboradoresdatos',
 			'proyecto__proyectosdatos').filter(
 			fecharespuesta__isnull=True,proyecto__activo =True,

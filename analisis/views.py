@@ -11,15 +11,19 @@ from django.views.decorators.cache import cache_control
 from colaboradores.models import Colaboradores, ColaboradoresDatos
 from cuestionarios.models import  Preguntas, Variables, Respuestas
 from mensajeria.models import Streaming
-from usuarios.models import Proyectos, Logs
+from usuarios.models import Proyectos,ProyectosDatos, Logs
 import grafos as gr
-import string
+import string,datetime
 
-import part,gener,focal
+import part,gener,focal,analisis_cpp
+
+from datetime import timedelta
+
+
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def participacion(request):
+def participacion_old(request):
 	proyecto = cache.get(request.user.username)
 	pdatos = proyecto.proyectosdatos
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
@@ -41,10 +45,10 @@ def participacion(request):
 		# 		'colaborador__colaboradoresdatos__niv_academico',
 		# 		'colaborador__colaboradoresdatos__profesion',
 		# 		'colaborador__colaboradoresdatos__opcional1',
-		# 	    'colaborador__colaboradoresdatos__opcional2',
-		# 	    'colaborador__colaboradoresdatos__opcional3',
-		# 	    'colaborador__colaboradoresdatos__opcional4',
-		# 	    'colaborador__colaboradoresdatos__opcional5'
+		# 		'colaborador__colaboradoresdatos__opcional2',
+		# 		'colaborador__colaboradoresdatos__opcional3',
+		# 		'colaborador__colaboradoresdatos__opcional4',
+		# 		'colaborador__colaboradoresdatos__opcional5'
 		# 		).filter(
 		# 			proyecto_id=proyecto.id
 		# 		).select_related(
@@ -60,6 +64,82 @@ def participacion(request):
 			'Activar':'AnalisisResultados','activar':'Participacion','Datos':datos,
 			'Proyecto':proyecto,'Permisos':permisos,'Finalizados':finalizados,'PDatos':pdatos,
 		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+SECOND = 1
+MINUTE = 60 * SECOND
+HOUR = 60 * MINUTE
+DAY = 24 * HOUR
+WEEK = 7 * DAY
+MONTH = 30 * DAY
+
+def humanize(dt):
+	now = datetime.date.today()
+	delta_time = dt - now
+
+	delta =  delta_time.days * DAY + delta_time.seconds
+	minutes = delta / MINUTE
+	hours = delta / HOUR
+	days = delta / DAY
+
+	if delta <  0:
+		return "Ha finalizado"
+
+	if delta < 1 * MINUTE:
+	  if delta == 1:
+		  return  "Un segundo"
+	  else:
+		  return ''.join([str(delta) , " segundos"])
+
+	if delta < 2 * MINUTE:
+		return "Un minuto"
+
+	if delta < 45 * MINUTE:
+		return ''.join([str(minutes) , " minutos"])
+
+	if delta < 90 * MINUTE:
+		return "Una hora"
+
+	if delta < 24 * HOUR:
+		return ''.join([str(hours) , " horas"])
+
+	if delta < 48 * HOUR:
+		return "Mañana"
+
+	if delta < 30 * DAY:
+		return ''.join([str(days) , " dias"])
+
+	if delta < 12 * MONTH:
+		months = delta / MONTH
+		if months <= 1:
+			return "Un mes"
+		else:
+			semanas =  days / 30 -1
+			if semanas > 1:
+				return ''.join([str(months) , " meses, " , str(semanas) ," semanas"])
+			elif semanas == 1:
+				return ''.join([str(months) , " meses, " , str(semanas) ," semana"])
+			else:
+				return ''.join([str(months) , " meses"])
+	else:
+	  years = days / 365.0
+	  if  years <= 1:
+		  return "Un año"
+	  else:
+		  return ''.join([str(months) , " años"])
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def participacion(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.res_see:
+		human = humanize(ProyectosDatos.objects.only('ffin').filter(id=proyecto.id)[0].ffin)
+		cadena = analisis_cpp.participacion(str(proyecto.id),str(request.user.id),human )
+		return HttpResponse(cadena)
 	else:
 		return render_to_response('403.html')
 
@@ -94,10 +174,10 @@ def focalizado(request):
 		# 		'colaborador__colaboradoresdatos__niv_academico',
 		# 		'colaborador__colaboradoresdatos__profesion',
 		# 		'colaborador__colaboradoresdatos__opcional1',
-		# 	    'colaborador__colaboradoresdatos__opcional2',
-		# 	    'colaborador__colaboradoresdatos__opcional3',
-		# 	    'colaborador__colaboradoresdatos__opcional4',
-		# 	    'colaborador__colaboradoresdatos__opcional5'
+		# 		'colaborador__colaboradoresdatos__opcional2',
+		# 		'colaborador__colaboradoresdatos__opcional3',
+		# 		'colaborador__colaboradoresdatos__opcional4',
+		# 		'colaborador__colaboradoresdatos__opcional5'
 		# 		).filter(
 		# 			proyecto_id=proyecto.id,
 		# 			pregunta__abierta=False,
