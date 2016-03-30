@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-from colaboradores_360.models import Colaboradores_360
-from colaboradores_360.models import ColaboradoresMetricas_360
-from colaboradores_360.models import ColaboradorAvance_360
-from colaboradores_360.models import Roles_360
+# from colaboradores_360.models import Colaboradores_360
+# from colaboradores_360.models import ColaboradoresMetricas_360
+# from colaboradores_360.models import ColaboradorAvance_360
+# from colaboradores_360.models import Roles_360
 from cuestionarios_360.models import Instrumentos_360,Preguntas_360
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -75,11 +75,9 @@ def rednueva_360(request):
 
 				if Colaboradores_360.objects.filter(
 						id=request.POST['evaluado'],
-						proyecto_id=proyecto.id).exists() and
-
-					Instrumentos_360.objects.filter(
-						id=request.POST['instrumento'],
-						proyecto_id=proyecto.id).exists():
+						proyecto_id=proyecto.id).exists() and Instrumentos_360.objects.filter(
+																id=request.POST['instrumento'],
+																proyecto_id=proyecto.id).exists():
 
 					vec_st_360 = []
 					with transaction.atomic():
@@ -111,19 +109,18 @@ def rednueva_360(request):
 						col_met.save()
 
 						preguntas = Preguntas_360.objects.filter(
-										proyecto_id = proyecto.id
+										proyecto_id = proyecto.id,
 										instrumento_id = red.instrumento_id)
 
 						for i in preguntas:
-							vec_st_360.append(
-								Streaming_360(
+							vec_st_360.append( Streaming_360(
 									colaborador_id = red.colaborador_id,
 									evaluado_id = red.evaluado_id,
 									rol = red.rol,
 									instrumento_id =  red.instrumento_id,
 									pregunta_id = i.id,
 									proyecto_id = proyecto.id,
-									red_id = red.id	)
+									red_id = red.id	) )
 
 						Streaming_360.objects.bulk_create(vec_st_360)
 
@@ -169,11 +166,9 @@ def reditar_360(request,id_red):
 
 				if Colaboradores_360.objects.filter(
 						id=request.POST['evaluado'],
-						proyecto_id=proyecto.id).exists() and
-
-					Instrumentos_360.objects.filter(
-						id = request.POST['instrumento'],
-						proyecto_id=proyecto.id ).exists():
+						proyecto_id=proyecto.id).exists() and Instrumentos_360.objects.filter(
+																id = request.POST['instrumento'],
+																proyecto_id=proyecto.id ).exists():
 
 					vec_st_360 = []
 					with transaction.atomic():
@@ -223,7 +218,7 @@ def reditar_360(request,id_red):
 						col_met.save()
 
 						preguntas = Preguntas_360.objects.filter(
-										proyecto_id = proyecto.id
+										proyecto_id = proyecto.id,
 										instrumento_id = red.instrumento_id)
 
 						for i in preguntas:
@@ -235,7 +230,7 @@ def reditar_360(request,id_red):
 									instrumento_id = request.POST['instrumento'],
 									pregunta_id = i.id,
 									proyecto_id = proyecto.id,
-									red_id = id_red	)
+									red_id = id_red	) )
 
 						Streaming_360.objects.bulk_create(vec_st_360)
 

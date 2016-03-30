@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib import admin
 from cuestionarios_360.models import Proyectos,Instrumentos_360
-from redes_360.models import Redes_360
 
 class Colaboradores_360( models.Model ):
 	id = models.AutoField( primary_key = True )
@@ -67,7 +66,6 @@ class ColaboradorAvance_360( models.Model ):
 	colaborador = models.ForeignKey( Colaboradores_360 )
 	proyecto = models.ForeignKey( Proyectos )
 	instrumento = models.ForeignKey( Instrumentos_360 )
-	red = models.ForeignKey( Redes_360 ) # cuidado con el orden de migracion
 	pre_respuestas = models.PositiveSmallIntegerField( default = 0 )
 	tot_procentaje = models.FloatField( default = 0 )
 
