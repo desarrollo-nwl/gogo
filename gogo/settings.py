@@ -150,8 +150,8 @@ CACHES = {
 	 }
 }
 
-
-
+#
+#
 # CACHES = {
 #  	'default':{
 #  		'BACKEND':'redis_cache.RedisCache',

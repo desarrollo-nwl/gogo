@@ -21,7 +21,10 @@
 	<div class="container-one">
 		<div class="row">
 			<div class="col-lg-12">
-				<div><img id="had-banner" src="{% static 'img/encuesta/had_banner.png' %}" alt="banner" style="width:100%;">
+				<div>
+					{% if Proyecto.id == 22%}<img id="had-banner" src="{% static 'img/encuesta/had_banner.png' %}" alt="banner" style="width:100%;">
+					{% else %}<img id="had-banner" src="{% static 'img/encuesta/banner_naranja.png' %}" alt="banner" style="width:100%;">
+					{% endif %}
 				</div>
 				{%if Proyecto.interno %}
 				<div>
@@ -82,7 +85,7 @@
 	{% for i in Preguntas_encuesta %}
     <div class="container">
 			<div class="form-group">
-				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>: {{ i.pregunta.texto| escape}}</legend>
+				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend>
 				{%if i.pregunta.abierta %}<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
 				{%if i.pregunta.multiple %}
 					{%for j in i.pregunta.respuestas_set.all%}
@@ -107,6 +110,12 @@
 <button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
 </form>
 </section>
+<div class="form-horizontal" style="text-align:center;margin-top:5%">
+	<span class="form-group col-lg-2">Con la tecnología de <a href="https://www.networkslab.co/" style="color:#25AAE0;font-size:bold" target="_blank">NetworksLab</a></span>
+	<div class="form-group">
+		<a href="https://www.networkslab.co" target="_blank"><img id="logo" src="{% static 'img/NetWorksLab.png' %}" style="width:150px" alt="NetworksLab"></a>
+	</div>
+</div>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script>window.jQuery || document.write('<script src="/static/js/libs/jquery-2.1.1.min.js">\x3C/script>')</script>
 <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>

@@ -251,7 +251,8 @@ def archivo(request):
 		a = string.replace(proyecto.nombre,' ','')
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		a = string.replace(proyecto.nombre,' ','')
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		ws.write(0,0,u"Nombre",tit_format)
 		ws.write(0,1,u"Apellido",tit_format)

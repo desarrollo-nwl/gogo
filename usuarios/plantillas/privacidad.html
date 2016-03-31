@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
         <!-- Force IE9 to render in normal mode -->
         <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link href='https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 		<link href="{% static 'css/icons.min.css' %}" rel="stylesheet" />
@@ -27,14 +28,13 @@
     </head>
     <body>
         <div class="container row m20">
-            <div class="animated fadeIn">
-                <!-- Start .panel -->
-                <div class="panel-heading">
-                    <h4 class="panel-title text-center">
-                        <img id="logo" src="{% static 'img/logo.png' %}" alt="Dynamic logo">
-                    </h4>
-                </div>
-                <div class="panel-body" style="text-align:justify">
+			<div class="animated fadeIn container">
+				<!-- Start .panel -->
+				<div class="row">
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 "><img id="logo" class="pull-left" src="{% static 'img/logo.png' %}" alt="Changelab"></div>
+						<div class="col-lg-6 ol-md-6 col-sm-6 col-xs-6 "><img id="logo"  class="pull-right" src="{% static 'img/NetWorksLab.png' %}" style="width:200px" alt="NetworksLab"></div>
+				</div>
+				<div class="container" style="text-align:justify">
 					<h4>Política de Privacidad</h4>
 
 					Última Actualización: 06 Mayo de 2015 <br><br>
@@ -68,7 +68,7 @@
 		<div id="footer" class="clearfix">
             <!-- Start #footer  -->
             <p class="mb10">
-                Copyrights &copy; 2016 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.
+                <p class="pull-left">Con la tecnología de <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">NetworksLab</a>.</p>
             </p>
         </div>
         <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
