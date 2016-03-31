@@ -140,39 +140,72 @@ string participacion(string id_proyecto,string id_user,string human) {
 	string participantes ="{ ";
 	for (result::size_type i = 0; i != R.size(); ++i){
 		participantes += R[i]["id"].as<string>() +": { " ;
-		try {participantes += "'area':`"+R[i]["area"].as<string>() ;}
+		try {
+			auxiliar = R[i]["area"].as<string>() ; escape(auxiliar);
+			participantes += "'area':`"+R[i]["area"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'cargo':`"+R[i]["cargo"].as<string>() ;}
+		try {
+			auxiliar = R[i]["cargo"].as<string>() ; escape(auxiliar);
+			participantes += "`,'cargo':`"+R[i]["cargo"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'ciudad':`"+R[i]["ciudad"].as<string>() ;}
+		try {
+			auxiliar = R[i]["ciudad"].as<string>() ; escape(auxiliar);
+			participantes += "`,'ciudad':`"+R[i]["ciudad"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'genero':`"+R[i]["genero"].as<string>() ;}
+		try {
+			auxiliar = R[i]["genero"].as<string>() ; escape(auxiliar);
+			participantes += "`,'genero':`"+R[i]["genero"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'niv_academico':`"+R[i]["niv_academico"].as<string>() ;}
+		try {
+			auxiliar = R[i]["niv_academico"].as<string>() ; escape(auxiliar);
+			participantes += "`,'niv_academico':`"+R[i]["niv_academico"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'opcional1':`"+R[i]["opcional1"].as<string>() ;}
+		try {
+			auxiliar = R[i]["opcional1"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional1':`"+R[i]["opcional1"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'opcional2':`"+R[i]["opcional2"].as<string>() ;}
+		try {
+			auxiliar = R[i]["opcional2"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional2':`"+R[i]["opcional2"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'opcional3':`"+R[i]["opcional3"].as<string>() ;}
+		try {
+			auxiliar = R[i]["opcional3"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional3':`"+R[i]["opcional3"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'opcional4':`"+R[i]["opcional4"].as<string>() ;}
+		try {
+			auxiliar = R[i]["opcional4"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional4':`"+R[i]["opcional4"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'opcional5':`"+R[i]["opcional5"].as<string>() ;}
+		try {
+			auxiliar = R[i]["opcional5"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional5':`"+R[i]["opcional5"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'profesion':`"+R[i]["profesion"].as<string>() ;}
+		try {
+			auxiliar = R[i]["profesion"].as<string>() ; escape(auxiliar);
+			participantes += "`,'profesion':`"+R[i]["profesion"].as<string>() ;
+		}
 			catch (const exception &e){}
-		try {participantes += "`,'regional':`"+R[i]["regional"].as<string>() +"` }," ;}
+		try {
+			auxiliar = R[i]["regional"].as<string>() ; escape(auxiliar);
+			participantes += "`,'regional':`"+R[i]["regional"].as<string>() +"` }," ;
+		}
 			catch (const exception &e){}
 	}
 	participantes += "}";
 
-	RegisterTemplateFilename(MyTmpl, "/home/suidi/workspace/gogo/analisis/plantillas/participacion_cpp.html");
-	// RegisterTemplateFilename(MyTmpl, "/home/ubuntu/gogo/analisis/plantillas/participacion_cpp.html");
+	// RegisterTemplateFilename(MyTmpl, "/home/suidi/workspace/gogo/analisis/plantillas/participacion_cpp.html");
+	RegisterTemplateFilename(MyTmpl, "/home/ubuntu/gogo/analisis/plantillas/participacion_cpp.html");
 
-	// string output = "";
-	//
-	// escape(output);
 
 	ctemplate::TemplateDictionary dict("contexto");
 
@@ -204,6 +237,9 @@ string participacion(string id_proyecto,string id_user,string human) {
 	dict.SetValue("PROYECTO_TOT_ARESPONDER",pro.tot_aresponder);
 	dict.SetValue("PROYECTO_TOT_RESPUESTAS",to_string(pro.tot_respuestas));
 	dict.SetValue("PROYECTO_TOTAL",to_string((int)pro.total));
+	dict.SetValue("FINICIO",fecha(pro.finicio));
+	dict.SetValue("FFIN",fecha(pro.ffin));
+
 	if(pro.activo) dict.SetValue("PROYECTO_ACTIVO","Activo");
 	else dict.SetValue("PROYECTO_ACTIVO","Inactivo");
 	if(pro.tot_respuestas && pro.tot_preguntas) {

@@ -15,57 +15,10 @@ from usuarios.models import Proyectos,ProyectosDatos, Logs
 import grafos as gr
 import string,datetime
 
-import part,gener,focal,analisis_cpp
+import gener,focal,analisis_cpp
 
 from datetime import timedelta
 
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def participacion_old(request):
-	proyecto = cache.get(request.user.username)
-	pdatos = proyecto.proyectosdatos
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
-		return render_to_response('423.html')
-	permisos = request.user.permisos
-	if permisos.res_see:
-		# datos = Streaming.objects.only(
-		# 		'respuesta','fecharespuesta',
-		# 		'proyecto__proyectosdatos__opcional1',
-		# 		'proyecto__proyectosdatos__opcional2',
-		# 		'proyecto__proyectosdatos__opcional3',
-		# 		'proyecto__proyectosdatos__opcional4',
-		# 		'proyecto__proyectosdatos__opcional5',
-		# 		'colaborador__colaboradoresdatos__regional',
-		# 		'colaborador__colaboradoresdatos__ciudad',
-		# 		'colaborador__colaboradoresdatos__area',
-		# 		'colaborador__colaboradoresdatos__cargo',
-		# 		'colaborador__colaboradoresdatos__genero',
-		# 		'colaborador__colaboradoresdatos__niv_academico',
-		# 		'colaborador__colaboradoresdatos__profesion',
-		# 		'colaborador__colaboradoresdatos__opcional1',
-		# 		'colaborador__colaboradoresdatos__opcional2',
-		# 		'colaborador__colaboradoresdatos__opcional3',
-		# 		'colaborador__colaboradoresdatos__opcional4',
-		# 		'colaborador__colaboradoresdatos__opcional5'
-		# 		).filter(
-		# 			proyecto_id=proyecto.id
-		# 		).select_related(
-		# 			'proyecto','proyecto__proyectosdatos',
-		# 			'colaborador','colaborador__colaboradoresdatos'
-		# 		)
-		datos = part.query(str(proyecto.id))
-		if( proyecto.tot_preguntas and proyecto.tot_respuestas ):
-			finalizados = proyecto.tot_respuestas/proyecto.tot_preguntas
-		else:
-			finalizados = 0
-		return render_to_response('participacion.html',{
-			'Activar':'AnalisisResultados','activar':'Participacion','Datos':datos,
-			'Proyecto':proyecto,'Permisos':permisos,'Finalizados':finalizados,'PDatos':pdatos,
-		}, context_instance=RequestContext(request))
-	else:
-		return render_to_response('403.html')
 
 SECOND = 1
 MINUTE = 60 * SECOND
