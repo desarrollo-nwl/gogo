@@ -66,13 +66,13 @@ def variables_360(request,id_dimension):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
-		try:dimension = Dimensiones_360.objects.only('id','proyecto_id','instrumento_id').filter(proyecto_id=proyecto.id ).get(id=id_dimension)
+		try:dimension = Dimensiones_360.objects.only('id','proyecto_id','instrumento_id','nombre').filter(proyecto_id=proyecto.id ).get(id=id_dimension)
 		except:return render_to_response('404.html')
 		variables = Variables_360.objects.filter(proyecto_id=proyecto.id,dimension_id=dimension.id )
 		return render_to_response('variables_360.html',{
 		'Activar':'Contenido','activar':'Instrumentos','Variables':variables,
 		'Proyecto':proyecto,'Permisos':permisos,'Instrumento_id':dimension.instrumento_id,
-		'Dimension_id':dimension.id
+		'Dimension':dimension
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -90,7 +90,7 @@ def preguntas_360(request,id_variable):
 		except:return render_to_response('404.html')
 		preguntas = Preguntas_360.objects.filter(proyecto_id=proyecto.id,variable_id=variable.id)
 		return render_to_response('preguntas_360.html',{
-		'Activar':'Contenido','activar':'Instrumentos','Variable_id':variable.id,
+		'Activar':'Contenido','activar':'Instrumentos','Variable':variable,
 		'Proyecto':proyecto,'Permisos':permisos,'Instrumento_id':variable.instrumento_id,
 		'Dimension_id':variable.dimension_id,'Preguntas':preguntas
 		}, context_instance=RequestContext(request))

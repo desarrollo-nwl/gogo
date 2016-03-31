@@ -13,6 +13,8 @@ class Redes_360( models.Model ):
 	proyecto = models.ForeignKey( Proyectos )
 	rol = models.CharField( max_length = 128 )
 	rol_idn = models.PositiveIntegerField( db_index = True )
+	pre_respuestas = models.PositiveSmallIntegerField( default = 0 )
+	tot_procentaje = models.FloatField( default = 0 )
 
 	def __unicode__(self):
 		return '%s' % (self.id)

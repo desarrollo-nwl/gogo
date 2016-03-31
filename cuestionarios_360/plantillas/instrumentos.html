@@ -25,15 +25,19 @@
 					<tr>
 						<th>Estado</th>
 						<th>Nombre</th>
-						<th style="width:150px">Acciones</th>
+						<th>Dimensiones</th>
+						<th>Preguntas</th>
+						<th style="width:80px">Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for i in Instrumentos %}
 					<tr>
-						<td id="e{{i.id}}">{% if i.estado%}<span style="color:#1d9d73">Activo</span>{% else %}<span style="color:#cd1e21">Inactivo</span>{% endif %}</td>
-						<td><a href="/360/instrumento/{{ i.id }}/dimensiones/">{{ i.nombre | escape }}</a></td>
-						<td>{% if Permisos.var_add%}<a href="/360/instrumento/{{ i.id }}/dimension/nueva/"><i class="fa fa-plus m-r" title="agregar dimension"></i></a>{% endif %}{% if Permisos.act_variables %}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{% endif %}{% if Permisos.var_edit %}<a href="/360/instrumento/editar/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/360/instrumento/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
+						<td id="e{{i.id |safe}}">{% if i.estado%}<span style="color:#1d9d73">Activo</span>{% else %}<span style="color:#cd1e21">Inactivo</span>{% endif %}</td>
+						<td><a href="/360/instrumento/{{ i.id }}/dimensiones/">{{ i.nombre }}</a></td>
+						<td>{{ i.max_dimensiones | safe }} </td>
+						<td>{{ i.max_preguntas | safe }} </td>
+						<td>{% if Permisos.var_add%}<a href="/360/instrumento/{{ i.id }}/dimension/nueva/"><i class="fa fa-plus m-r" title="agregar dimension"></i></a>{% endif %}{% if Permisos.act_variables %}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id |safe}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{% endif %}{% if Permisos.var_edit %}<a href="/360/instrumento/editar/{{i.id |safe}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/360/instrumento/eliminar/{{i.id |safe}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>
@@ -47,5 +51,5 @@
 {% block scripts%}
 <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" }],"order": [ 1, "asc" ],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ instrumentos",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna instrumento.",sInfo:"Instrumentos de la _START_ a la _END_ de un total de _TOTAL_",sInfoEmpty:"Instrumentos de la  0 a la 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ instrumentos)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],"order": [ 1, "asc" ],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ instrumentos",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna instrumento.",sInfo:"Instrumentos de la _START_ a la _END_ de un total de _TOTAL_",sInfoEmpty:"Instrumentos de la  0 a la 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ instrumentos)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 {% endblock%}

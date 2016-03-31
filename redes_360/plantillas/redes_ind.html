@@ -120,7 +120,11 @@ var $error=$("#my_error"),
 								$('#tr'+json['id']).remove();
 								$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningna red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
 							}
-						});
+						}).fail(function(json){
+  						  console.log(json['responseText']);
+  						  $error_div.html('<b>Ha ocurrido un error procesando la solicitud<b>');
+  						  anuncio();
+  					  });
 					},
 
 		{% endif %}{% if Permisos.red_edit %}
@@ -198,11 +202,13 @@ var $error=$("#my_error"),
 
 						}
 						else {
-							$error_div.html('<b>Este red ya existe</b>');
+							$error_div.html('<b>Esta red ya existe o posee otro rol</b>');
 							anuncio();
 						 }
 					}).fail(function(json) {
 						console.log(json['responseText']);
+						$error_div.html('<b>Ha ocurrido un error procesando la solicitud<b>');
+						anuncio();
 					});
 			 	},
 
@@ -242,7 +248,7 @@ var $error=$("#my_error"),
 								anuncio();
 						  }
 					  }).fail(function(json){
-						  console.log(json);
+						  console.log(json['responseText']);
 						  $error_div.html('<b>Ha ocurrido un error procesando la solicitud<b>');
 						  anuncio();
 					  })

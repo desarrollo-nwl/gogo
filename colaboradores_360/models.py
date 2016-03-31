@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib import admin
 from cuestionarios_360.models import Proyectos,Instrumentos_360
 
+
 class Colaboradores_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	apellido = models.CharField( max_length = 45 )
@@ -13,7 +14,7 @@ class Colaboradores_360( models.Model ):
 	externo = models.BooleanField( default = False )
 	genero = models.CharField( max_length = 10, blank = True, null = True)
 	key = models.CharField( max_length = 64 )
-	key_old = models.CharField( max_length = 64 )
+	key_old = models.CharField( max_length = 64, default = "HACK" )
 	nombre = models.CharField( max_length = 45 )
 	pre_aresponder = models.PositiveSmallIntegerField( default = 0)
 	pre_respuestas = models.PositiveSmallIntegerField( default = 0)
@@ -24,7 +25,6 @@ class Colaboradores_360( models.Model ):
 	puntaje = models.FloatField( default = 0 )
 	reenviados = models.PositiveSmallIntegerField( default = 0)
 	respuestas = models.PositiveSmallIntegerField( default = 0 )
-	zdel = models.DateTimeField( blank = True, null = True )
 
 	def __unicode__(self):
 		return '%s %s ' % (self.nombre,self.apellido)
@@ -59,23 +59,6 @@ class ColaboradoresDatos_360( models.Model ):
 		managed = True
 		db_table = 'colaboradores_360_datos'
 		verbose_name_plural = 'Colaboradores datos 360'
-
-
-class ColaboradorAvance_360( models.Model ):
-	id =  models.AutoField( primary_key = True )
-	colaborador = models.ForeignKey( Colaboradores_360 )
-	proyecto = models.ForeignKey( Proyectos )
-	instrumento = models.ForeignKey( Instrumentos_360 )
-	pre_respuestas = models.PositiveSmallIntegerField( default = 0 )
-	tot_procentaje = models.FloatField( default = 0 )
-
-	def __unicode__(self):
-		return '%s' % (self.id)
-
-	class Meta:
-		managed = True
-		db_table = 'colaboradores_360_colaboradoravance'
-		verbose_name_plural = 'Avance ind 360'
 
 
 class ColaboradoresMetricas_360( models.Model ):
