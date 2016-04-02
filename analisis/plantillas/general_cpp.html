@@ -767,7 +767,7 @@ var Elementos = {
 		}
 
 		// contamos
-		var cache_C,cache_P;
+		var cache_C,cache_P,cache_M;
 		for (var j = 0; j < Datos.length; j++) {
 			cache_P = Participantes[Datos[j][0]];
 			cache_C = Cuestionario[Datos[j][3]];
@@ -792,10 +792,13 @@ var Elementos = {
 				&& contenido(cache_P['opcional5'],opcional5_seleccionadas)
 			{{/PDATOS_OPCIONAL5}}
 		){
+			cache_M = matriz_dic_g1[Datos[j][2]];
+
 			for (var respuesta in cache_C['respuestas'])
 				if (contenido(respuesta,Datos[j][1]))
-					matriz_dic_g1[Datos[j][2]] += cache_C['respuestas'][respuesta];
+					cache_M += cache_C['respuestas'][respuesta];
 
+			matriz_dic_g1[Datos[j][2]] = cache_M;
 			matriz_dic_g1[Datos[j][2]+'_total'] += 1;
 		}
 	}
@@ -934,7 +937,7 @@ grafica_dos: function(max,min,finicio, ffin){
 			matriz_dic_g2[variables[i]+'_total'] = 0.0;
 		}
 
-		var cache_C,cache_P;
+		var cache_C,cache_P,cache_M;
 		for(var j = 0; j < Datos.length; j++) {
 
 			cache_P = Participantes[Datos[j][0]];
@@ -967,17 +970,21 @@ grafica_dos: function(max,min,finicio, ffin){
 				if (! nombres_var.hasOwnProperty(cache_C['variable']))
 					nombres_var[cache_C['variable']] = cache_C['variable_str']
 
+				cache_M = matriz_dic_g2[cache_C['variable']];
+
 				for (var respuesta in cache_C['respuestas'])
 					if (contenido(respuesta, Datos[j][1]))
-						matriz_dic_g2[cache_C['variable']] += cache_C['respuestas'][respuesta];
+						cache_M += cache_C['respuestas'][respuesta];
 
 				matriz_dic_g2[cache_C['variable']+'_total_ind'] += 1;
 			}
 
+			cache_M = matriz_dic_g2[cache_C['variable']+'_var'];
 			for (var respuesta in cache_C['respuestas'])
 				if (contenido(respuesta, Datos[j][1]))
-					matriz_dic_g2[cache_C['variable']+'_var'] += cache_C['respuestas'][respuesta];
+					cache_M += cache_C['respuestas'][respuesta];
 
+			matriz_dic_g2[cache_C['variable']+'_var'] = cache_M;
 			matriz_dic_g2[cache_C['variable']+'_total'] += 1;
 		}
 
@@ -1041,7 +1048,7 @@ grafica_tres:  function(finicio, ffin){
 		areas_seleccionadas = $are_g3.val() || [],
 		cargos_seleccionados = $car_g3.val() || [];
 
-	var matriz_g3 = [], personas = {}, suma=false;
+	var matriz_g3 = [], personas = {}, suma=false, cache_pp, cache_pt;
 
 	for(var j = 0; j < Datos.length; j++){
 
@@ -1076,13 +1083,23 @@ grafica_tres:  function(finicio, ffin){
 				suma = true;
 				personas[Datos[j][0]] = 0;
 				personas[Datos[j][0]+'_total'] = 0;
+				cache_pp = 0;
+				cache_pt = 0;
+			} else {
+				cache_pp = personas[Datos[j][0]];
+				cache_pt = personas[Datos[j][0]+'_total'];
 			}
 
-			for (var respuesta in cache_C['respuestas'])
+			for (var respuesta in cache_C['respuestas']){
 				if (contenido(respuesta, Datos[j][1])){
-					personas[Datos[j][0]] += cache_C['respuestas'][respuesta];
-					personas[Datos[j][0]+'_total'] += 1;
+					cache_pp += cache_C['respuestas'][respuesta];
+					cache_pt += 1;
 				}
+			}
+
+			personas[Datos[j][0]] = cache_pp;
+			personas[Datos[j][0]+'_total'] = cache_pt;
+
 		}
 	}
 
