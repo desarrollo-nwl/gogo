@@ -1,6 +1,5 @@
 #include "aux.hpp"
 
-
 string participacion(string id_proyecto,string id_user,string human) {
 	// connection C("dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432");
 	string sql =	"SELECT "
@@ -13,8 +12,6 @@ string participacion(string id_proyecto,string id_user,string human) {
 						"cuestionarios_proyectos.tot_aresponder, "
 						"cuestionarios_proyectos.tot_participantes, "
 						"cuestionarios_proyectos.tot_preguntas, "
-						"cuestionarios_proyectos.tot_preguntas, "
-						"cuestionarios_proyectos.tot_respuestas, "
 						"cuestionarios_proyectos.tot_respuestas, "
 						"cuestionarios_proyectos.total, "
 						"usuarios_proyectosdatos.ffin, "
@@ -203,8 +200,10 @@ string participacion(string id_proyecto,string id_user,string human) {
 	}
 	participantes += "}";
 
-	// RegisterTemplateFilename(MyTmpl, "/home/suidi/workspace/gogo/analisis/plantillas/participacion_cpp.html");
-	RegisterTemplateFilename(MyTmpl, "/home/ubuntu/gogo/analisis/plantillas/participacion_cpp.html");
+	char carpeta[150];
+	strcpy(carpeta, raiz);
+	strcat(carpeta,"analisis/plantillas/participacion_cpp.html");
+	RegisterTemplateFilename(MyTmpl, carpeta);
 
 
 	ctemplate::TemplateDictionary dict("contexto");
@@ -276,8 +275,331 @@ static PyObject* participacion( PyObject *self, PyObject *args ){
 	return Py_BuildValue("s",participacion(id_proyecto,id_user,human).c_str());
 }
 
+
+/*==============================================================================
+	General
+===============================================================================*/
+
+string general(string id_proyecto,string id_user) {
+
+	// PROYECTOS
+
+	string sql =	"SELECT "
+						"cuestionarios_proyectos.id, "
+						"cuestionarios_proyectos.interna, "
+						"cuestionarios_proyectos.nombre, "
+						"usuarios_proyectosdatos.ffin, "
+						"usuarios_proyectosdatos.finicio, "
+						"usuarios_proyectosdatos.id_id, "
+						"usuarios_proyectosdatos.opcional1, "
+						"usuarios_proyectosdatos.opcional2, "
+						"usuarios_proyectosdatos.opcional3, "
+						"usuarios_proyectosdatos.opcional4, "
+						"usuarios_proyectosdatos.opcional5 "
+					"FROM "
+						"cuestionarios_proyectos "
+					"JOIN "
+						"usuarios_proyectosdatos "
+					"ON "
+						"(cuestionarios_proyectos.id = usuarios_proyectosdatos.id_id ) "
+					"WHERE "
+						"cuestionarios_proyectos.id ="+ id_proyecto +";";
+
+	// ejecutamos el analisis_cppdores
+	result R = leer(sql);
+
+	Proyecto pro;
+	string auxiliar;
+
+	pro.interna = R[0]["interna"].as<bool>() ;
+	pro.ffin = R[0]["ffin"].as<string>() ;
+	pro.finicio = R[0]["finicio"].as<string>() ;
+	auxiliar = R[0]["nombre"].as<string>(); escape(auxiliar);
+	pro.nombre = auxiliar ;
+	auxiliar = R[0]["opcional1"].as<string>() ; escape(auxiliar);
+	pro.opcional1 = auxiliar ;
+	auxiliar = R[0]["opcional2"].as<string>() ; escape(auxiliar);
+	pro.opcional2 = auxiliar ;
+	auxiliar = R[0]["opcional3"].as<string>() ; escape(auxiliar);
+	pro.opcional3 = auxiliar ;
+	auxiliar = R[0]["opcional4"].as<string>() ; escape(auxiliar);
+	pro.opcional4 = auxiliar ;
+	auxiliar = R[0]["opcional5"].as<string>() ; escape(auxiliar);
+	pro.opcional5 = auxiliar ;
+
+	// PERMISOS
+
+			sql =	"SELECT "
+						"usuarios_permisos.col_add, "
+						"usuarios_permisos.col_see, "
+						"usuarios_permisos.consultor, "
+						"usuarios_permisos.res_exp, "
+						"usuarios_permisos.var_add, "
+						"usuarios_permisos.var_see "
+					"FROM "
+						"usuarios_permisos "
+					"WHERE "
+						"usuarios_permisos.id_id ="+ id_user +";";
+	R = leer(sql);
+
+	Permisos permisos;
+	permisos.col_add = R[0]["col_add"].as<bool>() ;
+	permisos.col_see = R[0]["col_see"].as<bool>() ;
+	permisos.consultor = R[0]["consultor"].as<bool>() ;
+	permisos.res_exp = R[0]["res_exp"].as<bool>() ;
+	permisos.var_add = R[0]["var_add"].as<bool>() ;
+	permisos.var_see = R[0]["var_see"].as<bool>() ;
+
+	// PARTICIPANTES
+
+			sql = 	"SELECT "
+						"colaboradores_colaboradores.id, "
+						"colaboradores_datos.id_id, "
+						"colaboradores_datos.area, "
+						"colaboradores_datos.cargo, "
+						"colaboradores_datos.opcional1, "
+						"colaboradores_datos.opcional2, "
+						"colaboradores_datos.opcional3, "
+						"colaboradores_datos.opcional4, "
+						"colaboradores_datos.opcional5, "
+						"colaboradores_datos.ciudad, "
+						"colaboradores_datos.regional "
+					"FROM "
+						"colaboradores_colaboradores "
+					"LEFT OUTER JOIN "
+						"colaboradores_datos "
+					"ON "
+						"( colaboradores_colaboradores.id = colaboradores_datos.id_id ) "
+					"WHERE "
+						"colaboradores_colaboradores.proyecto_id = "+ id_proyecto +";";
+
+	R = leer(sql);
+	string participantes ="{ ";
+	for (result::size_type i = 0; i != R.size(); ++i){
+		participantes += R[i]["id"].as<string>() +": { " ;
+		try {
+			auxiliar = R[i]["area"].as<string>() ; escape(auxiliar);
+			participantes += "'area':`"+R[i]["area"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["cargo"].as<string>() ; escape(auxiliar);
+			participantes += "`,'cargo':`"+R[i]["cargo"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["ciudad"].as<string>() ; escape(auxiliar);
+			participantes += "`,'ciudad':`"+R[i]["ciudad"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["opcional1"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional1':`"+R[i]["opcional1"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["opcional2"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional2':`"+R[i]["opcional2"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["opcional3"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional3':`"+R[i]["opcional3"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["opcional4"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional4':`"+R[i]["opcional4"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["opcional5"].as<string>() ; escape(auxiliar);
+			participantes += "`,'opcional5':`"+R[i]["opcional5"].as<string>() ;
+		}
+			catch (const exception &e){}
+		try {
+			auxiliar = R[i]["regional"].as<string>() ; escape(auxiliar);
+			participantes += "`,'regional':`"+R[i]["regional"].as<string>() +"` }," ;
+		}
+			catch (const exception &e){}
+	}
+	participantes += "}";
+
+	// DATOS
+
+		sql = "SELECT "
+					"mensajeria_streaming.pregunta_id, "
+					"mensajeria_streaming.colaborador_id, "
+					"mensajeria_streaming.pregunta_id, "
+					"mensajeria_streaming.respuesta, "
+					"mensajeria_streaming.fecharespuesta, "
+					"cuestionarios_preguntas.id, "
+					"cuestionarios_preguntas.abierta, "
+					"cuestionarios_preguntas.multiple, "
+					"cuestionarios_preguntas.numerica "
+				"FROM "
+					"mensajeria_streaming "
+				"INNER JOIN "
+						"cuestionarios_preguntas "
+				"ON "
+					"( mensajeria_streaming.pregunta_id = cuestionarios_preguntas.id ) "
+				"WHERE "
+					"(mensajeria_streaming.respuesta IS NOT NULL AND "
+					"cuestionarios_preguntas.numerica = true AND "
+					"cuestionarios_preguntas.abierta = false AND "
+					"mensajeria_streaming.proyecto_id = "+id_proyecto+");";
+
+	R = leer(sql);
+
+	string datos ="[ ";
+	for (result::size_type i = 0; i != R.size(); ++i){
+		datos += "[ "+ R[i]["colaborador_id"].as<string>();
+
+		auxiliar = R[i]["respuesta"].as<string>(); escape(auxiliar);
+		if(! R[i]["multiple"].as<bool>() ){
+			datos += ",[`"+ auxiliar + "`],";
+		}
+		else{
+			datos += ","+ auxiliar + ",";
+		}
+
+
+		datos += fecha(R[i]["fecharespuesta"].as<string>());
+
+		datos += "," + R[i]["pregunta_id"].as<string>();
+
+		datos+= "],";
+	}
+	datos+= "]";
+
+	// CUESTIONARIO
+
+	sql = 	"SELECT "
+				"cuestionarios_preguntas.id, "
+				"cuestionarios_preguntas.texto, "
+				"cuestionarios_preguntas.abierta, "
+				"cuestionarios_preguntas.numerica, "
+				"cuestionarios_variables.id AS variable_id,"
+				"cuestionarios_variables.nombre, "
+				"cuestionarios_variables.proyecto_id "
+			"FROM "
+			 	"cuestionarios_preguntas "
+			"INNER JOIN "
+				"cuestionarios_variables "
+			"ON "
+				"( cuestionarios_preguntas.variable_id = cuestionarios_variables.id ) "
+			"WHERE "
+				"(cuestionarios_preguntas.abierta = false AND "
+				"cuestionarios_preguntas.numerica = true AND "
+				"cuestionarios_variables.proyecto_id = "+id_proyecto+");";
+
+	R = leer(sql);
+
+	string indices = "";
+	for (result::size_type i = 0; i != R.size(); ++i){
+		indices += R[i]["id"].as<string>() +",";
+	}
+
+	indices = indices.substr(0, indices.size()-1);
+
+	sql = 	"SELECT "
+				"cuestionarios_respuestas.id, "
+				"cuestionarios_respuestas.numerico, "
+				"cuestionarios_respuestas.pregunta_id, "
+				"cuestionarios_respuestas.texto "
+			"FROM "
+				"cuestionarios_respuestas "
+			"WHERE "
+				"cuestionarios_respuestas.pregunta_id "
+			"IN (" + indices + ");";
+
+	result T = leer(sql);
+
+	string cuestionario ="{ ";
+	int id;
+	for (result::size_type i = 0; i != R.size(); ++i){
+		cuestionario += R[i]["id"].as<string>() + ":{'texto':`";
+		auxiliar = R[i]["texto"].as<string>(); escape(auxiliar);
+		cuestionario += auxiliar + "`,'variable_str':`";
+		auxiliar = R[i]["nombre"].as<string>(); escape(auxiliar);
+		cuestionario += auxiliar + "`,'variable':";
+		cuestionario += R[i]["variable_id"].as<string>() + ",'respuestas':{";
+		id = R[i]["id"].as<int>();
+		for (result::size_type j = 0; j != T.size(); ++j){
+			if ( id == T[j]["pregunta_id"].as<int>() ){
+
+				if ( R[i]["numerica"].as<bool>() )
+					cuestionario += "'"+ T[j]["texto"].as<string>() +"':" + T[j]["numerico"].as<string>()+",";
+
+				else
+					cuestionario += "'"+ T[j]["texto"].as<string>() +"':0,";
+			}
+		}
+		cuestionario += "}},";
+	}
+	cuestionario+= "}";
+
+	char carpeta[150];
+	strcpy(carpeta, raiz);
+	strcat(carpeta, "analisis/plantillas/general_cpp.html");
+	RegisterTemplateFilename(MyTmpl, carpeta);
+
+
+	ctemplate::TemplateDictionary dict("contexto");
+
+	if(pro.interna) dict.ShowSection("PROYECTO_INTERNA");
+	if(pro.opcional1 != "") {
+		dict.ShowSection("PDATOS_OPCIONAL1");
+		dict.SetValue("PDATOS_NOM_OPCIONAL_1",pro.opcional1);
+	}
+	if(pro.opcional2 != "") {
+		dict.ShowSection("PDATOS_OPCIONAL2");
+		dict.SetValue("PDATOS_NOM_OPCIONAL_2",pro.opcional2);
+	}
+	if(pro.opcional3 != "") {
+		dict.ShowSection("PDATOS_OPCIONAL3");
+		dict.SetValue("PDATOS_NOM_OPCIONAL_3",pro.opcional3);
+	}
+	if(pro.opcional4 != "") {
+		dict.ShowSection("PDATOS_OPCIONAL4");
+		dict.SetValue("PDATOS_NOM_OPCIONAL_4",pro.opcional4);
+	}
+	if(pro.opcional5 != "") {
+		dict.ShowSection("PDATOS_OPCIONAL5");
+		dict.SetValue("PDATOS_NOM_OPCIONAL_5",pro.opcional5);
+	}
+
+	dict.SetValue("FINICIO",fecha(pro.finicio));
+	dict.SetValue("FFIN",fecha(pro.ffin));
+
+	if(permisos.col_add) dict.ShowSection("PERMISOS_COL_ADD");
+	if(permisos.col_see) dict.ShowSection("PERMISOS_COL_SEE");
+	if(permisos.consultor) dict.ShowSection("PERMISOS_CONSULTOR");
+	if(permisos.res_exp) dict.ShowSection("PERMISOS_RES_EXP");
+	if(permisos.var_add) dict.ShowSection("PERMISOS_VAR_ADD");
+	if(permisos.var_see) dict.ShowSection("PERMISOS_VAR_SEE");
+
+	dict.SetValue("PROYECTO_NOMBRE", pro.nombre);
+	dict.SetValue("DATOS", datos);
+	dict.SetValue("PARTICIPANTES", participantes);
+	dict.SetValue("CUESTIONARIO", cuestionario);
+
+	string contexto;
+	ctemplate::ExpandTemplate(MyTmpl, ctemplate::DO_NOT_STRIP, &dict, &contexto);
+	return contexto;
+}
+
+
+static PyObject* general( PyObject *self, PyObject *args ){
+	const char * id_proyecto;
+	const char * id_user;
+	if(!PyArg_ParseTuple(args,"ss",&id_proyecto,&id_user)) return NULL;
+	return Py_BuildValue("s",general(id_proyecto,id_user).c_str());
+}
+
 static PyMethodDef analisis_cpp_metodos[]={
 	{"participacion",(PyCFunction)participacion,METH_VARARGS},
+	{"general",(PyCFunction)general,METH_VARARGS},
 	{NULL,NULL,0,NULL}
 };
 

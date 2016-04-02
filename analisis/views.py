@@ -15,7 +15,7 @@ from usuarios.models import Proyectos,ProyectosDatos, Logs
 import grafos as gr
 import string,datetime
 
-import gener,focal,analisis_cpp
+import focal,analisis_cpp
 
 from datetime import timedelta
 
@@ -99,6 +99,19 @@ def participacion(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
+def general(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.res_see:
+		cadena = analisis_cpp.general(str(proyecto.id),str(request.user.id) )
+		return HttpResponse(cadena)
+	else:
+		return render_to_response('403.html')
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
 def focalizado(request):
 	proyecto = cache.get(request.user.username)
 	pdatos = proyecto.proyectosdatos
@@ -151,7 +164,7 @@ def focalizado(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def general(request):
+def general2(request):
 	proyecto = cache.get(request.user.username)
 	pdatos = proyecto.proyectosdatos
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
