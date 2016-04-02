@@ -793,9 +793,8 @@ var Elementos = {
 			{{/PDATOS_OPCIONAL5}}
 		){
 			cache_M = matriz_dic_g1[Datos[j][2]];
-
 			for (var respuesta in cache_C['respuestas'])
-				if (contenido(respuesta,Datos[j][1]))
+				if (contenido(respuesta, Datos[j][1]))
 					cache_M += cache_C['respuestas'][respuesta];
 
 			matriz_dic_g1[Datos[j][2]] = cache_M;
@@ -970,21 +969,19 @@ grafica_dos: function(max,min,finicio, ffin){
 				if (! nombres_var.hasOwnProperty(cache_C['variable']))
 					nombres_var[cache_C['variable']] = cache_C['variable_str']
 
-				cache_M = matriz_dic_g2[cache_C['variable']];
-
+				cache_M = matriz_dic_g2[cache_C['variable']] ;
 				for (var respuesta in cache_C['respuestas'])
 					if (contenido(respuesta, Datos[j][1]))
 						cache_M += cache_C['respuestas'][respuesta];
 
+				matriz_dic_g2[cache_C['variable']] = cache_M;
 				matriz_dic_g2[cache_C['variable']+'_total_ind'] += 1;
 			}
 
-			cache_M = matriz_dic_g2[cache_C['variable']+'_var'];
 			for (var respuesta in cache_C['respuestas'])
 				if (contenido(respuesta, Datos[j][1]))
-					cache_M += cache_C['respuestas'][respuesta];
+					matriz_dic_g2[cache_C['variable']+'_var'] += cache_C['respuestas'][respuesta];
 
-			matriz_dic_g2[cache_C['variable']+'_var'] = cache_M;
 			matriz_dic_g2[cache_C['variable']+'_total'] += 1;
 		}
 
@@ -1050,6 +1047,11 @@ grafica_tres:  function(finicio, ffin){
 
 	var matriz_g3 = [], personas = {}, suma=false, cache_pp, cache_pt;
 
+	for (var persona in Participantes) {
+		personas[persona] = 0;
+		personas[persona+'_total'] = 0;
+	}
+
 	for(var j = 0; j < Datos.length; j++){
 
 		cache_P = Participantes[Datos[j][0]];
@@ -1079,27 +1081,18 @@ grafica_tres:  function(finicio, ffin){
 			{{/PDATOS_OPCIONAL5}}
 		){
 
-			if (! personas.hasOwnProperty(Datos[j][0])) {
-				suma = true;
-				personas[Datos[j][0]] = 0;
-				personas[Datos[j][0]+'_total'] = 0;
-				cache_pp = 0;
-				cache_pt = 0;
-			} else {
-				cache_pp = personas[Datos[j][0]];
-				cache_pt = personas[Datos[j][0]+'_total'];
-			}
+			suma = true;
 
+			cache_pp = personas[Datos[j][0]];
+			cache_pt = personas[Datos[j][0]+'_total'];
 			for (var respuesta in cache_C['respuestas']){
 				if (contenido(respuesta, Datos[j][1])){
 					cache_pp += cache_C['respuestas'][respuesta];
 					cache_pt += 1;
 				}
 			}
-
-			personas[Datos[j][0]] = cache_pp;
-			personas[Datos[j][0]+'_total'] = cache_pt;
-
+			personas[Datos[j][0]] += cache_pp;
+			personas[Datos[j][0]+'_total'] += cache_pt;
 		}
 	}
 
