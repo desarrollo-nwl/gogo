@@ -98,7 +98,7 @@ var $error=$("#my_error"),
 						{% if Permisos.red_del  %}<span id="d`+id+`" style="cursor:pointer;color:#0bacd3" onclick="acciones.eliminar(`+id+`)"><i class="fa fa-trash ml20" title="Eliminar"></i></span>{% endif %}
 						<span id="del`+id+`" style="display:none" class="btn btn-danger ml20" onclick="acciones.confirmado(`+id+`)">Confirmar</span>
 						<span id="can`+id+`" style="display:none" class="btn btn-warning ml20" onclick="acciones.cancelar(`+id+`,'`+nom_col+`','`+rol+`','`+rol_idn+`','`+nom_eval+`','`+nom_inst+`','`+id_col+`','`+id_eval+`','`+id_inst+`')">Cancelar</span>
-						<span id="env`+id+`" style="display:none" class="btn btn-success ml20" onclick="acciones.enviar(`+id+`)">Confirmar</span>
+						<span id="env`+id+`" style="display:none" class="btn btn-danger ml20" onclick="acciones.enviar(`+id+`)">Confirmar</span>
 						</td>`);
 				},
 
@@ -118,7 +118,7 @@ var $error=$("#my_error"),
 							if(json['id']) {
 								$('#pro').dataTable().fnDestroy();
 								$('#tr'+json['id']).remove();
-								$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningna red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
+								$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
 							}
 						}).fail(function(json){
   						  console.log(json['responseText']);
@@ -160,7 +160,7 @@ var $error=$("#my_error"),
 									{% if Permisos.red_del  %}<span id="d`+id+`" style="cursor:pointer;color:#0bacd3" onclick="acciones.eliminar(`+id+`)"><i class="fa fa-trash ml20" title="Eliminar"></i></span>{% endif %}
 									<span id="del`+id+`" style="display:none" class="btn btn-danger ml20" onclick="acciones.confirmado(`+id+`)">Confirmar</span>
 									<span id="can`+id+`" style="display:none" class="btn btn-warning ml20" onclick="acciones.cancelar(`+id+`,'`+nom_col+`','`+rol+`','`+rol_idn+`','`+nom_eval+`','`+nom_inst+`','`+id_col+`','`+id_eval+`','`+id_inst+`')">Cancelar</span>
-									<span id="env`+id+`" style="display:none" class="btn btn-success ml20" onclick="acciones.enviar(`+id+`)">Confirmar</span>
+									<span id="env`+id+`" style="display:none" class="btn btn-danger ml20" onclick="acciones.enviar(`+id+`)">Confirmar</span>
 								</td>
 							`);
 						$('.select25').select2({placeholder: "Seleccione una opción" });
@@ -196,7 +196,7 @@ var $error=$("#my_error"),
 										  {% if Permisos.red_del  %}<span id="d`+json['id']+`" style="cursor:pointer;color:#0bacd3" onclick="acciones.eliminar(`+json['id']+`)"><i class="fa fa-trash ml20" title="Eliminar"></i></span>{% endif %}
 										  <span id="del`+json['id']+`" style="display:none" class="btn btn-danger ml20" onclick="acciones.confirmado(`+json['id']+`)">Confirmar</span>
 										  <span id="can`+json['id']+`" style="display:none" class="btn btn-warning ml20" onclick="acciones.cancelar(`+json['id']+`,'`+json['nom_col']+`','`+json['rol']+`','`+json['rol_idn']+`','`+json['nom_eval']+`','`+json['nom_inst']+`','`+json['id_col']+`','`+json['id_eval']+`','`+json['id_inst']+`')">Cancelar</span>
-										  <span id="env`+json['id']+`" style="display:none" class="btn btn-success ml20" onclick="acciones.enviar(`+json['id']+`)">Confirmar</span>
+										  <span id="env`+json['id']+`" style="display:none" class="btn btn-danger ml20" onclick="acciones.enviar(`+json['id']+`)">Confirmar</span>
 									  </td>
 								  `);
 
@@ -240,7 +240,7 @@ var $error=$("#my_error"),
 									  </td>
 								  </tr>
 								  `);
-								$table.dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
+								$table.dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});
 								$error_div.html('<b>Red creada correctamente</b>');
 								anuncio();
 						  } else {
@@ -280,7 +280,7 @@ var $error=$("#my_error"),
 {% endblock %}
 
 {% block scripts%}
-<script>var $table = $("#pro").dataTable({"bDestroy": true,"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ningún red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+<script>var $table = $("#pro").dataTable({"bDestroy": true,"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Roles",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna red.",sInfo:"Roles del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Roles del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Roles)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 <script type="text/javascript">

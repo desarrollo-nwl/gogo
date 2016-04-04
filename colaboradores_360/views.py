@@ -483,7 +483,7 @@ def colaboradoreliminar_360(request,id_colaborador):
 @login_required(login_url='/acceder/')
 def roles_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_see:
@@ -499,7 +499,7 @@ def roles_360(request):
 @login_required(login_url='/acceder/')
 def rolnuevo_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_add:
@@ -517,7 +517,7 @@ def rolnuevo_360(request):
 @login_required(login_url='/acceder/')
 def roleditar_360(request,id_rol):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_edit:
@@ -535,7 +535,7 @@ def roleditar_360(request,id_rol):
 @login_required(login_url='/acceder/')
 def roleliminar_360(request,id_rol):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_del:

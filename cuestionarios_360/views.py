@@ -581,7 +581,7 @@ def preguntaeditar_360(request,id_pregunta):
 						R = Respuestas_360.objects.create( texto = respuesta, pregunta = pregunta )
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Editó la pregunta',descripcion=pregunta.texto)
-			cache.set(request.user.username,proyecto,86400)
+
 			return HttpResponseRedirect( ''.join(['/360/variable/',str(variable.id),'/preguntas/']) )
 		return render_to_response('pregunta.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,

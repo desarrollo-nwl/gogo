@@ -97,7 +97,7 @@ string ver_redes(string id_proyecto, bool editar, bool borrar) {
 
 		output += "<span id='del"+id+"' style='display:none' class='btn btn-danger ml20' onclick=\"acciones.confirmado("+id+")\">Confirmar</span>";
 		output += "<span id='can"+id+"' style='display:none' class='btn btn-warning ml20' onclick=\"acciones.cancelar("+id+",'"+nombre+" "+apellido+"','"+rol+"','"+R[i]["rol_idn"].as<string>()+"','"+nom_eval+" "+ape_eval+"','"+nom_inst+"','"+R[i]["colaborador_id"].as<string>()+"','"+R[i]["evaluado_id"].as<string>()+"','"+R[i]["instrumento_id"].as<string>()+"')\">Cancelar</span>";
-		output += "<span id='env"+id+"' style='display:none' class='btn btn-success ml20' onclick=\"acciones.enviar("+id+")\">Confirmar</span></td></tr>";
+		output += "<span id='env"+id+"' style='display:none' class='btn btn-warning ml20' onclick=\"acciones.enviar("+id+")\">Confirmar</span></td></tr>";
 	}
 
 	return output;

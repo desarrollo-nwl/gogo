@@ -18,6 +18,7 @@ from usuarios.models import Proyectos, Logs
 import json
 import random
 import redes as redes_cpp
+import xlrd,xlwt
 
 #===============================================================================
 # indices
@@ -27,16 +28,10 @@ import redes as redes_cpp
 @login_required(login_url='/acceder/')
 def redes_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.red_see:
-
-		redes = Redes_360.objects.only(
-				'colaborador__nombre','colaborador__apellido','rol_idn','rol',
-				'evaluado__nombre','evaluado__apellido','instrumento__nombre'
-				).filter(proyecto_id = proyecto.id
-				).select_related('colaborador','instrumento','evaluado')
 
 		roles = Roles_360.objects.filter(proyecto_id=proyecto.id)
 
@@ -60,7 +55,7 @@ def redes_360(request):
 @login_required(login_url='/acceder/')
 def rednueva_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.red_add:
@@ -121,6 +116,12 @@ def rednueva_360(request):
 									pre_aresponder = F('pre_aresponder')+instrumento.max_preguntas,
 									tot_avance = total,
 									)
+							total = 100 * proyecto.tot_respuestas/(proyecto.tot_aresponder+instrumento.max_preguntas)
+							Proyectos.objects.filter(id=proyecto.id).update(
+								tot_aresponder = F('tot_aresponder')+instrumento.max_preguntas,
+								total = total,
+								)
+							cache.set(request.user.username,proyecto,86400)
 
 				red = Redes_360.objects.only(
 						'colaborador_id','evaluado_id','instrumento_id',
@@ -149,7 +150,7 @@ def rednueva_360(request):
 @login_required(login_url='/acceder/')
 def reditar_360(request,id_red):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 
@@ -206,7 +207,7 @@ def reditar_360(request,id_red):
 									pre_respuestas = F('pre_respuestas') - pre_respuestas_red,
 									tot_avance = total,
 									)
-							print "restado"
+
 							ColaboradoresMetricas_360.objects.filter(id_id = colaborador_old.id
 								).update(
 									ord_instrumentos = ord_instrumentos,
@@ -227,7 +228,6 @@ def reditar_360(request,id_red):
 										pre_aresponder = F('pre_aresponder')+instrumento.max_preguntas,
 										tot_avance = total,
 										)
-								print "Sumado"
 
 						Streaming_360.objects.filter(red_id=id_red).delete()
 
@@ -303,7 +303,7 @@ def reditar_360(request,id_red):
 @login_required(login_url='/acceder/')
 def redeliminar_360(request,id_red):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.red_add:
@@ -343,6 +343,20 @@ def redeliminar_360(request,id_red):
 						pre_respuestas = F('pre_respuestas') - pre_respuestas_red,
 						tot_avance = total,
 						)
+				total = 0
+				if proyecto.tot_aresponder - num_preguntas != 0:
+					total = 100 * proyecto.tot_respuestas/(proyecto.tot_aresponder - num_preguntas )
+
+				proyecto.tot_aresponder -=  num_preguntas
+				proyecto.tot_respuestas -= pre_respuestas_red
+				proyecto.tot_avance = total
+
+				Proyectos.objects.filter(id=proyecto.id
+					).update(
+						tot_aresponder = proyecto.tot_aresponder,
+						tot_respuestas = proyecto.tot_respuestas,
+						total = proyecto.total,
+						)
 				ColaboradoresMetricas_360.objects.filter(id_id = colaborador.id
 					).update(
 						ord_instrumentos = ord_instrumentos,
@@ -350,9 +364,216 @@ def redeliminar_360(request,id_red):
 						)
 				Redes_360.objects.filter(id=id_red).delete()
 
+			cache.set(request.user.username,proyecto,86400)
 			return JsonResponse({'id':id_red})
 		else:
 			return JsonResponse({'id':0})
 
+	else:
+		return render_to_response('403.html')
+
+
+
+# ==============================================================================
+#    Archivo excel
+# ==============================================================================
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def redes_archivo_generar(request):
+	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.red_add:
+		response = HttpResponse(content_type='application/ms-excel')
+		import string
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet(proyecto.nombre)
+		datos = proyecto.proyectosdatos
+		ws.write(0,0,u"Nombre del evaluador",tit_format)
+		ws.write(0,1,u"Apellido del evalador",tit_format)
+		ws.write(0,2,u"Rol",tit_format)
+		ws.write(0,3,u"Nombre del evaluado",tit_format)
+		ws.write(0,4,u"Apellido del evaluado",tit_format)
+		ws.write(0,5,u"Instrumento",tit_format)
+		wb.save(response)
+		return response
+
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def redes_xls_360(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
+		return render_to_response('423.html')
+	proyecto = Proyectos.objects.get(id=proyecto.id)
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.col_add:
+
+		if request.method == 'POST':
+
+			input_excel = request.FILES['docfile']
+			doc = xlrd.open_workbook(file_contents=input_excel.read())
+			sheet = doc.sheet_by_index(0)
+			filas = sheet.nrows
+
+			personas = {}
+			instrumentos = {}
+			roles = {}
+			colaborador_str = None
+			evaluado_str = ""
+
+			verifica = []
+
+			personas_404 = []
+			roles_404 = []
+			instrumentos_404 = []
+			redes_500 = []
+
+			with transaction.atomic():
+				for i in xrange(1,filas):
+					vect_st_360 = []
+					preguntas_contador = 0
+					colaborador_str = " ".join([sheet.cell_value(i,0), sheet.cell_value(i,1)])
+					evaluado_str = " ".join([sheet.cell_value(i,3), sheet.cell_value(i,4)])
+					if not (colaborador_str,evaluado_str) in verifica:
+						verifica.append((colaborador_str,evaluado_str))
+
+						try:
+							colaborador = personas[colaborador_str]
+						except:
+							colaborador = Colaboradores_360.objects.filter(
+								proyecto_id = proyecto.id,
+								nombre = sheet.cell_value(i,0),
+								apellido =  sheet.cell_value(i,1),
+								).select_related('colaboradoresmetricas_360').first()
+							if colaborador:
+								personas[colaborador_str] = colaborador
+
+						if colaborador:
+							try:
+								rol = roles[sheet.cell_value(i,2)]
+							except:
+								rol = Roles_360.objects.filter(
+									proyecto_id = proyecto.id,
+									nombre = sheet.cell_value(i,2),
+									).first()
+								if rol:
+									roles[rol.nombre] = rol
+
+							if rol:
+								try:
+									evaluado = personas[evaluado_str]
+								except:
+									evaluado = Colaboradores_360.objects.filter(
+										proyecto_id = proyecto.id,
+										nombre = sheet.cell_value(i,3),
+										apellido =  sheet.cell_value(i,4),
+										).first()
+									if evaluado:
+										personas[evaluado_str] = evaluado
+
+								if evaluado:
+									try:
+										instrumento = instrumentos[sheet.cell_value(i,5)]
+									except:
+										instrumento = Instrumentos_360.objects.filter(
+											proyecto_id = proyecto.id,
+											nombre = sheet.cell_value(i,5),
+											).first()
+										if instrumento:
+											instrumentos[instrumento.nombre] = instrumento
+
+									if instrumento:
+										if not Redes_360.objects.filter(
+													proyecto_id = proyecto.id,
+													colaborador_id = colaborador.id,
+													evaluado_id = evaluado.id).exists():
+
+											red = Redes_360.objects.create(
+												colaborador_id = colaborador.id,
+												evaluado_id = evaluado.id,
+												instrumento_id = instrumento.id,
+												rol_idn = rol.id,
+												rol = rol.nombre,
+												proyecto_id=proyecto.id)
+
+											col_met = colaborador.colaboradoresmetricas_360
+											ord_instrumentos = json.loads( col_met.ord_instrumentos )
+											ord_instrumentos.append( red.id )
+											ord_instrumentos = json.dumps( ord_instrumentos )
+											ColaboradoresMetricas_360.objects.filter(id=col_met.id
+														).update( ord_instrumentos = ord_instrumentos )
+											colaborador.colaboradoresmetricas_360.ord_instrumentos = ord_instrumentos
+
+											preguntas = Preguntas_360.objects.filter(
+															proyecto_id = proyecto.id,
+															instrumento_id = red.instrumento_id)
+
+											for i in preguntas:
+												vect_st_360.append( Streaming_360(
+														colaborador_id = red.colaborador_id,
+														evaluado_id = red.evaluado_id,
+														rol = red.rol,
+														instrumento_id =  red.instrumento_id,
+														pregunta_id = i.id,
+														proyecto_id = proyecto.id,
+														red_id = red.id	) )
+												preguntas_contador += 1
+											if colaborador.pre_aresponder:
+												total = 100 * colaborador.pre_respuestas/(colaborador.pre_aresponder+preguntas_contador)
+											else:
+												total = 0
+											Colaboradores_360.objects.filter(id=colaborador.id).update(
+												pre_aresponder = F('pre_aresponder') + preguntas_contador,
+												tot_avance = total)
+											colaborador.pre_aresponder += preguntas_contador
+											colaborador.tot_avance = total
+
+										else:
+											redes_500.append(" ".join([
+															colaborador_str,
+															sheet.cell_value(i,2),
+															evaluado_str,
+															sheet.cell_value(i,5)]))
+									else:
+										instrumentos_404.append(sheet.cell_value(i,5))
+								else:
+									personas_404.append(evaluado_str)
+							else:
+								roles_404.append(sheet.cell_value(i,2))
+						else:
+							personas_404.append(colaborador_str)
+					else:
+						redes_500.append(" ".join([
+										colaborador_str,
+										sheet.cell_value(i,2),
+										evaluado_str,
+										sheet.cell_value(i,5)]))
+
+					if vect_st_360:
+						Streaming_360.objects.bulk_create(vect_st_360)
+						proyecto.tot_aresponder += preguntas_contador
+
+				Proyectos.objects.filter(id=proyecto.id).update(
+							tot_aresponder = proyecto.tot_aresponder)
+				cache.set(request.user.username,proyecto,86400)
+				if any([personas_404,roles_404,instrumentos_404,redes_500]):
+					return render_to_response('redes_xls_360.html',{
+						'Activar':'Contenido','activar':'AcrhivoPlano',
+						'Proyecto':proyecto,'Permisos':permisos,'Personas':personas_404,
+						'Roles':roles_404,'Instrumentos':instrumentos_404,'Redes':redes_500
+						}, context_instance=RequestContext(request))
+			return HttpResponseRedirect('/360/redes/')
+
+		return render_to_response('redes_xls_360.html',{
+		'Activar':'Contenido','activar':'AcrhivoPlano',
+		'Proyecto':proyecto,'Permisos':permisos,
+		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')

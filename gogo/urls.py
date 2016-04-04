@@ -169,6 +169,8 @@ urlpatterns += patterns('redes_360.views',
 	url(r'^360/red/editar/(?P<id_red>[0-9]{1,10})/$', 'reditar_360'),
 	url(r'^360/red/eliminar/(?P<id_red>[0-9]{1,10})/$', 'redeliminar_360'),
 	url(r'^360/red/nueva/$', 'rednueva_360'),
+	url(r'^360/redes/archivo/$', 'redes_xls_360'),
+	url(r'^360/redes/archivo/generar/$', 'redes_archivo_generar'),
 )
 
 #===============================================================================
