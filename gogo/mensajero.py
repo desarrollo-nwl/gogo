@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-import os,django
+import os,django,time
 import sys
 sys.path.append('/home/ubuntu/gogo/')
 sys.path.append('/home/ubuntu/gogo/gogo/')
@@ -64,6 +64,7 @@ def sendmail(stream_i,stream,tiempo,indice):
 			server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 			# print 'Enviado.'
 			stream_i.fec_controlenvio = tiempo
+			time.sleep(.036)
 
 		return stream
 	except:
@@ -71,7 +72,7 @@ def sendmail(stream_i,stream,tiempo,indice):
 
 def enviar():
 	#solo postgresql soporta el distinct() de django
-	tiempo = datetime.datetime.now()
+	tiempo = timezone.now()
 	stream = Streaming.objects.select_related('colaborador__colaboradoresdatos',
 			'proyecto__proyectosdatos').filter(
 			fecharespuesta__isnull=True,proyecto__activo =True,
