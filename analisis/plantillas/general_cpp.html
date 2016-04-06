@@ -1127,6 +1127,7 @@ grafica_tres:  function(finicio, ffin){
 verifica_uno: function(){
 
 	try {
+		if (Datos.length > 0){
 			{{#PDATOS_OPCIONAL1}} $op1_g1.val().length{{/PDATOS_OPCIONAL1}}
 			{{#PDATOS_OPCIONAL2}} $op2_g1.val().length{{/PDATOS_OPCIONAL2}}
 			{{#PDATOS_OPCIONAL3}} $op3_g1.val().length{{/PDATOS_OPCIONAL3}}
@@ -1138,6 +1139,10 @@ verifica_uno: function(){
 			$are_g1.val().length
 			$car_g1.val().length
 			google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+		} else {
+			$("#grafica_uno_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_uno_div").html('');
+		}
 		}
 		catch(e){
 			$("#grafica_uno_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');

@@ -90,9 +90,15 @@ def participacion(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-		human = humanize(ProyectosDatos.objects.only('ffin').filter(id=proyecto.id)[0].ffin)
-		cadena = analisis_cpp.participacion(str(proyecto.id),str(request.user.id),human )
-		return HttpResponse(cadena)
+		if proyecto.iniciable:
+			human = humanize(ProyectosDatos.objects.only('ffin').filter(id=proyecto.id)[0].ffin)
+			cadena = analisis_cpp.participacion(str(proyecto.id),str(request.user.id),human )
+			return HttpResponse(cadena)
+		else:
+			return render_to_response('sindatos.html',{
+				'Activar':'AnalisisResultados','activar':'Participacion','Localizacion':'Participación',
+				'Proyecto':proyecto,'Permisos':permisos
+			}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
 
@@ -105,8 +111,14 @@ def general(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-		cadena = analisis_cpp.general(str(proyecto.id),str(request.user.id) )
-		return HttpResponse(cadena)
+		if proyecto.iniciable:
+			cadena = analisis_cpp.general(str(proyecto.id),str(request.user.id) )
+			return HttpResponse(cadena)
+		else:
+			return render_to_response('sindatos.html',{
+				'Activar':'AnalisisResultados','activar':'General','Localizacion':'General',
+				'Proyecto':proyecto,'Permisos':permisos
+			}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
 
@@ -119,99 +131,51 @@ def focalizado(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.res_see:
-		variables = Variables.objects.filter(proyecto_id=proyecto.id)
-		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
-		# datos = Streaming.objects.only(
-		# 		'respuesta','fecharespuesta',
-		# 		'pregunta__texto',
-		# 		'pregunta__numerica',
-		# 		'pregunta__multiple',
-		# 		'pregunta__abierta',
-		# 		'pregunta__variable__nombre',
-		# 		'proyecto__proyectosdatos__opcional1',
-		# 		'proyecto__proyectosdatos__opcional2',
-		# 		'proyecto__proyectosdatos__opcional3',
-		# 		'proyecto__proyectosdatos__opcional4',
-		# 		'proyecto__proyectosdatos__opcional5',
-		# 		'colaborador__colaboradoresdatos__regional',
-		# 		'colaborador__colaboradoresdatos__ciudad',
-		# 		'colaborador__colaboradoresdatos__area',
-		# 		'colaborador__colaboradoresdatos__cargo',
-		# 		'colaborador__colaboradoresdatos__niv_academico',
-		# 		'colaborador__colaboradoresdatos__profesion',
-		# 		'colaborador__colaboradoresdatos__opcional1',
-		# 		'colaborador__colaboradoresdatos__opcional2',
-		# 		'colaborador__colaboradoresdatos__opcional3',
-		# 		'colaborador__colaboradoresdatos__opcional4',
-		# 		'colaborador__colaboradoresdatos__opcional5'
-		# 		).filter(
-		# 			proyecto_id=proyecto.id,
-		# 			pregunta__abierta=False,
-		# 			respuesta__isnull=False
-		# 		).select_related(
-		# 			'proyecto__proyectosdatos',
-		# 			'pregunta','pregunta__variable',
-		# 			'colaborador','colaborador__colaboradoresdatos'
-		# 		).order_by('fecharespuesta')
-		datos = focal.query(str(proyecto.id))
-		return render_to_response('focalizado.html',{
-			'Activar':'AnalisisResultados','activar':'Focalizados','PDatos':pdatos,
-			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
-		}, context_instance=RequestContext(request))
-	else:
-		return render_to_response('403.html')
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def general2(request):
-	proyecto = cache.get(request.user.username)
-	pdatos = proyecto.proyectosdatos
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
-		return render_to_response('423.html')
-	permisos = request.user.permisos
-	if permisos.res_see:
-		variables = Variables.objects.filter(proyecto_id=proyecto.id)
-		preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
-		# datos = Streaming.objects.only(
-		# 			'respuesta','fecharespuesta',
-		# 			'pregunta__texto',
-		# 			'pregunta__numerica',
-		# 			'pregunta__multiple',
-		# 			'pregunta__abierta',
-		# 			'pregunta__variable__nombre',
-		# 			'proyecto__proyectosdatos__opcional1',
-		# 			'proyecto__proyectosdatos__opcional2',
-		# 			'proyecto__proyectosdatos__opcional3',
-		# 			'proyecto__proyectosdatos__opcional4',
-		# 			'proyecto__proyectosdatos__opcional5',
-		# 			'colaborador__nombre',
-		# 			'colaborador__apellido',
-		# 			'colaborador__colaboradoresdatos__regional',
-		# 			'colaborador__colaboradoresdatos__ciudad',
-		# 			'colaborador__colaboradoresdatos__area',
-		# 			'colaborador__colaboradoresdatos__cargo',
-		# 			'colaborador__colaboradoresdatos__niv_academico',
-		# 			'colaborador__colaboradoresdatos__profesion',
-		# 			'colaborador__colaboradoresdatos__opcional1',
-		# 			'colaborador__colaboradoresdatos__opcional2',
-		# 			'colaborador__colaboradoresdatos__opcional3',
-		# 			'colaborador__colaboradoresdatos__opcional4',
-		# 			'colaborador__colaboradoresdatos__opcional5'
-		# 		).filter(
-		# 			proyecto_id=proyecto.id,
-		# 			pregunta__abierta=False,
-		# 			respuesta__isnull=False
-		# 		).select_related(
-		# 			'proyecto__proyectosdatos',
-		# 			'pregunta','pregunta__variable',
-		# 			'colaborador','colaborador__colaboradoresdatos'
-		# 		).order_by('fecharespuesta')
-		datos = gener.query(str(proyecto.id))
-		return render_to_response('general.html',{
-			'Activar':'AnalisisResultados','activar':'General','PDatos':pdatos,
-			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
-		}, context_instance=RequestContext(request))
+		if proyecto.iniciable:
+			variables = Variables.objects.filter(proyecto_id=proyecto.id)
+			preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
+			# datos = Streaming.objects.only(
+			# 		'respuesta','fecharespuesta',
+			# 		'pregunta__texto',
+			# 		'pregunta__numerica',
+			# 		'pregunta__multiple',
+			# 		'pregunta__abierta',
+			# 		'pregunta__variable__nombre',
+			# 		'proyecto__proyectosdatos__opcional1',
+			# 		'proyecto__proyectosdatos__opcional2',
+			# 		'proyecto__proyectosdatos__opcional3',
+			# 		'proyecto__proyectosdatos__opcional4',
+			# 		'proyecto__proyectosdatos__opcional5',
+			# 		'colaborador__colaboradoresdatos__regional',
+			# 		'colaborador__colaboradoresdatos__ciudad',
+			# 		'colaborador__colaboradoresdatos__area',
+			# 		'colaborador__colaboradoresdatos__cargo',
+			# 		'colaborador__colaboradoresdatos__niv_academico',
+			# 		'colaborador__colaboradoresdatos__profesion',
+			# 		'colaborador__colaboradoresdatos__opcional1',
+			# 		'colaborador__colaboradoresdatos__opcional2',
+			# 		'colaborador__colaboradoresdatos__opcional3',
+			# 		'colaborador__colaboradoresdatos__opcional4',
+			# 		'colaborador__colaboradoresdatos__opcional5'
+			# 		).filter(
+			# 			proyecto_id=proyecto.id,
+			# 			pregunta__abierta=False,
+			# 			respuesta__isnull=False
+			# 		).select_related(
+			# 			'proyecto__proyectosdatos',
+			# 			'pregunta','pregunta__variable',
+			# 			'colaborador','colaborador__colaboradoresdatos'
+			# 		).order_by('fecharespuesta')
+			datos = focal.query(str(proyecto.id))
+			return render_to_response('focalizado.html',{
+				'Activar':'AnalisisResultados','activar':'Focalizados','PDatos':pdatos,
+				'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
+			}, context_instance=RequestContext(request))
+		else:
+			return render_to_response('sindatos.html',{
+				'Activar':'AnalisisResultados','activar':'Focalizado','Localizacion':'Focalizado',
+				'Proyecto':proyecto,'Permisos':permisos
+			}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
 
