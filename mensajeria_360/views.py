@@ -1,70 +1,86 @@
 # -*- encoding: utf-8 -*-
-from colaboradores.models import Colaboradores,ColaboradoresMetricas,ColaboradoresDatos
-from cuestionarios.models import Variables,Preguntas
-from datetime import datetime as DT
+from colaboradores_360.models import Colaboradores_360, ColaboradoresMetricas_360,ColaboradoresDatos_360
+from cuestionarios_360.models import Variables_360,Preguntas_360
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import transaction
+from django.db.models import F
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.cache import cache_control
-from mensajeria.models import *
+from mensajeria_360.models import *
 from usuarios.models import *
 
 from django.db.models import Avg
+from datetime import datetime as DT
 from datetime import timedelta,date
 from django.utils import timezone
-import datetime
-import random
-import json
+import random, ujson
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
 import smtplib
 
-from django.db.models import Max
 #===============================================================================
 # Administrar el envio
 #===============================================================================
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def gosurvey(request):
+def gosurvey_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	proyecto = Proyectos.objects.get(id=proyecto.id)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	datos = proyecto.proyectosdatos
 	if permisos.consultor:
 		if request.method == 'POST':
-			if permisos.act_surveys:
-				try:
-					comprobar = request.POST['iniciable']
-					if(permisos.max_proyectos - permisos.max_pro_usados >= 1):
-						permisos.max_pro_usados += 1
-						proyecto.iniciable = True
-						with transaction.atomic():
+			with transaction.atomic():
+				if permisos.act_surveys:
+					try:
+						comprobar = request.POST['iniciable']
+						if(permisos.max_proyectos - permisos.max_pro_usados >= 1):
+							permisos.max_pro_usados += 1
+							proyecto.iniciable = True
 							permisos.save()
 							proyecto.save()
 							nom_log = request.user.first_name+' '+request.user.last_name
 							Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Activó el proyecto',descripcion=proyecto.nombre)
 							cache.set(request.user.username,proyecto,86400)
 
-					else:
-						return render_to_response('gosurvey.html',{
-						'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,
-						'Permisos':permisos,'Error':'Ha excedido el cupo de activaciones. No se pudo completar la solicitud'
-						}, context_instance=RequestContext(request))
-				except:
-					pass
-			try:
+						else:
+							return render_to_response('gosurvey.html',{
+							'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,
+							'Permisos':permisos,'Error':'Ha excedido el cupo de activaciones. No se pudo completar la solicitud'
+							}, context_instance=RequestContext(request))
+					except:
+						pass
+				# try:
 				comprobar = request.POST['activo']
 				streaming_crear =[]
-				if proyecto.interna:
-					if proyecto.tipo != "Completa":
+				adicionales = 0
+
+				if not request.is_ajax():
+					if proyecto.activo :
+						proyecto.activo = False
+					else:
+						proyecto.activo = True
+
+					if not proyecto.activo:
+						proyecto.save()
+						datos.save()
+						cache.set(request.user.username,proyecto,86400)
+
+				if request.is_ajax():
+
+					datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
+					datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
+
+					if proyecto.tipo != "360 unico":
 						if(float(request.POST['dMin']) < float(request.POST['dMax'])):
 							dMax = float(request.POST['dMax'])
 							dMin = float(request.POST['dMin'])
@@ -78,39 +94,123 @@ def gosurvey(request):
 						proyecto.prudenciamin = dMin
 						proyecto.prudenciamax = dMax
 						proyecto.can_envio = request.POST['can_envio']
+
+						if proyecto.ciclico:
+							proyecto.ciclos = request.POST['ciclos']
 					else:
 						proyecto.prudenciamin = 1
 						proyecto.prudenciamax = 2
-					if proyecto.activo:
-						colaboradores = Colaboradores.objects.filter(proyecto=proyecto)
-						variables = proyecto.variables_set.all()
-						preguntas = Preguntas.objects.filter(variable__in=variables)
+						proyecto.ciclos = 1
+
+					instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id ).first()
+
+					if proyecto.tipo == "360 unico" and instrumento:
+						red = Redes_360.objects.only('id','evaluado_id').filter(proyecto_id = proyecto.id)[0]
+						colaboradores = Colaboradores_360.objects.only('id').filter( proyecto_id = proyecto.id )
+						preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
+
 						for i in colaboradores:
 							for j in preguntas:
-								if not Streaming.objects.filter(proyecto=proyecto,colaborador=i,pregunta=j).exists():
-									streaming_crear.append(Streaming(proyecto=proyecto,colaborador=i,pregunta=j))
-									proyecto.tot_aresponder += 1
-					if proyecto.tot_aresponder:
-						proyecto.total = 100*(proyecto.tot_respuestas)/proyecto.tot_aresponder
-				try:
-					datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
-					datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
-				except:
-					pass
-				if(proyecto.activo):
-					proyecto.activo = False
-				else:
-					proyecto.activo = True
-				with transaction.atomic():
-					if streaming_crear:
-						Streaming.objects.bulk_create(streaming_crear)
+								if not Streaming_360.objects.filter(proyecto_id=proyecto.id,
+									colaborador_id = i.id,
+									evaluado_id = red.evaluado_id,
+									pregunta_id=j.id).exists():
+									streaming_crear.append(Streaming_360(
+														proyecto_id=proyecto.id,
+														instrumento_id=instrumento.id,
+														colaborador_id=i.id,
+														evaluado_id = red.evaluado_id,
+														red_id = red.id,
+														rol = "evaluador",
+														pregunta_id=j.id))
+
+
+
+							aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=i.id).count()
+							print aresponder
+							if aresponder:
+								respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=i.id,respuesta__isnull=False).count()
+								Colaboradores_360.objects.filter( id = i.id ).update(
+									pre_respuestas = 0,
+									pre_aresponder = aresponder,
+									tot_avance= 100*respuestas/aresponder,
+								)
+							else:
+								Colaboradores_360.objects.filter( id = i.id ).update(
+									pre_respuestas = 0,
+									pre_aresponder = 0,
+									tot_avance= 0,
+								)
+
+					elif proyecto.tipo == "360 redes":
+						redes = Redes_360.objects.filter(proyecto_id = proyecto.id)
+
+						for red in redes:
+							local = False
+							preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=red.instrumento_id)
+							for j in preguntas:
+								if not Streaming_360.objects.filter(proyecto_id=proyecto.id,
+									colaborador_id=red.colaborador_id,
+									evaluado_id = red.evaluado_id,
+									pregunta_id=j.id).exists():
+									streaming_crear.append(Streaming_360(
+														proyecto_id=proyecto.id,
+														instrumento_id=red.instrumento_id,
+														colaborador_id=red.colaborador_id,
+														evaluado_id = red.evaluado_id,
+														red_id = red.id,
+														rol = red.rol,
+														pregunta_id=j.id))
+									local = True
+									adicionales += 1
+
+
+							aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id).count()
+							if aresponder:
+								respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id,respuesta__isnull=False).count()
+								Colaboradores_360.objects.filter(id = red.colaborador_id
+								).update(
+									pre_respuestas = respuestas,
+									pre_aresponder = aresponder,
+									tot_avance= 100*respuestas/aresponder,
+								)
+								print aresponder
+							else:
+								Colaboradores_360.objects.filter(id = red.colaborador_id
+								).update(
+									pre_respuestas = 0,
+									pre_aresponder = 0,
+									tot_avance= 0,
+								)
+
+
+					gran_total = Streaming_360.objects.filter(proyecto_id = proyecto.id).count()
+					if gran_total:
+						contestadas = Streaming_360.objects.filter(proyecto_id = proyecto.id,respuesta__isnull = False).count()
+						proyecto.tot_respuestas = contestadas
+						proyecto.tot_aresponder = gran_total
+						proyecto.total = 100.0*contestadas/gran_total
+					else:
+						proyecto.tot_respuestas = 0
+						proyecto.tot_aresponder = 0
+						proyecto.total = 0
+
+
+					if adicionales:
+						Streaming_360.objects.bulk_create(streaming_crear)
+						proyecto.tot_aresponder += adicionales
 					proyecto.save()
 					datos.save()
 					cache.set(request.user.username,proyecto,86400)
-			except:
-				pass
-		return render_to_response('gosurvey.html',{
-		'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
+
+
+				return HttpResponse(ujson.dumps({'estado':1}),content_type="aplication/json")
+
+			# except:
+			# 	pass
+
+		return render_to_response('gosurvey_360.html',{
+		'Activar':'Contenido','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -118,69 +218,25 @@ def gosurvey(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def detalladas(request):
+def metricas_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
-		return render_to_response('423.html')
-	permisos = request.user.permisos
-	if permisos.consultor and permisos.res_exp and proyecto.interna:
-		respuestas = Streaming.objects.filter(proyecto_id = proyecto.id,respuesta__isnull=False,
-						).select_related('colaborador','pregunta__variable')
-
-	elif permisos.consultor and permisos.res_exp and (not proyecto.interna):
-		respuestas = Externa.objects.filter(proyecto = proyecto).select_related('pregunta__variable')
-	else:
-		return render_to_response('403.html')
-
-	return render_to_response('detalladas.html',{
-	'Activar':'EstadoAvance','activar':'RespuestasDetalladas','Proyecto':proyecto,'Permisos':permisos,
-	'Participantes':respuestas
-	},	context_instance=RequestContext(request))
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def metricas(request):
-	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.interna:
-		participantes = Colaboradores.objects.only('respuestas','enviados','propension',
-						'reenviados','nombre','apellido','colaboradoresdatos__area','estado'
+
+		participantes = Colaboradores_360.objects.only('puntaje','respuestas','enviados','propension',
+						'reenviados','nombre','apellido','colaboradoresdatos_360__area','estado','descripcion'
 						).filter(proyecto = proyecto, estado = True
-						).select_related('colaboradoresdatos')
-		average = Colaboradores.objects.filter(proyecto=proyecto).exclude(propension=-1).aggregate(Avg('propension'))
-		return render_to_response('metricas.html',{
+						).select_related('colaboradoresdatos_360')
+
+		average = Colaboradores_360.objects.filter(proyecto=proyecto).exclude(propension__lte=0,).aggregate(Avg('propension'))
+
+		return render_to_response('metricas_360.html',{
 		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
 		'Participantes':participantes,'Average':average
 		},	context_instance=RequestContext(request))
-	elif permisos.consultor and not proyecto.interna:
-		metricas = MetricasExterna.objects.filter(proyecto = proyecto)
-		average = MetricasExterna.objects.filter(proyecto=proyecto).aggregate(Avg('encuestados'))
-		return render_to_response('metricas.html',{
-		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
-		'Metricas':metricas,'Average':average
-		},	context_instance=RequestContext(request))
-	else:
-		return render_to_response('404.html')
 
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def colaboradoractivarmensajeria(request,id_colaborador):
-	proyecto = cache.get(request.user.username)
-	if not proyecto:
-		return render_to_response('423.html')
-	permisos = request.user.permisos
-	if permisos.consultor and permisos.col_edit:
-		try:participante = Colaboradores.objects.only('estado').filter(proyecto=proyecto).get(id=int(id_colaborador))
-		except:return render_to_response('403.html')
-		if(participante.estado):
-			participante.estado = False
-		else:
-			participante.estado = True
-		participante.save()
-		return HttpResponseRedirect('/respuestas/metricas')
 	else:
 		return render_to_response('403.html')
 
@@ -189,7 +245,7 @@ def colaboradoractivarmensajeria(request,id_colaborador):
 @login_required(login_url='/acceder/')
 def colaboradoreenviar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.activo:
@@ -273,7 +329,7 @@ def encuesta(request,id_proyecto,key):
 						'pregunta__variable__posicion'
 					)
 		proyecto = encuestado.proyecto
-		tiempo = datetime.date.today()
+		tiempo = DT.date.today()
 		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto)
 		total_cuestionario = len(stream)
 	except:
@@ -298,14 +354,14 @@ def encuesta(request,id_proyecto,key):
 		encuestado.respuestas += 1
 		proyecto.total = 100*(1.0*proyecto.tot_respuestas/proyecto.tot_aresponder)
 		metricas = encuestado.colaboradoresmetricas
-		vec_metricas = json.loads(metricas.propension)
+		vec_metricas = ujson.loads(metricas.propension)
 		try:
 			vec_metricas.append((timezone.now()-stream[0].fec_controlenvio).seconds/3600.0)
-			metricas.propension = json.dumps(vec_metricas)
+			metricas.propension = ujson.dumps(vec_metricas)
 		except:
 			vec_metricas.append(proyecto.prudenciamin)
 		encuestado.propension = sum(vec_metricas)/len(vec_metricas)
-		metricas.propension = json.dumps(vec_metricas)
+		metricas.propension = ujson.dumps(vec_metricas)
 		with transaction.atomic():
 			metricas.save()
 			proyecto.save()
@@ -315,7 +371,7 @@ def encuesta(request,id_proyecto,key):
 				if i.pregunta.abierta:
 					i.respuesta = request.POST[str(i.pregunta.id)]
 				elif i.pregunta.multiple:
-					r = json.dumps(request.POST.getlist(str(i.pregunta.id)))
+					r = ujson.dumps(request.POST.getlist(str(i.pregunta.id)))
 					if not r:
 						i.respuesta = 'Ninguna seleccionada'
 					else:
@@ -392,170 +448,29 @@ def encuesta(request,id_proyecto,key):
 
 
 @cache_control(no_store=True)
-def encuestaexterna(request,id_proyecto,key):
-	try:
-		tiempo = datetime.date.today()
-		proyecto = Proyectos.objects.select_related('proyectosdatos').filter(id=id_proyecto).get(key=key)
-		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto)
-		if not proyecto.activo:
-			return render_to_response('403.html')
-		variables = Variables.objects.filter(proyecto = proyecto)
-		preguntas = Preguntas.objects.prefetch_related('respuestas_set'
-			).select_related('variable').filter(variable__in = variables,estado = True
-			).order_by('variable__posicion')
-		len_cuestionario = len(preguntas)
-	except:
-		return render_to_response('404.html')
-
-	if not len_cuestionario:
-		return render_to_response('403.html')
-
-	if request.method == 'POST':
-		proyecto.tot_respuestas += len_cuestionario
-		if proyecto.tot_preguntas:
-			proyecto.total = proyecto.tot_respuestas / proyecto.tot_preguntas
-		else:
-			proyecto.total = 0
-
-		x = timezone.now()
-		hoy = date(year=x.year,month=x.month,day=x.day)
-		ayer = hoy - timedelta(1)
-		try:
-			metrica = MetricasExterna.objects.filter(proyecto=proyecto).get(fecha=hoy)
-			metrica.encuestados += 1
-			try:
-				metricas_ayer = MetricasExterna.objects.filter(proyecto=proyecto).get(fecha=ayer)
-				if metrica.acumulado:
-					metrica.acumulado += 1
-				else:
-					metrica.acumulado = 1 + metricas_ayer.acumulado
-			except:
-				if metrica.acumulado:
-					metrica.acumulado += 1
-				else:
-					metrica.acumulado = 1
-		except:
-			metrica = MetricasExterna(proyecto=proyecto,fecha=hoy,encuestados=1)
-			try:
-				metricas_ayer = MetricasExterna.objects.filter(proyecto=proyecto).get(fecha=ayer)
-				metrica.acumulado = 1 + metricas_ayer.acumulado
-			except:
-				metrica.acumulado = 1
-
-		colaborador = metrica.acumulado
-		streaming = []
-		for i in preguntas:
-			if i.abierta:
-				respuesta = request.POST[str(i.id)]
-			elif i.multiple:
-				respuesta = json.dumps(request.POST.getlist(str(i.id)))
-				if not respuesta:
-					respuesta = 'Ninguna seleccionada'
-			else:
-				respuesta = request.POST[str(i.id)]
-			streaming.append(Externa(colaborador=colaborador,proyecto=proyecto,pregunta=i,
-							fecharespuesta=timezone.now(),
-							respuesta=respuesta))
-		with transaction.atomic():
-			metrica.save()
-			proyecto.save()
-			Externa.objects.bulk_create(streaming)
-
-		return HttpResponseRedirect('/externa2/'+str(proyecto.id)+'/'+key)
-
-	return render_to_response('encuesta.html',{
-	'Proyecto':proyecto,'Preguntas':preguntas,
-	},	context_instance=RequestContext(request))
-
-@cache_control(no_store=True)
-def encuestaexterna2(request,id_proyecto,key):
-	link = '/externa/'+id_proyecto+'/'+key
-	return render_to_response('externa2.html',{
-	'Link':link
-	},	context_instance=RequestContext(request))
-
-@cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def exportarexterna(request):
-	import xlwt
-	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
-	str_format = xlwt.easyxf(num_format_str="@")
+def detalladas_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
-		response = HttpResponse(content_type='application/ms-excel')
-		import string
-		a = string.replace(proyecto.nombre,' ','')
-		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
-		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
-		datos = proyecto.proyectosdatos
-		stream = Externa.objects.filter(proyecto=proyecto).select_related(
-				'pregunta__variable').prefetch_related('pregunta__respuestas_set')
-		lens = len(stream)
-		k = 0
-		ws.write(0,0,u"Participante #",tit_format)
-		ws.write(0,1,u"Variable",tit_format)
-		ws.write(0,2,u"Pregunta",tit_format)
-		ws.write(0,3,u"Numerico",tit_format)
-		ws.write(0,4,u"Respuesta",tit_format)
-		ws.write(0,5,u"Fecha de respuesta",tit_format)
-		for i in xrange(lens):
-			k=0
-			ws.write(i+1,0,stream[i].colaborador,str_format)
-			ws.write(i+1,1,stream[i].pregunta.variable.nombre,str_format)
-			ws.write(i+1,2,stream[i].pregunta.texto,str_format)
-
-			if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
-				respuestas = json.loads(stream[i].respuesta)
-				ans = []
-				for respuesta in stream[i].pregunta.respuestas_set.all():
-					if respuesta.texto in respuestas:
-						ans.append(respuesta.numerico)
-				if ans:
-					ws.write(i+1,3,u';'.join(str(x) for x in ans),str_format)
-					ws.write(i+1,4,u';'.join(json.loads(stream[i].respuesta)),str_format)
-				else:
-					ws.write(i+1,3,u"",str_format)
-					ws.write(i+1,4,u"",str_format)
-
-			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
-				for respuesta in stream[i].pregunta.respuestas_set.all():
-					if stream[i].respuesta == respuesta.texto:
-						ws.write(i+1,3,respuesta.numerico,str_format)
-						ws.write(i+1,4,stream[i].respuesta,str_format)
-
-			elif stream[i].pregunta.multiple and not stream[i].pregunta.numerica:
-				ws.write(i+1,3,u'',str_format)
-				ws.write(i+1,4,u';'.join(json.loads(stream[i].respuesta)),str_format)
-
-			else:
-				ws.write(i+1,3,u"",str_format)
-				if stream[i].respuesta:
-					ws.write(i+1,4,stream[i].respuesta,str_format)
-				else:
-					ws.write(i+1,4,u"",str_format)
-
-			ws.write(i+1,5,u'{0}/{1}/{2}'.format(
-				stream[i].fecharespuesta.day,
-				stream[i].fecharespuesta.month,
-				stream[i].fecharespuesta.year),str_format)
-		wb.save(response)
-		return response
+		return render_to_response('detalladas_360.html',{
+		'Activar':'EstadoAvance','activar':'RespuestasDetalladas',
+		'Proyecto':proyecto,'Permisos':permisos,
+		},	context_instance=RequestContext(request))
 	else:
-		render_to_response('403.html')
+		return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def exportarinterna(request):
+def exportarinterna_360(request):
 	import xlwt
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -629,10 +544,13 @@ def exportarinterna(request):
 					stream[i].colaborador.colaboradoresdatos.fec_nacimiento.year),str_format)
 			else:
 				ws.write(i+1,11,u"No registra",str_format)
-			ws.write(i+1,12,u'{0}/{1}/{2}'.format(
-				stream[i].colaborador.colaboradoresdatos.fec_ingreso.day,
-				stream[i].colaborador.colaboradoresdatos.fec_ingreso.month,
-				stream[i].colaborador.colaboradoresdatos.fec_ingreso.year),str_format)
+			if stream[i].colaborador.colaboradoresdatos.fec_nacimiento:
+				ws.write(i+1,12,u'{0}/{1}/{2}'.format(
+					stream[i].colaborador.colaboradoresdatos.fec_ingreso.day,
+					stream[i].colaborador.colaboradoresdatos.fec_ingreso.month,
+					stream[i].colaborador.colaboradoresdatos.fec_ingreso.year),str_format)
+			else:
+				ws.write(i+1,12,u"No registra",str_format)
 			if(datos.opcional1):
 				ws.write(i+1,13,stream[i].colaborador.colaboradoresdatos.opcional1,str_format)
 			else:
@@ -660,30 +578,33 @@ def exportarinterna(request):
 			ws.write(i+1,19-k,stream[i].pregunta.variable.nombre,str_format)
 			ws.write(i+1,20-k,stream[i].pregunta.texto,str_format)
 
-			if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
-				respuestas = json.loads(stream[i].respuesta)
-				ans = []
-				for respuesta in stream[i].pregunta.respuestas_set.all():
-					if respuesta.texto in respuestas:
-						ans.append(respuesta.numerico)
-				if ans:
-					ws.write(i+1,21-k,u';'.join(str(x) for x in ans),str_format)
-					ws.write(i+1,22-k,u';'.join(json.loads(stream[i].respuesta)),str_format)
+			if not proyecto.ciclico:
+				if stream[i].pregunta.numerica and stream[i].pregunta.multiple:
+					respuestas = ujson.loads(stream[i].respuesta)
+					ans = []
+					for respuesta in stream[i].pregunta.respuestas_set.all():
+						if respuesta.texto in respuestas:
+							ans.append(respuesta.numerico)
+					if ans:
+						ws.write(i+1,21-k,u';'.join(str(x) for x in ans),str_format)
+						ws.write(i+1,22-k,u';'.join(ujson.loads(stream[i].respuesta)),str_format)
+					else:
+						ws.write(i+1,21-k,u'',str_format)
+
+				elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
+					for respuesta in stream[i].pregunta.respuestas_set.all():
+						if stream[i].respuesta == respuesta.texto:
+							ws.write(i+1,21-k,respuesta.numerico,str_format)
+							ws.write(i+1,22-k,stream[i].respuesta,str_format)
+
+				elif stream[i].pregunta.multiple and not stream[i].pregunta.numerica:
+					ws.write(i+1,21-k,u'',str_format)
+					ws.write(i+1,22-k,u';'.join(ujson.loads(stream[i].respuesta)),str_format)
+
 				else:
 					ws.write(i+1,21-k,u'',str_format)
-
-			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
-				for respuesta in stream[i].pregunta.respuestas_set.all():
-					if stream[i].respuesta == respuesta.texto:
-						ws.write(i+1,21-k,respuesta.numerico,str_format)
-						ws.write(i+1,22-k,stream[i].respuesta,str_format)
-
-			elif stream[i].pregunta.multiple and not stream[i].pregunta.numerica:
-				ws.write(i+1,21-k,u'',str_format)
-				ws.write(i+1,22-k,u';'.join(json.loads(stream[i].respuesta)),str_format)
-
+					ws.write(i+1,22-k,stream[i].respuesta,str_format)
 			else:
-				ws.write(i+1,21-k,u'',str_format)
 				ws.write(i+1,22-k,stream[i].respuesta,str_format)
 
 		wb.save(response)
@@ -697,13 +618,13 @@ def exportarinterna(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def importarespuestas_exportar(request):
+def importarespuestas_exportar_360(request):
 	import xlwt
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -810,9 +731,9 @@ def importarespuestas_exportar(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def importarespuestas_preguntas(request):
+def importarespuestas_preguntas_360(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -886,7 +807,7 @@ def importarespuestas_preguntas(request):
 								proyecto.tot_aresponder += 1
 								proyecto.tot_respuestas += 1
 							else:
-								r = json.dumps(sheet.cell_value(i,6).split(';'))
+								r = ujson.dumps(sheet.cell_value(i,6).split(';'))
 								if r == '[""]':
 									r = '[]'
 								streaming_crear.append(Streaming(
@@ -913,7 +834,7 @@ def importarespuestas_preguntas(request):
 									)
 
 							else:
-								r = json.dumps(sheet.cell_value(i,6).split(';'))
+								r = ujson.dumps(sheet.cell_value(i,6).split(';'))
 								if r == '[""]':
 									r = '[]'
 								s = Streaming.objects.filter(
@@ -945,7 +866,7 @@ def importarespuestas_preguntas(request):
 			except:
 				error= ''.join(["Ocurrio un error cuando se procesaba al participante ",var_error])
 
-		return render_to_response('importarespuestas.html',{
+		return render_to_response('importarespuestas_360.html',{
 		'Activar':'EstadoAvance','activar':'ImportarRespuestas',
 		'Proyecto':proyecto,'Permisos':permisos,'Error':error
 		}, context_instance=RequestContext(request))

@@ -174,6 +174,22 @@ urlpatterns += patterns('redes_360.views',
 )
 
 #===============================================================================
+# urls de mensajeria
+#===============================================================================
+
+urlpatterns += patterns('mensajeria_360.views',
+	url(r'^360/gosurvey/$', 'gosurvey_360'),
+	# url(r'^encuesta/(?P<id_proyecto>[0-9]{1,10})/(?P<key>[0-9a-zA-Z]{1,65})/$', 'encuesta'),
+	url(r'^360/respuestas/detalladas/$', 'detalladas_360'),
+    url(r'^360/respuestas/metricas/$', 'metricas_360'),
+    # url(r'^respuestas/forzar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreenviar'),
+	# url(r'^participante/activar2/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivarmensajeria'),
+	url(r'^360/respuestas/exportar/interna/$', 'exportarinterna_360'),
+	# url(r'^respuestas/importar/exportar/$', 'importarespuestas_exportar'),
+	# url(r'^respuestas/importar/$', 'importarespuestas_preguntas'),
+)
+
+#===============================================================================
 # urls de errores
 #===============================================================================
 

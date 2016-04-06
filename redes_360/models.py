@@ -9,10 +9,10 @@ class Redes_360( models.Model ):
 	colaborador = models.ForeignKey( Colaboradores_360, related_name="colaborador_red")
 	estado = models.BooleanField( default = True )
 	evaluado = models.ForeignKey( Colaboradores_360, related_name="evaluado_red")
-	instrumento = models.ForeignKey( Instrumentos_360 )
+	instrumento = models.ForeignKey( Instrumentos_360, blank = True, null = True )
 	proyecto = models.ForeignKey( Proyectos )
-	rol = models.CharField( max_length = 128 )
-	rol_idn = models.PositiveIntegerField( db_index = True )
+	rol = models.CharField( max_length = 128, blank = True, null = True )
+	rol_idn = models.PositiveIntegerField( db_index = True, blank = True, null = True )
 	pre_respuestas = models.PositiveSmallIntegerField( default = 0 )
 	tot_procentaje = models.FloatField( default = 0 )
 

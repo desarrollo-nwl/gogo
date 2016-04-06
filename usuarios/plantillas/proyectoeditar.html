@@ -120,10 +120,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label style="display:none" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
-						<div style="display:none" class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
-							<input type="checkbox" {%if not Proyecto.proyectosdatos.censo%}checked{%endif%} name="censo" class="switch" />
-						</div>
+
+						<div>
+							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Circular:</label>
+							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
+								<input type="checkbox" disabled {% if Proyecto.circular %}checked{% endif %} name="circular" class="switch" />
+							</div>
+						<div>
+
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Preguntas ordenadas:</label>
 						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
 							<input type="checkbox" {%if Proyecto.pordenadas%}checked{%endif%} name="pordenadas" class="switch" />

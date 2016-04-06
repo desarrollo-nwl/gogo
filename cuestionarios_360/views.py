@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import Empresas, Proyectos, Logs
+from mensajeria_360.models import Streaming_360
 
 #===============================================================================
 # indices
@@ -651,6 +652,7 @@ def preguntaeliminar_360(request,id_pregunta):
 			with transaction.atomic():
 				Variables_360.objects.filter(id=pregunta.variable_id).update(max_preguntas = F('max_preguntas') -1)
 				Instrumentos_360.objects.filter(id=pregunta.instrumento_id).update(max_preguntas = F('max_preguntas') - 1)
+				Streaming_360.objects.filter(pregunta_id=pregunta.id).update(proyecto_id=1)
 				pregunta.variable_id = 1
 				pregunta.dimension_id = 1
 				pregunta.instrumento_id = 1

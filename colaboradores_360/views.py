@@ -122,6 +122,7 @@ def colaboradornuevo_360(request):
 					if (proyecto.tipo =="360 unico"):
 						instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id )[0]
 						preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
+						red = Redes_360.objects.only('id','evaluado_id').filter(proyecto_id = proyecto.id)[0]
 						streaming_crear = []
 						adicionales = 0
 						for j in preguntas:
@@ -130,6 +131,9 @@ def colaboradornuevo_360(request):
 														proyecto_id=proyecto.id,
 														instrumento_id=instrumento.id,
 														colaborador_id=participante.id,
+														evaluado = red.evaluado_id,
+														red_id = red.id,
+														rol = "evaluador",
 														pregunta_id=j.id))
 								adicionales += 1
 							except:

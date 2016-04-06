@@ -30,6 +30,8 @@ class Proyectos( models.Model ):
 	id = models.AutoField( primary_key=True )
 	activo = models.BooleanField( default = False )
 	can_envio = models.IntegerField( default = 5 )
+	ciclico = models.BooleanField( default = False )
+	ciclos = models.PositiveSmallIntegerField( default = 1 )
 	empresa = models.ForeignKey( Empresas )
 	fec_registro =  models.DateTimeField( auto_now_add = True )
 	iniciable = models.BooleanField( default = False )

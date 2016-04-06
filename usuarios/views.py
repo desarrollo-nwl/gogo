@@ -12,7 +12,8 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import *
 import random
-
+from colaboradores_360.models import Colaboradores_360
+from redes_360.models import Redes_360
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
@@ -377,6 +378,7 @@ def proyectonuevo(request):
 		if request.method == 'POST':
 			chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 			key = ''.join(random.sample(chars, 64))
+			key2 = ''.join(random.sample(chars, 64))
 			with transaction.atomic():
 				proyecto = Proyectos(
 							empresa_id = request.POST['empresa'],
@@ -387,9 +389,30 @@ def proyectonuevo(request):
 					if(request.POST['pordenadas']):proyecto.pordenadas = True
 				except:
 					proyecto.pordenadas = False
+
+				try:
+					if(request.POST['circular']):proyecto.circular = True
+				except:
+					proyecto.circular= False
+
 				if int(request.POST['interna']):
 					proyecto.interna = True
 				proyecto.save()
+
+				if proyecto.tipo == "360 unico":
+					colaborador = Colaboradores_360.objects.create(
+					apellido = "Empresa",
+					email = "ninguno@que.registrar",
+					estado = False,
+					key = key2,
+					nombre = "Empresa",
+					proyecto_id = proyecto.id)
+
+					Redes_360.objects.create(
+						colaborador_id = colaborador.id,
+						evaluado_id = colaborador.id,
+						proyecto_id = proyecto.id)
+
 				proyecto.usuarios.add(request.user)
 				for i in request.POST.getlist('usuarios'):
 					proyecto.usuarios.add(i)
