@@ -27,7 +27,7 @@
 						<th>Nombre</th>
 						<th>Dimensiones</th>
 						<th>Preguntas</th>
-						<th style="width:80px">Acciones</th>
+						<th style="width:100px">Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -37,7 +37,12 @@
 						<td><a href="/360/instrumento/{{ i.id }}/dimensiones/">{{ i.nombre }}</a></td>
 						<td>{{ i.max_dimensiones | safe }} </td>
 						<td>{{ i.max_preguntas | safe }} </td>
-						<td>{% if Permisos.var_add%}<a href="/360/instrumento/{{ i.id }}/dimension/nueva/"><i class="fa fa-plus m-r" title="agregar dimension"></i></a>{% endif %}{% if Permisos.act_variables %}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id |safe}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{% endif %}{% if Permisos.var_edit %}<a href="/360/instrumento/editar/{{i.id |safe}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}{% if Permisos.var_del %}<a href="/360/instrumento/eliminar/{{i.id |safe}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}</td>
+						<td>
+							<a target="_blank" href="/360/previsualizacion/{{ i.id }}/" ><i class="fa fa-eye m-r" title="previsualización"></i></a>
+							{% if Permisos.var_add%}<a href="/360/instrumento/{{ i.id }}/dimension/nueva/"><i class="fa fa-plus m-r" title="agregar dimension"></i></a>{% endif %}
+							{% if Permisos.act_variables %}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id |safe}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{% endif %}
+							{% if Permisos.var_edit %}<a href="/360/instrumento/editar/{{i.id |safe}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}
+							{% ifnotequal Proyecto.tipo "360 unico"%}{% if Permisos.var_del %}<a href="/360/instrumento/eliminar/{{i.id |safe}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{% endif %}{% endifnotequal %}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>

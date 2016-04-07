@@ -67,9 +67,15 @@
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
 						<input required title="Este campo es obligatorio" type="number" name="can_envio"  class="form-control" maxlength="16" placeholder="Máximo número por envío" value="{{Proyecto.can_envio | safe }}">
 					</div>
+					{% if Proyecto.ciclico %}
+						<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Ciclos:</label>
+						<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
+							<input required title="Este campo es obligatorio" type="number" name="ciclos"  min="1" max="100" class="form-control" placeholder="cantidad de ciclos" value="{{Proyecto.ciclos | safe }}">
+						</div>
+					{% endif %}
 				</div>
-				{% endifnotequal %}
-				{% if proyecto.ciclico %}
+				{% else %}
+				{% if Proyecto.ciclico %}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-1 col-xs-2 col-sm-2 control-label required">Ciclos:</label>
 					<div class="col-lg-3 col-md-4 col-xs-4 col-sm-4">
@@ -77,6 +83,8 @@
 					</div>
 				</div>
 				{% endif %}
+				{% endifnotequal %}
+
 				<div class="container-fluid m-t-xl m-r-xl">
 					<span class="btn btn-success pull-left" onclick="actualizar()">Actualizar datos</span>
 					{%if Proyecto.activo%}

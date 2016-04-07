@@ -59,155 +59,162 @@ def gosurvey_360(request):
 							}, context_instance=RequestContext(request))
 					except:
 						pass
-				# try:
-				comprobar = request.POST['activo']
-				streaming_crear =[]
-				adicionales = 0
+				try:
+					comprobar = request.POST['activo']
+					streaming_crear =[]
 
-				if not request.is_ajax():
-					if proyecto.activo :
-						proyecto.activo = False
-					else:
-						proyecto.activo = True
+					if not request.is_ajax():
+						if proyecto.activo :
+							proyecto.activo = False
+						else:
+							proyecto.activo = True
 
-					if not proyecto.activo:
+						datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
+						datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
+
+						if not proyecto.activo or not request.is_ajax():
+							proyecto.save()
+							datos.save()
+							cache.set(request.user.username,proyecto,86400)
+
+
+					if request.is_ajax():
+
+						datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
+						datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
+
+						if proyecto.tipo != "360 unico":
+							if(float(request.POST['dMin']) < float(request.POST['dMax'])):
+								dMax = float(request.POST['dMax'])
+								dMin = float(request.POST['dMin'])
+							else:
+								if(float(request.POST['dMin']) == float(request.POST['dMax'])):
+									dMin = float(request.POST['dMin'])
+									dMax = float(request.POST['dMax'])+1
+								else:
+									dMax = float(request.POST['dMin'])
+									dMin = float(request.POST['dMax'])
+							proyecto.prudenciamin = dMin
+							proyecto.prudenciamax = dMax
+							proyecto.can_envio = request.POST['can_envio']
+
+							if proyecto.ciclico:
+								proyecto.ciclos = request.POST['ciclos']
+						else:
+							proyecto.prudenciamin = 1
+							proyecto.prudenciamax = 2
+							proyecto.ciclos = 1
+
+						instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id ).first()
+
+						if proyecto.tipo == "360 unico" and instrumento:
+							red = Redes_360.objects.only('id','evaluado_id').filter(proyecto_id = proyecto.id).first()
+							colaboradores = Colaboradores_360.objects.only('id').filter( proyecto_id = proyecto.id ).exclude(nombre='Empresa')
+							preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
+
+							for i in colaboradores:
+								adicionales = 0
+								for j in preguntas:
+									if not Streaming_360.objects.filter(proyecto_id=proyecto.id,
+										colaborador_id = i.id,
+										evaluado_id = red.evaluado_id,
+										pregunta_id=j.id).exists():
+										streaming_crear.append(Streaming_360(
+															proyecto_id=proyecto.id,
+															instrumento_id=instrumento.id,
+															colaborador_id=i.id,
+															evaluado_id = red.evaluado_id,
+															red_id = red.id,
+															rol = "evaluador",
+															pregunta_id=j.id))
+										adicionales += 1
+
+								if adicionales:
+									Streaming_360.objects.bulk_create(streaming_crear)
+									streaming_crear = []
+									proyecto.tot_aresponder += adicionales
+
+								aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=i.id).count()
+
+								if aresponder:
+									respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=i.id,respuesta__isnull=False).count()
+									Colaboradores_360.objects.filter( id = i.id ).update(
+										pre_respuestas = 0,
+										pre_aresponder = aresponder,
+										tot_avance= 100*respuestas/aresponder,
+									)
+								else:
+									Colaboradores_360.objects.filter( id = i.id ).update(
+										pre_respuestas = 0,
+										pre_aresponder = 0,
+										tot_avance= 0,
+									)
+
+						elif proyecto.tipo == "360 redes":
+							redes = Redes_360.objects.filter(proyecto_id = proyecto.id)
+
+							for red in redes:
+								adicionales = 0
+								preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=red.instrumento_id)
+								for j in preguntas:
+									if not Streaming_360.objects.filter(proyecto_id=proyecto.id,
+										colaborador_id=red.colaborador_id,
+										evaluado_id = red.evaluado_id,
+										pregunta_id=j.id).exists():
+										streaming_crear.append(Streaming_360(
+															proyecto_id=proyecto.id,
+															instrumento_id=red.instrumento_id,
+															colaborador_id=red.colaborador_id,
+															evaluado_id = red.evaluado_id,
+															red_id = red.id,
+															rol = red.rol,
+															pregunta_id=j.id))
+										adicionales += 1
+
+								if adicionales:
+									Streaming_360.objects.bulk_create(streaming_crear)
+									streaming_crear = []
+									proyecto.tot_aresponder += adicionales
+
+								aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id).count()
+								if aresponder:
+									respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id,respuesta__isnull=False).count()
+									Colaboradores_360.objects.filter(id = red.colaborador_id
+									).update(
+										pre_respuestas = respuestas,
+										pre_aresponder = aresponder,
+										tot_avance= 100*respuestas/aresponder,
+									)
+
+								else:
+									Colaboradores_360.objects.filter(id = red.colaborador_id
+									).update(
+										pre_respuestas = 0,
+										pre_aresponder = 0,
+										tot_avance= 0,
+									)
+
+
+						gran_total = Streaming_360.objects.filter(proyecto_id = proyecto.id).count()
+						if gran_total:
+							contestadas = Streaming_360.objects.filter(proyecto_id = proyecto.id,respuesta__isnull = False).count()
+							proyecto.tot_respuestas = contestadas
+							proyecto.tot_aresponder = gran_total
+							proyecto.total = 100.0*contestadas/gran_total
+						else:
+							proyecto.tot_respuestas = 0
+							proyecto.tot_aresponder = 0
+							proyecto.total = 0
+
 						proyecto.save()
 						datos.save()
 						cache.set(request.user.username,proyecto,86400)
 
-				if request.is_ajax():
+					if request.is_ajax():
+						return HttpResponse(ujson.dumps({'estado':1}),content_type="aplication/json")
 
-					datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
-					datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
-
-					if proyecto.tipo != "360 unico":
-						if(float(request.POST['dMin']) < float(request.POST['dMax'])):
-							dMax = float(request.POST['dMax'])
-							dMin = float(request.POST['dMin'])
-						else:
-							if(float(request.POST['dMin']) == float(request.POST['dMax'])):
-								dMin = float(request.POST['dMin'])
-								dMax = float(request.POST['dMax'])+1
-							else:
-								dMax = float(request.POST['dMin'])
-								dMin = float(request.POST['dMax'])
-						proyecto.prudenciamin = dMin
-						proyecto.prudenciamax = dMax
-						proyecto.can_envio = request.POST['can_envio']
-
-						if proyecto.ciclico:
-							proyecto.ciclos = request.POST['ciclos']
-					else:
-						proyecto.prudenciamin = 1
-						proyecto.prudenciamax = 2
-						proyecto.ciclos = 1
-
-					instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id ).first()
-
-					if proyecto.tipo == "360 unico" and instrumento:
-						red = Redes_360.objects.only('id','evaluado_id').filter(proyecto_id = proyecto.id)[0]
-						colaboradores = Colaboradores_360.objects.only('id').filter( proyecto_id = proyecto.id )
-						preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
-
-						for i in colaboradores:
-							for j in preguntas:
-								if not Streaming_360.objects.filter(proyecto_id=proyecto.id,
-									colaborador_id = i.id,
-									evaluado_id = red.evaluado_id,
-									pregunta_id=j.id).exists():
-									streaming_crear.append(Streaming_360(
-														proyecto_id=proyecto.id,
-														instrumento_id=instrumento.id,
-														colaborador_id=i.id,
-														evaluado_id = red.evaluado_id,
-														red_id = red.id,
-														rol = "evaluador",
-														pregunta_id=j.id))
-
-
-
-							aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=i.id).count()
-							print aresponder
-							if aresponder:
-								respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=i.id,respuesta__isnull=False).count()
-								Colaboradores_360.objects.filter( id = i.id ).update(
-									pre_respuestas = 0,
-									pre_aresponder = aresponder,
-									tot_avance= 100*respuestas/aresponder,
-								)
-							else:
-								Colaboradores_360.objects.filter( id = i.id ).update(
-									pre_respuestas = 0,
-									pre_aresponder = 0,
-									tot_avance= 0,
-								)
-
-					elif proyecto.tipo == "360 redes":
-						redes = Redes_360.objects.filter(proyecto_id = proyecto.id)
-
-						for red in redes:
-							local = False
-							preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=red.instrumento_id)
-							for j in preguntas:
-								if not Streaming_360.objects.filter(proyecto_id=proyecto.id,
-									colaborador_id=red.colaborador_id,
-									evaluado_id = red.evaluado_id,
-									pregunta_id=j.id).exists():
-									streaming_crear.append(Streaming_360(
-														proyecto_id=proyecto.id,
-														instrumento_id=red.instrumento_id,
-														colaborador_id=red.colaborador_id,
-														evaluado_id = red.evaluado_id,
-														red_id = red.id,
-														rol = red.rol,
-														pregunta_id=j.id))
-									local = True
-									adicionales += 1
-
-
-							aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id).count()
-							if aresponder:
-								respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id,respuesta__isnull=False).count()
-								Colaboradores_360.objects.filter(id = red.colaborador_id
-								).update(
-									pre_respuestas = respuestas,
-									pre_aresponder = aresponder,
-									tot_avance= 100*respuestas/aresponder,
-								)
-								print aresponder
-							else:
-								Colaboradores_360.objects.filter(id = red.colaborador_id
-								).update(
-									pre_respuestas = 0,
-									pre_aresponder = 0,
-									tot_avance= 0,
-								)
-
-
-					gran_total = Streaming_360.objects.filter(proyecto_id = proyecto.id).count()
-					if gran_total:
-						contestadas = Streaming_360.objects.filter(proyecto_id = proyecto.id,respuesta__isnull = False).count()
-						proyecto.tot_respuestas = contestadas
-						proyecto.tot_aresponder = gran_total
-						proyecto.total = 100.0*contestadas/gran_total
-					else:
-						proyecto.tot_respuestas = 0
-						proyecto.tot_aresponder = 0
-						proyecto.total = 0
-
-
-					if adicionales:
-						Streaming_360.objects.bulk_create(streaming_crear)
-						proyecto.tot_aresponder += adicionales
-					proyecto.save()
-					datos.save()
-					cache.set(request.user.username,proyecto,86400)
-
-
-				return HttpResponse(ujson.dumps({'estado':1}),content_type="aplication/json")
-
-			# except:
-			# 	pass
+				except:
+					pass
 
 		return render_to_response('gosurvey_360.html',{
 		'Activar':'Contenido','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos

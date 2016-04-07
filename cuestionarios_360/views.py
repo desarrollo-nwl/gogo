@@ -742,7 +742,7 @@ def dimensioneliminar(request,id_dimension):
 @login_required(login_url='/acceder/')
 def instrumentoeliminar(request,id_instrumento):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_del:
@@ -774,16 +774,30 @@ def instrumentoeliminar(request,id_instrumento):
 # Previsualizacion del cuestionario
 #===============================================================================
 
-# @cache_control(no_store=True)
-# @login_required(login_url='/login')
-# def preencuesta(request):
-# 	proyecto = cache.get(request.user.username)
-# 	permisos = request.user.permisos
-# 	if permisos.consultor and permisos.pro_see and permisos.var_see:
-# 		cuestionario = Proyectos.objects.prefetch_related(
-# 		'variables_set__preguntas_set__respuestas_set').get(id=proyecto.id)
-# 		return render_to_response('preencuesta.html',{
-# 		'Cuestionario':cuestionario
-# 		},	context_instance=RequestContext(request))
-# 	else:
-# 		return HttpResponseRedirect('403.html')
+@cache_control(no_store=True)
+@login_required(login_url='/login')
+def previsualizacion_360(request,id_instrumento):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	instrumento = Instrumentos_360.objects.filter(id=id_instrumento,proyecto_id=proyecto.id).first()
+	if permisos.consultor and instrumento:
+
+		preguntas = Preguntas_360.objects.filter(
+						proyecto_id = proyecto.id, instrumento_id = instrumento.id
+					).select_related('variable','dimension').prefetch_related('respuestas_360_set')
+
+		vector_orden = []
+
+		for i in preguntas:
+			vector_orden.append( (i.dimension.posicion,i.variable.posicion,i.posicion,i.id) )
+
+		vector_orden.sort()
+
+		return render_to_response('previsualizacion_360.html',{
+		'Activar':'Contenido','activar':'Instrumentos','Permisos':permisos,
+		'Proyecto':proyecto,'Preguntas':preguntas,'Orden':vector_orden
+		}, context_instance=RequestContext(request))
+	else:
+		return HttpResponseRedirect('403.html')

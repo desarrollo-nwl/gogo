@@ -6,11 +6,11 @@
 using namespace std;
 using namespace pqxx;
 
-string CREDENCIALES = "dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432";
-// string CREDENCIALES = "dbname=gogo user=suidi password=Su1357*- hostaddr=127.0.0.1 port=5432";
+// string CREDENCIALES = "dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432";
+string CREDENCIALES = "dbname=gogo user=suidi password=Su1357*- hostaddr=127.0.0.1 port=5432";
 
-char raiz[150] = "/home/ubuntu/gogo/";
-// char raiz[50] = "/home/suidi/workspace/gogo/";
+// char raiz[150] = "/home/ubuntu/gogo/";
+char raiz[50] = "/home/suidi/workspace/gogo/";
 
 
 void escape(string& data) {

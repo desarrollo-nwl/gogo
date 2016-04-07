@@ -19,6 +19,7 @@ string ver_colaboradores(string id_proyecto, bool editar, bool eliminar) {
 					"ON "
 						"( colaboradores_360_colaboradores.id = colaboradores_360_datos.id_id ) "
 					"WHERE "
+						"NOT colaboradores_360_colaboradores.nombre = 'Empresa' AND "
 						"colaboradores_360_colaboradores.proyecto_id ="+ id_proyecto +";";
 
 	// ejecutamos el colaboradores

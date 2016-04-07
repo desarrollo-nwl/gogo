@@ -138,6 +138,7 @@ urlpatterns += patterns('cuestionarios_360.views',
 	url(r'^360/variable/(?P<id_variable>[0-9]{1,10})/preguntas/$', 'preguntas_360'),
 	url(r'^360/variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar_360'),
 	url(r'^360/variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar_360'),
+	url(r'^360/previsualizacion/(?P<id_instrumento>[0-9]{1,10})/$', 'previsualizacion_360'),
 )
 
 

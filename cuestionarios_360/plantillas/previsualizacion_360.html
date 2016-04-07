@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es" id="Networks Lab">
+<head>
+	<title>Encuesta</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{%load staticfiles%}
+	<link href="https://fonts.googleapis.com/css?family=Nunito:400,300" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static 'css/encuesta/normalize.min.css' %}" charset="utf-8">
+	<link rel="stylesheet" href="{% static 'css/encuesta/encuestaestilohad.min.css' %}" charset="utf-8">
+	<link rel="shortcut icon" href="{% static 'img/ico/favicon.ico' %}"/>
+	<link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/ico/favicon144.png' %}">
+	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/ico/favicon114.png' %}">
+	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/ico/favicon72.png' %}">
+	<link rel="apple-touch-icon" href="{% static 'img/ico/favicon57.png' %}">
+	<style media="screen">label.error{margin:-30px 0 7px 0;color:#a62727}input.error,select.error,textarea.error{border:1px solid #db5565;box-shadow:inset 0 1px 1px rgba(0,0,0,.075)}</style>
+</head>
+<body>
+<!-- Estandar Section -->
+<section id="intro" class="intro-section">
+	<div class="container-one">
+		<div class="row">
+			<div class="col-lg-12">
+				<div>
+					<img id="had-banner" src="{% static 'img/encuesta/banner_naranja.png' %}" alt="banner" style="width:100%;">
+				</div>
+				{%if Proyecto.interno %}
+				<div>
+					{%if Encuestado.proyecto.proyectosdatos.logoenc%}<img id="had-logo" src="{{Encuestado.proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
+					{%else%}<img id="had-logo" src="{{Encuestado.proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
+				{%else%}
+					{%if Proyecto.proyectosdatos.logoenc%}<img id="had-logo" src="{{Proyecto.proyectosdatos.logoenc.url}}" alt="Logo" />
+					{%else%}<img  id="had-logo" src="{{Proyecto.proyectosdatos.logo.url}}" alt="Logo" />{%endif%}
+				</div>
+				{%endif%}
+			</div>
+		</div>
+
+</section>
+<!-- Questions Section -->
+<section id="human-body" class="human-body-section">
+	<div class="container-two">
+		<div class="row">
+			<!-- Human Body Section -->
+			<div class="col-lg-12 project">
+				<h1><p>¡Hola <b>{{request.user.first_name  |capfirst}}</b>! {% ifequal Proyecto.tipo "360 redes" %} estas evaluando a <b>Nombre Del Evaluado</b> con el rol <b>Rol</b>{% endifequal %}</p></h1>
+				<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section  id="form" class="form-section">
+	<div id="div_render" class="form-horizontal"></div>
+</section>
+
+<div class="form-horizontal" style="text-align:center;margin-top:5%">
+	<span class="form-group col-lg-2">Con la tecnología de <a href="https://www.networkslab.co/" style="color:#25AAE0;font-size:bold" target="_blank">NetworksLab</a></span>
+	<div class="form-group">
+		<a href="https://www.networkslab.co" target="_blank"><img id="logo" src="{% static 'img/NetWorksLab.png' %}" style="width:150px" alt="NetworksLab"></a>
+	</div>
+</div>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-2.1.1.min.js">\x3C/script>')</script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-ui-1.10.4.min.js">\x3C/script>')</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+<script type="text/javascript">
+var contenido = function(a,x){
+		for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
+		return false;
+	},
+	numerico =  function(a,b) {
+    	return a > b ? 1 : a < b ? -1 : 0;
+	},
+	Datos = { {% for i in Preguntas %}{{i.id|safe}}:{'variable':'{{i.variable.descripcion}}','dimension':'{{i.dimension.descripcion}}','texto':'{{i.texto}}','abierta':{% if i.abierta %}true{% else %}false{% endif %},'multiple':{% if i.multiple %}true{% else %}false{% endif %},
+							'respuestas':{ {% for j in i.respuestas_360_set.all %} {{j.id|safe}}:"{{j.texto}}",{% endfor %} },},{% endfor %}
+			},
+	orden = [{% for i in Orden %} [{% for j in i %}{{j|safe}},{% endfor %}],{% endfor %}],
+	contador = 1,
+	render="",
+	vec_indices = [],
+	variables = [],
+	dimensiones = [],
+	cache_D;
+
+	for (var i = 0; i < orden.length; i++) {
+		cache_D = Datos[orden[i][3]];
+
+		if( cache_D['dimension'].length > 0 && !contenido(cache_D['dimension'],dimensiones) ){
+			render += `<b>Dimensión: `+cache_D['dimension']+` </b><br><br> `;
+			dimensiones.push(cache_D['dimension']);
+		}
+		if (cache_D['variable'].length > 0 && !contenido(cache_D['variable'],variables) ){
+			render += `  <i>Variable: `+cache_D['variable'] + `</i>:<br><br>`;
+			variables.push(cache_D['variable']);
+		}
+
+		render += 	`<div class="container">
+						<div class="form-group">
+						<legend><span class="number">`+contador+`</span>
+							`+cache_D['texto']+`</legend>`;
+		if ( cache_D['abierta'] || cache_D['multiple'] ){
+			if( cache_D['abierta'] )
+				render += `<textarea type="text" max_length="1000" required title="Por favor responda la pregunta"></textarea>`;
+			else {
+				vec_indices = []
+				for (var id in cache_D['respuestas'])
+					vec_indices.push(id);
+
+				vec_indices.sort(numerico);
+
+				for (var j = 0; j < vec_indices.length; j++) {
+					render += 	`<input type="checkbox" class="checkbox">
+								<label class="light">`+cache_D['respuestas'][vec_indices[j]]+`</label><br>`;
+				}
+			}
+		}
+
+		else if( !cache_D['abierta'] || !cache_D['multiple'] ){
+			render += `<select required title="Por favor responda la pregunta" >`;
+
+			vec_indices = []
+			for (var id in cache_D['respuestas'])
+				vec_indices.push(id);
+
+			vec_indices.sort(numerico);
+
+			for (var j = 0; j < vec_indices.length; j++) {
+				render += `<option >`+cache_D['respuestas'][vec_indices[j]]+`</option>`;
+			}
+			render += `</select>`;
+		}
+
+		render += `</div></div><br>`;
+		contador++;
+	}
+	render += `<button class="btn btn-primary"><strong>Finalizar encuesta</strong></button>`;
+
+	$("#div_render").html(render);
+</script>
+</body>
+</html>
