@@ -525,7 +525,8 @@ def preguntaeditar_360(request,id_pregunta):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_edit:
 		try:
-			pregunta = Preguntas_360.objects.filter(proyecto_id=proyecto.id).get(id=id_pregunta)
+			pregunta = Preguntas_360.objects.filter(proyecto_id=proyecto.id,id=id_pregunta
+						).prefetch_related('respuestas_360_set')[0]
 			variable = Variables_360.objects.only('id','estado').get(id=pregunta.variable_id)
 			num_respuestas = pregunta.respuestas_360_set.count()
 		except:render_to_response('403.html')

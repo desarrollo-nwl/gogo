@@ -107,7 +107,7 @@
 					</div>
 				</div>
 				<div id="contenedor">
-					{%if not Pregunta.abierta%}{%for i in Pregunta.respuestas_360_set.all %}
+					{%if not Pregunta.abierta%}{%for i in Pregunta.respuestas_360_set.all|dictsort:"id" %}
 					<div id="{{forloop.counter0}}" class="form-group">
 						<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Respuesta {{forloop.counter}}:</label>
 						<div class="col-lg-5 col-md-5 col-xs-6 col-sm-6">

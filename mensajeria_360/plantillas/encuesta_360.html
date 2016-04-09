@@ -21,7 +21,8 @@
 	<div class="container-one">
 		<div class="row">
 			<div class="col-lg-12">
-				<div><img id="had-banner" src="{% static 'img/encuesta/had_banner.png' %}" alt="banner" style="width:100%;">
+				<div>
+					<img id="had-banner" src="{% static 'img/encuesta/banner_naranja.png' %}" alt="banner" style="width:100%;">
 				</div>
 				{%if Proyecto.interno %}
 				<div>
@@ -42,76 +43,104 @@
 		<div class="row">
 			<!-- Human Body Section -->
 			<div class="col-lg-12 project">
-				{%if Encuestado.proyecto.interno%}<h1><p>Hola <b>{{Encuestado.nombre | escape |capfirst}}</b>:</p></h1>{%endif%}
-				{%if not Proyecto.interno%}<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>{%endif%}
+				<h1><p>¡Hola <b>{{request.user.first_name  |capfirst}}</b>! {% ifequal Proyecto.tipo "360 redes" %} estas evaluando a <b>{{ Red.evaluado.nombre }} {{ Red.evaluado.apellido }}</b> con el rol <b>{{ Red.rol }}</b>{% endifequal %}</p></h1>
+				<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>
 			</div>
 		</div>
 	</div>
 </section>
 
 <section  id="form" class="form-section">
-{% if Proyecto.pordenadas %}
-{% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
-<form  class="form-horizontal" method="POST">{% csrf_token %}
-	{% for variable in preguntas_list %}
-    <div class="container">
-		<h1><legend class="m-t m-b">{{ variable.grouper | capfirst}}</legend></h1>
-			{% for pregunta in variable.list|dictsort:"posicion" %}
-			<div class="form-group">
-				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
-				{%if pregunta.abierta%}<textarea type="text" max_length="1000" name="{{pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
-				{%if pregunta.multiple%}
-					{%for i in pregunta.respuestas_set.all%}
-						<input type="checkbox" class="checkbox" name="{{pregunta.id}}" value="{{i.texto|escape}}" >
-						<label class="light">{{i.texto|escape}}</label><br>
-					{% endfor %}<br>
-				{% endif %}
-				{%if pregunta.abierta or pregunta.multiple%}{%else%}
-				<select required title="Por favor responda la pregunta" name="{{pregunta.id}}">
-					{%for i in pregunta.respuestas_set.all%}
-						<option value="{{i.texto| escape}}" >{{i.texto | escape}}</option>
-					{% endfor %}
-				</select>
-				{%endif%}
-			</div>
-			{% endfor %}
-	</div>
-	{% endfor %}
-{% else %}
-<form  class="form-horizontal" method="POST">{% csrf_token %}
-	{% for i in Preguntas_encuesta %}
-    <div class="container">
-			<div class="form-group">
-				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>: {{ i.pregunta.texto| escape}}</legend>
-				{%if i.pregunta.abierta %}<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
-				{%if i.pregunta.multiple %}
-					{%for j in i.pregunta.respuestas_set.all%}
-						<input type="checkbox" class="checkbox" name="{{i.pregunta.id}}" value="{{j.texto|escape}}" >
-						<label class="light">{{ j.texto | escape }}</label><br>
-					{% endfor %}<br>
-				{% endif %}
-				{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}
-				<select required title="Por favor responda la pregunta" name="{{i.pregunta.id}}">
-					{%for j in i.pregunta.respuestas_set.all%}
-						<option value="{{j.texto| escape}}" >{{ j.texto | escape}}</option>
-					{% endfor %}
-				</select>
-				{%endif%}
-			</div>
-	</div>
-	{% endfor %}
-{% endif %}
-<select style="display:none" name="ids_streaming" multiple>
-{% for i in Cuestionario %} <option value="{{i.id}}" selected>{{i.id}}</option>{% endfor %}
-</select>
-<button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
-</form>
+	<form id="div_render" class="form-horizontal" method="post"></form>
 </section>
+
+<div class="form-horizontal" style="text-align:center;margin-top:5%">
+	<span class="form-group col-lg-2">Con la tecnología de <a href="https://www.networkslab.co/" style="color:#25AAE0;font-size:bold" target="_blank">NetworksLab</a></span>
+	<div class="form-group">
+		<a href="https://www.networkslab.co" target="_blank"><img id="logo" src="{% static 'img/NetWorksLab.png' %}" style="width:150px" alt="NetworksLab"></a>
+	</div>
+</div>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script>window.jQuery || document.write('<script src="/static/js/libs/jquery-2.1.1.min.js">\x3C/script>')</script>
 <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
 <script>window.jQuery || document.write('<script src="/static/js/libs/jquery-ui-1.10.4.min.js">\x3C/script>')</script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
 <script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+<script type="text/javascript">
+var contenido = function(a,x){
+		for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
+		return false;
+	},
+	numerico =  function(a,b) {
+    	return a > b ? 1 : a < b ? -1 : 0;
+	},
+	Datos = { {% for i in Preguntas %}{{i.id|safe}}:{'variable':'{{i.variable.descripcion}}','dimension':'{{i.dimension.descripcion}}','texto':'{{i.texto}}','abierta':{% if i.abierta %}true{% else %}false{% endif %},'multiple':{% if i.multiple %}true{% else %}false{% endif %},
+							'respuestas':{ {% for j in i.respuestas_360_set.all %} {{j.id|safe}}:"{{j.texto}}",{% endfor %} },},{% endfor %}
+			},
+	orden = [{% for i in Orden %} [{% for j in i %}{{j|safe}},{% endfor %}],{% endfor %}],
+	contador = 1,
+	render="{% csrf_token %}",
+	vec_indices = [],
+	variables = [],
+	dimensiones = [],
+	cache_D,
+	ids_preguntas = [];
+	for (var i = 0; (i < orden.length) && (i < {{Proyecto.can_envio | safe}}) ; i++) {
+		ids_preguntas.push(orden[i][3]);
+		cache_D = Datos[orden[i][3]];
+		{% if Proyecto.pordenadas %}
+		if( cache_D['dimension'].length > 0 && !contenido(cache_D['dimension'],dimensiones) ){
+			render += `<b>Dimensión: `+cache_D['dimension']+` </b><br><br> `;
+			dimensiones.push(cache_D['dimension']);
+		}
+		if (cache_D['variable'].length > 0 && !contenido(cache_D['variable'],variables) ){
+			render += `  <i>Variable: `+cache_D['variable'] + `</i>:<br><br>`;
+			variables.push(cache_D['variable']);
+		}
+		{% endif %}
+		render += 	`<div class="container">
+						<div class="form-group">
+						<legend><span class="number">`+contador+`</span>
+							`+cache_D['texto']+`</legend>`;
+		if ( cache_D['abierta'] || cache_D['multiple'] ){
+			if( cache_D['abierta'] )
+				render += `<textarea type="text" max_length="1000" name="`+orden[i][3]+`" required title="Por favor responda la pregunta"></textarea>`;
+			else {
+				vec_indices = []
+				for (var id in cache_D['respuestas'])
+					vec_indices.push(id);
+
+				vec_indices.sort(numerico);
+
+				for (var j = 0; j < vec_indices.length; j++) {
+					render += 	`<input type="checkbox" name="`+orden[i][3]+`" class="checkbox" value="`+cache_D['respuestas'][vec_indices[j]]+`">
+								<label class="light">`+cache_D['respuestas'][vec_indices[j]]+`</label><br>`;
+				}
+			}
+		}
+
+		else if( !cache_D['abierta'] || !cache_D['multiple'] ){
+			render += `<select required name="`+orden[i][3]+`" title="Por favor responda la pregunta" >`;
+
+			vec_indices = []
+			for (var id in cache_D['respuestas'])
+				vec_indices.push(id);
+
+			vec_indices.sort(numerico);
+
+			for (var j = 0; j < vec_indices.length; j++) {
+				render += `<option value="`+cache_D['respuestas'][vec_indices[j]]+`">`+cache_D['respuestas'][vec_indices[j]]+`</option>`;
+			}
+			render += `</select>`;
+		}
+
+		render += `</div></div><br>`;
+		contador++;
+	}
+	render +=  `<input type="hidden" name="ids_preguntas" value="[`+ids_preguntas+`]">
+				<button class="btn btn-primary"><strong>Finalizar encuesta</strong></button>`;
+
+	$("#div_render").html(render);
+</script>
 </body>
 </html>

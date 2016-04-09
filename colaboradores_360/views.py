@@ -133,7 +133,6 @@ def colaboradornuevo_360(request):
 														colaborador_id=participante.id,
 														evaluado = red.evaluado_id,
 														red_id = red.id,
-														rol = "evaluador",
 														pregunta_id=j.id))
 								adicionales += 1
 							except:

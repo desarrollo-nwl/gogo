@@ -349,7 +349,7 @@ def encuesta(request,id_proyecto,key):
 
 			if not len_cuestionario:
 				try:
-					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
+					return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
 				except:
 					return HttpResponseRedirect('https://www.networkslab.co')
 		else:
@@ -373,7 +373,7 @@ def encuesta(request,id_proyecto,key):
 			cuestionario_preguntas = cuestionario
 			if not len_cuestionario:
 				try:
-					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
+					return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
 				except:
 					return HttpResponseRedirect('https://www.networkslab.co')
 		else:
@@ -384,7 +384,7 @@ def encuesta(request,id_proyecto,key):
 
 	else:
 		try:
-			return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
+			return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
 		except:
 			return HttpResponseRedirect('https://networkslab.co')
 
