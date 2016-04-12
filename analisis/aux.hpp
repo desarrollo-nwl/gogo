@@ -10,7 +10,7 @@ using namespace pqxx;
 string CREDENCIALES = "dbname=gogo user=suidi password=Su1357*- hostaddr=127.0.0.1 port=5432";
 
 // char raiz[150] = "/home/ubuntu/gogo/";
-char raiz[50] = "/home/suidi/workspace/gogo/";
+char raiz[50] = "/home/suidi/Documentos/gogo/";
 
 
 void escape(string& data) {

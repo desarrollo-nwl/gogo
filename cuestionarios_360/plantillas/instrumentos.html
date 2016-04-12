@@ -27,7 +27,7 @@
 						<th>Nombre</th>
 						<th>Dimensiones</th>
 						<th>Preguntas</th>
-						<th style="width:100px">Acciones</th>
+						<th style="width:180px">Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -39,6 +39,7 @@
 						<td>{{ i.max_preguntas | safe }} </td>
 						<td>
 							<a target="_blank" href="/360/previsualizacion/{{ i.id }}/" ><i class="fa fa-eye m-r" title="previsualización"></i></a>
+							<a href="/360/instrumento/exportar/{{ i.id }}/"><i class="fa fa-file-excel-o m-r" title="exportar"></i></a>
 							{% if Permisos.var_add%}<a href="/360/instrumento/{{ i.id }}/dimension/nueva/"><i class="fa fa-plus m-r" title="agregar dimension"></i></a>{% endif %}
 							{% if Permisos.act_variables %}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id |safe}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{% endif %}
 							{% if Permisos.var_edit %}<a href="/360/instrumento/editar/{{i.id |safe}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{% endif %}
@@ -47,7 +48,11 @@
 				</tbody>
 			</table>
 
-			{% if Agregar_instrumento %}{% if Permisos.var_add %}<div class="container-fluid"><a href="/360/instrumento/nuevo/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar instrumento</a></div>{% endif %}{% endif %}
+			{% if Agregar_instrumento %}{% if Permisos.var_add %}
+			<div class="container-fluid">
+				<a  href="/360/instrumento/nuevo/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar instrumento</a>
+				<a  href="/360/instrumento/importar/" class="btn btn-success pull-right m-t m-r"><i class="fa fa-plus"></i> Importar instrumento</a>
+			</div>{% endif %}{% endif %}
 		</div>
 	</div>
 </div>

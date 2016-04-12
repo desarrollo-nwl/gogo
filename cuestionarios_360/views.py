@@ -802,3 +802,241 @@ def previsualizacion_360(request,id_instrumento):
 		}, context_instance=RequestContext(request))
 	else:
 		return HttpResponseRedirect('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def exportar_instrumento_360(request,id_instrumento):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.var_see:
+		import xlwt, string
+		str_format = xlwt.easyxf(num_format_str="@")
+		tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
+		response = HttpResponse(content_type='application/ms-excel')
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet(a)
+
+		preguntas = Preguntas_360.objects.filter(
+						proyecto_id = proyecto.id, instrumento_id = id_instrumento
+					).select_related('variable','dimension','instrumento').prefetch_related('respuestas_360_set')
+
+		vector_orden = []
+
+		for i in preguntas:
+			vector_orden.append( ( 	i.dimension.posicion, i.variable.posicion, i.posicion,
+									i.dimension.id, i.variable.id, i.id) )
+
+		vector_orden.sort()
+
+		ws.write(0,0,u"Instrumento (R)")
+		ws.write(0,1,u"Dimensión (R)")
+		ws.write(0,2,u"Dimensión Texto encuesta")
+		ws.write(0,3,u"Variable (R)")
+		ws.write(0,4,u"Variable Texto encuesta")
+		ws.write(0,5,u"Pregunta (R)")
+		ws.write(0,6,u"Puntaje")
+		ws.write(0,7,u"Tipo (R)")
+		ws.write(0,8,u"Respuesta")
+		ws.write(0,9,u"Valor")
+
+		if len(preguntas):
+			ws.write(1,0,preguntas[0].instrumento.nombre)
+
+		dimensiones = []
+		variables = []
+		preguntas_aux = []
+		bandera = True
+		i = 1
+
+		for orden in vector_orden:
+			for dim in preguntas:
+				if dim.dimension.id == orden[3]:
+					if not (dim.dimension.id in dimensiones):
+						dimensiones.append(dim.dimension.id)
+						ws.write(i,1,dim.dimension.nombre,str_format)
+						ws.write(i,2,dim.dimension.descripcion,str_format)
+
+					for var in preguntas:
+						if var.variable.id == orden[4]:
+							if not var.variable.id in variables:
+								variables.append(var.variable.id)
+								ws.write(i,3,var.variable.nombre,str_format)
+								ws.write(i,4,var.variable.descripcion,str_format)
+
+							for pre in preguntas:
+								if pre.id == orden[5]:
+									if not (pre.id in preguntas_aux):
+										preguntas_aux.append(pre.id)
+										ws.write(i,5,pre.texto,str_format)
+										ws.write(i,6,pre.puntaje,str_format)
+
+										if pre.abierta:
+											ws.write(i,7,u"Abierta",str_format)
+										elif pre.multiple:
+											ws.write(i,7,u"Múltiple",str_format)
+										else:
+											ws.write(i,7,u"Única",str_format)
+
+										for res in pre.respuestas_360_set.all():
+											bandera = False
+											ws.write(i,8,res.texto,str_format)
+											ws.write(i,9,res.numerico,str_format)
+											i += 1
+										if pre.abierta or bandera:
+											i += 1
+		ws.write(i,0,u'FIN',tit_format)
+		wb.save(response)
+		return response
+	else:
+		render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def plantilla_instrumento_360(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.col_add:
+		import xlwt, string
+		tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
+		response = HttpResponse(content_type='application/ms-excel')
+		a = string.replace(proyecto.nombre,' ','')
+		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet(proyecto.nombre)
+		ws.write(0,0,u"Instrumento (R)",tit_format)
+		ws.write(0,1,u"Dimensión (R)",tit_format)
+		ws.write(0,2,u"Dimensión Texto encuesta",tit_format)
+		ws.write(0,3,u"Variable (R)",tit_format)
+		ws.write(0,4,u"Variable Texto encuesta",tit_format)
+		ws.write(0,5,u"Pregunta (R)",tit_format)
+		ws.write(0,6,u"Puntaje",tit_format)
+		ws.write(0,7,u"Tipo (R)",tit_format)
+		ws.write(0,8,u"Respuesta",tit_format)
+		ws.write(0,9,u"Valor",tit_format)
+		wb.save(response)
+		return response
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def importar_instrumento_360(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
+		return render_to_response('423.html')
+	error = ""
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.var_add:
+
+		if request.method == 'POST':
+			import xlrd, string
+			input_excel = request.FILES['docfile']
+			doc = xlrd.open_workbook(file_contents=input_excel.read())
+			sheet = doc.sheet_by_index(0)
+
+			with transaction.atomic():
+				i = 1
+				pos_dim = 0
+				pos_var = 0
+				pos_pre = 0
+
+				while sheet.cell_value(i,0) != 'FIN':
+					if sheet.cell_value(i,0) != '' :
+						instrumento = Instrumentos_360.objects.create(nombre = sheet.cell_value(i,0), proyecto_id = proyecto.id)
+						proyecto.max_variables += 1
+						proyecto.save()
+						pos_dim = 1
+
+					if sheet.cell_value(i,1) != '' :
+						dimension = Dimensiones_360(
+										posicion = pos_dim,
+										nombre = sheet.cell_value(i,1),
+										proyecto_id = proyecto.id,
+										instrumento_id = instrumento.id)
+						if sheet.cell_value(i,2) != '' :
+							dimension.descripcion = sheet.cell_value(i,2)
+						instrumento.max_dimensiones += 1
+						dimension.save()
+						pos_dim += 1
+						pos_var = 1
+
+					if sheet.cell_value(i,3) != '' :
+						variable =  Variables_360(
+										posicion = pos_var,
+										nombre = sheet.cell_value(i,3),
+										proyecto_id = proyecto.id,
+										instrumento_id = instrumento.id,
+										dimension_id = dimension.id)
+						if sheet.cell_value(i,4) != '' :
+							variable.descripcion = sheet.cell_value(i,4)
+						dimension.max_variables += 1
+						dimension.save()
+						variable.save()
+						pos_var += 1
+						pos_pre = 1
+
+					if sheet.cell_value(i,5) != '' :
+						pregunta = Preguntas_360(texto = sheet.cell_value(i,5),
+												instrumento_id = instrumento.id ,
+												dimension_id = dimension.id,
+						 						variable_id = variable.id,
+												proyecto_id = proyecto.id,
+												posicion = pos_pre)
+						pos_pre += 1
+						if sheet.cell_value(i,6) != '':
+							pregunta.puntaje = float( sheet.cell_value(i,6) )
+						else:
+							pregunta.puntaje = 1
+
+
+						if sheet.cell_value(i,7).lower() == u'Abierta'.lower():
+							pregunta.abierta = True
+							pregunta.multiple = False
+							pregunta.numerica = False
+
+						elif sheet.cell_value(i,7).lower() == u'Múltiple'.lower():
+							pregunta.abierta = False
+							pregunta.multiple = True
+							if sheet.cell_value(i,6) != '':
+								pregunta.numerica = True
+							else:
+								pregunta.numerica = False
+
+						elif sheet.cell_value(i,7).lower() == u'Única'.lower():
+							pregunta.abierta = False
+							pregunta.multiple = False
+							if sheet.cell_value(i,6) != '':
+								pregunta.numerica = True
+							else:
+								pregunta.numerica = False
+
+						instrumento.max_preguntas += 1
+						variable.max_preguntas += 1
+						instrumento.save()
+						variable.save()
+						pregunta.save()
+
+					if sheet.cell_value(i,8) != '' :
+						respuesta = Respuestas_360(texto = sheet.cell_value(i,8),
+										pregunta_id = pregunta.id)
+						if sheet.cell_value(i,9) != '' :
+							print "respuesta",sheet.cell_value(i,9)
+							respuesta.numerico = float( sheet.cell_value(i,9) )
+						respuesta.save()
+
+					i += 1
+			return HttpResponseRedirect('/360/instrumentos/')
+
+		return render_to_response('instrumentos_xls_360.html',{
+		'Activar':'Contenido','activar':'Instrumentos',
+		'Proyecto':proyecto,'Permisos':permisos,'Error':error
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')

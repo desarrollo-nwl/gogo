@@ -4,8 +4,8 @@ import os,django
 import sys
 sys.path.append('/home/ubuntu/gogo/')
 sys.path.append('/home/ubuntu/gogo/gogo/')
-sys.path.append('/home/suidi/workspace/gogo/')
-sys.path.append('/home/suidi/workspace/gogo/gogo/')
+sys.path.append('/home/suidi/Documentos/gogo/')
+sys.path.append('/home/suidi/Documentos/gogo/gogo/')
 os.environ["DJANGO_SETTINGS_MODULE"] ="gogo.settings"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'

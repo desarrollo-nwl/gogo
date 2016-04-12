@@ -95,7 +95,6 @@
 									<li><a id="AcrhivoPlano" href="/participantes/archivo/"><span class="txt"> Múltiples participantes </span></a></li>
 									{%if Permisos.col_see%}<li><a id="Individual" href="/participantes/individual/"><span class="txt"> Participantes Individual </span></a></li>{%endif%}
 									{%endif%}{%endif%}
-									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
 								</ul>
 							</li>{%endif%}
 							<li id="EstadoAvance">
@@ -104,6 +103,7 @@
 									{% if Proyecto.interna %}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
 									{% if Permisos.res_exp %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}{%endif%}
 									{% if Permisos.var_add %}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}
+									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
 								</ul>
 							</li>
 							<li id="AnalisisResultados">

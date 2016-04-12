@@ -211,7 +211,7 @@ def gosurvey_360(request):
 					pass
 
 		return render_to_response('gosurvey_360.html',{
-		'Activar':'Contenido','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
+		'Activar':'EstadoAvance','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -503,11 +503,16 @@ def encuesta_360(request,id_proyecto,key):
 			proyecto.total = 100.0 * proyecto.tot_respuestas/proyecto.tot_aresponder
 			encuestado.pre_respuestas += len_cuestionario
 			encuestado.tot_avance = 100.0 * encuestado.pre_respuestas / encuestado.pre_aresponder
-
 			encuestado.save()
 			metricas.save()
 			proyecto.save()
 			Streaming_360.objects.filter(colaborador_id = encuestado.id).update(fec_controlenvio=t)
+			if proyecto.ciclico and stream:
+				instrumento = Instrumentos_360.objects.filter(id = instrumento )[0]
+				Redes_360.objects.filter(id = instrumento.id
+					).update( pre_respuestas = F('pre_respuestas') + len_cuestionario,
+						tot_porcentaje = (F('pre_respuestas') + len_cuestionario) / (instrumento.max_preguntas * proyecto.ciclos ),
+					)
 
 		try:
 			return render_to_response('fake.html',{

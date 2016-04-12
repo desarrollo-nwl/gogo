@@ -110,7 +110,7 @@ def gosurvey(request):
 			except:
 				pass
 		return render_to_response('gosurvey.html',{
-		'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
+		'Activar':'EstadoAvance','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')

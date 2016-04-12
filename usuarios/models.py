@@ -30,8 +30,8 @@ class Proyectos( models.Model ):
 	id = models.AutoField( primary_key=True )
 	activo = models.BooleanField( default = False )
 	can_envio = models.IntegerField( default = 5 )
-	ciclico = models.BooleanField( default = False )
-	ciclos = models.PositiveSmallIntegerField( default = 1 )
+	ciclico = models.BooleanField( default = False ) #pendientemigracion
+	ciclos = models.PositiveSmallIntegerField( default = 1 ) #pendientemigracion
 	empresa = models.ForeignKey( Empresas )
 	fec_registro =  models.DateTimeField( auto_now_add = True )
 	iniciable = models.BooleanField( default = False )
@@ -105,11 +105,11 @@ class Permisos( models.Model ):
 	pro_del = models.BooleanField( default = False )
 	pro_edit = models.BooleanField( default = False )
 	pro_see = models.BooleanField( default = False )
-	red_add = models.BooleanField( default = False ) #Columna_Agregar antes pre (preguntas)
-	red_del = models.BooleanField( default = False )
-	red_edit = models.BooleanField( default = False )
-	red_see = models.BooleanField( default = False )#redes
-	res_exp = models.BooleanField( default = False )#exportar resultados
+	red_add = models.BooleanField( default = False ) #Columna_Agregar antes pre (preguntas) #pendientemigracion
+	red_del = models.BooleanField( default = False ) #pendientemigracion
+	red_edit = models.BooleanField( default = False ) #pendientemigracion
+	red_see = models.BooleanField( default = False )#redes #pendientemigracion
+	res_exp = models.BooleanField( default = False )#exportar resultados #pendientemigracion
 	res_see = models.BooleanField( default = False )#graficas
 	var_add = models.BooleanField( default = False )#"variacion" pasan a a ser cuestionarios
 	var_del = models.BooleanField( default = False )
