@@ -145,7 +145,7 @@ def metricas(request):
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and proyecto.interna:
+	if proyecto.interna:
 		participantes = Colaboradores.objects.only('respuestas','enviados','propension',
 						'reenviados','nombre','apellido','colaboradoresdatos__area','estado'
 						).filter(proyecto = proyecto, estado = True
@@ -155,7 +155,7 @@ def metricas(request):
 		'Activar':'EstadoAvance','activar':'EnviosRespuestas','Proyecto':proyecto,'Permisos':permisos,
 		'Participantes':participantes,'Average':average
 		},	context_instance=RequestContext(request))
-	elif permisos.consultor and not proyecto.interna:
+	elif not proyecto.interna:
 		metricas = MetricasExterna.objects.filter(proyecto = proyecto)
 		average = MetricasExterna.objects.filter(proyecto=proyecto).aggregate(Avg('encuestados'))
 		return render_to_response('metricas.html',{
