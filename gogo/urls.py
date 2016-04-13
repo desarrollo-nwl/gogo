@@ -175,6 +175,7 @@ urlpatterns += patterns('redes_360.views',
 	url(r'^360/red/nueva/$', 'rednueva_360'),
 	url(r'^360/redes/archivo/$', 'redes_xls_360'),
 	url(r'^360/redes/archivo/generar/$', 'redes_archivo_generar'),
+	url(r'^360/redes/activar/(?P<id_red>[0-9]{1,10})/$', 'redes_activar_360'),
 )
 
 #===============================================================================
@@ -186,7 +187,8 @@ urlpatterns += patterns('mensajeria_360.views',
 	url(r'^360/encuesta/(?P<id_proyecto>[0-9]{1,10})/(?P<key>[0-9a-zA-Z]{1,65})/$', 'encuesta_360'),
 	url(r'^360/respuestas/detalladas/$', 'detalladas_360'),
     url(r'^360/respuestas/metricas/$', 'metricas_360'),
-    # url(r'^respuestas/forzar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreenviar'),
+    url(r'^360/respuestas/metricas/(?P<id_colaborador>[0-9]{1,10})/$', 'metricas_ind_360'),
+    url(r'^360/respuestas/forzar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreenviar'),
 	# url(r'^participante/activar2/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivarmensajeria'),
 	url(r'^360/respuestas/exportar/interna/$', 'exportarinterna_360'),
 	# url(r'^respuestas/importar/exportar/$', 'importarespuestas_exportar'),

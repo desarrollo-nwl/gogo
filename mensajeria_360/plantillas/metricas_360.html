@@ -32,8 +32,8 @@
 						<th >Enviados</th>
 						<th >Lapsus</th>
 						<th >Reenviados</th>
-						<th>Apellido</th>
 						<th>Nombre</th>
+						<th>Apellido</th>
 						<th>Área</th>
 						<th>A/D</th>
 					</tr>
@@ -46,12 +46,13 @@
 						<td>{{ i.enviados   |safe }}</td>
 						<td>{% ifequal i.propension -1 %} Sin propensión {% else %}{{i.propension |floatformat:"2" | safe }}{% endifequal %}</td>
 						<td>{{ i.reenviados | safe }}</td>
-						<td>{{ i.nombre }}</td>
+						<td><a href="/360/respuestas/metricas/{{i.id|safe}}/">{{ i.nombre }}</a></td>
 						<td>{{ i.apellido }}</td>
-						<td>{{ i.colaboradoresdatos_360.area }} {{ i.descripcion }}</td>
+						<td>{% if i.colaboradoresdatos_360.area%}{{ i.colaboradoresdatos_360.area }}{% endif %}
+							{% if i.descripcion %}{{ i.descripcion }}{% endif %}</td>
 						<td>
 							{%if Permisos.col_edit%}<span style="cursor:pointer;color:#0bacd3" onclick="desactivar({{i.id | safe }})" ><i title="Activar/Desactivar" class="fa fa-retweet m-r" style="color:#1d9d73"></i></span>{%endif%}
-							{%if Proyecto.activo%}<a href="/respuestas/forzar/{{i.id |safe}}/"><i title="Forzar envío" class="fa fa-envelope-o m-r" style="color:#1d9d73"></i></a>
+							{%if Proyecto.activo%}{% if 100 > i.tot_avance %}<a href="/360/respuestas/forzar/{{i.id |safe}}/"><i title="Forzar envío" class="fa fa-envelope-o m-r" style="color:#1d9d73"></i></a>{% endif%}
 				{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>

@@ -18,7 +18,7 @@ from usuarios.models import Proyectos, Logs
 import json
 import random
 import redes as redes_cpp
-import xlrd,xlwt
+import xlrd,xlwt,ujson
 
 #===============================================================================
 # indices
@@ -253,7 +253,6 @@ def reditar_360(request,id_red):
 									Streaming_360(
 										colaborador_id = request.POST['colaborador'],
 										evaluado_id = request.POST['evaluado'],
-										rol = rol.nombre,
 										instrumento_id = request.POST['instrumento'],
 										pregunta_id = i.id,
 										proyecto_id = proyecto.id,
@@ -265,7 +264,6 @@ def reditar_360(request,id_red):
 									Streaming_360(
 										colaborador_id = request.POST['colaborador'],
 										evaluado_id = request.POST['evaluado'],
-										rol = rol.nombre,
 										instrumento_id = request.POST['instrumento'],
 										pregunta_id = i.id,
 										proyecto_id = proyecto.id,
@@ -389,10 +387,10 @@ def redes_archivo_generar(request):
 	if permisos.consultor and permisos.red_add:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Respuestas'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet(proyecto.nombre)
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		ws.write(0,0,u"Nombre del evaluador",tit_format)
 		ws.write(0,1,u"Apellido del evalador",tit_format)
@@ -519,7 +517,6 @@ def redes_xls_360(request):
 												vect_st_360.append( Streaming_360(
 														colaborador_id = red.colaborador_id,
 														evaluado_id = red.evaluado_id,
-														rol = red.rol,
 														instrumento_id =  red.instrumento_id,
 														pregunta_id = i.id,
 														proyecto_id = proyecto.id,
@@ -577,3 +574,28 @@ def redes_xls_360(request):
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
+
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def redes_activar_360(request,id_red):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor and permisos.red_edit:
+
+		red = Redes_360.objects.only('id','estado').filter(id = id_red, proyecto_id = proyecto).first()
+
+		if red and red.estado:
+			estado = False
+			Redes_360.objects.filter(id = id_red).update(estado=False)
+		elif red:
+			estado = True
+			Redes_360.objects.filter(id = id_red).update(estado=True)
+		else:
+			id_red = 0
+		return HttpResponse(ujson.dumps({'id':id_red,'estado':estado}),content_type='application/json')
+	else:
+		return HttpResponse(ujson.dumps({'id':0}),content_type='application/json')

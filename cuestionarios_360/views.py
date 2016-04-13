@@ -816,7 +816,7 @@ def exportar_instrumento_360(request,id_instrumento):
 		str_format = xlwt.easyxf(num_format_str="@")
 		tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 		response = HttpResponse(content_type='application/ms-excel')
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Instrumento'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet(a)
@@ -907,10 +907,10 @@ def plantilla_instrumento_360(request):
 		import xlwt, string
 		tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 		response = HttpResponse(content_type='application/ms-excel')
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Instrumento'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet(proyecto.nombre)
+		ws = wb.add_sheet(a)
 		ws.write(0,0,u"Instrumento (R)",tit_format)
 		ws.write(0,1,u"Dimensión (R)",tit_format)
 		ws.write(0,2,u"Dimensión Texto encuesta",tit_format)
@@ -947,7 +947,9 @@ def importar_instrumento_360(request):
 				pos_var = 0
 				pos_pre = 0
 
-				while sheet.cell_value(i,0) != 'FIN':
+				contador = 0
+				while sheet.cell_value(i,0) != 'FIN' and contador < 10000: #contador de seguridad
+					contador += 1
 					if sheet.cell_value(i,0) != '' :
 						instrumento = Instrumentos_360.objects.create(nombre = sheet.cell_value(i,0), proyecto_id = proyecto.id)
 						proyecto.max_variables += 1

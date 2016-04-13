@@ -15,9 +15,10 @@
 			{%if Error%}<p id="esconder" class="center"><strong class="btn btn-info">{{Error}}</strong></p><br><br>{%endif%}
 			{%if Permisos.col_add%}
 			<p> El sistema posee un archivo excel (.xls) el cual usted podrá descargar y completar para grabar a su(s) instrumento(s). Para obtener el archivo presione el botón descargar</p><br>
-			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/360/archivo/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/360/instrumentos/exportar/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
 			<p><strong>Recomendaciones: </strong><p><br>
-				<ol><li>Mantenga los formatos de las celdas con los cuales se descarga el archivo.</li><br>
+				<ol><li>Al finalizar de ingresar los datos no olvide ingresar la palabra <b>FIN</b> en la columna A fila siguiente a los datos.</li><br>
+					<li>Mantenga los formatos de las celdas con los cuales se descarga el archivo.</li><br>
 					<li>Las celdas con <b>(R)</b> son requeridas.</li><br>
 					<li>Los tipos de pregunta son Única (Múltiples opciones, única respuesta), Múltiple (Múltiples opciones, múltiples respuestas) y Abierta (pregunta de respuesta abierta).</li><br>
 					<li>Dada una pregunta, si alguna repuesta de esta no contiene valor numérico, la <b>pregunta</b> se asume sin valor numérico.</li>

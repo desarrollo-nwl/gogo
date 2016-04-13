@@ -14,7 +14,7 @@ class Redes_360( models.Model ):
 	rol = models.CharField( max_length = 128, blank = True, null = True )
 	rol_idn = models.PositiveIntegerField( db_index = True, blank = True, null = True )
 	pre_respuestas = models.PositiveSmallIntegerField( default = 0 )
-	tot_procentaje = models.FloatField( default = 0 )
+	tot_porcentaje = models.FloatField( default = 0 )
 
 	def __unicode__(self):
 		return '%s' % (self.id)

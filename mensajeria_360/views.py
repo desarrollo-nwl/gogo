@@ -13,7 +13,7 @@ from django.views.decorators.cache import cache_control
 from mensajeria_360.models import *
 from usuarios.models import *
 
-from django.db.models import Avg
+from django.db.models import Avg,Sum
 from datetime import datetime as DT
 from datetime import timedelta,date
 from django.utils import timezone
@@ -136,7 +136,7 @@ def gosurvey_360(request):
 									Colaboradores_360.objects.filter( id = i.id ).update(
 										pre_respuestas = 0,
 										pre_aresponder = aresponder,
-										tot_avance= 100*respuestas/aresponder,
+										tot_avance= 100*respuestas/( aresponder * proyecto.ciclos ),
 									)
 								else:
 									Colaboradores_360.objects.filter( id = i.id ).update(
@@ -177,7 +177,7 @@ def gosurvey_360(request):
 									).update(
 										pre_respuestas = respuestas,
 										pre_aresponder = aresponder,
-										tot_avance= 100*respuestas/aresponder,
+										tot_avance= 100*respuestas/( aresponder * proyecto.ciclos ),
 									)
 
 								else:
@@ -191,10 +191,14 @@ def gosurvey_360(request):
 
 						gran_total = Streaming_360.objects.filter(proyecto_id = proyecto.id).count()
 						if gran_total:
-							contestadas = Streaming_360.objects.filter(proyecto_id = proyecto.id,respuesta__isnull = False).count()
+							contestadas = Streaming_360.objects.filter(proyecto_id = proyecto.id,respuesta__isnull = False).aggregate(Sum("contestadas"))
+							if contestadas['contestadas__sum']:
+								contestadas = contestadas['contestadas__sum']
+							else:
+								contestadas = 0
 							proyecto.tot_respuestas = contestadas
 							proyecto.tot_aresponder = gran_total
-							proyecto.total = 100.0*contestadas/gran_total
+							proyecto.total = 100.0*contestadas/ ( gran_total * proyecto.ciclos)
 						else:
 							proyecto.tot_respuestas = 0
 							proyecto.tot_aresponder = 0
@@ -206,7 +210,9 @@ def gosurvey_360(request):
 
 					if request.is_ajax():
 						return HttpResponse(ujson.dumps({'estado':1}),content_type="aplication/json")
-
+					elif proyecto.activo:
+						pass
+						# os con miras a envio cuando inicien el proyecto
 				except:
 					pass
 
@@ -226,10 +232,22 @@ def metricas_360(request):
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.interna:
 
-		participantes = Colaboradores_360.objects.only('puntaje','respuestas','enviados','propension',
-						'reenviados','nombre','apellido','colaboradoresdatos_360__area','estado','descripcion'
-						).filter(proyecto = proyecto, estado = True
-						).select_related('colaboradoresdatos_360')
+		if proyecto.tipo == "360 redes":
+			ids = Redes_360.objects.only('colaborador_id').filter(proyecto = proyecto).distinct("colaborador_id")
+
+			ids_id = []
+			for i in ids:
+				ids_id.append(i.colaborador_id)
+			print ids_id
+			participantes = Colaboradores_360.objects.only('puntaje','respuestas','enviados','propension',
+							'reenviados','nombre','apellido','colaboradoresdatos_360__area','estado','descripcion'
+							).filter(id__in = ids_id).select_related('colaboradoresdatos_360')
+
+		else:
+			participantes = Colaboradores_360.objects.only('puntaje','respuestas','enviados','propension',
+							'reenviados','nombre','apellido','colaboradoresdatos_360__area','estado','descripcion'
+							).filter(proyecto = proyecto, estado = True
+							).select_related('colaboradoresdatos_360')
 
 		average = Colaboradores_360.objects.filter(proyecto=proyecto).exclude(propension__lte=0,).aggregate(Avg('propension'))
 
@@ -244,6 +262,30 @@ def metricas_360(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
+def metricas_ind_360(request,id_colaborador):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.consultor:
+
+		redes = Redes_360.objects.only(
+					'colaborador__nombre','colaborador__apellido',
+					'evaluado__nombre','evaluado__apellido','rol',
+					'instrumento__max_preguntas','tot_porcentaje','pre_respuestas'
+					).filter(colaborador_id = id_colaborador,proyecto_id = proyecto.id
+					).select_related('colaborador','instrumento','evaluado')
+
+		return render_to_response('metricas_ind_360.html',{
+		'Activar':'EstadoAvance','activar':'EnviosRespuestas',
+		'Proyecto':proyecto,'Permisos':permisos,'Redes':redes
+		},	context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
 def colaboradoreenviar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
@@ -251,8 +293,9 @@ def colaboradoreenviar(request,id_colaborador):
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.activo:
 		try:
-			colaborador = Colaboradores.objects.get(id=int(id_colaborador))
-			if Streaming.objects.filter(colaborador=int(id_colaborador),respuesta__isnull=True).exists():
+			colaborador = Colaboradores_360.objects.get(id = id_colaborador)
+			if Streaming_360.objects.filter(colaborador_id = id_colaborador,
+				respuesta__isnull=True).exists() or proyecto.ciclico:
 				alerta = None
 				if request.method == 'POST':
 					if colaborador.estado:
@@ -260,42 +303,38 @@ def colaboradoreenviar(request,id_colaborador):
 						from usuarios.strings import correo_standar
 						from corrector import salvar_html
 						import unicodedata
-						server=smtplib.SMTP('smtp.mandrillapp.com',587)
-						# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
+						server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
 						server.ehlo()
 						server.starttls()
-						server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
-						# server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
+						server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 						nom_log =request.user.first_name+' '+request.user.last_name
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
-						msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-						# msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
+						msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
 						urlimg = 'http://www.changelabtools.com'+datos.logo.url
-						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
+						if colaborador.genero.lower() == "femenino":
 							genero = "a"
 						else:
 							genero = "o"
 						nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
 						titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 						texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-						url = 'http://www.changelabtools.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+						url = 'http://www.changelabtools.com/360/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 						mensaje = MIMEText(html,"html")
 						msg.attach(mensaje)
 						with transaction.atomic():
 							colaborador.reenviados = colaborador.reenviados + 1
-							Streaming.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
+							Streaming_360.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
 							colaborador.save()
-							server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
-							# server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+							server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
 						server.quit()
 						alerta = 'Correo enviado exitosamente.'
 					else:
 						alerta = 'Debe activar primero al colaborador para forzar el envío. Asegúrese de tener los permisos necesarios para editar participantes.'
-				return render_to_response('colaboradoreenviar.html',{
+				return render_to_response('colaboradoreenviar_360.html',{
 				'Activar':'EstadoAvance','activar':'EnviosRespuestas','Colaborador':colaborador,
 				'Permisos':permisos,'Proyecto':proyecto,'Alerta':alerta
 				}, context_instance=RequestContext(request))
@@ -321,26 +360,26 @@ def encuesta_360(request,id_proyecto,key):
 		return render_to_response('403.html')
 
 	col_met = encuestado.colaboradoresmetricas_360
-	print "COL MET",col_met
-	instrumento = col_met.ins_actual # ojo en realidad son redes
-	instrumentos = ujson.loads(col_met.ord_instrumentos)
-	print "INSTRUMENTO(red)",instrumento,instrumentos
-	if not instrumento or instrumentos.index(instrumento) == (len(instrumentos)-1):
+
+	red = col_met.ins_actual
+	reds = ujson.loads(col_met.ord_instrumentos)
+
+	if not red or reds.index(red) == (len(reds)-1):
 		print "ENTRAMOS"
 		if proyecto.tipo == "360 redes":
-			instrumento = instrumentos[0]
+			red = reds[0]
 	else:
-		instrumento = instrumentos[ instrumentos.index(instrumento) +1 ]
-	print instrumento
+		red = reds[ reds.index(red) +1 ]
+
 	if not request.method == 'POST':
 
 		if proyecto.tipo == "360 redes" and not proyecto.ciclico:
 			red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-					).select_related('evaluado').filter(id = instrumento )[0]
+					).select_related('evaluado').filter(id = red )[0]
 
 			stream = Streaming_360.objects.filter(
 							colaborador_id = encuestado.id,
-							red_id = instrumento,
+							red_id = red,
 							pregunta__estado = True,
 							respuesta__isnull = True
 						)
@@ -354,11 +393,11 @@ def encuesta_360(request,id_proyecto,key):
 
 		elif proyecto.tipo == "360 redes" and proyecto.ciclico:
 			red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-					).select_related('evaluado').filter(id = instrumento )[0]
+					).select_related('evaluado').filter(id = red )[0]
 
 			stream = Streaming_360.objects.filter(
 							colaborador_id = encuestado.id,
-							red_id = instrumento,
+							red_id = red,
 							pregunta__estado = True,
 							contestadas__lt = proyecto.ciclos
 						).order_by('contestadas')
@@ -422,7 +461,7 @@ def encuesta_360(request,id_proyecto,key):
 			stream = Streaming_360.objects.filter(
 						proyecto_id = proyecto.id,
 						colaborador_id = encuestado.id,
-						red_id = instrumento,
+						red_id = red,
 						pregunta_id__in = ids_preguntas
 						).select_related('pregunta')
 		else:
@@ -442,7 +481,7 @@ def encuesta_360(request,id_proyecto,key):
 
 		encuestado.propension = sum(vec_metricas)/len(vec_metricas)
 		metricas.propension = ujson.dumps(vec_metricas)
-		metricas.ins_actual = instrumento
+		metricas.ins_actual = red
 
 		t = timezone.now()
 		tiempo = "{0},{1},{2}".format(t.year,t.month,t.day)
@@ -453,7 +492,7 @@ def encuesta_360(request,id_proyecto,key):
 			for i in stream:
 				i.fecharespuesta = t
 				i.contestadas += 1
-
+				encuestado.puntaje += i.pregunta.puntaje
 				if( proyecto.ciclico ):
 					if i.contestadas == 1:
 						if i.pregunta.abierta:
@@ -486,7 +525,7 @@ def encuesta_360(request,id_proyecto,key):
 					if i.pregunta.abierta:
 						i.respuesta = request.POST[str(i.pregunta_id)]
 					elif i.pregunta.multiple:
-						r = ujson.dumps(ujson.dumps( request.POST.getlist(str(i.pregunta_id)) ))
+						r = ujson.dumps(request.POST.getlist(str(i.pregunta_id)) )
 						if not r:
 							i.respuesta = 'Ninguna seleccionada'
 						else:
@@ -500,19 +539,19 @@ def encuesta_360(request,id_proyecto,key):
 
 
 			proyecto.tot_respuestas += len_cuestionario
-			proyecto.total = 100.0 * proyecto.tot_respuestas/proyecto.tot_aresponder
+			proyecto.total = 100.0 * proyecto.tot_respuestas / (proyecto.tot_aresponder * proyecto.ciclos)
 			encuestado.pre_respuestas += len_cuestionario
-			encuestado.tot_avance = 100.0 * encuestado.pre_respuestas / encuestado.pre_aresponder
+			encuestado.tot_avance = 100.0 * encuestado.pre_respuestas / (encuestado.pre_aresponder * proyecto.ciclos)
+			encuestado.respuestas += 1
 			encuestado.save()
 			metricas.save()
 			proyecto.save()
 			Streaming_360.objects.filter(colaborador_id = encuestado.id).update(fec_controlenvio=t)
-			if proyecto.ciclico and stream:
-				instrumento = Instrumentos_360.objects.filter(id = instrumento )[0]
-				Redes_360.objects.filter(id = instrumento.id
-					).update( pre_respuestas = F('pre_respuestas') + len_cuestionario,
-						tot_porcentaje = (F('pre_respuestas') + len_cuestionario) / (instrumento.max_preguntas * proyecto.ciclos ),
-					)
+			if len_cuestionario:
+				instrumento = Instrumentos_360.objects.get(id = Redes_360.objects.only('id').get(id=red).instrumento_id )
+				print instrumento
+				Redes_360.objects.filter(id = red).update( pre_respuestas = F('pre_respuestas') + len_cuestionario,
+					tot_porcentaje = (F('pre_respuestas') + len_cuestionario) / (0.01 * instrumento.max_preguntas * proyecto.ciclos ) )
 
 		try:
 			return render_to_response('fake.html',{
@@ -559,10 +598,10 @@ def exportarinterna_360(request):
 	if permisos.consultor and permisos.res_exp:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Respuestas'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		ws = wb.add_sheet("GoAnalytics")
+		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Streaming_360.objects.filter(proyecto=proyecto,respuesta__isnull=False).select_related(
 				'colaborador__colaboradoresdatos_360','proyecto__proyectosdatos',
@@ -729,7 +768,7 @@ def importarespuestas_exportar_360(request):
 	if permisos.consultor and permisos.res_exp:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Respuestas'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet(a)

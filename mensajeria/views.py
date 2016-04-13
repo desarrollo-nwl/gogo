@@ -34,7 +34,7 @@ from django.db.models import Max
 @login_required(login_url='/acceder/')
 def gosurvey(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	datos = proyecto.proyectosdatos
@@ -110,7 +110,7 @@ def gosurvey(request):
 			except:
 				pass
 		return render_to_response('gosurvey.html',{
-		'Activar':'EstadoAvance','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
+		'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -120,14 +120,14 @@ def gosurvey(request):
 @login_required(login_url='/acceder/')
 def detalladas(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.res_exp and proyecto.interna:
+	if permisos.consultor and permisos.det_see and permisos.res_see and proyecto.interna:
 		respuestas = Streaming.objects.filter(proyecto_id = proyecto.id,respuesta__isnull=False,
 						).select_related('colaborador','pregunta__variable')
 
-	elif permisos.consultor and permisos.res_exp and (not proyecto.interna):
+	elif permisos.consultor and permisos.det_see and permisos.res_see and (not proyecto.interna):
 		respuestas = Externa.objects.filter(proyecto = proyecto).select_related('pregunta__variable')
 	else:
 		return render_to_response('403.html')
@@ -142,7 +142,7 @@ def detalladas(request):
 @login_required(login_url='/acceder/')
 def metricas(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if proyecto.interna:
@@ -169,7 +169,7 @@ def metricas(request):
 @login_required(login_url='/acceder/')
 def colaboradoractivarmensajeria(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_edit:
@@ -189,7 +189,7 @@ def colaboradoractivarmensajeria(request,id_colaborador):
 @login_required(login_url='/acceder/')
 def colaboradoreenviar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and proyecto.activo:
@@ -349,7 +349,7 @@ def encuesta(request,id_proyecto,key):
 
 			if not len_cuestionario:
 				try:
-					return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
+					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
 					return HttpResponseRedirect('https://www.networkslab.co')
 		else:
@@ -373,7 +373,7 @@ def encuesta(request,id_proyecto,key):
 			cuestionario_preguntas = cuestionario
 			if not len_cuestionario:
 				try:
-					return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
+					return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 				except:
 					return HttpResponseRedirect('https://www.networkslab.co')
 		else:
@@ -384,7 +384,7 @@ def encuesta(request,id_proyecto,key):
 
 	else:
 		try:
-			return HttpResponseRedirect('http://'+str(encuestado.proyecto.empresa.pagina))
+			return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 		except:
 			return HttpResponseRedirect('https://networkslab.co')
 
@@ -483,7 +483,7 @@ def exportarexterna(request):
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -557,7 +557,7 @@ def exportarinterna(request):
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -705,7 +705,7 @@ def importarespuestas_exportar(request):
 	date_format.num_format_str = 'dd/mm/yyyy'
 	str_format = xlwt.easyxf(num_format_str="@")
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.res_exp:
@@ -814,12 +814,12 @@ def importarespuestas_exportar(request):
 @login_required(login_url='/acceder/')
 def importarespuestas_preguntas(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+	if not proyecto:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_add:
+	if permisos.consultor and permisos.pre_add:
 		error = None
 		if request.method == 'POST':
 			import xlrd,xlwt
