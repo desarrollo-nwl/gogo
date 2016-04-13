@@ -143,12 +143,8 @@ def menu(request,id_proyecto):
 		elif( proyecto.tipo == "Lineal 360" or proyecto.tipo == "Redes 360" ):
 			return HttpResponseRedirect('/360/focalizado/')
 		else:
-<<<<<<< HEAD
-			return HttpResponseRedirect('/focalizado/')
-
-=======
 			return HttpResponseRedirect('/analisis/focalizado/')
->>>>>>> 9152854987222733dd83db05ff0364f842b9eaa3
+
 	except:
 		return render_to_response('403.html')
 

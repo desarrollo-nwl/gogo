@@ -127,7 +127,7 @@
 			<div class="col-lg-9">
 				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
 				<br>
-				<div id="control_grafica_dos_div"></div>
+				<div id="slider"></div>
 				<br><br>
 			</div>
 
@@ -346,58 +346,93 @@
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.2','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = [	{% for i in Datos %}[ {{ i.colaborador_id | safe }},{% if not i.pregunta.multiple %}['{{i.respuesta}}'],{% else %}{{i.respuesta}},{% endif %}new Date({{ i.fecharespuesta.year | safe }},{{ i.fecharespuesta.month | safe }}-1,{{ i.fecharespuesta.day | safe }}),{{ i.pregunta_id | safe }}],{% endfor %} ];
-var Participantes = { 	{% for i in Participantes %}{{i.id_id|safe}}:{'area': `{{i.area}}`,'cargo': `{{i.cargo}}`,'ciudad': `{{i.ciudad}}`,'regional': `{{i.regional}}`,{% if PDatos.opcional1 %}'opcional1': `{{i.opcional1}}`,{% endif %}{% if PDatos.opcional2 %}'opcional2': `{{i.opcional2}}`,{% endif %}{% if PDatos.opcional3 %}'opcional3': `{{i.opcional3}}`,{% endif %}{% if PDatos.opcional4 %}'opcional4': `{{i.opcional4}}`,{% endif %}{% if PDatos.opcional5 %}'opcional5': `{{i.opcional5}}`,{% endif %}	},{% endfor %}	};
-var Cuestionario = {	{% for i in Cuestionario %}{{i.id|safe}}:{	'respuestas':{	{% for j in i.respuestas_set.all %}		'{{j.texto}}':{% if i.numerica %}{{j.numerico|safe}}{% else %}0{% endif%},	{% endfor %}	},	'texto': `{{i.texto}}`,	'variable': {{ i.variable_id | safe }},	'variable_str': `{{i.variable.nombre}}`},{% endfor %} };
+var Datos = {{ Datos | safe}}
+var Cuestionario = [ {% for i in Preguntas %}['{{ i.variable_id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}];
+var sintaxis = [{% for i in Preguntas %}[`{{i.id | escape}}`,[ {% for j in i.respuestas_set.all %}`{{ j.texto | escape }}`,{% endfor %}]],{% endfor %}]
+
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
 	return false;
 }
-
 var contenido_date = function(a,x){
-	for (var i = x.length; i > 0; i--) if (a - x[i-1] == 0) return true;
+	for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
 	return false;
 }
+var limpiar_filas_nulas = function(matriz_datos){
+	var long_fila = matriz_datos[0].length;
+	for( var i = 1; i < matriz_datos.length; i++ ) {
+		for (var j = 1; j < long_fila; j++)
+			if (matriz_datos[i][j] == 0 )
+				matriz_datos[i][j] = matriz_datos[i-1][j];
+	}
+	return matriz_datos;
+}
+var eliminar_filas_nulas = function(matriz_datos){
+	var matriz_limpia =[], suma = 0;
+	for( var i = 1; i < matriz_datos.length; i++ ) {
+		suma = 0;
+		for ( var j = 1; j < matriz_datos[i].length; j++ )
+			suma += matriz_datos[i][j];
 
-var minmax_resf = function minmax_resf(){
-   var min = Infinity, max = -Infinity, cache;
-	for (var i in Cuestionario) {
-		cache = Cuestionario[i];
-		for (var respuesta in cache['respuestas']) {
-			if ( cache['respuestas'][respuesta] < min ) min = cache['respuestas'][respuesta];
-			if ( cache['respuestas'][respuesta] > max ) max = cache['respuestas'][respuesta];
+		if ( suma != 0 ) matriz_limpia.push(matriz_datos[i]);
+	}
+	return matriz_limpia;
+}
+var maximo_cuestionario = 5;
+for (var i = 0; i < Cuestionario.length; i++) {
+	for (var key in Cuestionario[i][1]) {
+		if (Cuestionario[i][1].hasOwnProperty(key)){
+			for (var key2 in Cuestionario[i][1][key]) {
+				if (Cuestionario[i][1][key].hasOwnProperty(key2) && Cuestionario[i][1][key][key2] > maximo_cuestionario)
+			 		maximo_cuestionario = Cuestionario[i][1][key][key2];
+			 }
 		}
 	}
-	return [min,max];
 }
 
-var tiemposIniciales = function(fechas){
-	var max_gt = new Date(2000,1,20).getTime(),
-		min_gt = new Date(2030,1,20).getTime(),
-		f_max = new Date(2030,1,20),
-		f_min = new Date(2000,1,20);
+var integrarDatos = function(tiempoMin,tiempoMax,matriz_g2,matrizIntegral,respuestas){
+      var matrizIntegrada = matrizIntegral,suma=0;
+	  for(var m=0;m<matrizIntegrada.length;m++){
+		  for(var i=0;i<matriz_g2.length;i++){
+				if(matriz_g2[i][1]>= tiempoMin && matriz_g2[i][1]<=tiempoMax && matriz_g2[i][0]==matrizIntegrada[m][0]){
+					for(var k = 0; k<respuestas.length; k++){
+						matrizIntegrada[m][k+1] += matriz_g2[i][k+2];
+						suma += matriz_g2[i][k+2];
+					}
+			  }
+		}
+	}
+	if(suma === 0) throw "Sin datos";
+    return matrizIntegrada;
+}
 
-	for(var i = 0; i < fechas.length; i++){
-			var tiempo = fechas[i].getTime();
-			if( tiempo > max_gt ){
-				max_gt = tiempo;
-                f_max = fechas[i];
+var tiemposIniciales = function(variables){
+	var tiempoMaximo = new Date(2000,1,20).getTime(),
+		tiempoMinimo = new Date(2030,1,20).getTime(),
+		fechaMaxima = new Date(2030,1,20),
+		fechaMinima = new Date(2000,1,20);
+	for(var i=0;i<variables[3].length;i++){
+			var tiempo = variables[3][i].getTime(),
+				fecha = variables[3][i];
+			if(tiempo>tiempoMaximo){
+				tiempoMaximo = tiempo;
+                fechaMaxima = fecha;
 				}
-			if( tiempo < min_gt ){
-				min_gt = tiempo;
-				f_min = fechas[i];
+			if(tiempo<tiempoMinimo){
+				tiempoMinimo = tiempo;
+				fechaMinima = fecha;
 			}
 		}
-    return [f_min,f_max];
+    return [tiempoMinimo,tiempoMaximo,fechaMinima,fechaMaxima];
 }
 //==============================================================================
 //   variables GLOBALES
 //==============================================================================
 
 var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[],
-	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'), var_num_str = {},
-	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'), minmax_res = [],
+	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
+	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
 	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[],
 	variables_str="",preguntas_str_lig="",preguntas_str="",regionales_str="",ciudades_str="",areas_str="",cargos_str="",
 	opcional1_str="",opcional2_str="",opcional3_str="",opcional4_str="",opcional5_str="";
@@ -436,123 +471,164 @@ var Elementos = {
 //==============================================================================
 inicio : function(){
 
-	for (var i in Cuestionario) {
-		cache = Cuestionario[i];
-		if (!contenido(cache['variable'],variables)){
-			variables.push(cache['variable']);
-			variables_str += "<option value='"+cache['variable']+"'>"+cache['variable_str']+"</option>";
-			var_num_str[cache['variable']] = cache['variable_str'];
+	for (var i = 0; i < Datos.length; i++) {
+
+		if(!contenido_date(Datos[i][8],fechas)) fechas.push(Datos[i][8]);
+
+		if (!contenido(Datos[i][14],variables)){
+			variables.push(Datos[i][14]);
+			variables_str += "<option value='"+Datos[i][14]+"'>"+Datos[i][1]+"</option>"
 		}
 
-		if (!contenido(i,preguntas) ){
-			preguntas_str += "<option value='"+i+"'>"+cache['texto']+"</option>";
-			if ( cache['variable'] == variables[0] ) preguntas_str_lig += "<option value='"+i+"'>"+cache['texto']+"</option>";
-			preguntas.push(i);
+		if ( !contenido(Datos[i][15],preguntas) ){
+			if ( Datos[i][14] == variables[0] ) preguntas_str_lig += "<option value='"+Datos[i][15]+"'>"+Datos[i][2]+"</option>"
+			preguntas_str += "<option value='"+Datos[i][15]+"'>"+Datos[i][2]+"</option>"
+			preguntas.push(Datos[i][15]);
 		}
-	}
-
-	for (var i in Participantes) {
-		cache = Participantes[i]['regional'];
-		if (!contenido(cache,regionales)){
-			regionales.push(cache);
-			regionales_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][3],regionales)){
+			regionales.push(Datos[i][3]);
+			regionales_str += "<option value='"+Datos[i][3]+"'>"+Datos[i][3]+"</option>"
 		}
-		cache = Participantes[i]['ciudad'];
-		if (!contenido(cache,ciudades)){
-			ciudades.push(cache);
-			ciudades_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][4],ciudades)){
+			ciudades.push(Datos[i][4]);
+			ciudades_str += "<option value='"+Datos[i][4]+"'>"+Datos[i][4]+"</option>"
 		}
-		cache = Participantes[i]['area'];
-		if (!contenido(cache,areas)){
-			areas.push(cache);
-			areas_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][5],areas)){
+			areas.push(Datos[i][5]);
+			areas_str += "<option value='"+Datos[i][5]+"'>"+Datos[i][5]+"</option>"
 		}
-		cache = Participantes[i]['cargo'];
-		if (!contenido(cache,cargos)){
-			cargos.push(cache);
-			cargos_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][6],cargos)){
+			cargos.push(Datos[i][6]);
+			cargos_str += "<option value='"+Datos[i][6]+"'>"+Datos[i][6]+"</option>"
 		}
 
 		{%if PDatos.opcional1 %}
-		cache = Participantes[i]['opcional1'];
-		if (!contenido(cache,opcional1)){
-			opcional1.push(cache);
-			opcional1_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][9],opcional1)){
+			opcional1.push(Datos[i][9]);
+			opcional1_str += "<option value='"+Datos[i][9]+"'>"+Datos[i][9]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional2 %}
-		cache = Participantes[i]['opcional2'];
-		if (!contenido(cache,opcional2)){
-			opcional2.push(cache);
-			opcional2_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][10],opcional2)){
+			opcional2.push(Datos[i][10]);
+			opcional2_str += "<option value='"+Datos[i][10]+"'>"+Datos[i][10]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional3 %}
-		cache = Participantes[i]['opcional3'];
-		if (!contenido(cache,opcional3)){
-			opcional3.push(cache);
-			opcional3_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][11],opcional3)){
+			opcional3.push(Datos[i][11]);
+			opcional3_str += "<option value='"+Datos[i][11]+"'>"+Datos[i][11]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional4 %}
-		cache = Participantes[i]['opcional4'];
-		if (!contenido(cache,opcional4)){
-			opcional4.push(cache);
-			opcional4_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][12],opcional4)){
+			opcional4.push(Datos[i][12]);
+			opcional4_str += "<option value='"+Datos[i][12]+"'>"+Datos[i][12]+"</option>"
 		}
 		{% endif %}
 		{%if PDatos.opcional5 %}
-		cache = Participantes[i]['opcional5'];
-		if (!contenido(cache,opcional5)){
-			opcional5.push(cache);
-			opcional5_str += '<option value="'+cache+'">'+cache+'</option>';
+		if (!contenido(Datos[i][13],opcional5)){
+			opcional5.push(Datos[i][13]);
+			opcional5_str += "<option value='"+Datos[i][13]+"'>"+Datos[i][13]+"</option>"
 		}
 		{% endif %}
 	}
 
-	$var_g1.html(variables_str);
-	$var_g2.html(variables_str);
-	$var_g3.html(variables_str);
-	$pre_g1.html(preguntas_str);
-	$pre_g2.html(preguntas_str_lig);
-	$pre_g3.html(preguntas_str_lig);
-	$reg_g1.html(regionales_str);
-	$reg_g2.html(regionales_str);
-	$reg_g3.html(regionales_str);
-	$ciu_g1.html(ciudades_str);
-	$ciu_g2.html(ciudades_str);
-	$ciu_g3.html(ciudades_str);
-	$are_g1.html(areas_str);
-	$are_g2.html(areas_str);
-	$are_g3.html(areas_str);
-	$car_g1.html(cargos_str);
-	$car_g2.html(cargos_str);
-	$car_g3.html(cargos_str);
+	$var_g1.append(variables_str);
+	$var_g2.append(variables_str);
+	$var_g3.append(variables_str);
+	$pre_g1.append(preguntas_str);
+	$pre_g2.append(preguntas_str_lig);
+	$pre_g3.append(preguntas_str_lig);
+	$reg_g1.append(regionales_str);
+	$reg_g2.append(regionales_str);
+	$reg_g3.append(regionales_str);
+	$ciu_g1.append(ciudades_str);
+	$ciu_g2.append(ciudades_str);
+	$ciu_g3.append(ciudades_str);
+	$are_g1.append(areas_str);
+	$are_g2.append(areas_str);
+	$are_g3.append(areas_str);
+	$car_g1.append(cargos_str);
+	$car_g2.append(cargos_str);
+	$car_g3.append(cargos_str);
 {% if PDatos.opcional1 %}
-	$op1_g1.html(opcional1_str);
-	$op1_g2.html(opcional1_str);
-	$op1_g3.html(opcional1_str);
+	$op1_g1.append(opcional1_str);
+	$op1_g2.append(opcional1_str);
+	$op1_g3.append(opcional1_str);
 {% endif %}
 {% if PDatos.opcional2 %}
-	$op2_g1.html(opcional2_str);
-	$op2_g2.html(opcional2_str);
-	$op2_g3.html(opcional2_str);
+	$op2_g1.append(opcional2_str);
+	$op2_g2.append(opcional2_str);
+	$op2_g3.append(opcional2_str);
 {% endif %}
 {% if PDatos.opcional3 %}
-	$op3_g1.html(opcional3_str);
-	$op3_g2.html(opcional3_str);
-	$op3_g3.html(opcional3_str);
+	$op3_g1.append(opcional3_str);
+	$op3_g2.append(opcional3_str);
+	$op3_g3.append(opcional3_str);
 {% endif %}
 {% if PDatos.opcional4 %}
-	$op4_g1.html(opcional4_str);
-	$op4_g2.html(opcional4_str);
-	$op4_g3.html(opcional4_str);
+	$op4_g1.append(opcional4_str);
+	$op4_g2.append(opcional4_str);
+	$op4_g3.append(opcional4_str);
 {% endif %}
 {% if PDatos.opcional5 %}
-	$op5_g1.html(opcional5_str);
-	$op5_g2.html(opcional5_str);
-	$op5_g3.html(opcional5_str);
+	$op5_g1.append(opcional5_str);
+	$op5_g2.append(opcional5_str);
+	$op5_g3.append(opcional5_str);
 {% endif %}
+
+	$var_g1.change(function(){
+		var preguntas1 = [];
+		$pre_g1.find('option').remove();
+		if($var_g1.val()){
+			for (var i = 0; i < Datos.length; i++) {
+				if ( !contenido(Datos[i][15],preguntas1) && contenido(Datos[i][14],$var_g1.val()) ){
+					preguntas1.push(Datos[i][15]);
+					$pre_g1.append($('<option>', {
+						value: Datos[i][15],
+						text : Datos[i][2]
+					}));
+				}
+			}
+		}
+		$pre_g1.multiselect('rebuild');
+		$pre_g1.multiselect('selectAll', false);
+		$pre_g1.multiselect('updateButtonText');
+	});
+	$var_g2.change(function(){
+		var preguntas2 = [];
+		$pre_g2.find('option').remove();
+		for (var i = 0; i < Datos.length; i++) {
+			if ( !contenido(Datos[i][15],preguntas2) && Datos[i][14] == $var_g2.val() ){
+				preguntas2.push(Datos[i][15]);
+				$pre_g2.append($('<option>', {
+					value: Datos[i][15],
+					text : Datos[i][2]
+				}));
+			}
+		}
+		$pre_g2.multiselect('rebuild');
+		$pre_g2.selectedIndex = 0;
+		$pre_g2.multiselect('updateButtonText');
+	});
+	$var_g3.change(function(){
+		var preguntas3 = [];
+		$pre_g3.find('option').remove();
+		for (var i = 0; i < Datos.length; i++) {
+			if ( !contenido(Datos[i][15],preguntas3) && Datos[i][14] == $var_g3.val() ){
+				preguntas3.push(Datos[i][15]);
+				$pre_g3.append($('<option>', {
+					value: Datos[i][15],
+					text : Datos[i][2]
+				}));
+			}
+		}
+		$pre_g3.multiselect('rebuild');
+		$pre_g3.multiselect('selectAll', false);
+		$pre_g3.multiselect('updateButtonText');
+	});
+
 	//  UPDATE Selects
 	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
 	$('.filtro').multiselect('selectAll', false);
@@ -567,57 +643,6 @@ inicio : function(){
 	$var_g3.selectedIndex = 0;
 	$var_g3.multiselect('updateButtonText');
 
-	$var_g1.change(function(){
-		var preguntas1 = [],preguntas1_str="",var_sel = $var_g1.val() || [];
-		for (var i in Cuestionario) {
-			cache = Cuestionario[i];
-			if ( contenido(cache['variable'], var_sel)  && !contenido(i,preguntas1)){
-				preguntas1.push(i);
-				preguntas1_str += "<option value='"+i+"'>"+cache['texto']+"</option>";
-			}
-		}
-		$pre_g1.html(preguntas1_str);
-		$pre_g1.multiselect('rebuild');
-		$pre_g1.multiselect('selectAll', false);
-		$pre_g1.multiselect('updateButtonText');
-	});
-
-	$var_g2.change(function(){
-		var preguntas2 = [],preguntas2_str="",var_sel = $var_g2.val();
-		for (var i in Cuestionario) {
-			cache = Cuestionario[i];
-			if (cache['variable'] == var_sel && !contenido(i,preguntas2)){
-				preguntas2.push(i);
-				preguntas2_str += "<option value='"+i+"'>"+cache['texto']+"</option>";
-			}
-		}
-		$pre_g2.html(preguntas2_str);
-		$pre_g2.multiselect('rebuild');
-		$pre_g2.selectedIndex = 0;
-		$pre_g2.multiselect('updateButtonText');
-	});
-
-	$var_g3.change(function(){
-		var preguntas3 = [],preguntas3_str="",var_sel = $var_g3.val();
-		for (var i in Cuestionario) {
-			cache = Cuestionario[i];
-			if (cache['variable'] == var_sel && !contenido(i,preguntas3)){
-				preguntas3.push(i);
-				preguntas3_str += "<option value='"+i+"'>"+cache['texto']+"</option>";
-			}
-		}
-		$pre_g3.html(preguntas3_str);
-		$pre_g3.multiselect('rebuild');
-		$pre_g3.multiselect('selectAll', false);
-		$pre_g3.multiselect('updateButtonText');
-	});
-	var date_sort_asc = function (date1, date2) {
-	  if (date1 > date2) return 1;
-	  if (date1 < date2) return -1;
-	  return 0;
-	};
-	for (var i = 0; i < Datos.length; i++) if(!contenido_date(Datos[i][2],fechas)) fechas.push(Datos[i][2]);
-	fechas.sort(date_sort_asc);
 },
 
 //==============================================================================
@@ -640,71 +665,74 @@ grafica_uno: function(){
 	// inicializamos las variables de la data table
 	var data = new google.visualization.DataTable(),
 		variables_seleccionadas_textos = [], v = $('#variables_g1 option');
-
-	for(var  i=0; i< v.length; i++) if(v[i].selected) variables_seleccionadas_textos.push(v[i].text);
-
+	for(var  i=0; i< v.length; i++){ if(v[i].selected){variables_seleccionadas_textos.push(v[i].text)}};
 	data.addColumn('date', 'Fecha');
 
-	var matriz_g1 = [],auxiliar = 0, matriz_g1_dic = {}, var_dic = {}, aux = [];
+	for (var i = 0; i < variables_seleccionadas_textos.length; i++) {
+		data.addColumn('number',variables_seleccionadas_textos[i] );
+	}
+	var matriz_g1 = [],auxiliar=0;
 
-	for (var j = 0; j < variables_seleccionadas.length; j++)
-		data.addColumn('number', var_num_str[ variables_seleccionadas[j]] );
-
-
-	for (var i = 0; i < fechas.length; i++){
-		matriz_g1_dic[ fechas[i] ] = { };
+	// inicializamos la date tables
+	for (var i = 0; i < fechas.length; i++) {
+		matriz_g1.push([ fechas[i] ]);
+		// llenamos de ceros la date tables
 		for (var j = 0; j < variables_seleccionadas.length; j++) {
-			matriz_g1_dic[ fechas[i] ][ variables_seleccionadas[j] ] = 0;
-			matriz_g1_dic[ fechas[i] ][ variables_seleccionadas[j]+'_total' ] = 0;
+			matriz_g1[i].push(0);
 		}
 	}
 
 	// contamos
-	for (var j = 0; j < Datos.length; j++) {
-		cache_P = Participantes[Datos[j][0]];
-		cache_C = Cuestionario[Datos[j][3]];
+	for (var i = 0; i < matriz_g1.length; i++) {
+		for (var k = 0; k < variables_seleccionadas.length; k++) {
+			for (var j = 0; j < Datos.length; j++) {
+				if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
+				&& variables_seleccionadas[k] == Datos[j][14]
+				&& Datos[j][16] == "True"
+				&& contenido(Datos[j][15],preguntas_seleccionadas)
+				&& contenido(Datos[j][3],regionales_seleccionadas)
+				&& contenido(Datos[j][4],ciudades_seleccionadas)
+				&& contenido(Datos[j][5],areas_seleccionadas)
+				&& contenido(Datos[j][6],cargos_seleccionados)
+				{%if PDatos.opcional1 %}
+					&& contenido(Datos[j][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional2 %}
+					&& contenido(Datos[j][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional3 %}
+					&& contenido(Datos[j][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional4 %}
+					&& contenido(Datos[j][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional5 %}
+					&& contenido(Datos[j][13],opcional5_seleccionadas)
+				{% endif %}
+			){
+					for (var l = 0; l < Cuestionario.length; l++) {
+						if( Cuestionario[l][0] == Datos[j][14] && Cuestionario[l][1][Datos[j][15]] )
+						{
+							for (var m = 0; m < Datos[j][7].length; m++) {
+								if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
+									matriz_g1[i][k+1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
+									auxiliar++;
+								}
+							}
+						}
+					}
+				}
+			}
 
-		if( contenido(cache_C['variable'], variables_seleccionadas)
-		&& contenido(cache_P['ciudad'], ciudades_seleccionadas)
-		&& contenido(cache_P['regional'], regionales_seleccionadas)
-		&& contenido(cache_P['area'], areas_seleccionadas)
-		&& contenido(cache_P['cargo'], cargos_seleccionados)
-		&& contenido(Datos[i][3], preguntas_seleccionadas)
-		{%if PDatos.opcional1 %}
-			&& contenido(cache_P['opcional1'],opcional1_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional2 %}
-			&& contenido(cache_P['opcional2'],opcional2_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional3 %}
-			&& contenido(cache_P['opcional3'],opcional3_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional4 %}
-			&& contenido(cache_P['opcional4'],opcional4_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional5 %}
-			&& contenido(cache_P['opcional5'],opcional5_seleccionadas)
-		{% endif %}
-		){
-			matriz_g1_dic[Datos[j][2]][cache_C['variable']] += cache_C['respuestas'][Datos[j][1]];
-			matriz_g1_dic[Datos[j][2]][cache_C['variable']+'_total']++;
+		if(auxiliar){
+			matriz_g1[i][k+1] = +(Math.round(matriz_g1[i][k+1]/auxiliar+ "e+2")  + "e-2");
+			auxiliar = 0;
+		}
+
 		}
 	}
 
-	var bandera;
-	for (var j = 0; j < fechas.length; j++) {
-		cache_F = matriz_g1_dic[ fechas[j] ];
-		aux = []
-		aux.push( fechas[j] );
-		for (var i = 0; i < variables_seleccionadas.length; i++ ) {
-			if ( cache_F[variables_seleccionadas[i]+'_total'] != 0 ) {
-				aux.push( +(Math.round( cache_F[variables_seleccionadas[i]] / cache_F[variables_seleccionadas[i]+'_total'] + "e+2")  + "e-2") );
-			} else if ( matriz_g1_dic.hasOwnProperty(fechas[j-1]) && matriz_g1_dic[ fechas[j-1] ][variables_seleccionadas[i]+'_total'] != 0 ){
-				aux.push( +(Math.round( matriz_g1_dic[ fechas[j-1] ][variables_seleccionadas[i]] / matriz_g1_dic[ fechas[j-1] ][variables_seleccionadas[i]+'_total'] + "e+2")  + "e-2") );
-			} else aux.push(0);
-		}
-		matriz_g1.push(aux);
-	}
+	matriz_g1 = limpiar_filas_nulas(matriz_g1);
 
 	data.addRows( matriz_g1 );
 
@@ -729,7 +757,7 @@ grafica_uno: function(){
 			vAxis : {
 				viewWindowMode:'explicit',
 				viewWindow:{
-                	max:minmax_res[1],
+                	max:maximo_cuestionario,
                 	min:0
               }
 		   },
@@ -815,87 +843,17 @@ grafica_uno: function(){
 //==============================================================================
 //   Grafica DOS
 //==============================================================================
-grafica_dos : function( finicio,ffin) {
+grafica_dos : function(dataTable,vector) {
+    var paila = dataTable;
+	var preguntaSelecionada = $pre_g2.val() || [];
+    var data2 = new google.visualization.DataTable();
+	data2.addColumn('string','Area');
 
-    var data2 = new google.visualization.DataTable(),
-		matriz_g2 = [], matriz_g2_dic = {},
-		{%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g2.val() || [],{% endif %}
-		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g2.val() || [],{% endif %}
-		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g2.val() || [],{% endif %}
-		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g2.val() || [],{% endif %}
-		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g2.val() || [],{% endif %}
-		regionales_seleccionadas = $reg_g2.val() || [],
-		ciudades_seleccionadas = $ciu_g2.val() || [],
-		areas_seleccionadas = $are_g2.val() || [],
-		cargos_seleccionados = $car_g2.val() || [];
-		v = document.getElementById("variables_g2"),
-		variable_seleccionada = v.options[v.selectedIndex].value,
-		p = document.getElementById("preguntas_g2"),
-		pregunta_seleccionada = p.options[p.selectedIndex].value;
-
-	for (var i = 0; i < areas.length; i++)
-		matriz_g2_dic[ areas[i] ] = { };
-
-	var cache_F;
-	for (var k = 0; k < Datos.length; k++){
-		cache_P = Participantes[Datos[k][0]];
-		cache_C = Cuestionario[Datos[k][3]];
-		fecha_aux = Datos[k][2].getTime();
-
-		cache_F = Datos[k][2].getTime()
-		if( cache_C['variable'] == variable_seleccionada
-			&& Datos[k][3] == pregunta_seleccionada
-			&& finicio <=  cache_F
-			&& ffin >= cache_F
-			&& contenido(cache_P['ciudad'],ciudades_seleccionadas)
-			&& contenido(cache_P['regional'],regionales_seleccionadas)
-			&& contenido(cache_P['area'],areas_seleccionadas)
-			&& contenido(cache_P['cargo'],cargos_seleccionados)
-			{%if PDatos.opcional1 %}
-				&& contenido(cache_C['opcional1'],opcional1_seleccionadas)
-			{% endif %}
-			{%if PDatos.opcional2 %}
-				&& contenido(cache_C['opcional2'],opcional2_seleccionadas)
-			{% endif %}
-			{%if PDatos.opcional3 %}
-				&& contenido(cache_C['opcional3'],opcional3_seleccionadas)
-			{% endif %}
-			{%if PDatos.opcional4 %}
-				&& contenido(cache_C['opcional4'],opcional4_seleccionadas)
-			{% endif %}
-			{%if PDatos.opcional5 %}
-				&& contenido(cache_C['opcional5'],opcional5_seleccionadas)
-			{% endif %}
-	   ){
-			if ( matriz_g2_dic[ cache_P['area' ] ].hasOwnProperty(Datos[k][1]) )
-				matriz_g2_dic[ cache_P['area' ] ][ Datos[k][1] ]++;
-			else
-				matriz_g2_dic[ cache_P['area' ] ][ Datos[k][1] ] = 1;
-		}
+	for (var i = 0; i < vector.length; i++) {
+		data2.addColumn('number',vector[i] );
 	}
 
-	var cols = [];
-	data2.addColumn('string',area );
-	for (var area in matriz_g2_dic) {
-		for (var resp in matriz_g2_dic[area]) {
-			if ( !contenido(resp,cols) ){
-				cols.push(resp)
-				data2.addColumn('number', resp );
-			}
-		}
-	}
-
-	var aux = [];
-	for (var area in matriz_g2_dic) {
-		aux = [];
-		aux.push(area);
-		for (var i = 0; i < cols.length; i++)
-			aux.push(matriz_g2_dic[area][cols[i]]);
-		matriz_g2.push(aux);
-	}
-
-	data2.addRows(matriz_g2);
-
+	data2.addRows(dataTable);
 	var altura = 260;
 	{%if PDatos.opcional1 %}altura+=40;{% endif %}
 	{%if PDatos.opcional2 %}altura+=40;{% endif %}
@@ -911,6 +869,93 @@ grafica_dos : function( finicio,ffin) {
 	chart.draw(data2, options);
 },
 
+dataTotal : function(){
+
+	    var preguntaSelecionada =  $pre_g2.val() || [],
+		{%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g2.val() || [],{% endif %}
+		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g2.val() || [],{% endif %}
+		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g2.val() || [],{% endif %}
+		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g2.val() || [],{% endif %}
+		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g2.val() || [],{% endif %}
+		regionales_seleccionadas = $reg_g2.val() || [],
+		ciudades_seleccionadas = $ciu_g2.val() || [],
+		areas_seleccionadas = $are_g2.val() || [],
+		cargos_seleccionados = $car_g2.val() || [];
+
+		var matriz_g2 = [];
+
+		for (var j = 0; j <sintaxis.length; j++){
+			 if(sintaxis[j][0] == preguntaSelecionada){
+				 var vectorRespuestas = sintaxis[j][1];
+				 var longitudRespuesta = vectorRespuestas.length;
+			 }
+		}
+
+		var cerosRespuestas = []
+		for(var k=0;k<longitudRespuesta;k++){
+			cerosRespuestas.push(0);
+		}
+
+		var matrizIntegral = []
+		for(var m=0;m<areas_seleccionadas.length;m++){
+
+			var vectorMatrizIntegral = [areas_seleccionadas[m]];
+
+			matrizIntegral.push(vectorMatrizIntegral.concat(cerosRespuestas));
+
+			for(var l=0;l<fechas.length;l++){
+			   var a = [areas_seleccionadas[m],fechas[l].getTime()]
+			   matriz_g2.push(a.concat(cerosRespuestas));
+			}
+		}
+
+
+		for(var k=0;k<Datos.length;k++){
+			if(contenido(Datos[k][5],areas_seleccionadas)
+			   && Datos[k][15]==preguntaSelecionada
+			   && contenido(Datos[k][3],regionales_seleccionadas)
+			   && contenido(Datos[k][4],ciudades_seleccionadas)
+			   && contenido(Datos[k][6],cargos_seleccionados)
+			   {%if PDatos.opcional1 %}
+				   && contenido(Datos[k][9],opcional1_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional2 %}
+				   && contenido(Datos[k][10],opcional2_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional3 %}
+				   && contenido(Datos[k][11],opcional3_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional4 %}
+				   && contenido(Datos[k][12],opcional4_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional5 %}
+				   && contenido(Datos[k][13],opcional5_seleccionadas)
+			   {% endif %}
+			){
+
+				var numFila = 0;
+				while(numFila<matriz_g2.length && (matriz_g2[numFila][0]!=Datos[k][5] || matriz_g2[numFila][1] != Datos[k][8].getTime() ) ){  //************************************
+					numFila += 1;
+				}
+
+				var respuestas = []
+				for(z=0;z<Datos[k][7].length;z++){
+					var indice = vectorRespuestas.indexOf(Datos[k][7][z]);
+					respuestas.push(indice);
+				}
+
+				if(numFila<matriz_g2.length){
+
+					for(x=0;x<respuestas.length;x++){
+						var ind = respuestas[x] + 2;
+						matriz_g2[numFila][ind] += 1;
+					}
+				}
+			}
+		}
+
+        return [matriz_g2,vectorRespuestas,matrizIntegral,fechas]
+},
 //==============================================================================
 //   Grafica TRES
 //==============================================================================
@@ -926,73 +971,83 @@ grafica_tres: function(){
 		regionales_seleccionadas = $reg_g3.val() || [],
 		ciudades_seleccionadas = $ciu_g3.val() || [],
 		areas_seleccionadas = $are_g3.val() || [],
-		cargos_seleccionados = $car_g3.val() || [],
-		matriz_g3 = [], matriz_g3_dic={}, cache_pre_res, respuestas = [], cache_var,
-		v = document.getElementById("variables_g3"),
-		variable_seleccionada = v.options[v.selectedIndex].value;
+		cargos_seleccionados = $car_g3.val() || [];
 
-	var data3 = new google.visualization.DataTable();
-	data3.addColumn('date', 'Fechas' );
-	for (var pregunta in Cuestionario) {
-		cache_var = Cuestionario[pregunta]['variable'];
-		cache_pre_res = Cuestionario[pregunta]['respuestas'];
-		for (var resp in cache_pre_res ) {
-			if ( variable_seleccionada == cache_var && !contenido(resp,respuestas)){
-				respuestas.push(resp);
-				data3.addColumn('number', resp);
+	// inicializamos las respuestas en la data table
+	var v = document.getElementById("variables_g3"),
+		variable_seleccionada = v.options[v.selectedIndex].value,
+		p = $('#preguntas_g3 option'),
+		respuestas_seleccionadas_textos = [], preguntas_control=[];
+
+	// Obtenemos las posibles respuestas de la encuesta
+	for (var i = 0; i < Cuestionario.length; i++) {
+		if( Cuestionario[i][0] == variable_seleccionada ){
+			for (var j = 0; j < p.length; j++) {
+				if( Cuestionario[i][1][p[j].value] && p[j].selected && ( !contenido( p[j].value, preguntas_control ) ) ){
+					for ( var key in Cuestionario[i][1][p[j].value] ) {
+					  if ( Cuestionario[i][1][p[j].value].hasOwnProperty(key) && !contenido(key,respuestas_seleccionadas_textos) ) {
+					    respuestas_seleccionadas_textos.push(key);
+					  }
+					}
+					preguntas_control.push( p[j].value )
+				}
 			}
 		}
 	}
 
-	for (var i = 0; i < fechas.length; i++){
-		matriz_g3_dic[ fechas[i] ] = { };
-		matriz_g3_dic[ fechas[i] ]['total'] = 0;
-		for (var j = 0; j < respuestas.length; j++)
-			matriz_g3_dic[ fechas[i] ][ respuestas[j] ] = 0;
-		matriz_g3_dic[ fechas[i] ][ 'total' ] = 0;
+	// inicializamos la date tables
+	var data3 = new google.visualization.DataTable();
+	data3.addColumn('date', 'Fecha');
+	for (var i = 0; i < respuestas_seleccionadas_textos.length; i++) {
+		data3.addColumn('number',respuestas_seleccionadas_textos[i] );
 	}
 
-	for (var j = 0; j < Datos.length; j++) {
-		cache_P = Participantes[Datos[j][0]];
-		cache_C = Cuestionario[Datos[j][3]];
-
-		if( cache_C['variable'] == variable_seleccionada
-		// && contenido(Datos[i][3], preguntas_seleccionadas)
-		&& contenido(cache_P['ciudad'], ciudades_seleccionadas)
-		&& contenido(cache_P['regional'], regionales_seleccionadas)
-		&& contenido(cache_P['area'], areas_seleccionadas)
-		&& contenido(cache_P['cargo'], cargos_seleccionados)
-		{%if PDatos.opcional1 %}
-			&& contenido(cache_P['opcional1'],opcional1_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional2 %}
-			&& contenido(cache_P['opcional2'],opcional2_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional3 %}
-			&& contenido(cache_P['opcional3'],opcional3_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional4 %}
-			&& contenido(cache_P['opcional4'],opcional4_seleccionadas)
-		{% endif %}
-		{%if PDatos.opcional5 %}
-			&& contenido(cache_P['opcional5'],opcional5_seleccionadas)
-		{% endif %}
-		){
-			matriz_g3_dic[Datos[j][2]][ Datos[j][1] ]++;
-			matriz_g3_dic[Datos[j][2]][ 'total' ]++;
+	// llenamos de ceros la date tables
+	var matriz_g3 = [];
+	for (var i = 0; i < fechas.length; i++) {
+		matriz_g3.push([ fechas[i] ]);
+		for (var j = 0; j < respuestas_seleccionadas_textos.length; j++) {
+			matriz_g3[i].push(0);
 		}
 	}
 
-	var aux = [];
-	for (var j = 0; j < fechas.length; j++){
-		aux = [];
-		bandera = false;
-		aux.push( fechas[j] );
-		for (var i = 0; i < respuestas.length; i++)
-			aux.push( matriz_g3_dic[fechas[j]][respuestas[i]] );
-
-		if ( matriz_g3_dic[fechas[j]]['total'] ) matriz_g3.push(aux);
+	// contamos
+	for (var i = 0; i < matriz_g3.length; i++) {
+		for (var k = 0; k < respuestas_seleccionadas_textos.length; k++) {
+			for (var j = 0; j < Datos.length; j++) {
+				if( matriz_g3[i][0].getTime() === Datos[j][8].getTime()
+				&& variable_seleccionada == Datos[j][14]
+				&& contenido(Datos[j][15],preguntas_seleccionadas)
+				&& contenido(Datos[j][3],regionales_seleccionadas)
+				&& contenido(Datos[j][4],ciudades_seleccionadas)
+				&& contenido(Datos[j][5],areas_seleccionadas)
+				&& contenido(Datos[j][6],cargos_seleccionados)
+				{%if PDatos.opcional1 %}
+					&& contenido(Datos[j][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional2 %}
+					&& contenido(Datos[j][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional3 %}
+					&& contenido(Datos[j][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional4 %}
+					&& contenido(Datos[j][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional5 %}
+					&& contenido(Datos[j][13],opcional5_seleccionadas)
+				{% endif %}
+				){
+					for (var l = 0; l < Datos[j][7].length; l++) {
+						if( Datos[j][7][l] == respuestas_seleccionadas_textos[k] ){
+							matriz_g3[i][k+1] += 1;
+						}
+					}
+				}
+			}
+		}
 	}
+	matriz_g3 = eliminar_filas_nulas(matriz_g3);
 
 	data3.addRows( matriz_g3 );
 
@@ -1078,15 +1133,18 @@ verifica_dos: function(){
 			$ciu_g2.val().length
 			$are_g2.val().length
 			$car_g2.val().length
+			$("#slider").css("margin-top","0px");
 
-			$("#control_grafica_dos_div").css("margin-top","0px");
-			var fecha = $('#control_grafica_dos_div').dateRangeSlider('values');
-			google.setOnLoadCallback( this.grafica_dos(fecha.min.getTime(),fecha.max.getTime()) );
+			var fecha = $('#slider').dateRangeSlider('values'),
+				tiempoMin = fecha.min.getTime(), tiempoMax = fecha.max.getTime(),
+				variables = this.dataTotal(),
+				esperanza =  integrarDatos(tiempoMin,tiempoMax,variables[0],variables[2],variables[1]);
+				google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
 
 		 }
 		catch(e){
 			$("#grafica_dos_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
-			$("#control_grafica_dos_div").css("margin-top",altura+"px");
+			$("#slider").css("margin-top",altura+"px");
 		}
 },
 
@@ -1120,26 +1178,26 @@ verifica_tres: function(){
 $(document).ready(function() {
 	Elementos.inicio();
 	{% if Datos %}
-	minmax_res = minmax_resf();
-
 	Elementos.verifica_uno();
 	$('.panel-body .panel').fadeTo(100,100);
 	$('.filtros_uno').change(function(){ Elementos.verifica_uno(); });
 
-	tiemposInicio_0 = tiemposIniciales(fechas);
+	variables = Elementos.dataTotal(),
+	tiemposInicio_0 = tiemposIniciales(variables);
 
-	$("#control_grafica_dos_div").dateRangeSlider({
-	   bounds:{
-		   min: new Date({{PDatos.finicio.year}},{{PDatos.finicio.month}}-1,{{PDatos.finicio.day}}),
-		   max: new Date({{PDatos.ffin.year}},{{PDatos.ffin.month}}-1,{{PDatos.ffin.day}})
-	   },
-	   defaultValues:{
-		   min: tiemposInicio_0[0],
-		   max: tiemposInicio_0[1]
-	   }
+	$("#slider").dateRangeSlider({
+		bounds:{
+	      min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
+	      max: new Date({{ PDatos.ffin.year }},{{ PDatos.ffin.month | add:-1 }},{{ PDatos.ffin.day }})
+	    },
+	    defaultValues:{
+	      min: tiemposInicio_0[2],
+	      max: tiemposInicio_0[3]
+	    }
 	});
 
-	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
+	Elementos.verifica_dos();
+	$('#slider').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
 	$('.filtros_dos').change(function(){ Elementos.verifica_dos(); });
 
 	Elementos.verifica_tres();

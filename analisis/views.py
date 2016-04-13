@@ -15,7 +15,7 @@ from usuarios.models import Proyectos,ProyectosDatos, Logs
 import grafos as gr
 import string,datetime
 
-import focal,analisis_cpp
+import analisis_cpp
 
 from datetime import timedelta
 
@@ -134,42 +134,34 @@ def focalizado(request):
 		if proyecto.iniciable:
 			variables = Variables.objects.filter(proyecto_id=proyecto.id)
 			preguntas = Preguntas.objects.prefetch_related('respuestas_set').filter(variable__in=variables,abierta=False)
-			# datos = Streaming.objects.only(
-			# 		'respuesta','fecharespuesta',
-			# 		'pregunta__texto',
-			# 		'pregunta__numerica',
-			# 		'pregunta__multiple',
-			# 		'pregunta__abierta',
-			# 		'pregunta__variable__nombre',
-			# 		'proyecto__proyectosdatos__opcional1',
-			# 		'proyecto__proyectosdatos__opcional2',
-			# 		'proyecto__proyectosdatos__opcional3',
-			# 		'proyecto__proyectosdatos__opcional4',
-			# 		'proyecto__proyectosdatos__opcional5',
-			# 		'colaborador__colaboradoresdatos__regional',
-			# 		'colaborador__colaboradoresdatos__ciudad',
-			# 		'colaborador__colaboradoresdatos__area',
-			# 		'colaborador__colaboradoresdatos__cargo',
-			# 		'colaborador__colaboradoresdatos__niv_academico',
-			# 		'colaborador__colaboradoresdatos__profesion',
-			# 		'colaborador__colaboradoresdatos__opcional1',
-			# 		'colaborador__colaboradoresdatos__opcional2',
-			# 		'colaborador__colaboradoresdatos__opcional3',
-			# 		'colaborador__colaboradoresdatos__opcional4',
-			# 		'colaborador__colaboradoresdatos__opcional5'
-			# 		).filter(
-			# 			proyecto_id=proyecto.id,
-			# 			pregunta__abierta=False,
-			# 			respuesta__isnull=False
-			# 		).select_related(
-			# 			'proyecto__proyectosdatos',
-			# 			'pregunta','pregunta__variable',
-			# 			'colaborador','colaborador__colaboradoresdatos'
-			# 		).order_by('fecharespuesta')
-			datos = focal.query(str(proyecto.id))
+			datos = Streaming.objects.only(
+					'respuesta','fecharespuesta',
+					'pregunta__multiple',
+					'colaborador_id','pregunta_id',
+					'pregunta'
+					).filter(
+						proyecto_id=proyecto.id,
+						pregunta__abierta=False,
+						respuesta__isnull=False
+					).select_related('pregunta')
+
+			colaboradores = Colaboradores.objects.only('id').filter(proyecto_id = proyecto.id)
+			colaboradores = ColaboradoresDatos.objects.only(
+				'id_id','area','cargo','ciudad','opcional1','opcional2','opcional3',
+				'opcional4','opcional5','ciudad','regional'
+				).filter( id__in = colaboradores)
+
+			variables = Variables.objects.only('id').filter(proyecto_id = proyecto.id)
+			cuestionario = Preguntas.objects.only(
+							'id','texto','variable__nombre'
+							).filter(variable__in =  variables
+							).select_related('variable__nombre'
+							).prefetch_related('respuestas_set')
+
 			return render_to_response('focalizado.html',{
 				'Activar':'AnalisisResultados','activar':'Focalizados','PDatos':pdatos,
-				'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Preguntas':preguntas
+				'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Cuestionario':cuestionario,
+				'Participantes':colaboradores
 			}, context_instance=RequestContext(request))
 		else:
 			return render_to_response('sindatos.html',{
