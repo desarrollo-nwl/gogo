@@ -489,10 +489,9 @@ def exportarexterna(request):
 	if permisos.consultor and permisos.res_exp:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Respuestas'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		a = string.replace(proyecto.nombre,' ','')
 		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Externa.objects.filter(proyecto=proyecto).select_related(
@@ -564,10 +563,9 @@ def exportarinterna(request):
 	if permisos.consultor and permisos.res_exp:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Respuestas'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		a = string.replace(proyecto.nombre,' ','')
 		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		stream = Streaming.objects.filter(proyecto=proyecto,respuesta__isnull=False).select_related(
@@ -713,7 +711,7 @@ def importarespuestas_exportar(request):
 	if permisos.consultor and permisos.res_exp:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Respuestas'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet(a)

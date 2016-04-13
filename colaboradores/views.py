@@ -248,10 +248,9 @@ def archivo(request):
 	if permisos.consultor and permisos.col_add:
 		response = HttpResponse(content_type='application/ms-excel')
 		import string
-		a = string.replace(proyecto.nombre,' ','')
+		a ='Participantes'
 		response['Content-Disposition'] = 'attachment; filename=%s.xls'%(a)
 		wb = xlwt.Workbook(encoding='utf-8')
-		a = string.replace(proyecto.nombre,' ','')
 		ws = wb.add_sheet(a)
 		datos = proyecto.proyectosdatos
 		ws.write(0,0,u"Nombre",tit_format)
