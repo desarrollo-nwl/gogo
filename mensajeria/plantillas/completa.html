@@ -1,0 +1,27 @@
+{%spaceless%}
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go | Felicitaciones</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link href="{% static 'css/estilo.min.css' %}" rel="stylesheet">
+	<link rel="shortcut icon" href="{% static 'img/ico/favicon.ico' %}"/>
+</head>
+<body class="gray-bg">
+    <div class="middle-box text-center animated fadeInDown">
+        <h1><i class="fa fa-thumbs-o-up"></i></h1>
+        <h3 class="font-bold">Felicitaciones.</h3>
+        <div class="error-desc">Apreciado participante este usuario ya finalizó la encuesta.<br> ¡Gracias por participar!.<br/><a href="{{ Pagina | escape}}" class="btn btn-primary m-t">Inicio</a>
+        </div>
+		<div class="center" style="margin-top:50%">Con la tecnología de <a href="https://www.networkslab.co"><img id="logo" src="{% static 'img/NetWorksLab.png' %}" style="width:150px;" alt="NetworksLab"></a></div>
+    </div>
+    <!-- Mainly scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endspaceless %}

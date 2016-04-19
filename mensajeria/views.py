@@ -243,7 +243,7 @@ def colaboradoreenviar(request,id_colaborador):
 				'Permisos':permisos,'Proyecto':proyecto,'Alerta':alerta
 				}, context_instance=RequestContext(request))
 			else:
-				return render_to_response('403.html')
+				return render_to_response('completa.html')
 		except:
 			return render_to_response('404.html')
 	else:
