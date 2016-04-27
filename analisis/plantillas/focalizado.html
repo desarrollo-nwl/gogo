@@ -669,7 +669,7 @@ grafica_uno: function(){
 		&& contenido(cache_P['regional'], regionales_seleccionadas)
 		&& contenido(cache_P['area'], areas_seleccionadas)
 		&& contenido(cache_P['cargo'], cargos_seleccionados)
-		&& contenido(Datos[i][3], preguntas_seleccionadas)
+		&& contenido(Datos[j][3], preguntas_seleccionadas)
 		{%if PDatos.opcional1 %}
 			&& contenido(cache_P['opcional1'],opcional1_seleccionadas)
 		{% endif %}
@@ -957,7 +957,7 @@ grafica_tres: function(){
 		cache_C = Cuestionario[Datos[j][3]];
 
 		if( cache_C['variable'] == variable_seleccionada
-		// && contenido(Datos[i][3], preguntas_seleccionadas)
+		&& contenido(Datos[j][3], preguntas_seleccionadas)
 		&& contenido(cache_P['ciudad'], ciudades_seleccionadas)
 		&& contenido(cache_P['regional'], regionales_seleccionadas)
 		&& contenido(cache_P['area'], areas_seleccionadas)
