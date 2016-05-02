@@ -892,14 +892,14 @@ def importarespuestas_preguntas_360(request):
 				proyecto_datos = proyecto.proyectosdatos
 				with transaction.atomic():
 					for i in xrange(1,filas):
-						var_error = sheet.cell_value(i,1)+' '+sheet.cell_value(i,2)
+						var_error = sheet.cell_value(i,1).strip()+' '+sheet.cell_value(i,2).strip()
 						colaborador = Colaboradores.objects.get(id=sheet.cell_value(i,0))
-						colaborador.nombre = sheet.cell_value(i,1)
-						colaborador.apellido = sheet.cell_value(i,2)
-						colaborador.email = sheet.cell_value(i,3)
+						colaborador.nombre = sheet.cell_value(i,1).strip()
+						colaborador.apellido = sheet.cell_value(i,2).strip()
+						colaborador.email = sheet.cell_value(i,3).strip()
 						if sheet.cell_value(i,4):
 							var_error = ''.join([var_error, ". Verifique que la pregunta {0} ya fue creada en la herramienta.".format(sheet.cell_value(i,4)) ])
-							pregunta = Preguntas.objects.get(id=sheet.cell_value(i,4))
+							pregunta = Preguntas.objects.get(id=sheet.cell_value(i,4).strip())
 
 						if sheet.cell_value(i,7):
 							colaborador.movil=sheet.cell_value(i,7)
@@ -908,13 +908,13 @@ def importarespuestas_preguntas_360(request):
 						colaborador.save()
 
 						datos = ColaboradoresDatos.objects.get(id = colaborador)
-						datos.genero=sheet.cell_value(i,8)
-						datos.area=sheet.cell_value(i,9)
-						datos.cargo=sheet.cell_value(i,10)
-						datos.regional=sheet.cell_value(i,11)
-						datos.ciudad=sheet.cell_value(i,12)
-						datos.niv_academico=sheet.cell_value(i,13)
-						datos.profesion=sheet.cell_value(i,14)
+						datos.genero=sheet.cell_value(i,8).strip()
+						datos.area=sheet.cell_value(i,9).strip()
+						datos.cargo=sheet.cell_value(i,10).strip()
+						datos.regional=sheet.cell_value(i,11).strip()
+						datos.ciudad=sheet.cell_value(i,12).strip()
+						datos.niv_academico=sheet.cell_value(i,13).strip()
+						datos.profesion=sheet.cell_value(i,14).strip()
 						datos.fec_ingreso = DT.strptime(sheet.cell_value(i,16), '%d/%m/%Y')
 
 						if sheet.cell_value(i,15):
@@ -922,15 +922,15 @@ def importarespuestas_preguntas_360(request):
 						else:
 							datos.fec_nacimiento = None
 						if proyecto_datos.opcional1:
-							datos.opcional1 = sheet.cell_value(i,17)
+							datos.opcional1 = sheet.cell_value(i,17).strip()
 						if proyecto_datos.opcional2:
-							datos.opcional2 = sheet.cell_value(i,18)
+							datos.opcional2 = sheet.cell_value(i,18).strip()
 						if proyecto_datos.opcional3:
-							datos.opcional3 = sheet.cell_value(i,19)
+							datos.opcional3 = sheet.cell_value(i,19).strip()
 						if proyecto_datos.opcional4:
-							datos.opcional4 = sheet.cell_value(i,20)
+							datos.opcional4 = sheet.cell_value(i,20).strip()
 						if proyecto_datos.opcional5:
-							datos.opcional5 = sheet.cell_value(i,21)
+							datos.opcional5 = sheet.cell_value(i,21).strip()
 						datos.save()
 
 						if sheet.cell_value(i,4) and not Streaming.objects.filter(proyecto_id=proyecto.id,colaborador_id=colaborador.id,pregunta_id=sheet.cell_value(i,4)).exists():
@@ -940,7 +940,7 @@ def importarespuestas_preguntas_360(request):
 									colaborador_id=colaborador.id,
 									pregunta_id=sheet.cell_value(i,4),
 									fecharespuesta=timezone.now(),
-									respuesta=sheet.cell_value(i,6),
+									respuesta=sheet.cell_value(i,6).strip(),
 									))
 								proyecto.tot_aresponder += 1
 								proyecto.tot_respuestas += 1
@@ -968,7 +968,7 @@ def importarespuestas_preguntas_360(request):
 									proyecto.tot_respuestas += 1
 								s.update(
 									fecharespuesta=timezone.now(),
-									respuesta=sheet.cell_value(i,6),
+									respuesta=sheet.cell_value(i,6).strip(),
 									)
 
 							else:

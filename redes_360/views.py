@@ -102,7 +102,6 @@ def rednueva_360(request):
 							vec_st_360.append( Streaming_360(
 									colaborador_id = red.colaborador_id,
 									evaluado_id = red.evaluado_id,
-									rol = red.rol,
 									instrumento_id =  red.instrumento_id,
 									pregunta_id = i.id,
 									proyecto_id = proyecto.id,
@@ -156,6 +155,31 @@ def reditar_360(request,id_red):
 
 	if permisos.consultor and permisos.red_edit:
 		if request.method == 'POST':
+
+			red = Redes_360.objects.filter(proyecto_id=proyecto.id).get(id=id_red)
+
+			if ( all([	red.colaborador_id == int(request.POST['colaborador']),
+						red.evaluado_id == int(request.POST['evaluado']),
+						red.instrumento_id == int(request.POST['instrumento']) ] ) ):
+				print "entre"
+				rol = Roles_360.objects.filter(proyecto_id=proyecto.id).get(id=request.POST['rol'])
+				Redes_360.objects.filter(id=id_red, proyecto_id=proyecto.id).update(
+					rol = rol.nombre, rol_idn = rol.id)
+
+				red.rol_idn = rol.id
+				red.rol = rol.nombre
+
+				return JsonResponse({
+							'id':red.id,
+							'id_col':red.colaborador_id,
+							'nom_col':' '.join([red.colaborador.nombre,red.colaborador.apellido]),
+							'id_eval':red.evaluado_id,
+							'nom_eval':' '.join([red.evaluado.nombre,red.evaluado.apellido]),
+							'id_inst':red.instrumento_id,
+							'nom_inst':red.instrumento.nombre,
+							'rol':red.rol,
+							'rol_idn':red.rol_idn,
+							})
 
 			if not Redes_360.objects.filter(
 				colaborador_id=request.POST['colaborador'],
@@ -238,7 +262,7 @@ def reditar_360(request,id_red):
 							rol_idn = request.POST['rol'],
 							rol = rol.nombre,
 							pre_respuestas = 0,
-							tot_procentaje = 0,
+							tot_porcentaje = 0,
 							proyecto_id = proyecto.id )
 
 						preguntas = Preguntas_360.objects.filter(
@@ -437,8 +461,8 @@ def redes_xls_360(request):
 				for i in xrange(1,filas):
 					vect_st_360 = []
 					preguntas_contador = 0
-					colaborador_str = " ".join([sheet.cell_value(i,0), sheet.cell_value(i,1)])
-					evaluado_str = " ".join([sheet.cell_value(i,3), sheet.cell_value(i,4)])
+					colaborador_str = " ".join([sheet.cell_value(i,0).strip(), sheet.cell_value(i,1).strip()])
+					evaluado_str = " ".join([sheet.cell_value(i,3).strip(), sheet.cell_value(i,4).strip()])
 					if not (colaborador_str,evaluado_str) in verifica:
 						verifica.append((colaborador_str,evaluado_str))
 
@@ -447,19 +471,19 @@ def redes_xls_360(request):
 						except:
 							colaborador = Colaboradores_360.objects.filter(
 								proyecto_id = proyecto.id,
-								nombre = sheet.cell_value(i,0),
-								apellido =  sheet.cell_value(i,1),
+								nombre = sheet.cell_value(i,0).strip(),
+								apellido =  sheet.cell_value(i,1).strip(),
 								).select_related('colaboradoresmetricas_360').first()
 							if colaborador:
 								personas[colaborador_str] = colaborador
 
 						if colaborador:
 							try:
-								rol = roles[sheet.cell_value(i,2)]
+								rol = roles[sheet.cell_value(i,2).strip()]
 							except:
 								rol = Roles_360.objects.filter(
 									proyecto_id = proyecto.id,
-									nombre = sheet.cell_value(i,2),
+									nombre = sheet.cell_value(i,2).strip(),
 									).first()
 								if rol:
 									roles[rol.nombre] = rol
@@ -470,19 +494,19 @@ def redes_xls_360(request):
 								except:
 									evaluado = Colaboradores_360.objects.filter(
 										proyecto_id = proyecto.id,
-										nombre = sheet.cell_value(i,3),
-										apellido =  sheet.cell_value(i,4),
+										nombre = sheet.cell_value(i,3).strip(),
+										apellido =  sheet.cell_value(i,4).strip(),
 										).first()
 									if evaluado:
 										personas[evaluado_str] = evaluado
 
 								if evaluado:
 									try:
-										instrumento = instrumentos[sheet.cell_value(i,5)]
+										instrumento = instrumentos[sheet.cell_value(i,5).strip()]
 									except:
 										instrumento = Instrumentos_360.objects.filter(
 											proyecto_id = proyecto.id,
-											nombre = sheet.cell_value(i,5),
+											nombre = sheet.cell_value(i,5).strip(),
 											).first()
 										if instrumento:
 											instrumentos[instrumento.nombre] = instrumento
@@ -535,23 +559,23 @@ def redes_xls_360(request):
 										else:
 											redes_500.append(" ".join([
 															colaborador_str,
-															sheet.cell_value(i,2),
+															sheet.cell_value(i,2).strip(),
 															evaluado_str,
-															sheet.cell_value(i,5)]))
+															sheet.cell_value(i,5).strip()]))
 									else:
-										instrumentos_404.append(sheet.cell_value(i,5))
+										instrumentos_404.append(sheet.cell_value(i,5).strip())
 								else:
 									personas_404.append(evaluado_str)
 							else:
-								roles_404.append(sheet.cell_value(i,2))
+								roles_404.append(sheet.cell_value(i,2).strip())
 						else:
 							personas_404.append(colaborador_str)
 					else:
 						redes_500.append(" ".join([
 										colaborador_str,
-										sheet.cell_value(i,2),
+										sheet.cell_value(i,2).strip(),
 										evaluado_str,
-										sheet.cell_value(i,5)]))
+										sheet.cell_value(i,5).strip()]))
 
 					if vect_st_360:
 						Streaming_360.objects.bulk_create(vect_st_360)

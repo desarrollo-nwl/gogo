@@ -53,14 +53,14 @@ def colaboradornuevo_360(request):
 		if request.method == 'POST':
 			chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 			key = ''.join(random.sample(chars, 64))
-			if not Colaboradores_360.objects.filter(proyecto=proyecto,email=request.POST['email']).exists():
+			if not Colaboradores_360.objects.filter(proyecto=proyecto,email=request.POST['email'].strip()).exists():
 				with transaction.atomic():
 					participante = Colaboradores_360(
-									nombre = request.POST['nombre'],
-									apellido = request.POST['apellido'],
+									nombre = request.POST['nombre'].strip(),
+									apellido = request.POST['apellido'].strip(),
 									key = key,
 									key_old = 'HACK',
-									email = request.POST['email'].lower(),
+									email = request.POST['email'].lower().strip(),
 									genero = request.POST['genero'],
 									proyecto_id = proyecto.id)
 
@@ -76,22 +76,22 @@ def colaboradornuevo_360(request):
 					except:
 						participante.externo = False
 
-					try: participante.descripcion = request.POST['descripcion']
+					try: participante.descripcion = request.POST['descripcion'].strip()
 					except: pass
 
 					participante.save()
 					datos = ColaboradoresDatos_360(id = participante)
-					try:datos.area = request.POST['area']
+					try:datos.area = request.POST['area'].strip()
 					except:pass
-					try:datos.cargo = request.POST['cargo']
+					try:datos.cargo = request.POST['cargo'].strip()
 					except:pass
-					try:datos.ciudad = request.POST['ciudad']
+					try:datos.ciudad = request.POST['ciudad'].strip()
 					except:pass
-					try:datos.regional = request.POST['regional']
+					try:datos.regional = request.POST['regional'].strip()
 					except:pass
-					try:datos.niv_academico = request.POST['niv_academico']
+					try:datos.niv_academico = request.POST['niv_academico'].strip()
 					except:pass
-					try:datos.profesion = request.POST['profesion']
+					try:datos.profesion = request.POST['profesion'].strip()
 					except:pass
 					try: datos.fec_ingreso = DT.strptime(str(request.POST['fec_ingreso']),'%d/%m/%Y')
 					except:	datos.fec_ingreso = None
@@ -100,19 +100,19 @@ def colaboradornuevo_360(request):
 
 					proyecto_datos = proyecto.proyectosdatos
 					if proyecto_datos.opcional1:
-						try:datos.opcional1 = request.POST['opcional1']
+						try:datos.opcional1 = request.POST['opcional1'].strip()
 						except:pass
 					if proyecto_datos.opcional2:
-						try:datos.opcional2 = request.POST['opcional2']
+						try:datos.opcional2 = request.POST['opcional2'].strip()
 						except:pass
 					if proyecto_datos.opcional3:
-						try:datos.opcional3 = request.POST['opcional3']
+						try:datos.opcional3 = request.POST['opcional3'].strip()
 						except:pass
 					if proyecto_datos.opcional4:
-						try:datos.opcional4 = request.POST['opcional4']
+						try:datos.opcional4 = request.POST['opcional4'].strip()
 						except:pass
 					if proyecto_datos.opcional5:
-						try:datos.opcional5 = request.POST['opcional5']
+						try:datos.opcional5 = request.POST['opcional5'].strip()
 						except:pass
 					Proyectos.objects.filter(id=proyecto.id).update(tot_participantes=F("tot_participantes")+1)
 					datos.save()
@@ -176,10 +176,10 @@ def colaboradoreditar_360(request,id_colaborador):
 		except:return render_to_response('403.html')
 		emails = Colaboradores_360.objects.only('email').filter(proyecto=proyecto).exclude(id=id_colaborador)
 		if request.method == 'POST':
-			if not Colaboradores_360.objects.exclude(id=id_colaborador).filter(proyecto_id=proyecto.id,email=request.POST['email']).exists():
-				participante.nombre = request.POST['nombre']
-				participante.apellido = request.POST['apellido']
-				participante.email = request.POST['email']
+			if not Colaboradores_360.objects.exclude(id=id_colaborador).filter(proyecto_id=proyecto.id,email=request.POST['email'].strip()).exists():
+				participante.nombre = request.POST['nombre'].strip()
+				participante.apellido = request.POST['apellido'].strip()
+				participante.email = request.POST['email'].strip()
 				participante.genero = request.POST['genero']
 				try:
 					if(request.POST['estado']):
@@ -192,13 +192,13 @@ def colaboradoreditar_360(request,id_colaborador):
 				except:
 					participante.externo = False
 
-				try: participante.descripcion = request.POST['descripcion']
+				try: participante.descripcion = request.POST['descripcion'].strip()
 				except: participante.descripcion = None
 
 				datos = participante.colaboradoresdatos_360
-				datos.area = request.POST['area']
-				datos.cargo = request.POST['cargo']
-				datos.ciudad = request.POST['ciudad']
+				datos.area = request.POST['area'].strip()
+				datos.cargo = request.POST['cargo'].strip()
+				datos.ciudad = request.POST['ciudad'].strip()
 				try:
 					if(request.POST['fec_ingreso']):
 						datos.fec_ingreso = DT.strptime(str(request.POST['fec_ingreso']),'%d/%m/%Y')
@@ -209,20 +209,20 @@ def colaboradoreditar_360(request,id_colaborador):
 						datos.fec_nacimiento = DT.strptime(str(request.POST['fec_nacimiento']),'%d/%m/%Y')
 				except:
 					datos.fec_nacimiento = None
-				datos.niv_academico = request.POST['niv_academico']
-				datos.profesion = request.POST['profesion']
-				datos.regional = request.POST['regional']
+				datos.niv_academico = request.POST['niv_academico'].strip()
+				datos.profesion = request.POST['profesion'].strip()
+				datos.regional = request.POST['regional'].strip()
 				proyecto_datos = proyecto.proyectosdatos
 				if proyecto_datos.opcional1:
-					datos.opcional1 = request.POST['opcional1']
+					datos.opcional1 = request.POST['opcional1'].strip()
 				if proyecto_datos.opcional2:
-					datos.opcional2 = request.POST['opcional2']
+					datos.opcional2 = request.POST['opcional2'].strip()
 				if proyecto_datos.opcional3:
-					datos.opcional3 = request.POST['opcional3']
+					datos.opcional3 = request.POST['opcional3'].strip()
 				if proyecto_datos.opcional4:
-					datos.opcional4 = request.POST['opcional4']
+					datos.opcional4 = request.POST['opcional4'].strip()
 				if proyecto_datos.opcional5:
-					datos.opcional5 = request.POST['opcional5']
+					datos.opcional5 = request.POST['opcional5'].strip()
 				with transaction.atomic():
 					participante.save()
 					datos.save()
@@ -340,21 +340,21 @@ def colaboradores_xls_360(request):
 				vector_email = []
 				chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 				for i in xrange(1,filas):
-					if sheet.cell_value(i,2).lower() in vector_email or Colaboradores_360.objects.filter(
+					if sheet.cell_value(i,2).lower().strip() in vector_email or Colaboradores_360.objects.filter(
 							proyecto=proyecto,
-							email=sheet.cell_value(i,2).lower() ).exists():
+							email=sheet.cell_value(i,2).lower().strip() ).exists():
 						vector_ignorar.append(i)
 						vector_personas.append('dummy')
 					else:
-						vector_email.append(sheet.cell_value(i,2).lower())
+						vector_email.append(sheet.cell_value(i,2).lower().strip())
 						var_error = sheet.cell_value(i,0)+' '+sheet.cell_value(i,1)
 						key = ''.join(random.sample(chars, 64))
 						persona = Colaboradores_360(
-							nombre=sheet.cell_value(i,0),
-							apellido = sheet.cell_value(i,1),
+							nombre=sheet.cell_value(i,0).strip(),
+							apellido = sheet.cell_value(i,1).strip(),
 							key = key,
-							email=sheet.cell_value(i,2).lower(),
-							genero=sheet.cell_value(i,3).capitalize(),
+							email=sheet.cell_value(i,2).lower().strip(),
+							genero=sheet.cell_value(i,3).capitalize().strip(),
 							estado=True,proyecto=proyecto)
 						if not sheet.cell_value(i,6):
 							persona.externo = True
@@ -371,31 +371,31 @@ def colaboradores_xls_360(request):
 							vector_metricas.append(ColaboradoresMetricas_360(id=vector_personas[i-1]))
 							datos = ColaboradoresDatos_360(id = vector_personas[i-1])
 							if sheet.cell_value(i,5):
-								datos.area=sheet.cell_value(i,5)
+								datos.area=sheet.cell_value(i,5).strip()
 							if sheet.cell_value(i,6):
-								datos.cargo=sheet.cell_value(i,6)
+								datos.cargo=sheet.cell_value(i,6).strip()
 							if sheet.cell_value(i,7):
-								datos.regional=sheet.cell_value(i,7)
+								datos.regional=sheet.cell_value(i,7).strip()
 							if sheet.cell_value(i,8):
-								datos.ciudad=sheet.cell_value(i,8)
+								datos.ciudad=sheet.cell_value(i,8).strip()
 							if sheet.cell_value(i,9):
-								datos.niv_academico=sheet.cell_value(i,9)
+								datos.niv_academico=sheet.cell_value(i,9).strip()
 							if sheet.cell_value(i,10):
-								datos.profesion=sheet.cell_value(i,10)
+								datos.profesion=sheet.cell_value(i,10).strip()
 							if sheet.cell_value(i,11):
 								datos.fec_nacimiento =  DT.strptime(sheet.cell_value(i,11), '%d/%m/%Y')
 							if sheet.cell_value(i,12):
 								datos.fec_ingreso =  DT.strptime(sheet.cell_value(i,12), '%d/%m/%Y')
 							if proyecto_datos.opcional1:
-								datos.opcional1 = sheet.cell_value(i,13)
+								datos.opcional1 = sheet.cell_value(i,13).strip()
 							if proyecto_datos.opcional2:
-								datos.opcional2 = sheet.cell_value(i,14)
+								datos.opcional2 = sheet.cell_value(i,14).strip()
 							if proyecto_datos.opcional3:
-								datos.opcional3 = sheet.cell_value(i,15)
+								datos.opcional3 = sheet.cell_value(i,15).strip()
 							if proyecto_datos.opcional4:
-								datos.opcional4 = sheet.cell_value(i,16)
+								datos.opcional4 = sheet.cell_value(i,16).strip()
 							if proyecto_datos.opcional5:
-								datos.opcional5 = sheet.cell_value(i,17)
+								datos.opcional5 = sheet.cell_value(i,17).strip()
 							vector_datos.append(datos)
 							#  dependiendo del tipo se ejecuta auto o no
 							if (proyecto.tipo =="360 unico"):
@@ -507,9 +507,9 @@ def rolnuevo_360(request):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_add:
 		if request.method == "POST":
-			if not Roles_360.objects.filter(nombre=request.POST['nombre'],proyecto_id=proyecto.id).exists():
-				rol = Roles_360.objects.create(nombre=request.POST['nombre'],proyecto_id=proyecto.id)
-				return JsonResponse({'id':rol.id,'nombre':request.POST['nombre']})
+			if not Roles_360.objects.filter(nombre=request.POST['nombre'].strip(),proyecto_id=proyecto.id).exists():
+				rol = Roles_360.objects.create(nombre=request.POST['nombre'].strip(),proyecto_id=proyecto.id)
+				return JsonResponse({'id':rol.id,'nombre':request.POST['nombre'].strip()})
 			else:
 				return HttpResponse(0)
 		return render_to_response('404.html')
@@ -525,11 +525,11 @@ def roleditar_360(request,id_rol):
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_edit:
 		if request.method == 'POST':
-			if not Roles_360.objects.exclude(id=id_rol).filter(nombre=request.POST['nombre'],proyecto_id=proyecto.id).exists():
+			if not Roles_360.objects.exclude(id=id_rol).filter(nombre=request.POST['nombre'].strip(),proyecto_id=proyecto.id).exists():
 				with transaction.atomic():
-					Roles_360.objects.filter(proyecto_id=proyecto.id,id=id_rol).update(nombre=request.POST['nombre'])
-					Redes_360.objects.filter(proyecto_id=proyecto.id,rol_idn=id_rol).update(rol=request.POST['nombre'])
-					return JsonResponse({'id':id_rol,'nombre':request.POST['nombre']})
+					Roles_360.objects.filter(proyecto_id=proyecto.id,id=id_rol).update(nombre=request.POST['nombre'].strip())
+					Redes_360.objects.filter(proyecto_id=proyecto.id,rol_idn=id_rol).update(rol=request.POST['nombre'].strip())
+					return JsonResponse({'id':id_rol,'nombre':request.POST['nombre'].strip()})
 		return HttpResponse(0)
 	else:
 		return render_to_response('403.html')

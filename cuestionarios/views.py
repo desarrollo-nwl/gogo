@@ -71,7 +71,7 @@ def variablenueva(request):
 		if request.method == 'POST':
 			with transaction.atomic():
 				variable = Variables(
-					nombre = request.POST['nombre'],
+					nombre = request.POST['nombre'].strip(),
 					descripcion = request.POST['descripcion'],
 					posicion = request.POST['posicion'],
 					proyecto = proyecto)
@@ -136,7 +136,7 @@ def preguntanueva(request,id_variable):
 		except:return render_to_response('403.html')
 		if request.method == 'POST':
 			pregunta = Preguntas(
-						texto = request.POST['texto'],
+						texto = request.POST['texto'].strip(),
 						posicion = request.POST['posicion'],
 						variable = variable)
 
@@ -174,7 +174,7 @@ def preguntanueva(request,id_variable):
 				if ((not  pregunta.abierta) and pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
 						Respuestas.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
@@ -243,7 +243,7 @@ def variableditar(request,id_variable):
 		except:render_to_response('403.html')
 		if request.method == 'POST':
 			with transaction.atomic():
-				variable.nombre = request.POST['nombre']
+				variable.nombre = request.POST['nombre'].strip()
 				variable.descripcion = request.POST['descripcion']
 				variable.posicion = request.POST['posicion']
 				if(permisos.act_variables):
@@ -279,7 +279,7 @@ def preguntaeditar(request,id_pregunta):
 			num_respuestas = pregunta.respuestas_set.count()
 		except:render_to_response('403.html')
 		if request.method == 'POST':
-			pregunta.texto = request.POST['texto']
+			pregunta.texto = request.POST['texto'].strip()
 			pregunta.posicion = request.POST['posicion']
 			pregunta.variable = variable
 
@@ -319,7 +319,7 @@ def preguntaeditar(request,id_pregunta):
 				if ((not  pregunta.abierta) and pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
 						Respuestas.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
@@ -327,7 +327,7 @@ def preguntaeditar(request,id_pregunta):
 				elif not( pregunta.abierta or pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Editó la pregunta',descripcion=pregunta.texto)
