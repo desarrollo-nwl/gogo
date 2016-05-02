@@ -121,7 +121,7 @@
 
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
-			<h4 class="panel-title">Resultados Generales Recuento Por Variable</h4>
+			<h4 class="panel-title">Resultados generales recuento de preguntas por área</h4>
 		</div>
 		<div class="panel-body">
 			<div class="col-lg-9">
@@ -347,8 +347,8 @@
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
 var Datos = [	{% for i in Datos %}[ {{ i.colaborador_id | safe }},{% if not i.pregunta.multiple %}['{{i.respuesta}}'],{% else %}{{i.respuesta}},{% endif %}new Date({{ i.fecharespuesta.year | safe }},{{ i.fecharespuesta.month | safe }}-1,{{ i.fecharespuesta.day | safe }}),{{ i.pregunta_id | safe }}],{% endfor %} ];
-var Participantes = { 	{% for i in Participantes %}{{i.id_id|safe}}:{'area': `{{i.area}}`,'cargo': `{{i.cargo}}`,'ciudad': `{{i.ciudad}}`,'regional': `{{i.regional}}`,{% if PDatos.opcional1 %}'opcional1': `{{i.opcional1}}`,{% endif %}{% if PDatos.opcional2 %}'opcional2': `{{i.opcional2}}`,{% endif %}{% if PDatos.opcional3 %}'opcional3': `{{i.opcional3}}`,{% endif %}{% if PDatos.opcional4 %}'opcional4': `{{i.opcional4}}`,{% endif %}{% if PDatos.opcional5 %}'opcional5': `{{i.opcional5}}`,{% endif %}	},{% endfor %}	};
-var Cuestionario = {	{% for i in Cuestionario %}{{i.id|safe}}:{	'respuestas':{	{% for j in i.respuestas_set.all %}		'{{j.texto}}':{% if i.numerica %}{{j.numerico|safe}}{% else %}0{% endif%},	{% endfor %}	},	'texto': `{{i.texto}}`,	'variable': {{ i.variable_id | safe }},	'variable_str': `{{i.variable.nombre}}`},{% endfor %} };
+var Participantes = { {% for i in Participantes %}{{i.id_id|safe}}:{'area': `{{i.area}}`,'cargo': `{{i.cargo}}`,'ciudad': `{{i.ciudad}}`,'regional': `{{i.regional}}`,{% if PDatos.opcional1 %}'opcional1': `{{i.opcional1}}`,{% endif %}{% if PDatos.opcional2 %}'opcional2': `{{i.opcional2}}`,{% endif %}{% if PDatos.opcional3 %}'opcional3': `{{i.opcional3}}`,{% endif %}{% if PDatos.opcional4 %}'opcional4': `{{i.opcional4}}`,{% endif %}{% if PDatos.opcional5 %}'opcional5': `{{i.opcional5}}`,{% endif %}	},{% endfor %}	};
+var Cuestionario = { {% for i in Cuestionario %}{{i.id|safe}}:{	'respuestas':{	{% for j in i.respuestas_set.all %}	'{{j.texto}}':{% if i.numerica %}{{j.numerico|safe}}{% else %}0{% endif%},{% endfor %} },'texto': `{{i.texto}}`,'variable': {{ i.variable_id | safe }},'variable_str':`{{i.variable.nombre}}`},{% endfor %} };
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -669,7 +669,7 @@ grafica_uno: function(){
 		&& contenido(cache_P['regional'], regionales_seleccionadas)
 		&& contenido(cache_P['area'], areas_seleccionadas)
 		&& contenido(cache_P['cargo'], cargos_seleccionados)
-		&& contenido(Datos[i][3], preguntas_seleccionadas)
+		&& contenido(Datos[j][3], preguntas_seleccionadas)
 		{%if PDatos.opcional1 %}
 			&& contenido(cache_P['opcional1'],opcional1_seleccionadas)
 		{% endif %}
@@ -840,10 +840,9 @@ grafica_dos : function( finicio,ffin) {
 	for (var k = 0; k < Datos.length; k++){
 		cache_P = Participantes[Datos[k][0]];
 		cache_C = Cuestionario[Datos[k][3]];
-		fecha_aux = Datos[k][2].getTime();
-
 		cache_F = Datos[k][2].getTime()
-		if( cache_C['variable'] == variable_seleccionada
+
+		if(	cache_C['variable'] == variable_seleccionada
 			&& Datos[k][3] == pregunta_seleccionada
 			&& finicio <=  cache_F
 			&& ffin >= cache_F
@@ -852,19 +851,19 @@ grafica_dos : function( finicio,ffin) {
 			&& contenido(cache_P['area'],areas_seleccionadas)
 			&& contenido(cache_P['cargo'],cargos_seleccionados)
 			{%if PDatos.opcional1 %}
-				&& contenido(cache_C['opcional1'],opcional1_seleccionadas)
+				&& contenido(cache_P['opcional1'],opcional1_seleccionadas)
 			{% endif %}
 			{%if PDatos.opcional2 %}
-				&& contenido(cache_C['opcional2'],opcional2_seleccionadas)
+				&& contenido(cache_P['opcional2'],opcional2_seleccionadas)
 			{% endif %}
 			{%if PDatos.opcional3 %}
-				&& contenido(cache_C['opcional3'],opcional3_seleccionadas)
+				&& contenido(cache_P['opcional3'],opcional3_seleccionadas)
 			{% endif %}
 			{%if PDatos.opcional4 %}
-				&& contenido(cache_C['opcional4'],opcional4_seleccionadas)
+				&& contenido(cache_P['opcional4'],opcional4_seleccionadas)
 			{% endif %}
 			{%if PDatos.opcional5 %}
-				&& contenido(cache_C['opcional5'],opcional5_seleccionadas)
+				&& contenido(cache_P['opcional5'],opcional5_seleccionadas)
 			{% endif %}
 	   ){
 			if ( matriz_g2_dic[ cache_P['area' ] ].hasOwnProperty(Datos[k][1]) )
@@ -947,8 +946,10 @@ grafica_tres: function(){
 	for (var i = 0; i < fechas.length; i++){
 		matriz_g3_dic[ fechas[i] ] = { };
 		matriz_g3_dic[ fechas[i] ]['total'] = 0;
-		for (var j = 0; j < respuestas.length; j++)
-			matriz_g3_dic[ fechas[i] ][ respuestas[j] ] = 0;
+		for (var j = 0; j < respuestas.length; j++){
+			if ( !matriz_g3_dic[ fechas[i] ].hasOwnProperty( respuestas[j] ) )
+				matriz_g3_dic[ fechas[i] ][ respuestas[j] ] = 0;
+		}
 		matriz_g3_dic[ fechas[i] ][ 'total' ] = 0;
 	}
 
@@ -957,7 +958,7 @@ grafica_tres: function(){
 		cache_C = Cuestionario[Datos[j][3]];
 
 		if( cache_C['variable'] == variable_seleccionada
-		// && contenido(Datos[i][3], preguntas_seleccionadas)
+		&& contenido(Datos[j][3], preguntas_seleccionadas)
 		&& contenido(cache_P['ciudad'], ciudades_seleccionadas)
 		&& contenido(cache_P['regional'], regionales_seleccionadas)
 		&& contenido(cache_P['area'], areas_seleccionadas)
