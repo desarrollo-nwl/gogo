@@ -1,0 +1,241 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} A. General{% endblock %}
+{% block head2 %}
+<style media="screen">#formtable .select2-container {position:relative;z-index:1;float:left;width:100%;margin-bottom:0;display:table;table-layout:fixed;max-width:100%!important;}</style>
+<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+<li><a href="#"><i><span>/ General</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+
+<div class="row">
+    <div class="panel panel-default toggle m-t-xs ml20 mr20">
+        <div class="panel-heading">
+            <h4 class="panel-title"> Bienvenido, proyectos asociados:</h4>
+        </div>
+        <div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+            <!-- Inicio Dash -->
+            <!-- Sección 1 -->
+            <div class="col-lg-12">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Avance de Planes Sugeridos</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-9">
+                            <!-- Grafica -->
+                            <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                                <!-- Inicio .panel -->
+                                <div class="panel-body">
+                                    <div class="col-lg-12">
+                                        <div style='margin: 0 5px 0 5px' id="donutchart"></div>
+                                    </div>
+                                </div>
+                                <!-- Fin .panel -->
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                                <!-- Inicio .panel -->
+                                <div class="panel-heading">
+                                    <h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <!-- col-lg-12 start here -->
+                                    <div class="col-lg-12 col-md-6 p0">
+                                        <!-- Start .panel -->
+                                        <ul class="list-unstyled mb0">
+                                            <li class="mb5 pb5 bbdashed">
+                                                <span class="strong">Organización</span>
+                                            </li>
+                                            <li class="mb5 pb5 bbdashed">
+                                                <span class="strong">Regional</span>
+                                            </li>
+                                            <li class="mb5 pb5 bbdashed">
+                                                <span class="strong">Ciudad</span>
+                                            </li>
+                                            <li class="mb5 pb5 bbdashed">
+                                                <span class="strong">Area</span>
+                                            </li>
+                                            <li class="mb5 pb5 bbdashed">
+                                                <span class="strong">Cargo</span>
+                                            </li>
+                                            <li class="mb5 pb5 bbdashed">
+                                                <span class="strong">Lider</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 1 -->
+            <!-- Sección 2 -->
+            <div class="col-lg-12">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Percepción de Planes de Acción</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-12">
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="col-lg-1" bgcolor="#8CB126" align="center"> # </th>
+                                        <th class="col-lg-4" bgcolor="#8CB126" align="center">Nombre</th>
+                                        <th class="col-lg-4" bgcolor="#8CB126" align="center">Plan de Acción</th>
+                                        <th class="col-lg-1" bgcolor="#8CB126" align="center">Ejecutado</th>
+                                        <th class="col-lg-2" bgcolor="#8CB126" align="center">Impacto (1-5)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 2 -->
+
+            <!-- Sección 3 -->
+            <div class="col-lg-12">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4><strong>Construcción de planes de desarrollo – Sugerencia a líderes</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                            <!-- col-lg-12 start here -->
+
+                        <div class="col-lg-12">
+                            <div class="panel panel-success plain toggle panelClose panelRefresh">
+                                <!-- Start .panel -->
+                                <div class="panel-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-lg-1" bgcolor="#8CB126" align="center"> # </th>
+                                                <th class="col-lg-2" bgcolor="#8CB126" align="center">Instrumento</th>
+                                                <th class="col-lg-2" bgcolor="#8CB126" align="center">Variable</th>
+                                                <th class="col-lg-5" bgcolor="#8CB126" align="center">Definición Plan de Acción</th>
+                                                <th class="col-lg-2" bgcolor="#8CB126" align="center">Fecha Inicio</th>
+                                                <th class="col-lg-2" bgcolor="#8CB126" align="center">Fecha Fin</th>
+                                                <th class="col-lg-2" bgcolor="#8CB126" align="center">Lider Responsable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                    <div class="col-lg-6 center-block">
+                                        <button type="button" class="btn btn-primary center-block">
+                                            Guardar
+                                        </button>
+                                    </div>
+                                    <div class="col-lg-6 center-block">
+                                        <button type="button" class="btn btn-primary center-block">
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End .panel -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 3 -->
+            <!-- Sección 4 -->
+            <div class="col-lg-12">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Seguimiento a Compromisos Lideres</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-lg-3 col-md-3 control-label" for="" style="text-align: center">Seleccione Colaborardores</label>
+                            <div class="col-lg-9 col-md-9">
+                                <select class="form-control select2-minimum">
+
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- End .form-group  -->
+
+                        <div class="col-lg-4" style="padding-top: 20px">
+                            <!-- Grafica -->
+                            <div class="panel panel-default toggle panelMove panelClose panelRefresh">
+                                <!-- Inicio .panel -->
+                                <div class="panel-body">
+                                    <div class="col-lg-12">
+                                        <div style='margin: 0 5px 0 5px' id="modulo_analisis_personal_barras"></div>
+                                    </div>
+                                </div>
+                                <!-- Fin .panel -->
+                            </div>
+                        </div>
+                        <div class="col-lg-8" style="padding-top: 20px">
+                            <div class="panel panel-default toggle panelMove panelClose panelRefresh">
+                                <!-- Inicio .panel -->
+                                <div class="panel-body">
+                                    <div class="col-lg-12">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-lg-1" bgcolor="#8CB126" align="center"> # </th>
+                                                    <th bgcolor="#8CB126">Plan de Acción</th>
+                                                    <th class="col-lg-2" bgcolor="#8CB126" align="center">Aprobo</th>
+                                                    <th bgcolor="#8CB126">
+                                                        Fecha  Inicio
+                                                    </th>
+                                                    <th bgcolor="#8CB126">
+                                                        Fecha Fin
+                                                    </th>
+                                                    <th class="col-lg-3" bgcolor="#8CB126" align="center">Estado Avance</th>
+                                                    <th class="col-lg-6" bgcolor="#8CB126" align="center">Observaciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <span class = 'pull-right'><button type="button" name="button" class="btn btn-primary center-block">Enviar</button></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Fin Dash -->
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{%block scripts%}
+
+{% endblock %}

@@ -76,7 +76,8 @@ TEMPLATES = [
 				BASE_DIR+'/cuestionarios_360/plantillas/',
 				BASE_DIR+'/mensajeria_360/plantillas/',
 				BASE_DIR+'/colaboradores_360/plantillas/',
-				BASE_DIR+'/redes_360/plantillas/',],
+				BASE_DIR+'/redes_360/plantillas/',
+				BASE_DIR+'/exp_usuario/plantillas',],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -97,18 +98,18 @@ WSGI_APPLICATION = 'gogo.wsgi.application'
 
 DATABASES = {
 	'default': {
-			# 'ENGINE':'django.db.backends.sqlite3',
-			# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-			'ENGINE': 'django.db.backends.postgresql_psycopg2',
-			'NAME': 'gogo',
+			'ENGINE':'django.db.backends.sqlite3',
+			'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+			# 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+			# 'NAME': 'gogo',
 			# 'USER': 'usuariodb_gogo',
 			# 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
 			'HOST':'127.0.0.1',
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
-			'PORT':'5432',
+			# 'PORT':'5432',
 
-			'USER': 'suidi',
-			'PASSWORD':'Su1357*-',
+			# 'USER': 'suidi',
+			# 'PASSWORD':'Su1357*-',
 
 	}
 }

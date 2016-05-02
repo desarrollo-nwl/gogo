@@ -196,6 +196,17 @@ urlpatterns += patterns('mensajeria_360.views',
 )
 
 #===============================================================================
+# urls de exp_usuario
+#===============================================================================
+urlpatterns += patterns('exp_usuario.views',
+	url(r'^expUsuario/consultor/planesAccion/$', 'planesAccion'),
+	url(r'^expUsuario/consultor/puntosTalenter/$', 'puntosTalenter'),
+	url(r'^expUsuario/lider/miLiderazgo/$', 'miLiderazgo'),
+	url(r'^expUsuario/lider/dashBoard/$', 'dashBoard'),
+	url(r'^expUsuario/colaborador/dashBoard/$', 'dashBoard'),
+)
+
+#===============================================================================
 # urls de errores
 #===============================================================================
 
