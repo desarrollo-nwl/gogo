@@ -181,7 +181,7 @@ def enviar_360():
 				delta = tiempo - stream[i].fec_controlenvio
 				# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 
-# enviar()
+enviar()
 enviar_360()
 server.quit()
 # print 'Finalizado'

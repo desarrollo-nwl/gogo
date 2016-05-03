@@ -110,7 +110,7 @@ def gosurvey(request):
 			except:
 				pass
 		return render_to_response('gosurvey.html',{
-		'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
+		'Activar':'EstadoAvance','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -819,7 +819,7 @@ def importarespuestas_preguntas(request):
 	if not proyecto.interna:
 		return render_to_response('404.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_add:
+	if permisos.consultor and permisos.var_add:
 		error = None
 		if request.method == 'POST':
 			import xlrd,xlwt
