@@ -48,6 +48,7 @@ INSTALLED_APPS = (
 	'redes_360',
 	'mptt',
 	'debug_toolbar',
+	'exp_usuario',
 
 )
 
