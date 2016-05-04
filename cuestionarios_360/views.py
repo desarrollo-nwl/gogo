@@ -116,7 +116,7 @@ def instrumentonuevo(request):
 		instrumentos = Instrumentos_360.objects.only('nombre').filter(proyecto_id=proyecto.id)
 		if request.method == 'POST':
 
-			if(Instrumentos_360.objects.filter(proyecto_id=proyecto.id,nombre=request.POST['nombre']).exists()):
+			if(Instrumentos_360.objects.filter(proyecto_id=proyecto.id,nombre=request.POST['nombre'].strip()).exists()):
 				return render_to_response('instrumento.html',{
 				'Activar':'Contenido','activar':'Dimensiones','Proyecto':proyecto,'Instrumentos':instrumentos,
 				'Permisos':permisos,'accion':'registrar',"Error":"Este instrumento ya existe"
@@ -124,7 +124,7 @@ def instrumentonuevo(request):
 
 			with transaction.atomic():
 				instrumento = Instrumentos_360(
-					nombre = request.POST['nombre'],
+					nombre = request.POST['nombre'].strip(),
 					proyecto_id = proyecto.id)
 				try:
 					if(request.POST['estado']):
@@ -162,7 +162,7 @@ def dimensionueva(request,id_instrumento):
 		if request.method == 'POST':
 			with transaction.atomic():
 				dimension = Dimensiones_360(
-					nombre = request.POST['nombre'],
+					nombre = request.POST['nombre'].strip(),
 					descripcion = request.POST['descripcion'],
 					posicion = request.POST['posicion'],
 					proyecto_id = proyecto.id,
@@ -201,7 +201,7 @@ def variablenueva_360(request,id_dimension):
 		if request.method == 'POST':
 			with transaction.atomic():
 				variable = Variables_360(
-					nombre = request.POST['nombre'],
+					nombre = request.POST['nombre'].strip(),
 					descripcion = request.POST['descripcion'],
 					posicion = request.POST['posicion'],
 					proyecto_id = proyecto.id,
@@ -238,7 +238,7 @@ def preguntanueva_360(request,id_variable):
 		except:return render_to_response('404.html')
 		if request.method == 'POST':
 			pregunta = Preguntas_360(
-						texto = request.POST['texto'],
+						texto = request.POST['texto'].strip(),
 						posicion = request.POST['posicion'],
 						puntaje = request.POST['puntaje'],
 						proyecto_id = proyecto.id,
@@ -280,7 +280,7 @@ def preguntanueva_360(request,id_variable):
 				if ((not  pregunta.abierta) and pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
 						Respuestas_360.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
@@ -288,7 +288,7 @@ def preguntanueva_360(request,id_variable):
 				elif not( pregunta.abierta or pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						R = Respuestas_360.objects.create( texto = respuesta, pregunta = pregunta )
 
 				Variables_360.objects.filter(id=variable.id).update(max_preguntas = F('max_preguntas') + 1)
@@ -423,14 +423,14 @@ def instrumentoeditar(request,id_instrumento):
 		instrumentos = Instrumentos_360.objects.only('nombre').filter(proyecto_id=proyecto.id).exclude(id=id_instrumento)
 		if request.method == 'POST':
 
-			if(Instrumentos_360.objects.exclude(id=id_instrumento).filter(nombre=request.POST['nombre']).exists()):
+			if(Instrumentos_360.objects.exclude(id=id_instrumento).filter(nombre=request.POST['nombre'].strip()).exists()):
 				return render_to_response('instrumento.html',{
 				'Activar':'Contenido','activar':'Dimensiones','Proyecto':proyecto,'Instrumentos':instrumentos,
 				'Permisos':permisos,'accion':'editar','Instrumento':instrumento,"Error":"Este instrumento ya existe"
 				},context_instance=RequestContext(request))
 
 			with transaction.atomic():
-				instrumento.nombre = request.POST['nombre']
+				instrumento.nombre = request.POST['nombre'].strip()
 				try:
 					if(request.POST['estado']):
 						instrumento.estado = True
@@ -462,7 +462,7 @@ def dimensioneditar(request,id_dimension):
 		except:render_to_response('404.html')
 		if request.method == 'POST':
 			with transaction.atomic():
-				dimension.nombre = request.POST['nombre']
+				dimension.nombre = request.POST['nombre'].strip()
 				dimension.descripcion = request.POST['descripcion']
 				dimension.posicion = request.POST['posicion']
 				if(permisos.act_variables):
@@ -495,7 +495,7 @@ def variableditar_360(request,id_variable):
 		except:render_to_response('404.html')
 		if request.method == 'POST':
 			with transaction.atomic():
-				variable.nombre = request.POST['nombre']
+				variable.nombre = request.POST['nombre'].strip()
 				variable.descripcion = request.POST['descripcion']
 				variable.posicion = request.POST['posicion']
 				if(permisos.act_variables):
@@ -531,7 +531,7 @@ def preguntaeditar_360(request,id_pregunta):
 			num_respuestas = pregunta.respuestas_360_set.count()
 		except:render_to_response('403.html')
 		if request.method == 'POST':
-			pregunta.texto = request.POST['texto']
+			pregunta.texto = request.POST['texto'].strip()
 			pregunta.posicion = request.POST['posicion']
 			pregunta.puntaje = request.POST['puntaje']
 
@@ -571,7 +571,7 @@ def preguntaeditar_360(request,id_pregunta):
 				if ((not  pregunta.abierta) and pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
 						Respuestas_360.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
@@ -948,73 +948,73 @@ def importar_instrumento_360(request):
 				pos_pre = 0
 
 				contador = 0
-				while sheet.cell_value(i,0) != 'FIN' and contador < 10000: #contador de seguridad
+				while sheet.cell_value(i,0).strip() != 'FIN' and contador < 10000: #contador de seguridad
 					contador += 1
-					if sheet.cell_value(i,0) != '' :
-						instrumento = Instrumentos_360.objects.create(nombre = sheet.cell_value(i,0), proyecto_id = proyecto.id)
+					if len(sheet.cell_value(i,0).strip() ) > 0:
+						instrumento = Instrumentos_360.objects.create(nombre = sheet.cell_value(i,0).strip(), proyecto_id = proyecto.id)
 						proyecto.max_variables += 1
 						proyecto.save()
 						pos_dim = 1
 
-					if sheet.cell_value(i,1) != '' :
+					if len(sheet.cell_value(i,1).strip() ) > 0:
 						dimension = Dimensiones_360(
 										posicion = pos_dim,
-										nombre = sheet.cell_value(i,1),
+										nombre = sheet.cell_value(i,1).strip(),
 										proyecto_id = proyecto.id,
 										instrumento_id = instrumento.id)
-						if sheet.cell_value(i,2) != '' :
-							dimension.descripcion = sheet.cell_value(i,2)
+						if len(sheet.cell_value(i,2).strip() ) > 0:
+							dimension.descripcion = sheet.cell_value(i,2).strip()
 						instrumento.max_dimensiones += 1
 						dimension.save()
 						pos_dim += 1
 						pos_var = 1
 
-					if sheet.cell_value(i,3) != '' :
+					if len(sheet.cell_value(i,3).strip() ) > 0:
 						variable =  Variables_360(
 										posicion = pos_var,
-										nombre = sheet.cell_value(i,3),
+										nombre = sheet.cell_value(i,3).strip(),
 										proyecto_id = proyecto.id,
 										instrumento_id = instrumento.id,
 										dimension_id = dimension.id)
-						if sheet.cell_value(i,4) != '' :
-							variable.descripcion = sheet.cell_value(i,4)
+						if len(sheet.cell_value(i,4).strip() ) > 0:
+							variable.descripcion = sheet.cell_value(i,4).strip()
 						dimension.max_variables += 1
 						dimension.save()
 						variable.save()
 						pos_var += 1
 						pos_pre = 1
 
-					if sheet.cell_value(i,5) != '' :
-						pregunta = Preguntas_360(texto = sheet.cell_value(i,5),
+					if len(sheet.cell_value(i,5).strip() ) > 0:
+						pregunta = Preguntas_360(texto = sheet.cell_value(i,5).strip(),
 												instrumento_id = instrumento.id ,
 												dimension_id = dimension.id,
 						 						variable_id = variable.id,
 												proyecto_id = proyecto.id,
 												posicion = pos_pre)
 						pos_pre += 1
-						if sheet.cell_value(i,6) != '':
+						if sheet.cell_value(i,6):
 							pregunta.puntaje = float( sheet.cell_value(i,6) )
 						else:
 							pregunta.puntaje = 1
 
 
-						if sheet.cell_value(i,7).lower() == u'Abierta'.lower():
+						if sheet.cell_value(i,7).lower().strip() == u'Abierta'.lower():
 							pregunta.abierta = True
 							pregunta.multiple = False
 							pregunta.numerica = False
 
-						elif sheet.cell_value(i,7).lower() == u'Múltiple'.lower():
+						elif sheet.cell_value(i,7).lower().strip() == u'Múltiple'.lower():
 							pregunta.abierta = False
 							pregunta.multiple = True
-							if sheet.cell_value(i,6) != '':
+							if sheet.cell_value(i,6):
 								pregunta.numerica = True
 							else:
 								pregunta.numerica = False
 
-						elif sheet.cell_value(i,7).lower() == u'Única'.lower():
+						elif sheet.cell_value(i,7).lower().strip() == u'Única'.lower():
 							pregunta.abierta = False
 							pregunta.multiple = False
-							if sheet.cell_value(i,6) != '':
+							if sheet.cell_value(i,6):
 								pregunta.numerica = True
 							else:
 								pregunta.numerica = False
@@ -1025,11 +1025,10 @@ def importar_instrumento_360(request):
 						variable.save()
 						pregunta.save()
 
-					if sheet.cell_value(i,8) != '' :
-						respuesta = Respuestas_360(texto = sheet.cell_value(i,8),
+					if len(sheet.cell_value(i,8).strip() ) > 0:
+						respuesta = Respuestas_360(texto = sheet.cell_value(i,8).strip(),
 										pregunta_id = pregunta.id)
-						if sheet.cell_value(i,9) != '' :
-							print "respuesta",sheet.cell_value(i,9)
+						if sheet.cell_value(i,9):
 							respuesta.numerico = float( sheet.cell_value(i,9) )
 						respuesta.save()
 

@@ -47,7 +47,6 @@
 					{%for i in Redes %}
 					<tr id="r{{i.id |safe}}">
 						<td><span class="pull-center text-muted " >{{ i.tot_porcentaje | floatformat:"-2" | safe }}</b>% Completo</span>
-						<a href="/menu/{{i.id | escape}}/">
 						<div class="pull-middle progress active" style="width: 250px;margin: 0 auto;">
 							<div class="progress-bar {% if i.activo %}  progress-bar-primary {%else%} progress-bar-success {% endif %}" role="progressbar" aria-valuenow="{{ i.tot_porcentaje | floatformat:"0" | safe }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ i.tot_porcentaje | floatformat:"0" | safe }}%">
 								<span class="sr-only">{{ i.tot_porcentaje | floatformat:"-2" | safe }}% Completado. {% ifequal i.total 100 %}(success){% endifequal %}</span>

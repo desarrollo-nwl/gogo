@@ -74,8 +74,8 @@ var contenido = function(a,x){
 	numerico =  function(a,b) {
     	return a > b ? 1 : a < b ? -1 : 0;
 	},
-	Datos = { {% for i in Preguntas %}{{i.id|safe}}:{'variable':'{{i.variable.descripcion}}','dimension':'{{i.dimension.descripcion}}','texto':'{{i.texto}}','abierta':{% if i.abierta %}true{% else %}false{% endif %},'multiple':{% if i.multiple %}true{% else %}false{% endif %},
-							'respuestas':{ {% for j in i.respuestas_360_set.all %} {{j.id|safe}}:"{{j.texto}}",{% endfor %} },},{% endfor %}
+	Datos = { {% for i in Preguntas %}{{i.id|safe}}:{'variable':{% if i.variable.descripcion %}`{{ i.variable.descripcion  }}`{%else%}''{% endif %},'dimension':{% if i.dimension.descripcion %}`{{ i.dimension.descripcion  }}`{%else%}''{% endif %},'texto':`{{i.texto}}`,'abierta':{% if i.abierta %}true{% else %}false{% endif %},'multiple':{% if i.multiple %}true{% else %}false{% endif %},
+							'respuestas':{ {% for j in i.respuestas_360_set.all %} {{j.id|safe}}:`{{j.texto}}`,{% endfor %} },},{% endfor %}
 			},
 	orden = [{% for i in Orden %} [{% for j in i %}{{j|safe}},{% endfor %}],{% endfor %}],
 	contador = 1,

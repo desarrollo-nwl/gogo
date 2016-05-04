@@ -11,7 +11,6 @@ class Streaming_360( models.Model ):
 	colaborador = models.ForeignKey( Colaboradores_360, related_name="colaborador")
 	evaluado = models.ForeignKey( Colaboradores_360, related_name="evaluado", blank=True, null=True )
 	contestadas = models.PositiveSmallIntegerField( default = 0)
-	# rol = models.CharField( max_length = 120 )
 	instrumento = models.ForeignKey( Instrumentos_360 )
 	pregunta = models.ForeignKey( Preguntas_360 )
 	proyecto = models.ForeignKey( Proyectos )

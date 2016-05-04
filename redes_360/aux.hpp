@@ -5,6 +5,13 @@
 using namespace std;
 using namespace pqxx;
 
+// string CREDENCIALES = "dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432";
+string CREDENCIALES = "dbname=gogo user=suidi password=Su1357*- hostaddr=127.0.0.1 port=5432";
+
+// char raiz[150] = "/home/ubuntu/gogo/";
+char raiz[50] = "/home/suidi/Documentos/gogo/";
+
+
 void escape(string& data) {
     string buffer;
     buffer.reserve(data.size());
@@ -21,16 +28,26 @@ void escape(string& data) {
     data.swap(buffer);
 }
 
+string fecha(string entrada){
+	string out;
+	out.reserve(23);
+	string anio = entrada.substr (0,4);
+	string mes = entrada.substr (5,2);
+	string dia = entrada.substr (8,2);
+	out += "new Date(";
+	out += anio;
+	out += ",";
+	out +=  mes;
+	out += "-1,";
+	out +=  dia;
+	out += ")";
+	return out;
+}
+
 int insertar( string sql )
 {
    try{
-	  connection C( "dbname=testdb "
-	  				"user=suidi "
-					"password=Su1357*- "
-	  				"hostaddr=127.0.0.1 port=5432"
-					);
-	// connection C("dbname=gogo user=usuariodb_gogo password='W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas' hostaddr=127.0.0.1 port=5432");
-
+	   connection C( CREDENCIALES );
 	  if ( !C.is_open() ){
 		 cout << "conexion fallida" << endl;
 		 return 1;
@@ -55,11 +72,7 @@ int insertar( string sql )
 result leer( string sql )
 {
    try{
-	   connection C( "dbname=gogo "
-  				   "user=suidi "
-  				   "password=Su1357*- "
-  				   "hostaddr=127.0.0.1 port=5432"
-  				   );
+	   connection C( CREDENCIALES );
 	  if ( !C.is_open() ){
 		 cout << "conexion fallida" << endl;
 		 result R;
@@ -86,11 +99,7 @@ result leer( string sql )
 int actualizar(string sql)
 {
 	try{
-	   connection C( "dbname=gogo "
- 				  "user=suidi "
- 				  "password=Su1357*- "
- 				  "hostaddr=127.0.0.1 port=5432"
- 				  );
+	 	connection C( CREDENCIALES );
 
 		if ( !C.is_open() ){
 			cout << "conexion fallida" << endl;
