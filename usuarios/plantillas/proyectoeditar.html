@@ -126,7 +126,7 @@
 							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
 								<input type="checkbox" disabled {% if Proyecto.circular %}checked{% endif %} name="circular" class="switch" />
 							</div>
-						<div>
+						</div>
 
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Preguntas ordenadas:</label>
 						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
@@ -178,24 +178,20 @@ $("#logo").change(function() {
     var val = $(this).val();
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'jpg': case 'png':
-            $("#Go").show();
             break;
         default:
             $(this).val('');
             alert("Por favor seleccione una imagen");
-            $("#Go").hide();
     }
 });
 $("#logoenc").change(function() {
     var val = $(this).val();
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'jpg': case 'png':
-            $("#Go").show();
             break;
         default:
             $(this).val('');
             alert("Por favor seleccione una imagen");
-            $("#Go").hide();
     }
 });
 var nombres =[],$nombre = $("#nombre"),$error=$('#error');
