@@ -166,23 +166,23 @@
                                                <i class="fa fa-trash"></i>
                                             </th>
                                             <th>
-                                                <select class="form-control input-sm" name="variable" id='variable'>
+                                                <select class="form-control input-sm" name="variable" id='variable' required="">
                                                     {% for i in variables %}
-                                                      <option value='{{i.id}}'>{{i.nombre}}</option>
+                                                      <option value='{{i.id}}' >{{i.nombre}}</option>
                                                     {% endfor %}
                                                 </select>
                                             </th>
                                             <th>
-                                              <input type="text" class="form-control" name = 'planAccion' id='planAccion'>
+                                              <input type="text" class="form-control" name = 'planAccion' id='planAccion' required="">
                                             </th>
                                             <th>
-                                                <input type="date" name="fechaInicio" >
+                                                <input type="date" name="fechaInicio" id='fechaInicio'>
                                             </th>
                                             <th>
-                                                <input type="date" name="fechaFin" >
+                                                <input type="date" name="fechaFin"  id = 'fechaFin'>
                                             </th>
                                             <th>
-                                                <select class="form-control input-sm" name="lider" id='lider'>
+                                                <select class="form-control input-sm" name="lider" id='lider' required="">
                                                     {% for i in lideres %}
                                                       <option value='{{i.id}}'>{{i.lider.apellido}} {{i.lider.nombre}}</option>
                                                     {% endfor %}
@@ -197,7 +197,7 @@
                                               </th>
 
                                               <th>
-                                                  <select class="form-control input-sm" name="variable0" id='variable0'>
+                                                  <select class="form-control input-sm" name="variable0" id='variable0' required="">
                                                       {% for i in variables %}
                                                         <option value='{{i.id}}'>{{i.nombre}}</option>
                                                       {% endfor %}
@@ -207,13 +207,13 @@
                                                 <input type="text" class="form-control" name = 'planAccion0'>
                                               </th>
                                               <th>
-                                                  <input type="date" name="fechaInicio0" data-date-format="dd/mm/yyyy" >
+                                                  <input type="date" name="fechaInicio0" data-date-format="dd/mm/yyyy" required="">
                                               </th>
                                               <th>
-                                                  <input type="date" name="fechaFin0"  data-date-format="dd/mm/yyyy" >
+                                                  <input type="date" name="fechaFin0"  data-date-format="dd/mm/yyyy" required="">
                                               </th>
                                               <th>
-                                                  <select class="form-control input-sm" name="lider0" id='lider0'>
+                                                  <select class="form-control input-sm" name="lider0" id='lider0' required="">
                                                       {% for i in lideres %}
                                                         <option value='{{i.id}}'>{{i.lider.apellido}} {{i.lider.nombre}}</option>
                                                       {% endfor %}
@@ -254,9 +254,16 @@
                         <div class="form-group">
                             <label class="col-lg-3 col-md-3 control-label" for="" style="text-align: center">Seleccione Colaborardores</label>
                             <div class="col-lg-9 col-md-9">
-                                <select class="form-control select2-minimum">
+                                <form name='form2' method="post">
+                                    <select class="form-control select2-minimum" id='selectLider2' name='selectLider2'>
+                                        <option></option>
+                                        {% for i in lideres %}
+                                            <option value ='{{i.id}}'>{{i.lider.nombre}} {{i.lider.apellido}}</option>
+                                        {% endfor %}
 
-                                </select>
+                                    </select>
+                                </form>
+
                             </div>
                         </div>
                         <br>
@@ -278,6 +285,7 @@
                             <div class="panel panel-default toggle panelMove panelClose panelRefresh">
                                 <!-- Inicio .panel -->
                                 <div class="panel-body">
+
                                     <div class="col-lg-12">
                                         <table class="table table-bordered">
                                             <thead>
@@ -295,15 +303,20 @@
                                                     <th class="col-lg-6" bgcolor="#8CB126" align="center">Observaciones</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
 
-                                            </tbody>
+                                            <form class="" id='formulario' method="post">
+                                                <tbody id='planesLider'>
+
+                                                </tbody>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <span class = 'pull-right'><button type="button" name="button" class="btn btn-primary center-block">Enviar</button></span>
+                                                    </div>
+                                                </div>
+                                            </form>
+
                                         </table>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <!-- <span class = 'pull-right'><button type="button" name="button" class="btn btn-primary center-block">Enviar</button></span> -->
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -332,42 +345,59 @@ $(function(){
     var contador = 0;
         $('#agregarFila').on('click',function(){
 
-        contador += 1;
-        var numeroPlanes = $('input[name = "numeroPlanes"]').val(contador);
+                        contador += 1;
+                        var numeroPlanes = $('input[name = "numeroPlanes"]').val(contador);
 
-        var filaClonar = $('#tabla tbody tr:first'),
-        filaClonada = filaClonar.clone().removeClass('filaClonar').addClass('fila'+contador);
-        $('.ultima').before(filaClonada);
+                        var filaClonar = $('#tabla tbody tr:first'),
+                        filaClonada = filaClonar.clone().removeClass('filaClonar').addClass('fila'+contador);
+                        $('.ultima').before(filaClonada);
 
-    var variable = $('.fila'+contador+' #variable'), lider = $('.fila'+contador+'#lider'), fechaInicio = $('.fila'+contador+' #fechaInicio'), fechaFin = $('.fila'+contador+' #fechaFin'),
-    planAccion = $('fila'+contador+' #planAccion');
+                        var variable = $('.fila'+contador+' #variable'), lider = $('.fila'+contador+' #lider'), fechaInicio = $('.fila'+contador+' #fechaInicio'), fechaFin = $('.fila'+contador+' #fechaFin'),
+                        planAccion = $('.fila'+contador+' #planAccion');
 
-    variable.attr({
-        'name': 'variable'+contador,
-        'id': 'variable'+contador,
-    })
-    lider.attr({
-        'name': 'lider'+contador,
-        'id': 'lider'+contador,
-    })
-    fechaInicio.attr({
-        'name': 'fechaInicio'+contador,
-        'id': 'fechaInicio'+contador,
-    })
-    fechaFin.attr({
-        'name': 'fechaFin'+contador,
-        'id': 'fechaFin'+contador,
-    })
-    planAccion.attr({
-        'name': 'planAccion'+contador,
-        'id': 'planAccion'+contador,
-    })
+                        variable.attr({
+                            'name': 'variable'+contador,
+                            'id': 'variable'+contador,
+                        })
+                        lider.attr({
+                            'name': 'lider'+contador,
+                            'id': 'lider'+contador,
+                        })
+                        fechaInicio.attr({
+                            'name': 'fechaInicio'+contador,
+                            'id': 'fechaInicio'+contador,
+                        })
+                        fechaFin.attr({
+                            'name': 'fechaFin'+contador,
+                            'id': 'fechaFin'+contador,
+                        })
+                        planAccion.attr({
+                            'name': 'planAccion'+contador,
+                            'id': 'planAccion'+contador,
+                        })
+
+                    })
+
+                    $('#selectLider2').change(function(){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/expUsuario/colaborador/planesAccionPeticionAjax/',
+                            data: $('form').serialize(),
+                        }).done(function(e){
+                            htmlText= ''
+                            console.log(e);
+                            for(i=0;i<e.length; i++){
+                               htmlText += '<tr><td>'+i+'</td><td>'+e[i]['plan']+'</td><td>'+e[i]['impacto']+'</td><td>'+e[i]['fechaInicio']+'</td><td>'+e[i]['fechaFin']+'</td><td>'+e[i]['avance']+'</td><td>nada</td></tr>';
+                            }
+                            $('#planesLider').html(htmlText); 
+
+                        }).fail(function(e){console.log('eerror'+e);})
 
 
+                    })
 
-    })
 
-
+// fin document
 })
 
 </script>

@@ -18,6 +18,7 @@ from mensajeria_360.models import Streaming_360
 from usuarios.models import Empresas, Proyectos, Logs
 from cuestionarios.models import Variables
 from exp_usuario.models import Planes, Lideres
+import ujson
 # Create your views here.
 
 @cache_control(no_store=True)
@@ -25,28 +26,29 @@ from exp_usuario.models import Planes, Lideres
 def planesAccion(request):
     proyecto = cache.get(request.user.username)
     planes = Planes.objects.filter(proyecto_id = proyecto.id )
-    print planes
     variables = Variables.objects.filter(proyecto_id = proyecto.id,estado = True)
     lideres = Lideres.objects.filter(proyecto_id = proyecto.id)
     if request.method == 'POST':
         contador = request.POST['numeroPlanes']
         contador = int(contador) + 1
-        # try:
-        #     with transaction.atomic():
-        for i in range(contador):
-            lider = request.POST['lider%s'%i]
-            planAccion = request.POST['planAccion%s'%i]
-            fechaInicio = request.POST['fechaInicio%s'%i]
-            fechaFin = request.POST['fechaFin%s'%i]
-            variable = request.POST['variable%s'%i]
-            lider = Lideres.objects.get(id = lider )
-            Planes.objects.create(
-            proyecto = proyecto,
-            lider = lider,
-            plan = planAccion,
-            )
-        # except:
-        #     print 'errror'
+        try:
+            with transaction.atomic():
+                for i in range(contador):
+                    lider = request.POST['lider%s'%i]
+                    planAccion = request.POST['planAccion%s'%i]
+                    fechaInicio = request.POST['fechaInicio%s'%i]
+                    fechaFin = request.POST['fechaFin%s'%i]
+                    variable = request.POST['variable%s'%i]
+                    lider = Lideres.objects.get(id = lider )
+                    Planes.objects.create(
+                    proyecto = proyecto,
+                    lider = lider,
+                    plan = planAccion,
+                    fechaInicio = fechaInicio,
+                    fechaFin = fechaFin,
+                    )
+        except:
+            print 'errror'
 
 
     return render_to_response('planesAccion.html',{
@@ -55,6 +57,21 @@ def planesAccion(request):
         'lideres': lideres,
         'planes': planes,
         },context_instance=RequestContext(request))
+
+
+def planesAccionPeticionAjax(request):
+    if request.method == 'POST':
+        idLider = request.POST['selectLider2']
+        lider = Lideres.objects.get(id = idLider)
+        planes = lider.planes_set.all()
+        a = []
+        for i in planes:
+            b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,'fechaInicio':'%s/%s/%s'%(i.fechaInicio.year,i.fechaInicio.month,i.fechaInicio.day),'fechaFin':'%s/%s/%s'%(i.fechaFin.year,i.fechaFin.month,i.fechaFin.day)}
+            a.append(b)
+        a = ujson.dumps(a)
+        print a
+    return HttpResponse(a,content_type='aplication/json')
+
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
