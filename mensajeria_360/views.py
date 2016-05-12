@@ -348,105 +348,105 @@ def colaboradoreenviar(request,id_colaborador):
 
 @cache_control(no_store=True)
 def encuesta_360(request,id_proyecto,key):
-	# try:
-	red = []
-	encuestado = Colaboradores_360.objects.filter(proyecto_id=int(id_proyecto)
-				).select_related(
-					'proyecto','proyecto__proyectosdatos','colaboradoresmetricas_360',
-				).get(key=key)
+	try:
+		red = []
+		encuestado = Colaboradores_360.objects.filter(proyecto_id=int(id_proyecto)
+					).select_related(
+						'proyecto','proyecto__proyectosdatos','colaboradoresmetricas_360',
+					).get(key=key)
 
-	proyecto = encuestado.proyecto
-	if not encuestado.estado or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
-		return render_to_response('403.html')
+		proyecto = encuestado.proyecto
+		if not encuestado.estado or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
+			return render_to_response('403.html')
 
-	col_met = encuestado.colaboradoresmetricas_360
+		col_met = encuestado.colaboradoresmetricas_360
 
-	red = col_met.ins_actual
-	reds = ujson.loads(col_met.ord_instrumentos)
+		red = col_met.ins_actual
+		reds = ujson.loads(col_met.ord_instrumentos)
 
-	if not red or reds.index(red) == (len(reds)-1):
-		print "ENTRAMOS"
-		if proyecto.tipo == "360 redes":
-			red = reds[0]
-	else:
-		red = reds[ reds.index(red) +1 ]
-
-	if not request.method == 'POST':
-
-		if proyecto.tipo == "360 redes" and not proyecto.ciclico:
-			red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-					).select_related('evaluado').filter(id = red )[0]
-
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							red_id = red,
-							pregunta__estado = True,
-							respuesta__isnull = True
-						)
-
-		elif proyecto.tipo == "360 unico" and not proyecto.ciclico:
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							pregunta__estado = True,
-							respuesta__isnull = True
-						)
-
-		elif proyecto.tipo == "360 redes" and proyecto.ciclico:
-			red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-					).select_related('evaluado').filter(id = red )[0]
-
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							red_id = red,
-							pregunta__estado = True,
-							contestadas__lt = proyecto.ciclos
-						).order_by('contestadas')
-
-		elif proyecto.tipo == "360 unico" and  proyecto.ciclico:
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							pregunta__estado = True,
-							contestadas__lt = proyecto.ciclos
-						).order_by('contestadas')
-			print 'entre',stream.query,proyecto.ciclos
-		ids_preguntas = []
-		total_cuestionario = 0
-
-		for i in stream:
-			ids_preguntas.append(i.pregunta_id)
-			total_cuestionario += 1
-
-		# if not total_cuestionario:
-		# 	try:
-		# 		return HttpResponseRedirect('http://'+str(proyecto.empresa.pagina))
-		# 	except:
-		# 		return HttpResponseRedirect('http://www.networkslab.co')
-
-		preguntas = Preguntas_360.objects.filter(
-						proyecto_id = proyecto.id, id__in = ids_preguntas,
-					).select_related('variable','dimension').prefetch_related('respuestas_360_set')
-
-		vector_orden = []
-		for i in preguntas:
-			vector_orden.append( (i.dimension.posicion,i.variable.posicion,i.posicion,i.id) )
-
-		if proyecto.pordenadas:
-			vector_orden.sort()
+		if not red or reds.index(red) == (len(reds)-1):
+			print "ENTRAMOS"
+			if proyecto.tipo == "360 redes":
+				red = reds[0]
 		else:
-			random.shuffle(vector_orden)
+			red = reds[ reds.index(red) +1 ]
 
-		tiempo = date.today()
-		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto.id)
+		if not request.method == 'POST':
 
-	# except:
-	# 	try:
-	# 		return render_to_response('fake.html',{
-	# 		'Pagina':'http://'+str( proyecto.empresa.pagina )
-	# 		},	context_instance=RequestContext(request))
-	# 	except:
-	# 		return render_to_response('fake.html',{
-	# 		'Pagina':'http://www.changeamericas.com'
-	# 		},	context_instance=RequestContext(request))
+			if proyecto.tipo == "360 redes" and not proyecto.ciclico:
+				red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
+						).select_related('evaluado').filter(id = red )[0]
+
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								red_id = red,
+								pregunta__estado = True,
+								respuesta__isnull = True
+							)
+
+			elif proyecto.tipo == "360 unico" and not proyecto.ciclico:
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								pregunta__estado = True,
+								respuesta__isnull = True
+							)
+
+			elif proyecto.tipo == "360 redes" and proyecto.ciclico:
+				red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
+						).select_related('evaluado').filter(id = red )[0]
+
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								red_id = red,
+								pregunta__estado = True,
+								contestadas__lt = proyecto.ciclos
+							).order_by('contestadas')
+
+			elif proyecto.tipo == "360 unico" and  proyecto.ciclico:
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								pregunta__estado = True,
+								contestadas__lt = proyecto.ciclos
+							).order_by('contestadas')
+				print 'entre',stream.query,proyecto.ciclos
+			ids_preguntas = []
+			total_cuestionario = 0
+
+			for i in stream:
+				ids_preguntas.append(i.pregunta_id)
+				total_cuestionario += 1
+
+			if not total_cuestionario:
+				try:
+					return HttpResponseRedirect('http://'+str(proyecto.empresa.pagina))
+				except:
+					return HttpResponseRedirect('http://www.networkslab.co')
+
+			preguntas = Preguntas_360.objects.filter(
+							proyecto_id = proyecto.id, id__in = ids_preguntas,
+						).select_related('variable','dimension').prefetch_related('respuestas_360_set')
+
+			vector_orden = []
+			for i in preguntas:
+				vector_orden.append( (i.dimension.posicion,i.variable.posicion,i.posicion,i.id) )
+
+			if proyecto.pordenadas:
+				vector_orden.sort()
+			else:
+				random.shuffle(vector_orden)
+
+			tiempo = date.today()
+			datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto.id)
+
+	except:
+		try:
+			return render_to_response('fake.html',{
+			'Pagina':'http://'+str( proyecto.empresa.pagina )
+			},	context_instance=RequestContext(request))
+		except:
+			return render_to_response('fake.html',{
+			'Pagina':'http://www.changeamericas.com'
+			},	context_instance=RequestContext(request))
 
 
 	if request.method == 'POST':
