@@ -727,8 +727,11 @@ def exportarinterna_360(request):
 				elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
 					for respuesta in stream[i].pregunta.respuestas_360_set.all():
 						if stream[i].respuesta == respuesta.texto:
-							ws.write(i+1,22-k,respuesta.numerico,str_format)
-							ws.write(i+1,23-k,stream[i].respuesta,str_format)
+							try:
+								ws.write(i+1,22-k,respuesta.numerico,str_format)
+								ws.write(i+1,23-k,stream[i].respuesta,str_format)
+							except:
+								pass
 
 				elif stream[i].pregunta.multiple and not stream[i].pregunta.numerica:
 					ws.write(i+1,22-k,u'',str_format)

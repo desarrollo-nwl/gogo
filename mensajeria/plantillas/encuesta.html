@@ -46,14 +46,14 @@
 			<!-- Human Body Section -->
 			<div class="col-lg-12 project">
 				{%if Encuestado.proyecto.interno%}<h1><p>Hola <b>{{Encuestado.nombre | escape |capfirst}}</b>:</p></h1>{%endif%}
-				{%if not Proyecto.interno%}<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>{%endif%}
+				{%if not Proyecto.interno %}<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>{%endif%}
 			</div>
 		</div>
 	</div>
 </section>
 
 <section  id="form" class="form-section">
-{% if Proyecto.pordenadas %}
+{% if Proyecto.pordenadas or not Proyecto.interno %}
 {% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
 <form  class="form-horizontal" method="POST">{% csrf_token %}
 	{% for variable in preguntas_list %}
