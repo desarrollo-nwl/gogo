@@ -1,19 +1,22 @@
 package main
 
 import(
+	// "encoding/json"
 	_ "github.com/lib/pq"
 	"database/sql"
 	"time"
 	"log"
+	js "github.com/bitly/go-simplejson"
 )
 
 var (
 	db *sql.DB
-	local *time.Location
+	// local *time.Location
 
-	sql_proyectos = ``
-	sql_datos = ``
-
+	// sql_proyectos = ``
+	// sql_datos = ``
+	sql_dummie = `
+		SELECT "respuesta" FROM "mensajeria_360_streaming" WHERE "id" = 40`
 )
 
 /*==============================================================================
@@ -72,7 +75,7 @@ type pregunta struct {
 	sumatoria		int
 	contador		int
 	promedio		float64
-	respuestas		[]respuestas
+	respuestas		[]respuesta
 }
 
 type instrumento struct {
@@ -109,86 +112,110 @@ func main() {
 	if err != nil {
 		panic("Error conectando BD")
 	}
+	var cadena string
+	err = db.QueryRow(sql_dummie).Scan(&cadena)
+	if err != nil {
+		log.Print(err)
+	}
 
-	local, err = time.LoadLocation("America/Bogota")
+	json_r, err := js.NewJson([]byte(cadena))
+	if err != nil {
+		log.Print(err)
+	}
+
+	for i := 0; ; {
+		cadena, err = json_r.GetIndex(i).Get("r").String()
+		if err != nil {
+			log.Print(err)
+			break
+		} else {
+			log.Print( cadena )
+			i++
+		}
+	}
+
+	// var resp respuestas
+	// json.Unmarshal( []byte(cadena), &resp)
+	// log.Print(resp)
+	// local, err = time.LoadLocation("America/Bogota")
 
 	/*==========================================================================
 		Query Proyectos
 	==========================================================================*/
 
-	proys, err := db.Query( sql_proyectos )
-	defer proys.Close()
-	if err != nil {
-		log.Print(err)
-		panic("Error recibiendo proyectos")
-	}
-
-	var pro proyectos
-	var pros []proyectos
-	for filas.Next(){
-		err = filas.Scan(&pro.id, &pro.ciclico, &pro.ciclos, &pro.dimensiones)
-		pros = append(pros,pro)
-	}
-
-	/*==========================================================================
-		Conteo para cada proyecto
-	==========================================================================*/
-
-	for i := range proyectos {
-
-		// Datos de instrumentos
-		rows, err := db.Query( sql_instrumentos,  proyectos[i].id )
-		defer rows.Close()
-		if err != nil {
-			log.Print(err)
-		}
-		var inst instrumento
-		ind_instrumentos := make(map[string]intrumentos)
-		for rows.Next() {
-			err = rows.Scan( &inst.id, &inst.nombre )
-			if err != nil {
-				log.Print(err)
-			}
-			ind_instrumentos[&inst.id] = inst
-		}
-
-		// Datos de los encuestados
-		rows, err := db.Query( sql_encuestados,  proyectos[i].id )
-		if err != nil {
-			log.Print(err)
-		}
-		ind_persona := make(map[int]persona)
-		for rows.Next() {
-			var human persona
-			err = rows.Scan( &human.id, &human.regional, &human.ciudad, &human.area, &human.cargo )
-			if err != nil {
-				log.Print(err)
-			}
-			ind_persona[human.id] = human
-		}
-
-		// Datos del proyecto
-		rows, err = db.Query( sql_datos,  proyectos[i].id )
-		if err != nil {
-			log.Print(err)
-		}
-		var data datos
-		ind_datos := make(map[int]persona)
-		for rows.Next() {
-			err = rows.Scan( &data.user, &data.pregunta, &data.respuesta, &data.fecha )
-			if err != nil {
-				log.Print(err)
-			}
-			ind_datos[data.user] = data
-		}
-
-
-
-
-	}
-
-
-
+	// proys, err := db.Query( sql_proyectos )
+	// defer proys.Close()
+	// if err != nil {
+	// 	log.Print(err)
+	// 	panic("Error recibiendo proyectos")
+	// }
+	//
+	// var pro proyectos
+	// var pros []proyectos
+	// for filas.Next(){
+	// 	err = filas.Scan(&pro.id, &pro.ciclico, &pro.ciclos, &pro.dimensiones)
+	// 	pros = append(pros,pro)
+	// }
+	//
+	// /*==========================================================================
+	// 	Conteo para cada proyecto
+	// ==========================================================================*/
+	//
+	// for i := range proyectos {
+	//
+	// 	// Datos de instrumentos
+	// 	rows, err := db.Query( sql_instrumentos,  proyectos[i].id )
+	// 	defer rows.Close()
+	// 	if err != nil {
+	// 		log.Print(err)
+	// 	}
+	// 	var inst instrumento
+	// 	ind_instrumentos := make(map[string]intrumentos)
+	// 	for rows.Next() {
+	// 		err = rows.Scan( &inst.id, &inst.nombre )
+	// 		if err != nil {
+	// 			log.Print(err)
+	// 		}
+	// 		ind_instrumentos[&inst.id] = inst
+	// 	}
+	//
+	// 	// Datos de los encuestados
+	// 	rows, err := db.Query( sql_encuestados,  proyectos[i].id )
+	// 	if err != nil {
+	// 		log.Print(err)
+	// 	}
+	// 	ind_persona := make(map[int]persona)
+	// 	for rows.Next() {
+	// 		var human persona
+	// 		err = rows.Scan( &human.id, &human.regional, &human.ciudad, &human.area, &human.cargo )
+	// 		if err != nil {
+	// 			log.Print(err)
+	// 		}
+	// 		ind_persona[human.id] = human
+	// 	}
+	//
+	// 	// Datos del proyecto
+	// 	rows, err = db.Query( sql_datos,  proyectos[i].id )
+	// 	if err != nil {
+	// 		log.Print(err)
+	// 	}
+	// 	var data datos
+	// 	ind_datos := make(map[int]persona)
+	// 	for rows.Next() {
+	// 		err = rows.Scan( &data.user, &data.pregunta, &data.respuesta, &data.fecha )
+	// 		if err != nil {
+	// 			log.Print(err)
+	// 		}
+	// 		ind_datos[data.user] = data
+	// 	}
+	//
+	//
+	//
+	//
+	// }
+	//
+	//
+	//
 
 
 	log.Print("Hola mundo")
