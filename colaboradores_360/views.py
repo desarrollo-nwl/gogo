@@ -472,7 +472,7 @@ def colaboradoreliminar_360(request,id_colaborador):
 				proyecto.save()
 				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/360/participantes/individual/')
-	return render_to_response('col_eliminar.html',{
+	return render_to_response('col_eliminar_360.html',{
 	'Activar':'Contenido','activar':'Individual',
 	'objeto':'Participante','Participante':participante,
 	'Proyecto':proyecto,'Permisos':permisos,

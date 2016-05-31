@@ -43,7 +43,7 @@
 		<div class="row">
 			<!-- Human Body Section -->
 			<div class="col-lg-12 project">
-				<h1><p>¡Hola <b>{{request.user.first_name  |capfirst}}</b>! {% ifequal Proyecto.tipo "360 redes" %} estas evaluando a <b>{{ Red.evaluado.nombre }} {{ Red.evaluado.apellido }}</b> con el rol <b>{{ Red.rol }}</b>{% endifequal %}</p></h1>
+				<h1><p>¡Hola <b>{{Encuestado.nombre  |capfirst}}</b>! {% ifequal Proyecto.tipo "360 redes" %} estas evaluando a <b>{{ Red.evaluado.nombre }} {{ Red.evaluado.apellido }}</b> con el rol <b>{{ Red.rol }}</b>{% endifequal %}</p></h1>
 				<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>
 			</div>
 		</div>

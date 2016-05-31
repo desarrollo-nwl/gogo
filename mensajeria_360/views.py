@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from __future__ import unicode_literals
 from colaboradores_360.models import Colaboradores_360, ColaboradoresMetricas_360,ColaboradoresDatos_360
 from cuestionarios_360.models import Variables_360,Preguntas_360
 from django.contrib.auth.decorators import login_required
@@ -79,7 +80,6 @@ def gosurvey_360(request):
 
 
 					if request.is_ajax():
-
 						datos.finicio = DT.strptime(str(request.POST['fec_inicio']),'%d/%m/%Y')
 						datos.ffin = DT.strptime(str(request.POST['fec_fin']),'%d/%m/%Y')
 						proyecto.can_envio = request.POST['can_envio']
@@ -172,14 +172,18 @@ def gosurvey_360(request):
 
 								aresponder = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id).count()
 								if aresponder:
-									respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id,respuesta__isnull=False).count()
-									Colaboradores_360.objects.filter(id = red.colaborador_id
-									).update(
-										pre_respuestas = respuestas,
-										pre_aresponder = aresponder,
-										tot_avance= 100*respuestas/( aresponder * proyecto.ciclos ),
-									)
-
+									if not proyecto.ciclico:
+										respuestas = Streaming_360.objects.filter(proyecto_id=proyecto.id,colaborador_id=red.colaborador_id,respuesta__isnull=False).count()
+										print respuestas, 100*respuestas/( aresponder * proyecto.ciclos )
+										Colaboradores_360.objects.filter(id = red.colaborador_id
+										).update( 	pre_respuestas = respuestas,
+													pre_aresponder = aresponder,
+													tot_avance= 100*respuestas/( aresponder * int(proyecto.ciclos) ) )
+									else:
+										respuestas = Colaboradores_360.objects.only("pre_respuestas").get(id = red.colaborador_id).pre_respuestas
+										Colaboradores_360.objects.filter(id = red.colaborador_id
+										).update( 	pre_aresponder = aresponder,
+													tot_avance= 100*respuestas/( aresponder * int(proyecto.ciclos) ) )
 								else:
 									Colaboradores_360.objects.filter(id = red.colaborador_id
 									).update(
@@ -198,7 +202,7 @@ def gosurvey_360(request):
 								contestadas = 0
 							proyecto.tot_respuestas = contestadas
 							proyecto.tot_aresponder = gran_total
-							proyecto.total = 100.0*contestadas/ ( gran_total * proyecto.ciclos)
+							proyecto.total = 100.0*contestadas/ ( gran_total * int(proyecto.ciclos))
 						else:
 							proyecto.tot_respuestas = 0
 							proyecto.tot_aresponder = 0
@@ -241,7 +245,7 @@ def metricas_360(request):
 			print ids_id
 			participantes = Colaboradores_360.objects.only('puntaje','respuestas','enviados','propension',
 							'reenviados','nombre','apellido','colaboradoresdatos_360__area','estado','descripcion'
-							).filter(id__in = ids_id).select_related('colaboradoresdatos_360')
+							).filter(id__in = ids_id, estado = True).select_related('colaboradoresdatos_360')
 
 		else:
 			participantes = Colaboradores_360.objects.only('puntaje','respuestas','enviados','propension',
@@ -348,105 +352,105 @@ def colaboradoreenviar(request,id_colaborador):
 
 @cache_control(no_store=True)
 def encuesta_360(request,id_proyecto,key):
-	# try:
-	red = []
-	encuestado = Colaboradores_360.objects.filter(proyecto_id=int(id_proyecto)
-				).select_related(
-					'proyecto','proyecto__proyectosdatos','colaboradoresmetricas_360',
-				).get(key=key)
+	try:
+		red = []
+		encuestado = Colaboradores_360.objects.filter(proyecto_id=int(id_proyecto)
+					).select_related(
+						'proyecto','proyecto__proyectosdatos','colaboradoresmetricas_360',
+					).get(key=key)
 
-	proyecto = encuestado.proyecto
-	if not encuestado.estado or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
-		return render_to_response('403.html')
+		proyecto = encuestado.proyecto
+		if not encuestado.estado or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
+			return render_to_response('403.html')
 
-	col_met = encuestado.colaboradoresmetricas_360
+		col_met = encuestado.colaboradoresmetricas_360
 
-	red = col_met.ins_actual
-	reds = ujson.loads(col_met.ord_instrumentos)
+		red = col_met.ins_actual
+		reds = ujson.loads(col_met.ord_instrumentos)
 
-	if not red or reds.index(red) == (len(reds)-1):
-		print "ENTRAMOS"
-		if proyecto.tipo == "360 redes":
-			red = reds[0]
-	else:
-		red = reds[ reds.index(red) +1 ]
-
-	if not request.method == 'POST':
-
-		if proyecto.tipo == "360 redes" and not proyecto.ciclico:
-			red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-					).select_related('evaluado').filter(id = red )[0]
-
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							red_id = red,
-							pregunta__estado = True,
-							respuesta__isnull = True
-						)
-
-		elif proyecto.tipo == "360 unico" and not proyecto.ciclico:
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							pregunta__estado = True,
-							respuesta__isnull = True
-						)
-
-		elif proyecto.tipo == "360 redes" and proyecto.ciclico:
-			red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-					).select_related('evaluado').filter(id = red )[0]
-
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							red_id = red,
-							pregunta__estado = True,
-							contestadas__lt = proyecto.ciclos
-						).order_by('contestadas')
-
-		elif proyecto.tipo == "360 unico" and  proyecto.ciclico:
-			stream = Streaming_360.objects.filter(
-							colaborador_id = encuestado.id,
-							pregunta__estado = True,
-							contestadas__lt = proyecto.ciclos
-						).order_by('contestadas')
-			print 'entre',stream.query,proyecto.ciclos
-		ids_preguntas = []
-		total_cuestionario = 0
-
-		for i in stream:
-			ids_preguntas.append(i.pregunta_id)
-			total_cuestionario += 1
-
-		# if not total_cuestionario:
-		# 	try:
-		# 		return HttpResponseRedirect('http://'+str(proyecto.empresa.pagina))
-		# 	except:
-		# 		return HttpResponseRedirect('http://www.networkslab.co')
-
-		preguntas = Preguntas_360.objects.filter(
-						proyecto_id = proyecto.id, id__in = ids_preguntas,
-					).select_related('variable','dimension').prefetch_related('respuestas_360_set')
-
-		vector_orden = []
-		for i in preguntas:
-			vector_orden.append( (i.dimension.posicion,i.variable.posicion,i.posicion,i.id) )
-
-		if proyecto.pordenadas:
-			vector_orden.sort()
+		if not red or reds.index(red) == (len(reds)-1):
+			print "ENTRAMOS"
+			if proyecto.tipo == "360 redes":
+				red = reds[0]
 		else:
-			random.shuffle(vector_orden)
+			red = reds[ reds.index(red) +1 ]
 
-		tiempo = date.today()
-		datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto.id)
+		if not request.method == 'POST':
 
-	# except:
-	# 	try:
-	# 		return render_to_response('fake.html',{
-	# 		'Pagina':'http://'+str( proyecto.empresa.pagina )
-	# 		},	context_instance=RequestContext(request))
-	# 	except:
-	# 		return render_to_response('fake.html',{
-	# 		'Pagina':'http://www.changeamericas.com'
-	# 		},	context_instance=RequestContext(request))
+			if proyecto.tipo == "360 redes" and not proyecto.ciclico:
+				red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
+						).select_related('evaluado').filter(id = red )[0]
+
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								red_id = red,
+								pregunta__estado = True,
+								respuesta__isnull = True
+							)
+
+			elif proyecto.tipo == "360 unico" and not proyecto.ciclico:
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								pregunta__estado = True,
+								respuesta__isnull = True
+							)
+
+			elif proyecto.tipo == "360 redes" and proyecto.ciclico:
+				red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
+						).select_related('evaluado').filter(id = red )[0]
+
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								red_id = red,
+								pregunta__estado = True,
+								contestadas__lt = proyecto.ciclos
+							).order_by('contestadas')
+
+			elif proyecto.tipo == "360 unico" and  proyecto.ciclico:
+				stream = Streaming_360.objects.filter(
+								colaborador_id = encuestado.id,
+								pregunta__estado = True,
+								contestadas__lt = proyecto.ciclos
+							).order_by('contestadas')
+				print 'entre',stream.query,proyecto.ciclos
+			ids_preguntas = []
+			total_cuestionario = 0
+
+			for i in stream:
+				ids_preguntas.append(i.pregunta_id)
+				total_cuestionario += 1
+
+			if not total_cuestionario:
+				try:
+					return HttpResponseRedirect('http://'+str(proyecto.empresa.pagina))
+				except:
+					return HttpResponseRedirect('http://www.networkslab.co')
+
+			preguntas = Preguntas_360.objects.filter(
+							proyecto_id = proyecto.id, id__in = ids_preguntas,
+						).select_related('variable','dimension').prefetch_related('respuestas_360_set')
+
+			vector_orden = []
+			for i in preguntas:
+				vector_orden.append( (i.dimension.posicion,i.variable.posicion,i.posicion,i.id) )
+
+			if proyecto.pordenadas:
+				vector_orden.sort()
+			else:
+				random.shuffle(vector_orden)
+
+			tiempo = date.today()
+			datos = ProyectosDatos.objects.filter(ffin__gte=tiempo,finicio__lte=tiempo).get(id=proyecto.id)
+
+	except:
+		try:
+			return render_to_response('fake.html',{
+			'Pagina':'http://'+str( proyecto.empresa.pagina )
+			},	context_instance=RequestContext(request))
+		except:
+			return render_to_response('fake.html',{
+			'Pagina':'http://www.changeamericas.com'
+			},	context_instance=RequestContext(request))
 
 
 	if request.method == 'POST':
@@ -496,36 +500,36 @@ def encuesta_360(request,id_proyecto,key):
 				if( proyecto.ciclico ):
 					if i.contestadas == 1:
 						if i.pregunta.abierta:
-							i.respuesta = ujson.dumps([ {'f':tiempo,'r': request.POST[str(i.pregunta_id)] } ] )
+							i.respuesta = json.dumps([ {'f':tiempo,'r': request.POST[str(i.pregunta_id)] } ],ensure_ascii = False )
 						elif i.pregunta.multiple:
-							i.respuesta = ujson.dumps( [ {'f':tiempo,'r': ujson.dumps( request.POST.getlist(str(i.pregunta_id)) )} ] )
+							i.respuesta = json.dumps( [ {'f':tiempo,'r': json.dumps( request.POST.getlist(str(i.pregunta_id)) ,ensure_ascii = False)} ] )
 
 						else:
-							i.respuesta = ujson.dumps([ {'f':tiempo,'r': request.POST[str(i.pregunta_id)] } ])
+							i.respuesta = json.dumps([ {'f':tiempo,'r': request.POST[str(i.pregunta_id)] } ],ensure_ascii = False)
 
 					else:
 						if i.pregunta.abierta:
-							r = ujson.loads(i.respuesta)
+							r = json.loads(i.respuesta)
 							r.append( {'f':tiempo,'r': request.POST[str(i.pregunta_id)] } )
-							i.respuesta = ujson.dumps( r )
+							i.respuesta = json.dumps( r ,ensure_ascii = False)
 
 						elif i.pregunta.multiple:
 							print i.respuesta
-							r = ujson.loads(i.respuesta)
-							r.append(  {'f':tiempo,'r': ujson.dumps( request.POST.getlist(str(i.pregunta_id)) ) } )
-							i.respuesta = ujson.dumps( r )
+							r = json.loads(i.respuesta)
+							r.append(  {'f':tiempo,'r': json.dumps( request.POST.getlist(str(i.pregunta_id)) ,ensure_ascii = False) } )
+							i.respuesta = json.dumps( r ,ensure_ascii = False)
 
 						else:
-							r = ujson.loads(i.respuesta)
+							r = json.loads(i.respuesta)
 							r.append( {'f':tiempo,'r': request.POST[str(i.pregunta_id)] } )
-							i.respuesta = ujson.dumps( r )
+							i.respuesta = json.dumps( r ,ensure_ascii = False)
 
 
 				else:
 					if i.pregunta.abierta:
 						i.respuesta = request.POST[str(i.pregunta_id)]
 					elif i.pregunta.multiple:
-						r = ujson.dumps(request.POST.getlist(str(i.pregunta_id)) )
+						r = json.dumps(request.POST.getlist(str(i.pregunta_id)) )
 						if not r:
 							i.respuesta = 'Ninguna seleccionada'
 						else:
@@ -727,8 +731,11 @@ def exportarinterna_360(request):
 				elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
 					for respuesta in stream[i].pregunta.respuestas_360_set.all():
 						if stream[i].respuesta == respuesta.texto:
-							ws.write(i+1,22-k,respuesta.numerico,str_format)
-							ws.write(i+1,23-k,stream[i].respuesta,str_format)
+							try:
+								ws.write(i+1,22-k,respuesta.numerico,str_format)
+								ws.write(i+1,23-k,stream[i].respuesta,str_format)
+							except:
+								pass
 
 				elif stream[i].pregunta.multiple and not stream[i].pregunta.numerica:
 					ws.write(i+1,22-k,u'',str_format)
@@ -738,7 +745,7 @@ def exportarinterna_360(request):
 					ws.write(i+1,22-k,u'',str_format)
 					ws.write(i+1,23-k,stream[i].respuesta,str_format)
 			else:
-				ws.write(i+1,23-k,stream[i].respuesta,str_format)
+				ws.write(i+1,23-k,stream[i].respuesta.replace("\\",""),str_format)
 
 			if proyecto.tipo == "360 redes":
 				ws.write(i+1,24-k,stream[i].red.rol,str_format)

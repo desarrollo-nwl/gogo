@@ -174,7 +174,8 @@ $(function(){
                         && contenido(datos[i][4],cargos_seleccionados)
                     ){
                          /////  adicion de objetos a la talbla diccionario
-                         for(var objecto in datos[i][6]){
+                         var dicc = JSON.parse(datos[i][6])
+                         for(var objecto in dicc){
                              if(!contenido(objeto,objetos)){
                                  objetos.push(objeto);
                                  var tabla = [ datos.slice(0,5) ];
@@ -301,4 +302,4 @@ $(function(){
 });
 
 </script>
-{% endblock %}
+{% endblock %

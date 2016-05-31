@@ -1,4 +1,4 @@
-{% extends "dash2.html" %}{% load staticfiles%}
+{% extends "dash_360.html" %}{% load staticfiles%}
 {% block title %} Proyecto | Eliminar {% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
@@ -15,7 +15,7 @@
 			{%ifequal objeto "Participante"%}<div class="m" style="text-rendering: optimizeLegibility;">Eliminar una participante ocasiona que los siguientes elementos asociados:<br><br><ul><li>Métricas del participante</li><li>Respuestas del participante</li></ul><strong>sean eliminados definitivamente.</strong><br><br>¿Está seguro de querer Eliminar al colaborador <strong>{{Participante.nombre | escape}} {{Participante.apellido | escape}}</strong>?</div>{%endifequal%}
 			<form  method="POST">{%csrf_token%}
             	<div class="container-fluid">
-					{%ifequal objeto "Participante"%}<a href="/participantes/individual/" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</a>{%endifequal%}
+					{%ifequal objeto "Participante"%}<span onclick="window.history.go(-1); return false;" class="btn btn-primary pull-left m-t"><i class="fa fa-life-saver"></i> Cancelar</span>{%endifequal%}
 					<button type="submit" class="btn btn-danger pull-right m-t"><i class="fa fa-trash"></i> Eliminar definitivamente</button>
 				</div>
             </form>

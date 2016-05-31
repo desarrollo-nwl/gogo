@@ -101,8 +101,9 @@
 								<a href="#"><i class="l-basic-pencil-ruler"></i><span class="nav-label"><span class="txt"> Estado de avance </span></a>
 								<ul class="sub">
 									{% if Proyecto.interna %}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
-									{% if Permisos.res_exp %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}{%endif%}
-									{% if Permisos.var_add %}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}
+									{% if Permisos.res_exp %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}
+									{% if Permisos.var_add %}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}{%endif%}
+									{% if not Proyecto.interna %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{% endif %}
 									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
 								</ul>
 							</li>
