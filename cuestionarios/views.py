@@ -144,22 +144,32 @@ def preguntanueva(request,id_variable):
 				pregunta.abierta = True
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Unica"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Numerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Multiple"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple =True
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="MultipleNumerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
-				pregunta.multiple =True
+				pregunta.multiple = True
+				pregunta.cuerpo = False
+			elif(request.POST['tipo'] =="CuerpoHumano"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+				pregunta.cuerpo = True
 			else:
 				return render_to_response('500.html')
 			try:
@@ -287,24 +297,35 @@ def preguntaeditar(request,id_pregunta):
 				pregunta.abierta = True
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Unica"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Numerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Multiple"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple =True
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="MultipleNumerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
-				pregunta.multiple =True
+				pregunta.multiple = True
+				pregunta.cuerpo = False
+			elif(request.POST['tipo'] =="CuerpoHumano"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+				pregunta.cuerpo = True
 			else:
 				return render_to_response('500.html')
+
 			try:
 				if(request.POST['estado']):
 					if(variable.estado):

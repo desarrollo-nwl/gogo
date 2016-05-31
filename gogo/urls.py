@@ -109,6 +109,7 @@ urlpatterns += patterns('analisis.views',
 	url(r'^analisis/focalizado/$', 'focalizado'),
 	url(r'^analisis/general/$', 'general'),
 	url(r'^analisis/wordanalytics/$', 'wordanalytics'),
+	url(r'^analisis/cuerpo/$', 'cuerpo'),
 )
 
 

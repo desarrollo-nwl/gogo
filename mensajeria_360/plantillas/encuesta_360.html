@@ -90,21 +90,19 @@ var contenido = function(a,x){
 		cache_D = Datos[orden[i][3]];
 		{% if Proyecto.pordenadas %}
 		if( cache_D['dimension'].length > 0 && !contenido(cache_D['dimension'],dimensiones) ){
-			render += `<b>Dimensión: `+cache_D['dimension']+` </b><br><br> `;
+			render += "<b>Dimensión: "+cache_D['dimension']+" </b><br><br> ";
 			dimensiones.push(cache_D['dimension']);
 		}
 		if (cache_D['variable'].length > 0 && !contenido(cache_D['variable'],variables) ){
-			render += `  <i>Variable: `+cache_D['variable'] + `</i>:<br><br>`;
+			render += '  <i>Variable: '+cache_D['variable'] + '</i>:<br><br>';
 			variables.push(cache_D['variable']);
 		}
 		{% endif %}
-		render += 	`<div class="container">
-						<div class="form-group">
-						<legend><span class="number">`+contador+`</span>
-							`+cache_D['texto']+`</legend>`;
+		render += 	"<div class="container"><div class='form-group'><legend><span class='number'>"
+		render += contador+"</span>"+cache_D['texto']+"</legend>";
 		if ( cache_D['abierta'] || cache_D['multiple'] ){
 			if( cache_D['abierta'] )
-				render += `<textarea type="text" max_length="1000" name="`+orden[i][3]+`" required title="Por favor responda la pregunta"></textarea>`;
+				render += '<textarea type="text" max_length="1000" name="'+orden[i][3]+'" required title="Por favor responda la pregunta"></textarea>';
 			else {
 				vec_indices = []
 				for (var id in cache_D['respuestas'])
@@ -113,14 +111,13 @@ var contenido = function(a,x){
 				vec_indices.sort(numerico);
 
 				for (var j = 0; j < vec_indices.length; j++) {
-					render += 	`<input type="checkbox" name="`+orden[i][3]+`" class="checkbox" value="`+cache_D['respuestas'][vec_indices[j]]+`">
-								<label class="light">`+cache_D['respuestas'][vec_indices[j]]+`</label><br>`;
+					render += 	'<input type="checkbox" name="'+orden[i][3]+'" class="checkbox" value="'+cache_D['respuestas'][vec_indices[j]]+'"><label class="light">'+cache_D['respuestas'][vec_indices[j]]+'</label><br>';
 				}
 			}
 		}
 
 		else if( !cache_D['abierta'] || !cache_D['multiple'] ){
-			render += `<select required name="`+orden[i][3]+`" title="Por favor responda la pregunta" >`;
+			render += '<select required name="'+orden[i][3]+'" title="Por favor responda la pregunta" >';
 
 			vec_indices = []
 			for (var id in cache_D['respuestas'])
@@ -129,16 +126,15 @@ var contenido = function(a,x){
 			vec_indices.sort(numerico);
 
 			for (var j = 0; j < vec_indices.length; j++) {
-				render += `<option value="`+cache_D['respuestas'][vec_indices[j]]+`">`+cache_D['respuestas'][vec_indices[j]]+`</option>`;
+				render += '<option value="'+cache_D['respuestas'][vec_indices[j]]+'">'+cache_D['respuestas'][vec_indices[j]]+'</option>';
 			}
-			render += `</select>`;
+			render += '</select>';
 		}
 
-		render += `</div></div><br>`;
+		render += '</div></div><br>';
 		contador++;
 	}
-	render +=  `<input type="hidden" name="ids_preguntas" value="[`+ids_preguntas+`]">
-				<button class="btn btn-primary"><strong>Finalizar encuesta</strong></button>`;
+	render +=  '<input type="hidden" name="ids_preguntas" value="['+ids_preguntas+']"><button class="btn btn-primary"><strong>Finalizar encuesta</strong></button>';
 
 	$("#div_render").html(render);
 </script>

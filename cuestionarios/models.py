@@ -27,6 +27,7 @@ class Variables( models.Model ):
 class Preguntas( models.Model ):
 	id = models.AutoField( primary_key = True )
 	abierta = models.BooleanField( default = False )
+	cuerpo = models.BooleanField( default = False )
 	estado = models.BooleanField( default = True )
 	multiple = models.BooleanField( default = False )
 	numerica = models.BooleanField( default = True )

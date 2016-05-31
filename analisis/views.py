@@ -213,6 +213,7 @@ def wordanalytics(request):
 			objetosStreaming = Streaming.objects.filter(
 									proyecto_id=proyecto.id,
 									pregunta__abierta = True,
+									pregunta__cuerpo = False,
 									respuesta__isnull = False
 								).select_related(
 									'pregunta'
@@ -242,3 +243,25 @@ def wordanalytics(request):
 
 	else:
 			return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def cuerpo(request):
+	proyecto = cache.get(request.user.username)
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
+		return render_to_response('423.html')
+	permisos = request.user.permisos
+	if permisos.res_see:
+
+
+
+		return render_to_response('cuerpo.html',{
+			'Activar':'AnalisisResultados',
+			'activar':'CuerpoHumano',
+			'Proyecto':proyecto,
+			'Permisos':permisos,
+			'activarG':3,
+		}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('403.html')

@@ -62,7 +62,13 @@
 			{% for pregunta in variable.list|dictsort:"posicion" %}
 			<div class="form-group">
 				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
-				{%if pregunta.abierta%}<textarea type="text" max_length="1000" name="{{pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
+				{%if pregunta.abierta%}
+					{%if i.pregunta.cuerpo %}
+					
+					{% else %}
+						<textarea type="text" max_length="1000" name="{{pregunta.id}}" required title="Por favor responda la pregunta"></textarea>
+					{% endif %}
+				{%endif%}
 				{%if pregunta.multiple%}
 					{%for i in pregunta.respuestas_set.all%}
 						<input type="checkbox" class="checkbox" name="{{pregunta.id}}" value="{{i.texto|escape}}" >
@@ -86,7 +92,13 @@
     <div class="container">
 			<div class="form-group">
 				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend>
-				{%if i.pregunta.abierta %}<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>{%endif%}
+				{%if i.pregunta.abierta %}
+					{%if i.pregunta.cuerpo %}
+					
+					{% else %}
+						<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>
+					{% endif %}
+				{%endif%}
 				{%if i.pregunta.multiple %}
 					{%for j in i.pregunta.respuestas_set.all%}
 						<input type="checkbox" class="checkbox" name="{{i.pregunta.id}}" value="{{j.texto|escape}}" >

@@ -45,6 +45,7 @@
 							<option value="Multiple">Múltiple respuesta</option>
 							<option value="MultipleNumerica">Múltiple respuesta con valor numérico</option>
 							<option value="Abierta">Abierta</option>
+							<option value="CuerpoHumano">Cuerpo Humano</option>
 						</select>
 					</div>
 				</div>
@@ -85,6 +86,11 @@ $(document).ready(function(){
 	$tipo.change(function(){
 		$('.numerica').addClass('oculto');
 		switch ($tipo[0].selectedIndex) {
+			case 5:
+				$contenedor.html('');
+				aux_cantidad = 0;
+				cantidad = 0;
+				break;
 			case 4:
 				$contenedor.html('');
 				aux_cantidad = 0;

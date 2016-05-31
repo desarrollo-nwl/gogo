@@ -1,0 +1,75 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} Análisis | Gráficas{% endblock %}
+{% block head2 %}{% endblock%}
+
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Cuerpo humano</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Resultados de las preguntas tipo cuerpo humano</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 5px 0 5px' id="div"></div>
+				<br><br><br>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciclo</label>
+									<div class="col-xs-2">
+										<select id="ciclo" class="filtro form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales" class="filtro form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades" class="filtro form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas" class="filtro form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos" class="filtro form-control" multiple></select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+{% endblock %}
