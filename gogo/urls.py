@@ -169,7 +169,7 @@ urlpatterns += patterns('colaboradores_360.views',
 #===============================================================================
 
 urlpatterns += patterns('redes_360.views',
-	# url(r'^360/archivo/$', 'archivo_360'),
+#	url(r'^360/archivo/$', 'archivo_360'),
 	url(r'^360/redes/$', 'redes_360'),
 	url(r'^360/red/editar/(?P<id_red>[0-9]{1,10})/$', 'reditar_360'),
 	url(r'^360/red/eliminar/(?P<id_red>[0-9]{1,10})/$', 'redeliminar_360'),
@@ -205,6 +205,13 @@ urlpatterns += patterns('exp_usuario.views',
 	url(r'^expUsuario/lider/miLiderazgo/$', 'miLiderazgo'),
 	url(r'^expUsuario/lider/dashBoard/$', 'dashBoard'),
 	url(r'^expUsuario/colaborador/dashBoard/$', 'dashBoard'),
+	url(r'^expUsuario/colaborador/planesAccionPeticionAjax/$', 'planesAccionPeticionAjax'),
+)
+#===============================================================================
+# urls entorno pruebas
+#===============================================================================
+urlpatterns += patterns('entornoPruebas.views',
+	url(r'^entornoPruebas/cuerpoHumano$', 'cuerpoHumano'),
 )
 
 #===============================================================================
