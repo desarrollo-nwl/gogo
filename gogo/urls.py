@@ -206,6 +206,12 @@ urlpatterns += patterns('exp_usuario.views',
 	url(r'^expUsuario/colaborador/dashBoard/$', 'dashBoard'),
 	url(r'^expUsuario/colaborador/planesAccionPeticionAjax/$', 'planesAccionPeticionAjax'),
 )
+#===============================================================================
+# urls entorno pruebas
+#===============================================================================
+urlpatterns += patterns('entornoPruebas.views',
+	url(r'^entornoPruebas/cuerpoHumano$', 'cuerpoHumano'),
+)
 
 #===============================================================================
 # urls de errores

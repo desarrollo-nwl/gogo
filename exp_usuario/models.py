@@ -1,12 +1,14 @@
 from django.db import models
 from usuarios.models import Proyectos
 from colaboradores.models import Colaboradores
-
+from colaboradores_360.models import Colaboradores_360
+from cuestionarios_360.models import  Variables_360
 # Create your models here.
 ############## PENDIENTE DE CONFIRMACION !!!!!!!!!!!!!!!!
 class Lideres(models.Model):
     proyecto = models.ForeignKey(Proyectos,blank = True, null = True)
-    lider = models.ForeignKey(Colaboradores,blank = True, null = True)
+    lider = models.ForeignKey(Colaboradores_360,blank = True, null = True)
+
 
 class CategoriasProductos(models.Model):
     proyecto = models.ForeignKey(Proyectos,blank = True, null = True )
@@ -30,10 +32,9 @@ class ColaboradoresExpUsuario(models.Model):
     premiosCanjeados = models.ManyToManyField(Productos, blank = True)
 
 #####################3####################################3
-
-
 class Planes(models.Model):
     proyecto = models.ForeignKey(Proyectos,blank = True, null = True)
+    variables = models.ForeignKey(Variables_360,blank = True, null = True)
     lider = models.ForeignKey(Lideres,null = True, blank = True)
     plan = models.CharField(max_length = 500,null = False,blank = False)
     avance = models.FloatField(default = 0 )
@@ -42,6 +43,7 @@ class Planes(models.Model):
     fechaFin = models.DateField(blank = True, null = True )
     observaciones = models.CharField(max_length = 500 )
     aprobacion = models.BooleanField(default = False )
+    estado = models.CharField(max_length = 200,null = True,blank = True ,default = 'Sin Iniciar')
 
 class Comentarios(models.Model):
     comentario = models.FloatField(max_length  = 500)

@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='colaboradoresexpusuario',
-            name='premiosCanjeados',
-            field=models.ManyToManyField(to='exp_usuario.Productos', blank=True),
+        migrations.AddField(
+            model_name='planes',
+            name='estado',
+            field=models.CharField(default=b'Sin Iniciar', max_length=200, null=True, blank=True),
         ),
     ]

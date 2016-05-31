@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('usuarios', '__first__'),
+        ('colaboradores_360', '__first__'),
         ('colaboradores', '__first__'),
     ]
 
@@ -42,7 +43,7 @@ class Migration(migrations.Migration):
             name='Lideres',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('lider', models.ForeignKey(blank=True, to='colaboradores.Colaboradores', null=True)),
+                ('lider', models.ForeignKey(blank=True, to='colaboradores_360.Colaboradores_360', null=True)),
                 ('proyecto', models.ForeignKey(blank=True, to='usuarios.Proyectos', null=True)),
             ],
         ),
@@ -85,6 +86,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='colaboradoresexpusuario',
             name='premiosCanjeados',
-            field=models.ManyToManyField(to='exp_usuario.Productos', null=True, blank=True),
+            field=models.ManyToManyField(to='exp_usuario.Productos', blank=True),
         ),
     ]

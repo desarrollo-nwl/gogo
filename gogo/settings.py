@@ -49,6 +49,7 @@ INSTALLED_APPS = (
 	'mptt',
 	'debug_toolbar',
 	'exp_usuario',
+	'entornoPruebas',
 
 )
 
@@ -78,7 +79,8 @@ TEMPLATES = [
 				BASE_DIR+'/mensajeria_360/plantillas/',
 				BASE_DIR+'/colaboradores_360/plantillas/',
 				BASE_DIR+'/redes_360/plantillas/',
-				BASE_DIR+'/exp_usuario/plantillas',],
+				BASE_DIR+'/exp_usuario/plantillas',
+				BASE_DIR+'/entornoPruebas/plantillas',],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
