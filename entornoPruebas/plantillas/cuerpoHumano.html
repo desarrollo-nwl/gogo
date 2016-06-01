@@ -92,113 +92,6 @@
 
 <script type="text/javascript">
 $(function(){
-
-    var contenido = function(a,x){
-        for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
-        return false;
-    }
-    var contenido_date = function(a,x){
-        for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
-        return false;
-    }
-
-    //==============================================================================
-    //   variables GLOBALES
-    //==============================================================================
-    var regionales=[],ciudades=[],areas=[],cargos=[], fechas=[], variables = [], variables_str='';
-    var $reg = $('#regionales'), $ciu = $('#ciudades_g3'),
-    	$area = $('#areas'), $car = $('#cargos_g3')
-    	$ciclo = $('#ciclo');
-
-    var regionales_str = '', ciudades_str = '', cargos_str = '',areas_str = '';
-    // var datos =[['persona','regionales','ciudad','area','cargo','fechas','{'hombro_iz':1,'hombro_der':5,}']]             fecha.fin.proyecto - fecha.ini.proyecto/6 -----> 6 clusters
-       var datos = [
-           ['nombre0','regional0','ciudad0','area0','cargo0','fecha','"{"gluteo-der":"4","dorsal-der":"4","redondo-menor-der":"7","bicep-fem-der":"6"}"'],
-           ['nombre1','regional1','ciudad1','area1','cargo1','fecha','"{"dorsal-der":"4","gluteo-izq":"8","cabeza":"8","gastrocnemio-der":"6"}"'],
-           ['nombre2','regional2','ciudad2','area2','cargo2','fecha','"{"dorsal-der":"4","gluteo-izq":"8","gastrocnemio-der":"6","triceps-izq":"6","palmar-der":"10","mano-der":"10"}"'],
-           ['nombre3','regional3','ciudad3','area3','cargo3','fecha','"{"gluteo-der":"5","dorsal-der":"4","redondo-menor-der":"8","bicep-fem-der":"6"}"'],
-           ['nombre4','regional4','ciudad4','area4','cargo4','fecha','"{"gluteo-izq":"8","gastrocnemio-der":"6","palmar-der":"10","mano-der":"10","trapecio-der":"6","dorsal-der":"9","gluteo-der":"5","peroneo-izq":"3"}"'],
-       ];
-    //==============================================================================
-    //  Elementos
-    //==============================================================================
-    var elementos = {
-        inicio: function(){
-            for (var i = 0; i < datos.length; i++) {
-
-                if (!contenido(datos[i][1],regionales)){
-                    regionales.push(datos[i][1]);
-                    regionales_str += "<option value='"+datos[i][1]+"'>"+datos[i][1]+"</option>"
-                }
-                if (!contenido(datos[i][2],ciudades)){
-                    ciudades.push(datos[i][2]);
-                    ciudades_str += "<option value='"+datos[i][2]+"'>"+datos[i][2]+"</option>"
-                }
-                if (!contenido(datos[i][3],areas)){
-                    areas.push(datos[i][3]);
-                    areas_str += "<option value='"+datos[i][3]+"'>"+datos[i][3]+"</option>"
-                }
-                if (!contenido(datos[i][4],cargos)){
-                    cargos.push(datos[i][4]);
-                    cargos_str += "<option value='"+datos[i][4]+"'>"+datos[i][4]+"</option>"
-                }
-            }
-
-        $reg.append(regionales_str);
-        $ciu.append(ciudades_str);
-        $are.append(areas_str);
-        $car.append(cargos_str);
-
-
-            //  UPDATE Selects
-            $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
-            $('.filtro').multiselect('selectAll', false);
-            $('.filtro').multiselect('updateButtonText');
-
-            },
-            /////////////////fin inicio
-
-            datosCuerpoHumano:function(datos){
-                // variables_seleccionadas = $var_g3.val() || [],
-                var datosCuerpoHumano = {};
-                var objetos = [];
-                regionales_seleccionadas = $reg.val() || [],
-                ciudades_seleccionadas = $ciu.val() || [],
-                areas_seleccionadas = $are.val() || [],
-                cargos_seleccionados = $car.val() || [];
-                for(i=0;i<datos.length;i++){
-                    if(
-                        regionales_seleccionadas == datos[i][1]
-                        && ciudades_seleccionadas == datos[i][2]
-                        && contenido(datos[i][3],areas_seleccionadas)
-                        && contenido(datos[i][4],cargos_seleccionados)
-                    ){
-                         /////  adicion de objetos a la talbla diccionario
-                         var dicc = JSON.parse(datos[i][6])
-                         for(var objecto in dicc){
-                             if(!contenido(objeto,objetos)){
-                                 objetos.push(objeto);
-                                 var tabla = [ datos.slice(0,5) ];
-                                 datosCuerpoHumano[objeto] = [datos[i][6][objeto],1,tabla];
-                             }else{
-                                 datosCuerpoHumano[objeto][0] += datos[i][6][objeto]
-                                 datosCuerpoHumano[objeto][1] += 1;
-                                 datosCuerpoHumano[objecto][2].push(datos.slice(0,5));
-                             }
-                         }
-                    ///fin de filtros
-                    }
-
-                }
-                return datosCuerpoHumano
-            },
-            ///////fin datosCuerpoHumano
-
-         }
-         //==============================================================================
-         //   fin elementos
-         //==============================================================================
-
     var MAP_WIDTH  = 420;
     var MAP_HEIGHT = 590;
 
@@ -301,5 +194,121 @@ $(function(){
     }
 });
 
+    var contenido = function(a,x){
+        for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
+        return false;
+    }
+    var contenido_date = function(a,x){
+        for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
+        return false;
+    }
+
+    //==============================================================================
+    //   variables GLOBALES
+    //==============================================================================
+    var regionales=[],ciudades=[],areas=[],cargos=[], fechas=[], variables = [], variables_str='';
+    var $reg = $('#regionales'), $ciu = $('#ciudades_g3'),
+    	$area = $('#areas'), $car = $('#cargos_g3')
+    	$ciclo = $('#ciclo');
+
+    var regionales_str = '', ciudades_str = '', cargos_str = '',areas_str = '';
+    // var datos =[['persona','regionales','ciudad','area','cargo','fechas','{'hombro_iz':1,'hombro_der':5,}']]             fecha.fin.proyecto - fecha.ini.proyecto/6 -----> 6 clusters
+       var datos = [
+           ['nombre0','regional0','ciudad0','area0','cargo0','fecha','"{"gluteo-der":"4","dorsal-der":"4","redondo-menor-der":"7","bicep-fem-der":"6"}"'],
+           ['nombre1','regional1','ciudad1','area1','cargo1','fecha','"{"dorsal-der":"4","gluteo-izq":"8","cabeza":"8","gastrocnemio-der":"6"}"'],
+           ['nombre2','regional2','ciudad2','area2','cargo2','fecha','"{"dorsal-der":"4","gluteo-izq":"8","gastrocnemio-der":"6","triceps-izq":"6","palmar-der":"10","mano-der":"10"}"'],
+           ['nombre3','regional3','ciudad3','area3','cargo3','fecha','"{"gluteo-der":"5","dorsal-der":"4","redondo-menor-der":"8","bicep-fem-der":"6"}"'],
+           ['nombre4','regional4','ciudad4','area4','cargo4','fecha','"{"gluteo-izq":"8","gastrocnemio-der":"6","palmar-der":"10","mano-der":"10","trapecio-der":"6","dorsal-der":"9","gluteo-der":"5","peroneo-izq":"3"}"'],
+       ];
+    //==============================================================================
+    //  Elementos
+    //==============================================================================
+    var elementos = {
+        inicio: function(){
+            for (var i = 0; i < datos.length; i++) {
+
+                if (!contenido(datos[i][1],regionales)){
+                    regionales.push(datos[i][1]);
+                    regionales_str += "<option value='"+datos[i][1]+"'>"+datos[i][1]+"</option>"
+                }
+                if (!contenido(datos[i][2],ciudades)){
+                    ciudades.push(datos[i][2]);
+                    ciudades_str += "<option value='"+datos[i][2]+"'>"+datos[i][2]+"</option>"
+                }
+                if (!contenido(datos[i][3],areas)){
+                    areas.push(datos[i][3]);
+                    areas_str += "<option value='"+datos[i][3]+"'>"+datos[i][3]+"</option>"
+                }
+                if (!contenido(datos[i][4],cargos)){
+                    cargos.push(datos[i][4]);
+                    cargos_str += "<option value='"+datos[i][4]+"'>"+datos[i][4]+"</option>"
+                }
+            }
+
+        $reg.append(regionales_str);
+        $ciu.append(ciudades_str);
+        $are.append(areas_str);
+        $car.append(cargos_str);
+
+
+            //  UPDATE Selects
+            $('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+            $('.filtro').multiselect('selectAll', false);
+            $('.filtro').multiselect('updateButtonText');
+
+            },
+            /////////////////fin inicio
+
+            datosCuerpoHumano:function(datos){
+                // variables_seleccionadas = $var_g3.val() || [],
+                var datosCuerpoHumano = {};
+                var objetos = [];
+                regionales_seleccionadas = $reg.val() || [],
+                ciudades_seleccionadas = $ciu.val() || [],
+                areas_seleccionadas = $are.val() || [],
+                cargos_seleccionados = $car.val() || [];
+                for(i=0;i<datos.length;i++){
+                    if( true
+                        // regionales_seleccionadas == datos[i][1]
+                        // && ciudades_seleccionadas == datos[i][2]
+                        // && contenido(datos[i][3],areas_seleccionadas)
+                        // && contenido(datos[i][4],cargos_seleccionados)
+                    ){
+                         /////  adicion de objetos a la talbla diccionario
+                         var dicc = JSON.parse(datos[i][6])
+                         for(var objecto in dicc){
+                             if(!contenido(objeto,objetos)){
+                                 objetos.push(objeto);
+                                 var tabla = [ datos.slice(0,5) ];
+                                 datosCuerpoHumano[objeto] = [datos[i][6][objeto],1,tabla];
+                             }else{
+                                 datosCuerpoHumano[objeto][0] += datos[i][6][objeto]
+                                 datosCuerpoHumano[objeto][1] += 1;
+                                 datosCuerpoHumano[objecto][2].push(datos.slice(0,5));
+                             }
+                         }
+                    ///fin de filtros
+                    }
+
+                }
+
+                return datosCuerpoHumano
+            },
+            ///////fin datosCuerpoHumano
+
+         }
+         //==============================================================================
+         //   Inicializacón
+         //==============================================================================
+         //==============================================================================
+            var datosCuerpoHumanoD = elementos.datosCuerpoHumano(datos);
+            console.log(datosCuerpoHumanoD);
+         //==============================================================================
+         //==============================================================================
+         //   fin Inicialización
+         //==============================================================================
+
+
+
 </script>
-{% endblock %
+{% endblock %}

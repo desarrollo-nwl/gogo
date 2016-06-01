@@ -83,14 +83,14 @@ function estilo(regionName,region,chusque){
                  select.change(function(){
                       formularioEnvio[String(regionName)]= $(this).val();
                       var stringFormularioEnvio = JSON.stringify(formularioEnvio);
-                      $('input[name=formularioEnvio]').val(stringFormularioEnvio);
+                      $('#formularioEnvio').val(stringFormularioEnvio);
                  })
 	  		}else{
 	  			region.attr(style);
                 select.val('');
                 delete formularioEnvio[String(regionName)];
                 var stringFormularioEnvio = JSON.stringify(formularioEnvio);
-                $('input[name=formularioEnvio]').val(stringFormularioEnvio);
+                $('#formularioEnvio').val(stringFormularioEnvio);
 	  		}
         }, true);
     //    fin funcion estilo
