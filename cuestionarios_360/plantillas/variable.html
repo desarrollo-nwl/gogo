@@ -1,5 +1,11 @@
 {% extends "dash2.html" %}{%load staticfiles %}
 {% block title %} Proyecto | Variables{% endblock %}
+{% block head2 %}
+<style media="screen">
+	.dd-option,.dd-option:hover,.dd-selected{background-color: #303946 !important;color:#e6efe8 !important;z-index: 999;overflow: visible;}
+	.dd-click-off-close{height: 300px !important;overflow:scroll; }
+</style>
+{% endblock %}
 {% block navegacion%}
 <li><a href="/home/"><i class="fa fa-home"></i></a></li>
 <li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
@@ -14,7 +20,7 @@
 		<div class="panel-heading">
 			<h4 class="panel-title"> Complete los siguientes campos para agregar una nueva variable:</h4>
 		</div>
-		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; min-height: 500px;">
 			<form class="form-horizontal" method="POST">{%csrf_token%}
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
@@ -28,6 +34,13 @@
 					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
 						<input  id="nombre" title="Se requiere un texto para la encuesta" type="text" name="descripcion" class="form-control" maxlength="254" placeholder="Texto que aparecerá en la encuesta" value="{% if Variable.descripcion %}{{Variable.descripcion}}{% endif %}">
 					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Imagen:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<select id="select" class="form-control"></select>
+					</div>
+					<input id="imagen" type="hidden" name="imagen" value="{% static 'img/variables/badge.png'%}">
 				</div>
 				<div class="form-group">
 					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Posición:</label>
@@ -53,7 +66,131 @@
 
 {% block scripts%}
 <script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/ddslick/ddslick.min.js' %}"></script>
 <script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
-<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+<script type="text/javascript">
+$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});
+var ddData = [
+    {
+        text: "Insignia",
+        value: "{% static 'img/variables/badge.png'%}",
+        selected: false,
+        description: "Insignia",
+        imageSrc: "{% static 'img/variables/badge.png'%}"
+    },
+	{
+		text: "Balance",
+		value: "{% static 'img/variables/balance.png'%}",
+		selected: false,
+		description: "Balance",
+		imageSrc: "{% static 'img/variables/balance.png'%}"
+	},
+	{
+		text: "Negocios",
+		value: "{% static 'img/variables/business.png'%}",
+		selected: false,
+		description: "Negocios",
+		imageSrc: "{% static 'img/variables/business.png'%}"
+	},
+	{
+		text: "Calma",
+		value: "{% static 'img/variables/calm.png'%}",
+		selected: false,
+		description: "Calma",
+		imageSrc: "{% static 'img/variables/calm.png'%}"
+	},
+	{
+		text: "Comunicación",
+		value: "{% static 'img/variables/comunication.png'%}",
+		selected: false,
+		description: "Comunicación",
+		imageSrc: "{% static 'img/variables/comunication.png'%}"
+	},
+	{
+		text: "Energy",
+		value: "{% static 'img/variables/energy.png'%}",
+		selected: false,
+		description: "Energy",
+		imageSrc: "{% static 'img/variables/energy.png'%}"
+	},
+	{
+		text: "Compromiso",
+		value: "{% static 'img/variables/engagement.png'%}",
+		selected: false,
+		description: "Compromiso",
+		imageSrc: "{% static 'img/variables/engagement.png'%}"
+	},
+	{
+		text: "Estimación",
+		value: "{% static 'img/variables/gauge.png'%}",
+		selected: false,
+		description: "Estimación",
+		imageSrc: "{% static 'img/variables/gauge.png'%}"
+	},
+	{
+		text: "Conocimiento 1",
+		value: "{% static 'img/variables/knowledge.png'%}",
+		selected: false,
+		description: "Conocimiento 1",
+		imageSrc: "{% static 'img/variables/knowledge.png'%}"
+	},
+	{
+		text: "Conocimiento 2",
+		value: "{% static 'img/variables/knowledge-2.png'%}",
+		selected: false,
+		description: "Conocimiento 2",
+		imageSrc: "{% static 'img/variables/knowledge-2.png'%}"
+	},
+	{
+		text: "Conocimiento 3",
+		value: "{% static 'img/variables/knowledge-3.png'%}",
+		selected: false,
+		description: "Conocimiento 3",
+		imageSrc: "{% static 'img/variables/knowledge-3.png'%}"
+	},
+	{
+		text: "Liderazgo",
+		value: "{% static 'img/variables/leadership.png'%}",
+		selected: false,
+		description: "Liderazgo",
+		imageSrc: "{% static 'img/variables/leadership.png'%}"
+	},
+	{
+		text: "Estrategia",
+		value: "{% static 'img/variables/strategy.png'%}",
+		selected: false,
+		description: "Estrategia",
+		imageSrc: "{% static 'img/variables/strategy.png'%}"
+	},
+	{
+		text: "Equipo",
+		value: "{% static 'img/variables/team.png'%}",
+		selected: false,
+		description: "Equipo",
+		imageSrc: "{% static 'img/variables/team.png'%}"
+	}
+];
+{% if Variable.imagen %}
+var opciones = ["{% static 'img/variables/badge.png'%}","{% static 'img/variables/balance.png'%}","{% static 'img/variables/business.png'%}","{% static 'img/variables/calm.png'%}","{% static 'img/variables/comunication.png'%}","{% static 'img/variables/energy.png'%}","{% static 'img/variables/engagement.png'%}","{% static 'img/variables/gauge.png'%}","{% static 'img/variables/knowledge.png'%}","{% static 'img/variables/knowledge-2.png'%}","{% static 'img/variables/knowledge-3.png'%}","{% static 'img/variables/leadership.png'%}","{% static 'img/variables/strategy.png'%}","{% static 'img/variables/team.png'%}"]
+var seleccionada = null;
+for (var i = 0; i < opciones.length; i++) {
+	if(opciones[i] == "{{Variable.imagen}}"){
+		seleccionada = i;
+		break;
+	}
+}
+{% endif %}
+
+$('#select').ddslick({
+    data: ddData,
+    width: '100%',
+    imagePosition: "left",
+	{% if Variable.imagen %}defaultSelectedIndex: seleccionada,{% endif %}
+    selectText: "Seleccione una imagen para su variable",
+    onSelected: function (data) {
+		$("#imagen").val(data["selectedData"]["value"]);
+    }
+});
+</script>
 {%endblock%}

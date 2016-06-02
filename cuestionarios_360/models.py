@@ -48,6 +48,7 @@ class Variables_360( models.Model ):
 	descripcion = models.TextField( blank = True, null = True , max_length = 255 )
 	dimension = models.ForeignKey( Dimensiones_360, blank = True, null = True )
 	estado = models.BooleanField( default = True )
+	imagen = models.CharField( default="/static/img/variables/badge.png", max_length = 400 )
 	instrumento = models.ForeignKey( Instrumentos_360, blank = True, null = True )
 	max_preguntas = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
@@ -67,6 +68,7 @@ class Variables_360( models.Model ):
 class Preguntas_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	abierta = models.BooleanField( default = False )
+	cuerpo = models.BooleanField( default = False )
 	dimension = models.ForeignKey( Dimensiones_360, blank = True, null = True )
 	estado = models.BooleanField( default = True )
 	instrumento = models.ForeignKey( Instrumentos_360, blank = True, null = True )
