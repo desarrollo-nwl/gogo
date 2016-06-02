@@ -247,7 +247,7 @@ $(function(){
 
         $reg.append(regionales_str);
         $ciu.append(ciudades_str);
-        $are.append(areas_str);
+        $area.append(areas_str);
         $car.append(cargos_str);
 
 
@@ -265,7 +265,7 @@ $(function(){
                 var objetos = [];
                 regionales_seleccionadas = $reg.val() || [],
                 ciudades_seleccionadas = $ciu.val() || [],
-                areas_seleccionadas = $are.val() || [],
+                areas_seleccionadas = $area.val() || [],
                 cargos_seleccionados = $car.val() || [];
                 for(i=0;i<datos.length;i++){
                     if( true
@@ -302,6 +302,7 @@ $(function(){
          //==============================================================================
          //==============================================================================
             var datosCuerpoHumanoD = elementos.datosCuerpoHumano(datos);
+            console.log('hola mundo');
             console.log(datosCuerpoHumanoD);
          //==============================================================================
          //==============================================================================

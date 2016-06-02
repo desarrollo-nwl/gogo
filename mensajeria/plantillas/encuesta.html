@@ -13,7 +13,8 @@
 	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/ico/favicon114.png' %}">
 	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/ico/favicon72.png' %}">
 	<link rel="apple-touch-icon" href="{% static 'img/ico/favicon57.png' %}">
-	<script type="text/javascript" src="{% static 'raphael/had_raphaelEncuesta.js' %}"></script>
+
+
 	<style media="screen">label.error{margin:-30px 0 7px 0;color:#a62727}input.error,select.error,textarea.error{border:1px solid #db5565;box-shadow:inset 0 1px 1px rgba(0,0,0,.075)}</style>
 </head>
 <body>
@@ -45,7 +46,10 @@
 	<div class="container-two">
 		<div class="row">
 			<!-- Human Body Section -->
-			<div class="col-lg-12 project">
+			<div class="col-lg-3">
+
+			</div>
+			<div class="col-lg-9 project">
 				{%if Encuestado.proyecto.interno%}<h1><p>Hola <b>{{Encuestado.nombre | escape |capfirst}}</b>:</p></h1>{%endif%}
 				{%if not Proyecto.interno %}<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>{%endif%}
 			</div>
@@ -65,8 +69,17 @@
 				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
 				{%if pregunta.abierta%}
 					{%if pregunta.cuerpo %}
-					         Para HAD es importante cuidar y conocer tu bienestar. Cuéntanos ¿En qué parte de tu cuerpo has sentido molestias el último mes?
-							<div class="human_body"></div>
+					       <div class="row">
+							   <div class="col-md-4">
+                                  <div id="human_body" align="center"></div>
+							   </div>
+							   <div class="col-md-4">
+
+							   </div>
+							   <div class="col-md-4">
+
+							   </div>
+					       </div>
 							<!-- Modal -->
 							<div class="modal fade" id="1" role="dialog">
 							  <div class="modal-dialog">
@@ -1324,7 +1337,7 @@
 				{%if i.pregunta.abierta %}
 					{%if i.pregunta.cuerpo %}
 					Para HAD es importante cuidar y conocer tu bienestar. Cuéntanos ¿En qué parte de tu cuerpo has sentido molestias el último mes?
-				   <div class="human_body"></div>
+				  <div id="human_body" align="center"></div>
 				   <!-- Modal -->
 				   <div class="modal fade" id="1" role="dialog">
 					 <div class="modal-dialog">
@@ -2591,5 +2604,12 @@
 <script>window.jQuery || document.write('<script src="/static/js/libs/jquery-ui-1.10.4.min.js">\x3C/script>')</script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
 <script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="{% static 'raphael/raphael.js' %}"></script>
+<script src="{% static 'raphael/raphael-min.js'%}"></script>
+<script type="text/javascript" src="{% static 'raphael/had_raphaelEncuesta.js' %}"></script>
+
 </body>
 </html>
