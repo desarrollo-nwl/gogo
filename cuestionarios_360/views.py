@@ -204,6 +204,7 @@ def variablenueva_360(request,id_dimension):
 					nombre = request.POST['nombre'].strip(),
 					descripcion = request.POST['descripcion'],
 					posicion = request.POST['posicion'],
+					imagen = request.POST['imagen'],
 					proyecto_id = proyecto.id,
 					instrumento_id = dimension.instrumento_id,
 					dimension_id = dimension.id)
@@ -250,22 +251,32 @@ def preguntanueva_360(request,id_variable):
 				pregunta.abierta = True
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Unica"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Numerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Multiple"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple =True
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="MultipleNumerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple =True
+				pregunta.cuerpo = False
+			elif(request.POST['tipo'] =="CuerpoHumano"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+				pregunta.cuerpo = True
 			else:
 				return render_to_response('500.html')
 			try:
@@ -498,6 +509,7 @@ def variableditar_360(request,id_variable):
 				variable.nombre = request.POST['nombre'].strip()
 				variable.descripcion = request.POST['descripcion']
 				variable.posicion = request.POST['posicion']
+				variable.imagen = request.POST['imagen']
 				if(permisos.act_variables):
 					try:
 						if(request.POST['estado']):
@@ -539,22 +551,32 @@ def preguntaeditar_360(request,id_pregunta):
 				pregunta.abierta = True
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Unica"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Numerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Multiple"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple =True
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="MultipleNumerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple =True
+				pregunta.cuerpo = False
+			elif(request.POST['tipo'] =="CuerpoHumano"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+				pregunta.cuerpo = True
 			else:
 				return render_to_response('500.html')
 			try:
@@ -838,11 +860,12 @@ def exportar_instrumento_360(request,id_instrumento):
 		ws.write(0,2,u"Dimensión Texto encuesta")
 		ws.write(0,3,u"Variable (R)")
 		ws.write(0,4,u"Variable Texto encuesta")
-		ws.write(0,5,u"Pregunta (R)")
-		ws.write(0,6,u"Puntaje")
-		ws.write(0,7,u"Tipo (R)")
-		ws.write(0,8,u"Respuesta")
-		ws.write(0,9,u"Valor")
+		ws.write(0,5,u"Variable imagen")
+		ws.write(0,6,u"Pregunta (R)")
+		ws.write(0,7,u"Puntaje")
+		ws.write(0,8,u"Tipo (R)")
+		ws.write(0,9,u"Respuesta")
+		ws.write(0,10,u"Valor")
 
 		if len(preguntas):
 			ws.write(1,0,preguntas[0].instrumento.nombre)
@@ -867,25 +890,29 @@ def exportar_instrumento_360(request,id_instrumento):
 								variables.append(var.variable.id)
 								ws.write(i,3,var.variable.nombre,str_format)
 								ws.write(i,4,var.variable.descripcion,str_format)
+								ws.write(i,5,var.variable.imagen,str_format)
 
 							for pre in preguntas:
 								if pre.id == orden[5]:
 									if not (pre.id in preguntas_aux):
 										preguntas_aux.append(pre.id)
-										ws.write(i,5,pre.texto,str_format)
-										ws.write(i,6,pre.puntaje,str_format)
+										ws.write(i,6,pre.texto,str_format)
+										ws.write(i,7,pre.puntaje,str_format)
 
 										if pre.abierta:
-											ws.write(i,7,u"Abierta",str_format)
+											if pre.cuerpo:
+												ws.write(i,8,u"Cuerpo",str_format)
+											else:
+												ws.write(i,8,u"Abierta",str_format)
 										elif pre.multiple:
-											ws.write(i,7,u"Múltiple",str_format)
+											ws.write(i,8,u"Múltiple",str_format)
 										else:
-											ws.write(i,7,u"Única",str_format)
+											ws.write(i,8,u"Única",str_format)
 
 										for res in pre.respuestas_360_set.all():
 											bandera = False
-											ws.write(i,8,res.texto,str_format)
-											ws.write(i,9,res.numerico,str_format)
+											ws.write(i,9,res.texto,str_format)
+											ws.write(i,10,res.numerico,str_format)
 											i += 1
 										if pre.abierta or bandera:
 											i += 1
@@ -973,6 +1000,7 @@ def importar_instrumento_360(request):
 						variable =  Variables_360(
 										posicion = pos_var,
 										nombre = sheet.cell_value(i,3).strip(),
+										imagen = sheet.cell_value(i,5),
 										proyecto_id = proyecto.id,
 										instrumento_id = instrumento.id,
 										dimension_id = dimension.id)
@@ -984,40 +1012,49 @@ def importar_instrumento_360(request):
 						pos_var += 1
 						pos_pre = 1
 
-					if len(sheet.cell_value(i,5).strip() ) > 0:
-						pregunta = Preguntas_360(texto = sheet.cell_value(i,5).strip(),
+					if len(sheet.cell_value(i,6).strip() ) > 0:
+						pregunta = Preguntas_360(texto = sheet.cell_value(i,6).strip(),
 												instrumento_id = instrumento.id ,
 												dimension_id = dimension.id,
 						 						variable_id = variable.id,
 												proyecto_id = proyecto.id,
 												posicion = pos_pre)
 						pos_pre += 1
-						if sheet.cell_value(i,6):
-							pregunta.puntaje = float( sheet.cell_value(i,6) )
+						if sheet.cell_value(i,7):
+							pregunta.puntaje = float( sheet.cell_value(i,7) )
 						else:
 							pregunta.puntaje = 1
 
 
-						if sheet.cell_value(i,7).lower().strip() == u'Abierta'.lower():
+						if sheet.cell_value(i,8).lower().strip() == u'Abierta'.lower():
 							pregunta.abierta = True
 							pregunta.multiple = False
 							pregunta.numerica = False
+							pregunta.cuerpo = False
 
-						elif sheet.cell_value(i,7).lower().strip() == u'Múltiple'.lower():
+						elif sheet.cell_value(i,8).lower().strip() == u'Múltiple'.lower():
 							pregunta.abierta = False
 							pregunta.multiple = True
-							if sheet.cell_value(i,6):
+							pregunta.cuerpo = False
+							if sheet.cell_value(i,7):
 								pregunta.numerica = True
 							else:
 								pregunta.numerica = False
 
-						elif sheet.cell_value(i,7).lower().strip() == u'Única'.lower():
+						elif sheet.cell_value(i,8).lower().strip() == u'Única'.lower():
 							pregunta.abierta = False
 							pregunta.multiple = False
-							if sheet.cell_value(i,6):
+							pregunta.cuerpo = False
+							if sheet.cell_value(i,7):
 								pregunta.numerica = True
 							else:
 								pregunta.numerica = False
+
+						elif sheet.cell_value(i,8).lower().strip() == u'Cuerpo'.lower():
+							pregunta.abierta = True
+							pregunta.multiple = False
+							pregunta.numerica = False
+							pregunta.cuerpo = True
 
 						instrumento.max_preguntas += 1
 						variable.max_preguntas += 1
@@ -1025,11 +1062,11 @@ def importar_instrumento_360(request):
 						variable.save()
 						pregunta.save()
 
-					if len(sheet.cell_value(i,8).strip() ) > 0:
-						respuesta = Respuestas_360(texto = sheet.cell_value(i,8).strip(),
+					if len(sheet.cell_value(i,9).strip() ) > 0:
+						respuesta = Respuestas_360(texto = sheet.cell_value(i,9).strip(),
 										pregunta_id = pregunta.id)
-						if sheet.cell_value(i,9):
-							respuesta.numerico = float( sheet.cell_value(i,9) )
+						if sheet.cell_value(i,10):
+							respuesta.numerico = float( sheet.cell_value(i,10) )
 						respuesta.save()
 
 					i += 1
