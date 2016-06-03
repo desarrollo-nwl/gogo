@@ -34,6 +34,9 @@
 		<div class="panel-body">
 			<div class="col-lg-9">
                 <div id="human_body" align="center"></div>
+                <div class="modales">
+
+                </div>
 			</div>
 
             <div class="col-lg-3">
@@ -153,46 +156,7 @@ $(function(){
     regions["talon-der"] = map.path('M 240.5 559.6 L 235.5 563.8 L 227.2 563.1 L 223.4 558.8 L 219.2 564.8 L 224.2 568.1 L 236.2 570.6 L 245.8 560.6 L 244.3 556.6 L 240.5 559.6');
     regions["talon-izq"] = map.path('M 176.3 559.6 L 181.3 563.8 L 189.6 563.1 L 193.3 558.8 L 197.6 564.8 L 192.6 568.1 L 180.5 570.6 L 171 560.6 L 172.5 556.6 L 176.3 559.6');
 
-    var ids = [2,12,16,24,23,3,18,27,28,5,1,9,29,26,19,8,4,22];
-    var votos =[4,1,1,1,1,5,3,1,1,4,2,1,1,2,2,1,4,1];
 
-    var rgb = function rgb(vp){
-    	var porcentaje = vp/8;
-    	var y = 0;
-    	if(porcentaje<=0.5){
-    	    y = 510*porcentaje
-            return  'rgb('+y+',255,0)';
-
-    	}else if(0.5<porcentaje<=1){
-    		y = (510)*(1-porcentaje)
-            return 'rgb(255,'+y+',0)';
-
-    	}
-    }
-
-
-
-
-
-    var style2 = function style2(indice){
-        return { fill: rgb(votos[indice]) ,stroke: "#00a6b9","stroke-width": 1,"stroke-linejoin": "round", cursor: "pointer" , title: (votos[indice]*12.5)+'%'}
-    }
-
-    var chusque = 0 ;
-    var indice = '';
-    for(var regionName in regions) {
-    	chusque += 1 ;
-        indice = ids.indexOf(chusque);
-        if(indice != -1){
-           console.log(votos[indice])
-           regions[regionName].attr(style2(indice));
-
-        }else{
-           regions[regionName].attr(style);
-        }
-
-    }
-});
 
     var contenido = function(a,x){
         for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -214,11 +178,11 @@ $(function(){
     var regionales_str = '', ciudades_str = '', cargos_str = '',areas_str = '';
     // var datos =[['persona','regionales','ciudad','area','cargo','fechas','{'hombro_iz':1,'hombro_der':5,}']]             fecha.fin.proyecto - fecha.ini.proyecto/6 -----> 6 clusters
        var datos = [
-           ['nombre0','regional0','ciudad0','area0','cargo0','fecha','"{"gluteo-der":"4","dorsal-der":"4","redondo-menor-der":"7","bicep-fem-der":"6"}"'],
-           ['nombre1','regional1','ciudad1','area1','cargo1','fecha','"{"dorsal-der":"4","gluteo-izq":"8","cabeza":"8","gastrocnemio-der":"6"}"'],
-           ['nombre2','regional2','ciudad2','area2','cargo2','fecha','"{"dorsal-der":"4","gluteo-izq":"8","gastrocnemio-der":"6","triceps-izq":"6","palmar-der":"10","mano-der":"10"}"'],
-           ['nombre3','regional3','ciudad3','area3','cargo3','fecha','"{"gluteo-der":"5","dorsal-der":"4","redondo-menor-der":"8","bicep-fem-der":"6"}"'],
-           ['nombre4','regional4','ciudad4','area4','cargo4','fecha','"{"gluteo-izq":"8","gastrocnemio-der":"6","palmar-der":"10","mano-der":"10","trapecio-der":"6","dorsal-der":"9","gluteo-der":"5","peroneo-izq":"3"}"'],
+           ['nombre0','regional0','ciudad0','area0','cargo0','fecha','{"gluteo-der":"4","dorsal-der":"4","redondo-menor-der":"7","bicep-fem-der":"6"}'],
+           ['nombre1','regional1','ciudad1','area1','cargo1','fecha','{"dorsal-der":"4","gluteo-izq":"8","cabeza":"8","gastrocnemio-der":"6"}'],
+           ['nombre2','regional2','ciudad2','area2','cargo2','fecha','{"dorsal-der":"4","gluteo-izq":"8","gastrocnemio-der":"6","triceps-izq":"6","palmar-der":"10","mano-der":"10"}'],
+           ['nombre3','regional3','ciudad3','area3','cargo3','fecha','{"gluteo-der":"5","dorsal-der":"4","redondo-menor-der":"8","bicep-fem-der":"6"}'],
+           ['nombre4','regional4','ciudad4','area4','cargo4','fecha','{"gluteo-izq":"8","gastrocnemio-der":"6","palmar-der":"10","mano-der":"10","trapecio-der":"6","dorsal-der":"9","gluteo-der":"5","peroneo-izq":"3"}'],
        ];
     //==============================================================================
     //  Elementos
@@ -276,15 +240,15 @@ $(function(){
                     ){
                          /////  adicion de objetos a la talbla diccionario
                          var dicc = JSON.parse(datos[i][6])
-                         for(var objecto in dicc){
+                         for(var objeto in dicc){
                              if(!contenido(objeto,objetos)){
                                  objetos.push(objeto);
-                                 var tabla = [ datos.slice(0,5) ];
-                                 datosCuerpoHumano[objeto] = [datos[i][6][objeto],1,tabla];
+                                 var tabla = [ datos[i].slice(0,5) ];
+                                 datosCuerpoHumano[objeto] = [parseInt(dicc[objeto]),1,tabla];
                              }else{
-                                 datosCuerpoHumano[objeto][0] += datos[i][6][objeto]
+                                 datosCuerpoHumano[objeto][0] += parseInt(dicc[objeto])
                                  datosCuerpoHumano[objeto][1] += 1;
-                                 datosCuerpoHumano[objecto][2].push(datos.slice(0,5));
+                                 datosCuerpoHumano[objeto][2].push(datos[i].slice(0,5));
                              }
                          }
                     ///fin de filtros
@@ -298,17 +262,55 @@ $(function(){
 
          }
          //==============================================================================
+         //   fin elementos
+         //==============================================================================
+         //==============================================================================
+         //   funciones de colores
+         //==============================================================================
+         var rgb2 = function rgb2(vp,total){
+            var porcentaje = vp/(total*10)
+            var y = 0;
+            if(porcentaje<=0.5){
+                y = 510*porcentaje
+                 return  'rgb('+y+',255,0)';
+
+            }else if(0.5<porcentaje<=1){
+                y = (510)*(1-porcentaje)
+                 return 'rgb(255,'+y+',0)';
+
+            }
+         }
+         var style3 = function style3(voto,total){
+             return { fill: rgb2(voto,total) ,stroke: "#00a6b9","stroke-width": 1,"stroke-linejoin": "round", cursor: "pointer" , title: 'promedio: '+((voto/total))}
+         }
+
+         //==============================================================================
          //   Inicializacón
          //==============================================================================
          //==============================================================================
             var datosCuerpoHumanoD = elementos.datosCuerpoHumano(datos);
-            console.log('hola mundo');
-            console.log(datosCuerpoHumanoD);
+            var id = 0;
+            for(var nombreRegion in regions){
+                if(typeof(datosCuerpoHumanoD[nombreRegion]) == 'undefined'){
+                    regions[nombreRegion].attr(style);
+                }else{
+                     id += 1;
+                     regions[nombreRegion].attr(style3(datosCuerpoHumanoD[nombreRegion][0],datosCuerpoHumanoD[nombreRegion][1]));
+                     var tabla = datosCuerpoHumanoD[nombreRegion][2];
+                     var modales +="<div class='modal fade' id="+id+" role='dialog'><div class='modal-dialog'><div class='modal-content' > <div class='modal-header'  style='background-color:#8CB126' > <button type='button' class='close data-dismiss='modal' >&times;</button><h4 class='modal-title' ><strong>Califica de 1-10 el grado de malestar que sientes:</strong></h4></div><div class='modal-body'></div><div class='modal-footer'><button type='button' class='btn btn-default' data-dismiss='modal'>Cerrar</button></div></div></div></div>;"
+
+
+                }
+                $(".modales").html(modales);
+            }
+
+
          //==============================================================================
          //==============================================================================
          //   fin Inicialización
          //==============================================================================
 
+     });
 
 
 </script>

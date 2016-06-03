@@ -46,9 +46,9 @@
 	<div class="container-two">
 		<div class="row">
 			<!-- Human Body Section -->
-			<div class="col-lg-3">
 
-			</div>
+			<div class="col-lg-3"></div>
+
 			<div class="col-lg-9 project">
 				{%if Encuestado.proyecto.interno%}<h1><p>Hola <b>{{Encuestado.nombre | escape |capfirst}}</b>:</p></h1>{%endif%}
 				{%if not Proyecto.interno %}<h1><p><b>{{Proyecto.proyectosdatos.tit_encuesta | escape |capfirst}}</b>:<br> {{Proyecto.proyectosdatos.int_encuesta | escape |safe}}</p></h1>{%endif%}
@@ -61,12 +61,12 @@
 {% if Proyecto.pordenadas or Proyecto.interna == False %}
 {% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
 <form  class="form-horizontal" method="POST">{% csrf_token %}
+	<div class="container-fluid">
 	{% for variable in preguntas_list %}
-    <div class="container">
-		<h1><legend class="m-t m-b">{{ variable.grouper | capfirst}}</legend></h1>
+		{%if  variable.grouper %}<h1><legend style="border-bottom:0 !important" class="m-t m-b">{{ variable.grouper | capfirst}}</legend></h1>{% endif %}
 			{% for pregunta in variable.list|dictsort:"posicion" %}
-			<div class="form-group">
-				<legend><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
+			<div class="form-group" style="padding:10px">
+				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
 				{%if pregunta.abierta%}
 					{%if pregunta.cuerpo %}
 					       <div class="row">
@@ -1330,10 +1330,10 @@
 	{% endfor %}
 {% else %}
 <form  class="form-horizontal" method="POST">{% csrf_token %}
+    <div class="container-fluid">
 	{% for i in Preguntas_encuesta %}
-    <div class="container">
-			<div class="form-group">
-				<legend><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend>
+			<div class="form-group" style="padding:10px">
+				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend>
 				{%if i.pregunta.abierta %}
 					{%if i.pregunta.cuerpo %}
 					Para HAD es importante cuidar y conocer tu bienestar. Cuéntanos ¿En qué parte de tu cuerpo has sentido molestias el último mes?
@@ -2589,13 +2589,20 @@
 <select style="display:none" name="ids_streaming" multiple>
 {% for i in Cuestionario %} <option value="{{i.id}}" selected>{{i.id}}</option>{% endfor %}
 </select>
-<button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button>
+<div style="text-align:center"><button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button></div>
 </form>
 </section>
-<div class="form-horizontal" style="text-align:center;margin-top:5%">
-	<span class="form-group col-lg-2">Con la tecnología de <a href="https://www.networkslab.co/" style="color:#25AAE0;font-size:bold" target="_blank">NetworksLab</a></span>
-	<div class="form-group">
-		<a href="https://www.networkslab.co" target="_blank"><img id="logo" src="{% static 'img/NetWorksLab.png' %}" style="width:150px" alt="NetworksLab"></a>
+<br>
+<div class="row">
+	<!-- Human Body Section -->
+	<div class="col-lg-4"></div>
+	<div class="col-lg-6 project">
+		<div class="form-horizontal" style="text-align:center;margin-top:5%">
+			<div class="form-group col-lg-3">Con la tecnología de</div>
+			<div class="form-group">
+				<a href="https://www.networkslab.co" target="_blank"><img id="logo" src="{% static 'img/NetWorksLab.png' %}" style="width:150px" alt="NetworksLab"></a>
+			</div>
+		</div>
 	</div>
 </div>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
