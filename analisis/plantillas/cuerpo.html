@@ -7,6 +7,7 @@
 <li><a href="#"><i><span>/ Cuerpo humano</span></i></a></li>
 {%endblock%}
 {% block contenido2 %}
+[{% for i in Datos %}[ '{{ i.colaborador.nombre }} {{ i.colaborador.apellido }}','{{ i.colaborador.colaboradoresdatos.regional }}','{{ i.colaborador.colaboradoresdatos.ciudad }}','{{ i.colaborador.colaboradoresdatos.area }}','{{ i.colaborador.colaboradoresdatos.cargo }}',new Date({{i.fecharespuesta.year}},{{i.fecharespuesta.month}}-1,{{i.fecharespuesta.day}}),'{{i.respuesta | safe }}'],{% endfor %}]
 <div class="row">
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
@@ -70,6 +71,4 @@
 {% block scripts %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
-
 {% endblock %}

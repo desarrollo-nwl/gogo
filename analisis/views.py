@@ -254,7 +254,23 @@ def cuerpo(request):
 	permisos = request.user.permisos
 	if permisos.res_see:
 
-
+		datos = Streaming.objects.only(
+				 "pregunta__texto","pregunta__cuerpo",
+				 "colaborador__nombre",
+				 "colaborador__apellido",
+				 "colaborador__colaboradoresdatos__regional",
+				 "colaborador__colaboradoresdatos__ciudad",
+				 "colaborador__colaboradoresdatos__area",
+				 "colaborador__colaboradoresdatos__cargo",
+				 "respuesta","fecharespuesta",
+				).filter(
+					proyecto_id = proyecto.id,
+					pregunta__cuerpo = True,
+					respuesta__isnull = False
+				).select_related(
+					"colaborador__colaboradoresdatos",
+					"pregunta",
+				)
 
 		return render_to_response('cuerpo.html',{
 			'Activar':'AnalisisResultados',
@@ -262,6 +278,7 @@ def cuerpo(request):
 			'Proyecto':proyecto,
 			'Permisos':permisos,
 			'activarG':3,
+			'Datos': datos,
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
