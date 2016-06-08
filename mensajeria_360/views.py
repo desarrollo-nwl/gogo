@@ -551,9 +551,8 @@ def encuesta_360(request,id_proyecto,key):
 			metricas.save()
 			proyecto.save()
 			Streaming_360.objects.filter(colaborador_id = encuestado.id).update(fec_controlenvio=t)
-			if len_cuestionario:
+			if len_cuestionario and proyecto.tipo == "360 redes":
 				instrumento = Instrumentos_360.objects.get(id = Redes_360.objects.only('id').get(id=red).instrumento_id )
-				print instrumento
 				Redes_360.objects.filter(id = red).update( pre_respuestas = F('pre_respuestas') + len_cuestionario,
 					tot_porcentaje = (F('pre_respuestas') + len_cuestionario) / (0.01 * instrumento.max_preguntas * proyecto.ciclos ) )
 
