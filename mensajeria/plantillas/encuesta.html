@@ -1292,17 +1292,9 @@
 				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
 				{%if pregunta.abierta%}
 					{%if pregunta.cuerpo %}
-					       <div class="row">
-							   <div class="col-md-4">
-                                  <div id="human_body" align="center"></div>
-							   </div>
-							   <div class="col-md-4">
-
-							   </div>
-							   <div class="col-md-4">
-
-							   </div>
-					       </div>
+				       <div class="row">
+                              <div id="human_body" align="center"></div>
+				       </div>
 
 					  <!-- Fin Modal -->
 					  <input type="hidden" id='formularioEnvio' name="{{pregunta.id}}" value="">
@@ -1335,8 +1327,9 @@
 				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend>
 				{%if i.pregunta.abierta %}
 					{%if i.pregunta.cuerpo %}
-					Para HAD es importante cuidar y conocer tu bienestar. Cuéntanos ¿En qué parte de tu cuerpo has sentido molestias el último mes?
-				  <div id="human_body" align="center"></div>
+					<div class="row">
+						   <div id="human_body" align="center"></div>
+					</div>
 			 <!-- Fin Modal -->
 			 <input type="hidden" id='formularioEnvio' name="{{pregunta.id}}" value="">
 					{% else %}
