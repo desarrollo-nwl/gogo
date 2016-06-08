@@ -55,9 +55,8 @@
 	</div>
 </section>
 
-<section  id="form" class="form-section">
-{% if Proyecto.pordenadas or Proyecto.interna == False %}
-{% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
+
+
 <!-- Modal -->
 <div class="modal fade" id="1" role="dialog">
   <div class="modal-dialog">
@@ -513,6 +512,7 @@
 			 <option value="10">10</option>
 		</select>
 	</form>
+</div></div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
@@ -1283,6 +1283,13 @@
 </div>
 </div>
 </div>
+
+
+
+
+<section  id="form" class="form-section">
+{% if Proyecto.pordenadas or Proyecto.interna == False %}
+{% regroup Preguntas_encuesta by variable.descripcion as preguntas_list %}
 <form  id="encuesta_completa" class="form-horizontal" method="POST">{% csrf_token %}
 	<div class="container-fluid">
 	{% for variable in preguntas_list %}
