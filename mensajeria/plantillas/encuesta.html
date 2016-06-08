@@ -2584,10 +2584,10 @@
 	</div>
 	{% endfor %}
 {% endif %}
+<div style="text-align:center"><button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button></div>
 <select style="display:none" name="ids_streaming" multiple>
 {% for i in Cuestionario %} <option value="{{i.id}}" selected>{{i.id}}</option>{% endfor %}
 </select>
-<div style="text-align:center"><button type="submit" class="btn btn-primary"><strong>Finalizar encuesta</strong></button></div>
 </form>
 </section>
 <br>
