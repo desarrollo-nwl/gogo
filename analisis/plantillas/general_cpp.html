@@ -803,9 +803,17 @@ var Elementos = {
 		}
 	}
 
-	for (var i = 0; i < fechas.length; i++)
-		if ( matriz_dic_g1[fechas[i]+'_total'] != 0 )
+	for (var i = 0; i < fechas.length; i++){
+		if ( matriz_dic_g1[fechas[i]+'_total'] != 0 ){
 			matriz_g1[i] = [ fechas[i], +(Math.round(matriz_dic_g1[fechas[i]]/matriz_dic_g1[fechas[i]+'_total']+ "e+2")  + "e-2") ];
+		} else {
+			if ( i == 0 ){
+				matriz_g1[i] = 0;
+			} else {
+				matriz_g1[i] = matriz_g1[i-1];
+			}
+		}
+	}
 
 		data.addRows( matriz_g1 );
 
@@ -1002,6 +1010,8 @@ grafica_dos: function(max,min,finicio, ffin){
 					0,
 					+(Math.round(matriz_dic_g2[variables_seleccionadas[i]+'_var']/matriz_dic_g2[variables_seleccionadas[i]+'_total']+ "e+2")  + "e-2")
 				];
+			} else {
+				matriz_g2[i] = [nombres_var[variables_seleccionadas[i]],0,0];
 			}
 		}
 

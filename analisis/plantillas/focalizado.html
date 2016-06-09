@@ -886,12 +886,21 @@ grafica_dos : function( finicio,ffin) {
 	}
 
 	var aux = [];
+	var bandera = false;
 	for (var area in matriz_g2_dic) {
-		aux = [];
-		aux.push(area);
-		for (var i = 0; i < cols.length; i++)
-			aux.push(matriz_g2_dic[area][cols[i]]);
-		matriz_g2.push(aux);
+		bandera = false;
+		for (var i = 0; i < cols.length; i++){
+			if ( matriz_g2_dic[area][cols[i]] ){
+				bandera = true;
+			}
+		}
+		if( bandera ){
+			aux = [];
+			aux.push(area);
+			for (var i = 0; i < cols.length; i++)
+				aux.push(matriz_g2_dic[area][cols[i]]);
+			matriz_g2.push(aux);
+		}
 	}
 
 	data2.addRows(matriz_g2);
