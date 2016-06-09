@@ -351,6 +351,7 @@ var Participantes = { {% for i in Participantes %}{{i.id_id|safe}}:{'area': `{{i
 var Cuestionario = { {% for i in Cuestionario %}{{i.id|safe}}:{	'respuestas':{	{% for j in i.respuestas_set.all %}	'{{j.texto}}':{% if i.numerica %}{{j.numerico|safe}}{% else %}0{% endif%},{% endfor %} },'texto': `{{i.texto}}`,'variable': {{ i.variable_id | safe }},'variable_str':`{{i.variable.nombre}}`},{% endfor %} };
 
 var contenido = function(a,x){
+	if (a == undefined ) return true;
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
 	return false;
 }

@@ -505,6 +505,7 @@ var Datos = {{DATOS}};
 var Participantes = {{PARTICIPANTES}};
 var Cuestionario = {{CUESTIONARIO}};
 var contenido = function(a,x){
+	if (a == undefined ) return true;
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
 	return false;
 }
