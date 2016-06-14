@@ -111,8 +111,9 @@ DATABASES = {
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'PORT':'5432',
 
-			'USER': 'suidi',
-			'PASSWORD':'Su1357*-',
+			# master PASSWORD
+			#'USER': 'suidi',
+			#'PASSWORD':'Networks123*',
 
 	}
 }
