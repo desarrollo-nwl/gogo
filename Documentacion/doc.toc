@@ -1,0 +1,4 @@
+\select@language {spanish}
+\contentsline {chapter}{\numberline {1}Motivaciones, lenguajes y otros.}{5}{chapter.1}
+\contentsline {section}{\numberline {1.1}Lenguajes.}{6}{section.1.1}
+\contentsline {section}{\numberline {1.2}Arquitectura.}{6}{section.1.2}
