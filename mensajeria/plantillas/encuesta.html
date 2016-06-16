@@ -1296,7 +1296,7 @@
 		{%if  variable.grouper %}<h1><legend style="border-bottom:0 !important" class="m-t m-b">{{ variable.grouper | capfirst}}</legend></h1>{% endif %}
 			{% for pregunta in variable.list|dictsort:"posicion" %}
 			<div class="form-group" style="padding:10px">
-				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend>
+				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span>{{pregunta.texto| escape}}</legend><br>
 				{%if pregunta.abierta%}
 					{%if pregunta.cuerpo %}
 				       <div class="row">
@@ -1331,7 +1331,7 @@
     <div class="container-fluid">
 	{% for i in Preguntas_encuesta %}
 			<div class="form-group" style="padding:10px">
-				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend>
+				<legend style="border-bottom:0 !important"><span class="number">{{forloop.counter}}</span> <b>{{ i.pregunta.variable.descripcion | escape }}</b>{% if i.pregunta.variable.descripcion %}:{%endif%} {{ i.pregunta.texto| escape}}</legend><br>
 				{%if i.pregunta.abierta %}
 					{%if i.pregunta.cuerpo %}
 					<div class="row">
