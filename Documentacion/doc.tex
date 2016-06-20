@@ -1,0 +1,306 @@
+\documentclass[10pt,a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[spanish]{babel}
+\author{Ivan Leonardo Galeano S.}
+\title{Estudio Estadística}
+
+
+\newtheorem{defi}{\textbf{Definición}}
+
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+
+\makeatletter
+\def\printtitle{
+	{\centering \@title\par}}
+\makeatother
+
+\makeatletter
+\def\printauthor{
+	{\centering \large \@author}}
+\makeatother
+
+
+
+
+\title{	\normalsize \textsc{Documentación}
+	\\[2.0cm]
+	\HRule{0.5pt} \\
+	\LARGE \textbf{\uppercase{Proyecto Go Analytics}}
+	\HRule{2pt} \\ [0.5cm]
+	\normalsize \today
+}
+
+\author{
+	Ivan Leonardo Galeano Saavedra\\
+	Networks Lab.\\
+	Bogotá, Colombia\\
+	\texttt{ilgaleanos@gmail.com} \\
+}
+
+
+
+\begin{document}
+	\thispagestyle{empty}
+	\printtitle
+	\vfill
+	\printauthor
+
+	\tableofcontents
+
+	\chapter{Motivaciones, lenguajes y otros.}
+
+	\section*{Introducción}
+	
+	El presente texto es un intento de exponer de la manera mas clara, sencilla y concreta el código referente a Go Analytics, también llamado talenter o gogo para el equipo de desarrollo. El desarrollo esta realizado casi en su totalidad en código pyhton en su versión 2.7.X y django 1.8.12+; algunas partes como veremos están escritas en código C++ compilado para python. De la misma manera de la parte del usuario se uso javascript con jquery y librerías estándar para diversas funcionalidades.\\
+	
+	Esta es la segunda y actual versión del código ya que inicialmente se tenia uno más sencillo, pero funcional, el cual por innumerables cambios de requerimientos se hizo inmanejable. Tratando de mantener una filosofía mas modular se elaboró pensando en un gogo sin versión 360. Esta versión 360 se agregó como módulos adicionales tratando de mantener el código que se había escrito sin modificaciones en miras a la estabilidad.\\
+	
+	Inicialmente se expondrá la arquitectura actual, versiones, requerimientos y demás paquetería necesaria. Se dedicará un capítulo para cada carpeta de código (app de django) en la cual se expondrá la necesidad, funcionalidad y errores probables de cada app, para entender la arquitectura se recomineda un estudio juicioso de los models.py de cada una. los errores no reportados a la fecha, significa que los usuarios que probaron la aplicación o no encontraron o no los reportaron\\
+	
+	Nota personal: Espero que el desarrollador que trate con el código sea muy comprensivo a la hora de examinarlo ya que el fue desarrollado sin unos requerimientos detallados, sino con cada nueva versión, se solicitaban nuevas modificaciones sobre lo ya elaborado lo que ha conllevado en una no clara consecución de un código completamente estable.\\
+	
+	
+	\section{Lenguajes.}
+	El uso de este manual requiere conocimiento en Django 1.8, Python 2.7, C++11
+	El código ha sido escrito en lenguaje Python y C++
+	\begin{verbatim}
+		Python 2.7.6 (default, Jun 22 2015, 17:58:13) 
+		[GCC 4.8.2] on linux2
+	\end{verbatim}
+	para el framework Django 
+	\begin{verbatim}
+		Django 1.8.13
+	\end{verbatim}
+	Javascript con JQuery 2.x.
+	
+	\section{Arquitectura.}
+	En AWS poseemos 3 servicios:
+	\begin{enumerate}
+		\item EC2: 2 servidores, servidor nano para un servicio prestado a Slam Security (no hablaremos de ese proyecto en el manual) y servidor micro T2 con sistema operativo Ubuntu 14.04. 30 gb de almacenamiento y 1 Gb de memoria RAM.
+		\item RDS: 1 Servidor T2 nano de base de datos en Postgresql de 5 Gb de almacenamiento y 1 Gb de memoria RAM, este servidor se inició por las previsiones de ventas del área comercial.
+		\item SES: 1 conexión smtp de alto envío de correos.
+	\end{enumerate}
+	
+	Las conexiones las realicé de la siguiente manera. La aplicación corre en un servidor apache
+	\begin{verbatim}
+		Server version: Apache/2.4.7 (Ubuntu)
+		Server built:   Jan 14 2016 17:45:23
+	\end{verbatim}
+	para el cual los certificados ssl los generé por medio de Let's Encript \url{https://letsencrypt.org/getting-started/}. estas claves ssl no estoy muy seguro de trasladarlas de servidor por el modo de generación, es por ello que no están incluidas y es altamente recomendable leer la documentación de este método de obtención  y mantenimiento de claves ssl.\\
+	
+	La aplicación se conecta localmente a una instancia de pgbouncer ( \textit{esto con la finalidad de mantener siempre una conexión abierta y evitar el overhead de estar abriendo conexiones})
+	\begin{verbatim}
+	pgbouncer version 1.5.4
+	(compiled by <buildd@roseapple> at 2013-06-18 17:16:50)
+	\end{verbatim}
+	
+	La clave de la conexión local con pgbouncer es
+	\begin{verbatim}
+		'USER': 'usuariodb_gogo',
+		'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
+	\end{verbatim}
+	
+	la clave de conexión de pgbouncer a la base de datos es
+	\begin{verbatim}
+	user=usuariodb_gogo
+	password=W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas
+	\end{verbatim}
+	
+	El archivo de configuración apache2.conf, los sites-availables, gogo pgbouncer.ini al igual que el userlist.txt se encuentran en ./gogo/gogo/configs/ \\
+	
+	La base de datos contiene 3 bases de datos una llamada gogo perteneciente a esta aplicación, otra llamada talenter que no es mas que una copia incompleta de la primera y una tercera perteneciente a slam. Se cuentan con tres Group Roles y tres Login Roles uno para cada aplicación y un rol maestro (no superusuario, RDS no lo proporciona ) :
+	\begin{verbatim}
+	user=suidi 
+	password=Networks123*
+	\end{verbatim}
+	
+	Las claves de administración de dominios están bajo Juan Sebastián Henao P. y Ricardo Montoya Meneses.
+	
+	\section{Dependencias}
+	
+	Se deben instalar los siguientes paquetes para que la aplicación se ejecute según es debido:
+	
+	\begin{enumerate}
+		\item gcc
+		\item python-crypto
+		\item python-psycopg2
+		\item apache2 
+		\item libapache2-mod-wsgi 
+		\item python-scipy
+		\item python-xlrd 
+		\item python-xlwt 
+		\item python-pip 
+		\item redis-server 
+		\item libpq-dev
+		\item python-dev
+		\item ctemplate (librería de template en c++ conocida también como google-template)
+	\end{enumerate}
+	
+	y las siguientes con el uso de pip
+	\begin{enumerate}
+		\item django==1.8.13 
+		\item django-mptt 
+		\item redis 
+		\item django-redis-cache
+		\item django-pgjsonb
+	\end{enumerate}
+	
+	\section{Terminología}
+	Un \textbf{usuario} es un individuo consultor o cliente que tiene acceso a la administración o visualización de resultados en la herramienta por medio de un usuario y una contraseña. Un usuario \textbf{consultor} es la persona encargada de gestionar el ingreso de la mayor parte de la información en los proyecto. Un usuario \textbf{cliente} es la encargada de visualizar resultados. Un \textbf{participante} (denominado colaborador dentro del código) es la persona a la cual le llega el link para llenar las encuestas. Un \textbf{evaluado} es la persona o entidad de la cual se realiza la encuesta. Un \textbf{evaluador} una persona que contesta encuestas.
+	
+	\chapter{Código: Usuarios}
+		
+	Es la aplicación columna vertebral del proyecto, se encuentras las tablas que son trasversales a la aplicación.
+
+	\section{Necesidad}
+	
+	Se escribió con el objetivo de mantener lo mas centralizado la aplicación con la tabla proyectos. En una versión anterior ésta tabla pertenecía a \textit{cuestionarios} de manera que se puede notar como aun conserva dicho nombre asociado \textit{``cuestionarios\_proyectos"}. 
+	
+	\section{Funcionalidad}
+	
+	\subsection{index}
+	Controlador de la página index.
+		
+	\subsubsection{errores} Al formulario le hace falta una buena implementación del formulario de contacto, aprovisionado de una mejor seguridad (captcha).
+	
+	
+	\subsection{acceder} 
+	Controlador de la página de logueo.
+	
+	\subsubsection{errores}
+	Al igual que la página de inicio le hace falta un captcha de seguridad.
+	
+	\subsection{home}
+	Controlador encargado de enlistar los proyectos asociados a cada usuario
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{menu}
+	Controlador encargado de la redirección según tipo de usuario al intentar ingresar a un proyecto.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{salir}
+	Controlador encargado de destruir las sesiones.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{recuperar}\label{recuperar}
+	Controlador encargado de enviar email con los pasos para recobrar contraseñas.
+	\subsubsection{errores}
+	Al igual que la página de inicio le hace falta un captcha de seguridad.
+	
+	\subsection{usuariorecuperar}
+	Controlador encargado de researle el pasword a los usuarios que realizaron el proceso del controlador  recuperar \ref{recuperar}
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{empresas}
+	Controlador encargado de consultar las empresas que cada usuario ha registrado
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{empresaeditar}
+	Controlador encargado de proveer los datos para la edición de la empresa
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha. Se podría fusionar con el template de creación.
+	
+	\subsection{empresaeliminar}
+	Controlador encargado de eliminar las empresas.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{empresanueva}
+	Controlador encargado de crear empresas. Estas empresas están asociadas de muchas a uno con User (usuarios).
+	\subsubsection{errores}
+	Ninguna conocido.
+	
+	
+	\subsection{proyectonuevo}\label{proyectonuevo}
+	Controlador encargado de la creación de proyectos. Los User están asociados de muchos a muchos con los Proyectos.
+	\subsubsection{errores}
+	En versiones anteriores se ocultaba el botón de creación cuando subían un archivo no imagen, desembocó en errores. Esta característica fue eliminada. No se ha reportado ninguno a la fecha.
+	
+	\subsection{proyectoeditar}
+	Controlador encargado de hacer modificaciones al proyecto. Por motivos de tipos de encuesta y demás muchos los campos no son alterables y se aconseja se mantengan así. Se puede fusionar con el template de renderizado de \ref{proyectonuevo}.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{proyectoeliminar}
+	Controlador encargado de eliminar proyectos, la verdadera eliminación se ejecuta como tarea externa programada.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{usuarios}
+	Controlador encargado de mostrar los usuarios creados por cada participante, de manera recursiva (se pueden ver los usuarios creados por los usuarios que yo haya creado recursivamente). Se usa una biblioteca de querys trasversales para este propósito.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{usuarioeditar}
+	Controlador encargado de editar al usuario accedido.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{usuarioeliminar}
+	Controlador encargado de eliminar usuarios (logueables) de la aplicación. Esta eliminación se ejecuta en el acto.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{usuarioreenviar}
+	Controlador encargado de reeviar correos de bienvenida a los usuarios creados que manifiesten la necesidad de ello.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{usuarioactivar}
+	Controlador encargado de darle al bienvenida a un nuevo usuario.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+	\subsection{usuarionuevo}
+	Controlador encargado de ingresar los datos de un nuevo usuario.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+
+	\subsection{licencia}
+	Controlador "decorativo" que muestra el número de proyectos que ha "adquirido" y el número de proyectos que ha activado.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{cuenta}
+	Controlador encargado del cambio de contraseña por parte de los usuarios.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{logs}
+	Controlador encargado de mostrar los registros importantes que han ocurrido en la aplicación.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{reportarerror}
+	Controlador encargado de recibir las solicitudes de soporte por parte de los usuarios.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{términos y privacidad}
+	Controladores encargados de renderizar las paginas correspondientes a términos de servicio y políticas de privacidad.
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+
+	\subsection{e400, e403, e404, e500}
+	Controladores de renderizar los errores correspondientes. Debido a la "satanización" de la palabra \textit{error} se ha cambiado por bloqueo gran parte de los textos de estos templates.
+	
+	\subsubsection{errores}
+	No se ha reportado ninguno a la fecha.
+	
+
+	
+	
+\end{document}

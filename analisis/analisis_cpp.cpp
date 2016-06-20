@@ -455,7 +455,7 @@ string general(string id_proyecto,string id_user) {
 	for (result::size_type i = 0; i != R.size(); ++i){
 		datos += "[ "+ R[i]["colaborador_id"].as<string>();
 
-		auxiliar = R[i]["respuesta"].as<string>(); escape(auxiliar);
+		auxiliar = R[i]["respuesta"].as<string>(); //escape(auxiliar); //se rompe
 		if(! R[i]["multiple"].as<bool>() ){
 			datos += ",[`"+ auxiliar + "`],";
 		}

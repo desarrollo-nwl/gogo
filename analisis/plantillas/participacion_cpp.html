@@ -407,6 +407,7 @@
 		var Datos = {{DATOS}};
 		var Participantes = {{PARTICIPANTES}};
 		var contenido = function(a,x){
+			if (a == undefined ) return true;
 			for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
 			return false;
 		}
@@ -624,8 +625,10 @@
 					&& contenido( cache['opcional5'], opcional5_seleccionadas)
 				{{/PDATOS_OPCIONAL5}}
 				){
-					if( Datos[j][1] && Datos[j][2] >= min && Datos[j][2] <= max ) participante++;
 					todos++;
+					if( Datos[j][1] && Datos[j][2] >= min && Datos[j][2] <= max){
+						participante++;
+					}
 				}
 			}
 

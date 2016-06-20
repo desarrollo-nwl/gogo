@@ -346,11 +346,12 @@
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.2','packages':['corechart']}]}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = [	{% for i in Datos %}[ {{ i.colaborador_id | safe }},{% if not i.pregunta.multiple %}['{{i.respuesta}}'],{% else %}{{i.respuesta}},{% endif %}new Date({{ i.fecharespuesta.year | safe }},{{ i.fecharespuesta.month | safe }}-1,{{ i.fecharespuesta.day | safe }}),{{ i.pregunta_id | safe }}],{% endfor %} ];
+var Datos = [	{% for i in Datos %}[ {{ i.colaborador_id | safe }},{% if not i.pregunta.multiple %}['{{i.respuesta}}'],{% else %}{{i.respuesta | safe }},{% endif %}new Date({{ i.fecharespuesta.year | safe }},{{ i.fecharespuesta.month | safe }}-1,{{ i.fecharespuesta.day | safe }}),{{ i.pregunta_id | safe }}],{% endfor %} ];
 var Participantes = { {% for i in Participantes %}{{i.id_id|safe}}:{'area': `{{i.area}}`,'cargo': `{{i.cargo}}`,'ciudad': `{{i.ciudad}}`,'regional': `{{i.regional}}`,{% if PDatos.opcional1 %}'opcional1': `{{i.opcional1}}`,{% endif %}{% if PDatos.opcional2 %}'opcional2': `{{i.opcional2}}`,{% endif %}{% if PDatos.opcional3 %}'opcional3': `{{i.opcional3}}`,{% endif %}{% if PDatos.opcional4 %}'opcional4': `{{i.opcional4}}`,{% endif %}{% if PDatos.opcional5 %}'opcional5': `{{i.opcional5}}`,{% endif %}	},{% endfor %}	};
 var Cuestionario = { {% for i in Cuestionario %}{{i.id|safe}}:{	'respuestas':{	{% for j in i.respuestas_set.all %}	'{{j.texto}}':{% if i.numerica %}{{j.numerico|safe}}{% else %}0{% endif%},{% endfor %} },'texto': `{{i.texto}}`,'variable': {{ i.variable_id | safe }},'variable_str':`{{i.variable.nombre}}`},{% endfor %} };
 
 var contenido = function(a,x){
+	if (a == undefined ) return true;
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
 	return false;
 }
@@ -885,12 +886,21 @@ grafica_dos : function( finicio,ffin) {
 	}
 
 	var aux = [];
+	var bandera = false;
 	for (var area in matriz_g2_dic) {
-		aux = [];
-		aux.push(area);
-		for (var i = 0; i < cols.length; i++)
-			aux.push(matriz_g2_dic[area][cols[i]]);
-		matriz_g2.push(aux);
+		bandera = false;
+		for (var i = 0; i < cols.length; i++){
+			if ( matriz_g2_dic[area][cols[i]] ){
+				bandera = true;
+			}
+		}
+		if( bandera ){
+			aux = [];
+			aux.push(area);
+			for (var i = 0; i < cols.length; i++)
+				aux.push(matriz_g2_dic[area][cols[i]]);
+			matriz_g2.push(aux);
+		}
 	}
 
 	data2.addRows(matriz_g2);
