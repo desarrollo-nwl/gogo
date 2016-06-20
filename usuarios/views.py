@@ -151,6 +151,26 @@ def menu(request,id_proyecto):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
+def home2(request):
+  permisos = request.user.permisos
+  if permisos.consultor or permisos.pro_see:
+    proyecto = cache.get(request.user.username)
+    if(proyecto):
+      return render_to_response('home2.html',{
+      'Activar':'Configuracion','Permisos':permisos,'Proyecto':proyecto
+      }, context_instance=RequestContext(request))
+    else:
+      return render_to_response('423.html')
+  else:
+    return render_to_response('403.html')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
 def salir(request):
 	cache.delete(request.user)
 	logout(request)
