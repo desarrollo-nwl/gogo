@@ -1,61 +1,277 @@
 \select@language {spanish}
-\contentsline {chapter}{\numberline {1}Motivaciones, lenguajes y otros.}{5}{chapter.1}
-\contentsline {section}{\numberline {1.1}Lenguajes.}{6}{section.1.1}
-\contentsline {section}{\numberline {1.2}Arquitectura.}{6}{section.1.2}
-\contentsline {section}{\numberline {1.3}Dependencias}{7}{section.1.3}
-\contentsline {section}{\numberline {1.4}Terminolog\IeC {\'\i }a}{8}{section.1.4}
-\contentsline {chapter}{\numberline {2}C\IeC {\'o}digo: Usuarios}{9}{chapter.2}
-\contentsline {section}{\numberline {2.1}Necesidad}{9}{section.2.1}
-\contentsline {section}{\numberline {2.2}Funcionalidad}{9}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}index}{9}{subsection.2.2.1}
-\contentsline {subsubsection}{errores}{9}{section*.3}
-\contentsline {subsection}{\numberline {2.2.2}acceder}{9}{subsection.2.2.2}
-\contentsline {subsubsection}{errores}{9}{section*.4}
-\contentsline {subsection}{\numberline {2.2.3}home}{9}{subsection.2.2.3}
-\contentsline {subsubsection}{errores}{10}{section*.5}
-\contentsline {subsection}{\numberline {2.2.4}menu}{10}{subsection.2.2.4}
-\contentsline {subsubsection}{errores}{10}{section*.6}
-\contentsline {subsection}{\numberline {2.2.5}salir}{10}{subsection.2.2.5}
-\contentsline {subsubsection}{errores}{10}{section*.7}
-\contentsline {subsection}{\numberline {2.2.6}recuperar}{10}{subsection.2.2.6}
-\contentsline {subsubsection}{errores}{10}{section*.8}
-\contentsline {subsection}{\numberline {2.2.7}usuariorecuperar}{10}{subsection.2.2.7}
-\contentsline {subsubsection}{errores}{10}{section*.9}
-\contentsline {subsection}{\numberline {2.2.8}empresas}{10}{subsection.2.2.8}
-\contentsline {subsubsection}{errores}{10}{section*.10}
-\contentsline {subsection}{\numberline {2.2.9}empresaeditar}{10}{subsection.2.2.9}
-\contentsline {subsubsection}{errores}{11}{section*.11}
-\contentsline {subsection}{\numberline {2.2.10}empresaeliminar}{11}{subsection.2.2.10}
-\contentsline {subsubsection}{errores}{11}{section*.12}
-\contentsline {subsection}{\numberline {2.2.11}empresanueva}{11}{subsection.2.2.11}
-\contentsline {subsubsection}{errores}{11}{section*.13}
-\contentsline {subsection}{\numberline {2.2.12}proyectonuevo}{11}{subsection.2.2.12}
-\contentsline {subsubsection}{errores}{11}{section*.14}
-\contentsline {subsection}{\numberline {2.2.13}proyectoeditar}{11}{subsection.2.2.13}
-\contentsline {subsubsection}{errores}{11}{section*.15}
-\contentsline {subsection}{\numberline {2.2.14}proyectoeliminar}{11}{subsection.2.2.14}
-\contentsline {subsubsection}{errores}{11}{section*.16}
-\contentsline {subsection}{\numberline {2.2.15}usuarios}{12}{subsection.2.2.15}
-\contentsline {subsubsection}{errores}{12}{section*.17}
-\contentsline {subsection}{\numberline {2.2.16}usuarioeditar}{12}{subsection.2.2.16}
-\contentsline {subsubsection}{errores}{12}{section*.18}
-\contentsline {subsection}{\numberline {2.2.17}usuarioeliminar}{12}{subsection.2.2.17}
-\contentsline {subsubsection}{errores}{12}{section*.19}
-\contentsline {subsection}{\numberline {2.2.18}usuarioreenviar}{12}{subsection.2.2.18}
-\contentsline {subsubsection}{errores}{12}{section*.20}
-\contentsline {subsection}{\numberline {2.2.19}usuarioactivar}{12}{subsection.2.2.19}
-\contentsline {subsubsection}{errores}{12}{section*.21}
-\contentsline {subsection}{\numberline {2.2.20}usuarionuevo}{12}{subsection.2.2.20}
-\contentsline {subsubsection}{errores}{12}{section*.22}
-\contentsline {subsection}{\numberline {2.2.21}licencia}{13}{subsection.2.2.21}
-\contentsline {subsubsection}{errores}{13}{section*.23}
-\contentsline {subsection}{\numberline {2.2.22}cuenta}{13}{subsection.2.2.22}
-\contentsline {subsubsection}{errores}{13}{section*.24}
-\contentsline {subsection}{\numberline {2.2.23}logs}{13}{subsection.2.2.23}
-\contentsline {subsubsection}{errores}{13}{section*.25}
-\contentsline {subsection}{\numberline {2.2.24}reportarerror}{13}{subsection.2.2.24}
-\contentsline {subsubsection}{errores}{13}{section*.26}
-\contentsline {subsection}{\numberline {2.2.25}t\IeC {\'e}rminos y privacidad}{13}{subsection.2.2.25}
-\contentsline {subsubsection}{errores}{13}{section*.27}
-\contentsline {subsection}{\numberline {2.2.26}e400, e403, e404, e500}{13}{subsection.2.2.26}
-\contentsline {subsubsection}{errores}{13}{section*.28}
+\contentsline {chapter}{\numberline {1}Motivaciones, lenguajes y otros.}{7}{chapter.1}
+\contentsline {section}{\numberline {1.1}Lenguajes.}{8}{section.1.1}
+\contentsline {section}{\numberline {1.2}Arquitectura.}{8}{section.1.2}
+\contentsline {section}{\numberline {1.3}Dependencias}{9}{section.1.3}
+\contentsline {section}{\numberline {1.4}Terminolog\IeC {\'\i }a}{10}{section.1.4}
+\contentsline {chapter}{\numberline {2}C\IeC {\'o}digo: Usuarios}{11}{chapter.2}
+\contentsline {section}{\numberline {2.1}Necesidad}{11}{section.2.1}
+\contentsline {section}{\numberline {2.2}Funcionalidad}{11}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}index}{11}{subsection.2.2.1}
+\contentsline {subsubsection}{errores}{11}{section*.3}
+\contentsline {subsection}{\numberline {2.2.2}acceder}{11}{subsection.2.2.2}
+\contentsline {subsubsection}{errores}{12}{section*.4}
+\contentsline {subsection}{\numberline {2.2.3}home}{12}{subsection.2.2.3}
+\contentsline {subsubsection}{errores}{12}{section*.5}
+\contentsline {subsection}{\numberline {2.2.4}menu}{12}{subsection.2.2.4}
+\contentsline {subsubsection}{errores}{12}{section*.6}
+\contentsline {subsection}{\numberline {2.2.5}home2}{12}{subsection.2.2.5}
+\contentsline {subsubsection}{errores}{12}{section*.7}
+\contentsline {subsection}{\numberline {2.2.6}salir}{12}{subsection.2.2.6}
+\contentsline {subsubsection}{errores}{12}{section*.8}
+\contentsline {subsection}{\numberline {2.2.7}recuperar}{12}{subsection.2.2.7}
+\contentsline {subsubsection}{errores}{12}{section*.9}
+\contentsline {subsection}{\numberline {2.2.8}usuariorecuperar}{12}{subsection.2.2.8}
+\contentsline {subsubsection}{errores}{13}{section*.10}
+\contentsline {subsection}{\numberline {2.2.9}empresas}{13}{subsection.2.2.9}
+\contentsline {subsubsection}{errores}{13}{section*.11}
+\contentsline {subsection}{\numberline {2.2.10}empresaeditar}{13}{subsection.2.2.10}
+\contentsline {subsubsection}{errores}{13}{section*.12}
+\contentsline {subsection}{\numberline {2.2.11}empresaeliminar}{13}{subsection.2.2.11}
+\contentsline {subsubsection}{errores}{13}{section*.13}
+\contentsline {subsection}{\numberline {2.2.12}empresanueva}{13}{subsection.2.2.12}
+\contentsline {subsubsection}{errores}{13}{section*.14}
+\contentsline {subsection}{\numberline {2.2.13}proyectonuevo}{13}{subsection.2.2.13}
+\contentsline {subsubsection}{errores}{13}{section*.15}
+\contentsline {subsection}{\numberline {2.2.14}proyectoeditar}{14}{subsection.2.2.14}
+\contentsline {subsubsection}{errores}{14}{section*.16}
+\contentsline {subsection}{\numberline {2.2.15}proyectoeliminar}{14}{subsection.2.2.15}
+\contentsline {subsubsection}{errores}{14}{section*.17}
+\contentsline {subsection}{\numberline {2.2.16}usuarios}{14}{subsection.2.2.16}
+\contentsline {subsubsection}{errores}{14}{section*.18}
+\contentsline {subsection}{\numberline {2.2.17}usuarioeditar}{14}{subsection.2.2.17}
+\contentsline {subsubsection}{errores}{14}{section*.19}
+\contentsline {subsection}{\numberline {2.2.18}usuarioeliminar}{14}{subsection.2.2.18}
+\contentsline {subsubsection}{errores}{14}{section*.20}
+\contentsline {subsection}{\numberline {2.2.19}usuarioreenviar}{14}{subsection.2.2.19}
+\contentsline {subsubsection}{errores}{15}{section*.21}
+\contentsline {subsection}{\numberline {2.2.20}usuarioactivar}{15}{subsection.2.2.20}
+\contentsline {subsubsection}{errores}{15}{section*.22}
+\contentsline {subsection}{\numberline {2.2.21}usuarionuevo}{15}{subsection.2.2.21}
+\contentsline {subsubsection}{errores}{15}{section*.23}
+\contentsline {subsection}{\numberline {2.2.22}licencia}{15}{subsection.2.2.22}
+\contentsline {subsubsection}{errores}{15}{section*.24}
+\contentsline {subsection}{\numberline {2.2.23}cuenta}{15}{subsection.2.2.23}
+\contentsline {subsubsection}{errores}{15}{section*.25}
+\contentsline {subsection}{\numberline {2.2.24}logs}{15}{subsection.2.2.24}
+\contentsline {subsubsection}{errores}{15}{section*.26}
+\contentsline {subsection}{\numberline {2.2.25}reportarerror}{15}{subsection.2.2.25}
+\contentsline {subsubsection}{errores}{16}{section*.27}
+\contentsline {subsection}{\numberline {2.2.26}t\IeC {\'e}rminos y privacidad}{16}{subsection.2.2.26}
+\contentsline {subsubsection}{errores}{16}{section*.28}
+\contentsline {subsection}{\numberline {2.2.27}e400, e403, e404, e500}{16}{subsection.2.2.27}
+\contentsline {subsubsection}{errores}{16}{section*.29}
+\contentsline {chapter}{\numberline {3}C\IeC {\'o}digo: Colaboradores}{17}{chapter.3}
+\contentsline {section}{\numberline {3.1}Necesidad}{17}{section.3.1}
+\contentsline {section}{\numberline {3.2}Funcionalidad}{17}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}colaboradores\_ind}{17}{subsection.3.2.1}
+\contentsline {subsubsection}{errores}{17}{section*.30}
+\contentsline {subsection}{\numberline {3.2.2}colaboradornuevo}{17}{subsection.3.2.2}
+\contentsline {subsubsection}{errores}{17}{section*.31}
+\contentsline {subsection}{\numberline {3.2.3}colaboradoreditar}{17}{subsection.3.2.3}
+\contentsline {subsubsection}{errores}{18}{section*.32}
+\contentsline {subsection}{\numberline {3.2.4}colaboradoractivar}{18}{subsection.3.2.4}
+\contentsline {subsubsection}{errores}{18}{section*.33}
+\contentsline {subsection}{\numberline {3.2.5}archivo}{18}{subsection.3.2.5}
+\contentsline {subsubsection}{errores}{18}{section*.34}
+\contentsline {subsection}{\numberline {3.2.6}colaboradores\_xls}{18}{subsection.3.2.6}
+\contentsline {subsubsection}{errores}{18}{section*.35}
+\contentsline {subsection}{\numberline {3.2.7}colaboradoreliminar}{18}{subsection.3.2.7}
+\contentsline {subsubsection}{errores}{18}{section*.36}
+\contentsline {chapter}{\numberline {4}C\IeC {\'o}digo: Cuestionarios}{19}{chapter.4}
+\contentsline {section}{\numberline {4.1}Necesidad}{19}{section.4.1}
+\contentsline {section}{\numberline {4.2}Funcionalidad}{19}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}variables}{19}{subsection.4.2.1}
+\contentsline {subsubsection}{errores}{19}{section*.37}
+\contentsline {subsection}{\numberline {4.2.2}preguntas}{19}{subsection.4.2.2}
+\contentsline {subsubsection}{errores}{19}{section*.38}
+\contentsline {subsection}{\numberline {4.2.3}variablenueva}{19}{subsection.4.2.3}
+\contentsline {subsubsection}{errores}{19}{section*.39}
+\contentsline {subsection}{\numberline {4.2.4}variableactivar}{20}{subsection.4.2.4}
+\contentsline {subsubsection}{errores}{20}{section*.40}
+\contentsline {subsection}{\numberline {4.2.5}preguntanueva}{20}{subsection.4.2.5}
+\contentsline {subsubsection}{errores}{20}{section*.41}
+\contentsline {subsection}{\numberline {4.2.6}preguntaactivar}{20}{subsection.4.2.6}
+\contentsline {subsubsection}{errores}{20}{section*.42}
+\contentsline {subsection}{\numberline {4.2.7}variableeditar}{20}{subsection.4.2.7}
+\contentsline {subsubsection}{errores}{20}{section*.43}
+\contentsline {subsection}{\numberline {4.2.8}preguntaeditar}{20}{subsection.4.2.8}
+\contentsline {subsubsection}{errores}{20}{section*.44}
+\contentsline {subsection}{\numberline {4.2.9}variableclonar}{20}{subsection.4.2.9}
+\contentsline {subsubsection}{errores}{20}{section*.45}
+\contentsline {subsection}{\numberline {4.2.10}preguntaclonar}{20}{subsection.4.2.10}
+\contentsline {subsubsection}{errores}{21}{section*.46}
+\contentsline {subsection}{\numberline {4.2.11}variableliminar}{21}{subsection.4.2.11}
+\contentsline {subsubsection}{errores}{21}{section*.47}
+\contentsline {subsection}{\numberline {4.2.12}preguntaeliminar}{21}{subsection.4.2.12}
+\contentsline {subsubsection}{errores}{21}{section*.48}
+\contentsline {subsection}{\numberline {4.2.13}preencuesta}{21}{subsection.4.2.13}
+\contentsline {subsubsection}{errores}{21}{section*.49}
+\contentsline {chapter}{\numberline {5}C\IeC {\'o}digo: Mensajer\IeC {\'\i }a}{23}{chapter.5}
+\contentsline {section}{\numberline {5.1}Necesidad}{23}{section.5.1}
+\contentsline {section}{\numberline {5.2}Funcionalidad}{23}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}gosurvey}{23}{subsection.5.2.1}
+\contentsline {subsubsection}{errores}{23}{section*.50}
+\contentsline {subsection}{\numberline {5.2.2}detalladas}{23}{subsection.5.2.2}
+\contentsline {subsubsection}{errores}{23}{section*.51}
+\contentsline {subsection}{\numberline {5.2.3}metricas}{24}{subsection.5.2.3}
+\contentsline {subsubsection}{errores}{24}{section*.52}
+\contentsline {subsection}{\numberline {5.2.4}colaboradoractivarmensajeria}{24}{subsection.5.2.4}
+\contentsline {subsubsection}{errores}{24}{section*.53}
+\contentsline {subsection}{\numberline {5.2.5}colaboradoreenviar}{24}{subsection.5.2.5}
+\contentsline {subsubsection}{errores}{24}{section*.54}
+\contentsline {subsection}{\numberline {5.2.6}encuesta}{24}{subsection.5.2.6}
+\contentsline {subsubsection}{errores}{24}{section*.55}
+\contentsline {subsection}{\numberline {5.2.7}encuestaexterna}{24}{subsection.5.2.7}
+\contentsline {subsubsection}{errores}{24}{section*.56}
+\contentsline {subsection}{\numberline {5.2.8}encuestaexterna2}{24}{subsection.5.2.8}
+\contentsline {subsubsection}{errores}{24}{section*.57}
+\contentsline {subsection}{\numberline {5.2.9}exportarexterna}{25}{subsection.5.2.9}
+\contentsline {subsubsection}{errores}{25}{section*.58}
+\contentsline {subsection}{\numberline {5.2.10}exportarinterna}{25}{subsection.5.2.10}
+\contentsline {subsubsection}{errores}{25}{section*.59}
+\contentsline {subsection}{\numberline {5.2.11}importarespuestas\_exportar}{25}{subsection.5.2.11}
+\contentsline {subsubsection}{errores}{25}{section*.60}
+\contentsline {subsection}{\numberline {5.2.12}importarespuestas\_preguntas}{25}{subsection.5.2.12}
+\contentsline {subsubsection}{errores}{25}{section*.61}
+\contentsline {chapter}{\numberline {6}C\IeC {\'o}digo: An\IeC {\'a}lisis}{27}{chapter.6}
+\contentsline {section}{\numberline {6.1}Necesidad}{27}{section.6.1}
+\contentsline {section}{\numberline {6.2}Funcionalidad}{27}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}humanize}{27}{subsection.6.2.1}
+\contentsline {subsubsection}{errores}{27}{section*.62}
+\contentsline {subsection}{\numberline {6.2.2}participacion}{27}{subsection.6.2.2}
+\contentsline {subsubsection}{errores}{27}{section*.63}
+\contentsline {subsection}{\numberline {6.2.3}general}{28}{subsection.6.2.3}
+\contentsline {subsubsection}{errores}{28}{section*.64}
+\contentsline {subsection}{\numberline {6.2.4}focalizado}{28}{subsection.6.2.4}
+\contentsline {subsubsection}{errores}{28}{section*.65}
+\contentsline {subsection}{\numberline {6.2.5}solucion}{28}{subsection.6.2.5}
+\contentsline {subsubsection}{errores}{28}{section*.66}
+\contentsline {subsection}{\numberline {6.2.6}wordanalytics}{28}{subsection.6.2.6}
+\contentsline {subsubsection}{errores}{28}{section*.67}
+\contentsline {subsection}{\numberline {6.2.7}cuerpo}{28}{subsection.6.2.7}
+\contentsline {subsubsection}{errores}{29}{section*.68}
+\contentsline {chapter}{\numberline {7}C\IeC {\'o}digo: Cuestionarios\_360}{31}{chapter.7}
+\contentsline {section}{\numberline {7.1}Necesidad}{31}{section.7.1}
+\contentsline {section}{\numberline {7.2}Funcionalidad}{31}{section.7.2}
+\contentsline {subsection}{\numberline {7.2.1}instrumentos}{31}{subsection.7.2.1}
+\contentsline {subsubsection}{errores}{31}{section*.69}
+\contentsline {subsection}{\numberline {7.2.2}dimensiones}{31}{subsection.7.2.2}
+\contentsline {subsubsection}{errores}{31}{section*.70}
+\contentsline {subsection}{\numberline {7.2.3}variables\_360}{31}{subsection.7.2.3}
+\contentsline {subsubsection}{errores}{32}{section*.71}
+\contentsline {subsection}{\numberline {7.2.4}preguntas\_360}{32}{subsection.7.2.4}
+\contentsline {subsubsection}{errores}{32}{section*.72}
+\contentsline {subsection}{\numberline {7.2.5}instrumentonuevo}{32}{subsection.7.2.5}
+\contentsline {subsubsection}{errores}{32}{section*.73}
+\contentsline {subsection}{\numberline {7.2.6}dimensionueva}{32}{subsection.7.2.6}
+\contentsline {subsubsection}{errores}{32}{section*.74}
+\contentsline {subsection}{\numberline {7.2.7}variablenueva\_360}{32}{subsection.7.2.7}
+\contentsline {subsubsection}{errores}{32}{section*.75}
+\contentsline {subsection}{\numberline {7.2.8}preguntanueva\_360}{32}{subsection.7.2.8}
+\contentsline {subsubsection}{errores}{32}{section*.76}
+\contentsline {subsection}{\numberline {7.2.9}instrumentoactivar}{32}{subsection.7.2.9}
+\contentsline {subsubsection}{errores}{32}{section*.77}
+\contentsline {subsection}{\numberline {7.2.10}dimensionactivar}{33}{subsection.7.2.10}
+\contentsline {subsubsection}{errores}{33}{section*.78}
+\contentsline {subsection}{\numberline {7.2.11}variableactivar\_360}{33}{subsection.7.2.11}
+\contentsline {subsubsection}{errores}{33}{section*.79}
+\contentsline {subsection}{\numberline {7.2.12}preguntactivar\_360}{33}{subsection.7.2.12}
+\contentsline {subsubsection}{errores}{33}{section*.80}
+\contentsline {subsection}{\numberline {7.2.13}instrumentoeditar}{33}{subsection.7.2.13}
+\contentsline {subsubsection}{errores}{33}{section*.81}
+\contentsline {subsection}{\numberline {7.2.14}dimensioneditar}{33}{subsection.7.2.14}
+\contentsline {subsubsection}{errores}{33}{section*.82}
+\contentsline {subsection}{\numberline {7.2.15}variableditar\_360}{33}{subsection.7.2.15}
+\contentsline {subsubsection}{errores}{33}{section*.83}
+\contentsline {subsection}{\numberline {7.2.16}preguntaeditar\_360}{33}{subsection.7.2.16}
+\contentsline {subsubsection}{errores}{34}{section*.84}
+\contentsline {subsection}{\numberline {7.2.17}preguntaclonar\_360}{34}{subsection.7.2.17}
+\contentsline {subsubsection}{errores}{34}{section*.85}
+\contentsline {subsection}{\numberline {7.2.18}preguntaeliminar\_360}{34}{subsection.7.2.18}
+\contentsline {subsubsection}{errores}{34}{section*.86}
+\contentsline {subsection}{\numberline {7.2.19}variableliminar\_360}{34}{subsection.7.2.19}
+\contentsline {subsubsection}{errores}{34}{section*.87}
+\contentsline {subsection}{\numberline {7.2.20}dimensioneliminar}{34}{subsection.7.2.20}
+\contentsline {subsubsection}{errores}{34}{section*.88}
+\contentsline {subsection}{\numberline {7.2.21}instrumentoeliminar}{34}{subsection.7.2.21}
+\contentsline {subsubsection}{errores}{34}{section*.89}
+\contentsline {subsection}{\numberline {7.2.22}previsualizacion\_360}{34}{subsection.7.2.22}
+\contentsline {subsubsection}{errores}{35}{section*.90}
+\contentsline {subsection}{\numberline {7.2.23}exportar\_instrumento\_360}{35}{subsection.7.2.23}
+\contentsline {subsubsection}{errores}{35}{section*.91}
+\contentsline {subsection}{\numberline {7.2.24}plantilla\_instrumento\_360}{35}{subsection.7.2.24}
+\contentsline {subsubsection}{errores}{35}{section*.92}
+\contentsline {subsection}{\numberline {7.2.25}importar\_instrumento\_360}{35}{subsection.7.2.25}
+\contentsline {subsubsection}{errores}{35}{section*.93}
+\contentsline {chapter}{\numberline {8}C\IeC {\'o}digo: Colaboradores\_360}{37}{chapter.8}
+\contentsline {section}{\numberline {8.1}Necesidad}{37}{section.8.1}
+\contentsline {section}{\numberline {8.2}Funcionalidad}{37}{section.8.2}
+\contentsline {subsection}{\numberline {8.2.1}colaboradores\_ind\_360}{37}{subsection.8.2.1}
+\contentsline {subsubsection}{errores}{37}{section*.94}
+\contentsline {subsection}{\numberline {8.2.2}colaboradornuevo\_360}{37}{subsection.8.2.2}
+\contentsline {subsubsection}{errores}{37}{section*.95}
+\contentsline {subsection}{\numberline {8.2.3}colaboradoreditar\_360}{37}{subsection.8.2.3}
+\contentsline {subsubsection}{errores}{38}{section*.96}
+\contentsline {subsection}{\numberline {8.2.4}colaboradoractivar\_360}{38}{subsection.8.2.4}
+\contentsline {subsubsection}{errores}{38}{section*.97}
+\contentsline {subsection}{\numberline {8.2.5}archivo\_360}{38}{subsection.8.2.5}
+\contentsline {subsubsection}{errores}{38}{section*.98}
+\contentsline {subsection}{\numberline {8.2.6}colaboradores\_xls\_360}{38}{subsection.8.2.6}
+\contentsline {subsubsection}{errores}{38}{section*.99}
+\contentsline {subsection}{\numberline {8.2.7}colaboradoreliminar\_360}{38}{subsection.8.2.7}
+\contentsline {subsubsection}{errores}{38}{section*.100}
+\contentsline {subsection}{\numberline {8.2.8}roles\_360}{38}{subsection.8.2.8}
+\contentsline {subsubsection}{errores}{38}{section*.101}
+\contentsline {subsection}{\numberline {8.2.9}rolnuevo\_360}{38}{subsection.8.2.9}
+\contentsline {subsubsection}{errores}{39}{section*.102}
+\contentsline {subsection}{\numberline {8.2.10}roleditar\_360}{39}{subsection.8.2.10}
+\contentsline {subsubsection}{errores}{39}{section*.103}
+\contentsline {subsection}{\numberline {8.2.11}roleliminar\_360}{39}{subsection.8.2.11}
+\contentsline {subsubsection}{errores}{39}{section*.104}
+\contentsline {chapter}{\numberline {9}C\IeC {\'o}digo: Redes\_360}{41}{chapter.9}
+\contentsline {section}{\numberline {9.1}Necesidad}{41}{section.9.1}
+\contentsline {section}{\numberline {9.2}Funcionalidad}{41}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}redes\_360}{41}{subsection.9.2.1}
+\contentsline {subsubsection}{errores}{41}{section*.105}
+\contentsline {subsection}{\numberline {9.2.2}rednueva\_360}{41}{subsection.9.2.2}
+\contentsline {subsubsection}{errores}{41}{section*.106}
+\contentsline {subsection}{\numberline {9.2.3}reditar\_360}{42}{subsection.9.2.3}
+\contentsline {subsubsection}{errores}{42}{section*.107}
+\contentsline {subsection}{\numberline {9.2.4}redeliminar\_360}{42}{subsection.9.2.4}
+\contentsline {subsubsection}{errores}{42}{section*.108}
+\contentsline {subsection}{\numberline {9.2.5}redes\_archivo\_generar}{42}{subsection.9.2.5}
+\contentsline {subsubsection}{errores}{42}{section*.109}
+\contentsline {subsection}{\numberline {9.2.6}redes\_xls\_360}{42}{subsection.9.2.6}
+\contentsline {subsubsection}{errores}{42}{section*.110}
+\contentsline {subsection}{\numberline {9.2.7}redes\_activar\_360}{42}{subsection.9.2.7}
+\contentsline {subsubsection}{errores}{42}{section*.111}
+\contentsline {chapter}{\numberline {10}C\IeC {\'o}digo: Mensajer\IeC {\'\i }a\_360}{43}{chapter.10}
+\contentsline {section}{\numberline {10.1}Necesidad}{43}{section.10.1}
+\contentsline {section}{\numberline {10.2}Funcionalidad}{43}{section.10.2}
+\contentsline {subsection}{\numberline {10.2.1}gosurvey\_360}{43}{subsection.10.2.1}
+\contentsline {subsubsection}{errores}{43}{section*.112}
+\contentsline {subsection}{\numberline {10.2.2}metricas\_360}{43}{subsection.10.2.2}
+\contentsline {subsubsection}{errores}{43}{section*.113}
+\contentsline {subsection}{\numberline {10.2.3}metricas\_ind\_360}{43}{subsection.10.2.3}
+\contentsline {subsubsection}{errores}{44}{section*.114}
+\contentsline {subsection}{\numberline {10.2.4}colaboradoreenviar}{44}{subsection.10.2.4}
+\contentsline {subsubsection}{errores}{44}{section*.115}
+\contentsline {subsection}{\numberline {10.2.5}encuesta\_360}{44}{subsection.10.2.5}
+\contentsline {subsubsection}{errores}{44}{section*.116}
+\contentsline {subsection}{\numberline {10.2.6}detalladas\_360}{44}{subsection.10.2.6}
+\contentsline {subsubsection}{errores}{44}{section*.117}
+\contentsline {subsection}{\numberline {10.2.7}exportarinterna\_360}{44}{subsection.10.2.7}
+\contentsline {subsubsection}{errores}{44}{section*.118}
+\contentsline {subsection}{\numberline {10.2.8}importarespuestas\_exportar\_360}{44}{subsection.10.2.8}
+\contentsline {subsubsection}{errores}{44}{section*.119}
+\contentsline {subsection}{\numberline {10.2.9}importarespuestas\_preguntas\_360}{45}{subsection.10.2.9}
+\contentsline {subsubsection}{errores}{45}{section*.120}
+\contentsline {chapter}{\numberline {11}C\IeC {\'o}digo: Ap\IeC {\'e}ndice A - gogo}{47}{chapter.11}
+\contentsline {section}{\numberline {11.1}Necesidad}{47}{section.11.1}
+\contentsline {subsection}{\numberline {11.1.1}contador}{47}{subsection.11.1.1}
+\contentsline {subsubsection}{errores}{47}{section*.121}
+\contentsline {subsection}{\numberline {11.1.2}escoba}{47}{subsection.11.1.2}
+\contentsline {subsubsection}{errores}{47}{section*.122}
+\contentsline {subsection}{\numberline {11.1.3}mensajero}{47}{subsection.11.1.3}
+\contentsline {subsubsection}{errores}{47}{section*.123}
