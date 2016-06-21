@@ -465,7 +465,7 @@
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{metricas}
-	Controlador encargado de listar los colaboradores y las métricas con respecto al proyecto
+	Controlador encargado de listar los colaboradores y las métricas con respecto al proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
@@ -475,7 +475,7 @@
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{colaboradoreenviar}
-	Controlador encargado de forzar los emails a cada colaborador.
+	Controlador encargado de forzar envio de email de la encuesta en un proyecto a cada colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
@@ -485,12 +485,12 @@
 	El template de este controlador es crítico y está muy poco pulido debido a la priorización en pro de características de cara al usuario tipo consultor. Se recomienda en caso de mantener este código replantear su estructura. Adicionalmente usar un sistema para organizar las preguntas en el mismo orden de introducción ya que el id puede resultar algo azaroso.
 	
 	\subsection{encuestaexterna}
-	Controlador encargado de renderizar a los colaboradores de proyectos externos es decir encuestas de usuarios \textit{anónimos}.
+	Controlador encargado de renderizar a los colaboradores de proyectos externos, es decir, encuestas de usuarios \textit{anónimos}.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{encuestaexterna2}
-	Controlador encargado de preguntar para volver a renderizar para reiniciar la encuesta finalizada.
+	Controlador encargado de preguntar para volver a renderizar para reiniciar la encuesta externa finalizada.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
@@ -512,7 +512,7 @@
 	\subsection{importarespuestas\_preguntas}
 	Controlador encargado de guardar las respuestas a preguntas del proyecto, manualmente, en proyectos internos.
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha. Dada la introducción de las preguntas tipo cuerpo humano este controlador no ha sido verificado para su compatibilidad, además debido a que nunca se usó ni se probó rigurosamente su estado de estabilidad es desconocido.
+	No se ha reportado ninguno a la fecha. Dada la introducción de las preguntas tipo cuerpo humano, este controlador no ha sido verificado para su compatibilidad, además debido a que nunca se usó ni se probó rigurosamente, su estabilidad es desconocida.
 	
 	
 	\chapter{Código: Análisis}
@@ -613,22 +613,22 @@
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{instrumentoactivar}
-	Controlador encargado de activar/desactivar el instrumento y sus dependientes.
+	Controlador encargado de activar/desactivar el instrumento, sus dimensiones, variables y preguntas.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{dimensionactivar}
-	Controlador encargado de activar/desactivar la dimensión y sus dependientes.
+	Controlador encargado de activar/desactivar la dimensión, variables y preguntas. Si una dimensión se activa sus hermanas no necesariamente, pero si sus padres.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{variableactivar\_360}
-	Controlador encargado de activar/desactivar la variable y sus dependientes.
+	Controlador encargado de activar/desactivar la variable y sus preguntas. Si una variable se activa sus hermanas no necesariamente, pero si sus padres.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{preguntactivar\_360}
-	Controlador encargado de activar/desactivar la pregunta.
+	Controlador encargado de activar/desactivar la pregunta. Si una pregunta se activa sus hermanas no necesariamente, pero si sus padres.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
@@ -683,7 +683,7 @@
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{exportar\_instrumento\_360}
-	Controlador encargado de generar un excel con los datos de un instrumento, para su portabilidad a otros instrumentos.
+	Controlador encargado de generar un excel con los datos de un instrumento, para su portabilidad a otros proyectos.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
@@ -824,7 +824,7 @@
 	\subsection{gosurvey\_360}
 	Controlador encargado de verificar que el streaming este completo (cada pregunta para cada red).
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha. Es necesario dividir este controlador funcionalmente para que su mantenimiento sea viable.
+	No se ha reportado ninguno a la fecha. Es necesario dividir este controlador funcionalmente para que su mantenimiento sea viable. Adicionalmente el botón actualizar datos presenta el mismo problema de diseño en el cual la verificación de cada pregunta para cada colaborador es demasiado costosa, adicionalmente el separar estas funcionalidades genera que las personas no actualicen datos, \textit{no se generaría la tabla streaming correspondiente}, pero si inicien los proyectos a lo cual ningún colaborador poseería preguntas para responder.
 	
 	\subsection{metricas\_360}
 	Controlador encargado de listar las métricas de los usuarios evaluadores en un modo general.
@@ -842,12 +842,12 @@
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{encuesta\_360}
-	Controlador encargado de renderizar las preguntas que un colaborador debe responder para cada red. Una con cada vez de interacción.
+	Controlador encargado de renderizar las preguntas que un colaborador debe responder para cada red. Una diferente con cada vez de interacción completada.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Se debe dividir funcionalmente para que su mantenimiento sea mas viable.
 	
 	\subsection{detalladas\_360}
-	Controlador encargado de renderizar la pagina con el botón de exportación.
+	Controlador encargado de renderizar la página con el botón de exportación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
@@ -871,15 +871,15 @@
 	\chapter{Código: Apéndice A - gogo}
 	
 	Se describirá cada uno de las funciones de los archivos contenidos en la carpeta gogo interna.
-	
+
 	\section{Necesidad}
 	
-	Se escribieron unos scripts internos programados con el gestor de tareas de unix para su ejecucíon.
+	Se escribieron unos scripts internos programados con el gestor de tareas de linux para su ejecución.
 	
 	\subsection{contador}
-	Script que contendría el \textit{pre-procesamiento} de los datos para la visualización de los datos del proyecto tipo 360. No se han escrito los models de almacenamiento para ello.
+	Script que contendría el \textit{pre-procesamiento} de los datos para la visualización de los datos del proyecto tipo 360.
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha.
+	No se han escrito los models de almacenamiento para ello. su estado de desarrollo es muy bajo. Se debe replantear el diseño ya que de él depende las visualizaciones de los datos del proyecto 360.
 	
 	\subsection{escoba}
 	Script de eliminación de datos en la base que estén marcados para eliminar, en el servidor se tienen con 60 días de posibilidades de recuperación manual.
@@ -889,7 +889,8 @@
 	\subsection{mensajero}
 	Script de envío de correos basado en el promedio de tiempo de demora en la respuesta de los usuarios. Esta pensado en horas y teniendo en cuenta las métricas de respuesta.  
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha.
+	No se ha reportado ninguno a la fecha.\\
 	
+	Como Matemático de la Universidad Nacional muchos de los errores que cometí en el diseño e implementación, me corresponden unicamente a mi, ya que mi formación como notarán no fue la de ingeniero de sistemas, ni de arquitecto de hadware/sofware. Espero estas notas sirvan de mapa general de navegación a través del código, para un entendimiento del mismo lo invito a leerlo juiciosamente, con mucha paciencia y disposición.
 	
 \end{document}
