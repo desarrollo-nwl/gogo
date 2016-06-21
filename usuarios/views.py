@@ -167,10 +167,6 @@ def home2(request):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
 def salir(request):
 	cache.delete(request.user)
 	logout(request)
