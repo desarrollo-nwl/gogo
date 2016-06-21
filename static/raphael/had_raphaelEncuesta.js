@@ -1,5 +1,5 @@
 $(function(){
-
+    console.log('hola mundo2');
 var formularioEnvio = {};
 
 var MAP_WIDTH  = 420;
@@ -76,38 +76,41 @@ function estilo(regionName,region,chusque){
 	  		toque = !toque;
             var select = $('select[name = '+chusque+']');
 	  		if(toque){
+                console.log('soy un toque');
+                console.log(toque);
+                console.log(region[0]);
 	  			region.animate(hoverStyle);
                 region.active = true;
                 ///PARA LLENAR EL FORMULARIO
-                 $('#'+chusque).modal();
-                 select.change(function(){
-                      formularioEnvio[String(regionName)]= $(this).val();
-                      var stringFormularioEnvio = JSON.stringify(formularioEnvio);
-                      $('#formularioEnvio').val(stringFormularioEnvio);
-                 })
+                //  $('#'+chusque).modal();
+                //  select.change(function(){
+                //       formularioEnvio[String(regionName)]= $(this).val();
+                //       var stringFormularioEnvio = JSON.stringify(formularioEnvio);
+                //       $('#formularioEnvio').val(stringFormularioEnvio);
+                //  })
 	  		}else{
-	  			region.attr(style);
+	  			region.animate(style);
                 select.val('');
-                delete formularioEnvio[String(regionName)];
-                var stringFormularioEnvio = JSON.stringify(formularioEnvio);
-                $('#formularioEnvio').val(stringFormularioEnvio);
+                // delete formularioEnvio[String(regionName)];
+                // var stringFormularioEnvio = JSON.stringify(formularioEnvio);
+                // $('#formularioEnvio').val(stringFormularioEnvio);
 	  		}
         }, true);
     //    fin funcion estilo
       	}
 
-$(window).on('click',function(){
-    var chusque2 = 0;
-    for(var regionName in regions){
-        chusque2 += 1;
-        var select = $('select[name = '+chusque2+']');
-        var valorSelect = select.val();
-        if(valorSelect == ''){
-            var region = regions[regionName];
-            region.attr(style);
-
-        }
-    }
-})
+// $(window).on('click',function(){
+    // var chusque2 = 0;
+    // for(var regionName in regions){
+    //     chusque2 += 1;
+    //     var select = $('select[name = '+chusque2+']');
+    //     var valorSelect = select.val();
+    //     if(valorSelect == ''){
+    //         var region = regions[regionName];
+    //         region.attr(style);
+    //
+    //     }
+    // }
+// })
 
 });

@@ -21,3 +21,8 @@ import ujson
 @login_required(login_url='/acceder/')
 def cuerpoHumano(request):
     return render_to_response('cuerpoHumano.html',{'Activar':'Contenido','activar':'Instrumentos',},context_instance=RequestContext(request))
+
+@cache_control(no_store=True)
+@login_required(login_url='/acceder/')
+def pruebaModal(request):
+    return render_to_response('pruebaModal.html',{'Activar':'Contenido','activar':'Instrumentos',},context_instance=RequestContext(request))

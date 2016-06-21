@@ -20,7 +20,6 @@ urlpatterns = patterns('usuarios.views',
 	url(r'^terminos/$', 'terminos'),
 	url(r'^privacidad/$', 'privacidad'),
 	url(r'^reportar/$', 'reportarerror'),
-	url(r'^faq/$', 'faq'),
 	url(r'^salir/$', 'salir')
 )
 
@@ -212,6 +211,7 @@ urlpatterns += patterns('exp_usuario.views',
 #===============================================================================
 urlpatterns += patterns('entornoPruebas.views',
 	url(r'^entornoPruebas/cuerpoHumano$', 'cuerpoHumano'),
+	url(r'^entornoPruebas/pruebaModal$', 'pruebaModal'),
 )
 
 #===============================================================================
