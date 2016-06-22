@@ -1341,7 +1341,7 @@
 						   <div id="human_body" align="center"></div>
 					</div>
 			 <!-- Fin Modal -->
-			 <input type="hidden" id='formularioEnvio' name="{{pregunta.id}}" value="">
+			 <input type="hidden" id='formularioEnvio' name="{{i.pregunta.id}}" value="">
 					{% else %}
 						<textarea type="text" max_length="1000" name="{{i.pregunta.id}}" required title="Por favor responda la pregunta"></textarea>
 					{% endif %}
@@ -1488,7 +1488,7 @@ function estilo(regionName,region,chusque){
 					  }else{
 						  cambioSelect = false;
 					  }
-		  			  
+
 
                  })
 	  		}else{

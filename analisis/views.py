@@ -271,11 +271,12 @@ def cuerpo(request):
 					"colaborador__colaboradoresdatos",
 					"pregunta",
 				)
-
+		fechas = proyecto.proyectosdatos
 		return render_to_response('cuerpo.html',{
 			'Activar':'AnalisisResultados',
 			'activar':'CuerpoHumano',
 			'Proyecto':proyecto,
+			'fechas': fechas, 
 			'Permisos':permisos,
 			'activarG':3,
 			'Datos': datos,

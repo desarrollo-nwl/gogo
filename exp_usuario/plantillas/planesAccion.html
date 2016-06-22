@@ -773,18 +773,19 @@ $(function(){
                             type: 'POST',
                             url: '/expUsuario/colaborador/planesAccionPeticionAjax/',
                             data: $('form').serialize(),
-                        }).done(function(e){
+                        }).done(function(json){
                             htmlText= '';
-
-                            for(i=1;i<e.length; i++){
-                               htmlText += '<tr><td>'+i+'</td><td>'+e[i]['plan']+'</td><td>'+e[i]['impacto']+'</td><td>'+e[i]['fechaInicio']+'</td><td>'+e[i]['fechaFin']+'</td><td>'+e[i]['avance']+'</td><td>nada</td></tr>';
-                            }
-                            $('#planesLider').html(htmlText);
-                            var idLider = e[0];
-                            var dataTable = elementos.datatableBarras(datos,cuestionario,idLider);
-                            console.log(dataTable);
-
-                            elementos.graficaBarras();
+                            console.log('estoy en el log');
+                            console.log(json);
+                            // for(i=1;i<e.length; i++){
+                            //    htmlText += '<tr><td>'+i+'</td><td>'+e[i]['plan']+'</td><td>'+e[i]['impacto']+'</td><td>'+e[i]['fechaInicio']+'</td><td>'+e[i]['fechaFin']+'</td><td>'+e[i]['avance']+'</td><td>nada</td></tr>';
+                            // }
+                            // $('#planesLider').html(htmlText);
+                            // var idLider = e[0];
+                            // var dataTable = elementos.datatableBarras(datos,cuestionario,idLider);
+                            // console.log(dataTable);
+                            //
+                            // elementos.graficaBarras();
 
                         }).fail(function(e){console.log('eerror'+e);})
 

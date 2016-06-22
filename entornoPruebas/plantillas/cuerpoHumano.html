@@ -1401,8 +1401,11 @@ $(function(){
     	$area = $('#areas'), $car = $('#cargos')
     	$ciclo = $('#ciclo');
 
+    var ciclos = +{{Proyecto.ciclos}};
+    
+
     var regionales_str = '', ciudades_str = '', cargos_str = '',areas_str = '';
-    // var datos =[['persona','regionales','ciudad','area','cargo','fechas','{'hombro_iz':1,'hombro_der':5,}']]             fecha.fin.proyecto - fecha.ini.proyecto/6 -----> 6 clusters
+    // var datos =[['persona','regionales','ciudad','area','cargo','fechas','{'hombro_iz':1,'hombro_der':5,}']]             fecha.fin.proyecto - fecha.ini.proyecto/Proyecto.ciclo -----> 6 clusters
        var datos = [
            ['nombre0','regional0','ciudad0','area0','cargo0','fecha','{"gluteo-der":"4","dorsal-der":"4","redondo-menor-der":"7","bicep-fem-der":"6"}'],
            ['nombre1','regional1','ciudad1','area1','cargo1','fecha','{"dorsal-der":"4","gluteo-izq":"8","cabeza":"8","gastrocnemio-der":"6"}'],

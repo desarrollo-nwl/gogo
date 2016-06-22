@@ -23,7 +23,7 @@
 <li><a href="#"><i><span>/ Cuerpo humano</span></i></a></li>
 {%endblock%}
 {% block contenido2 %}
-[{% for i in Datos %}[ '{{ i.colaborador.nombre }} {{ i.colaborador.apellido }}','{{ i.colaborador.colaboradoresdatos.regional }}','{{ i.colaborador.colaboradoresdatos.ciudad }}','{{ i.colaborador.colaboradoresdatos.area }}','{{ i.colaborador.colaboradoresdatos.cargo }}',new Date({{i.fecharespuesta.year}},{{i.fecharespuesta.month}}-1,{{i.fecharespuesta.day}}),'{{i.respuesta | safe }}'],{% endfor %}]
+
 <div class="row">
 	<div class="panel panel-default toggle m-t-xs ml20 mr20">
 		<div class="panel-heading">
@@ -1405,14 +1405,11 @@ $(function(){
     	$ciclo = $('#ciclo');
 
     var regionales_str = '', ciudades_str = '', cargos_str = '',areas_str = '';
-    // var datos =[['persona','regionales','ciudad','area','cargo','fechas','{'hombro_iz':1,'hombro_der':5,}']]             fecha.fin.proyecto - fecha.ini.proyecto/6 -----> 6 clusters
-       var datos = [
-           ['nombre0','regional0','ciudad0','area0','cargo0','fecha','{"gluteo-der":"4","dorsal-der":"4","redondo-menor-der":"7","bicep-fem-der":"6"}'],
-           ['nombre1','regional1','ciudad1','area1','cargo1','fecha','{"dorsal-der":"4","gluteo-izq":"8","cabeza":"8","gastrocnemio-der":"6"}'],
-           ['nombre2','regional2','ciudad2','area2','cargo2','fecha','{"dorsal-der":"4","gluteo-izq":"8","gastrocnemio-der":"6","triceps-izq":"6","palmar-der":"10","mano-der":"10"}'],
-           ['nombre3','regional3','ciudad3','area3','cargo3','fecha','{"gluteo-der":"5","dorsal-der":"4","redondo-menor-der":"8","bicep-fem-der":"6"}'],
-           ['nombre4','regional4','ciudad4','area4','cargo4','fecha','{"gluteo-izq":"8","gastrocnemio-der":"6","palmar-der":"10","mano-der":"10","trapecio-der":"6","dorsal-der":"9","gluteo-der":"5","peroneo-izq":"3"}'],
-       ];
+            //   fecha.fin.proyecto - fecha.ini.proyecto/6 -----> 6 clusters
+    var datos  = [{% for i in Datos %}[ '{{ i.colaborador.nombre }} {{ i.colaborador.apellido }}','{{ i.colaborador.colaboradoresdatos.regional }}','{{ i.colaborador.colaboradoresdatos.ciudad }}','{{ i.colaborador.colaboradoresdatos.area }}','{{ i.colaborador.colaboradoresdatos.cargo }}',new Date({{i.fecharespuesta.year}},{{i.fecharespuesta.month}}-1,{{i.fecharespuesta.day}}),'{{i.respuesta | safe }}'],{% endfor %}]
+	var fIncio = new Date({{fechas.finicio.year}},{{fechas.finicio.month}}-1,{{fechas.finicio.day}});
+	var fFin = new Date({{fechas.ffin.year}},{{fechas.ffin.month}}-1,{{fechas.ffin.day}});
+
     //==============================================================================
     //  Elementos
     //==============================================================================

@@ -57,8 +57,8 @@ def planesAccion(request):
                     )
         except:
             print 'errror'
-
-
+    print 'hola'
+    print 'soy variable %s'%lideres
     return render_to_response('planesAccion.html',{
         'Activar':'Contenido','activar':'Instrumentos',
         'variables': variables,
@@ -73,7 +73,9 @@ def planesAccion(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def planesAccionPeticionAjax(request):
+
     if request.method == 'POST':
+
         idProyecto = int(request.POST['idProyecto'])
         idLider = request.POST['filtroLider']
         lider = Lideres.objects.get(id = idLider)
@@ -81,10 +83,16 @@ def planesAccionPeticionAjax(request):
         datosLider = Streaming_360.objects.filter(evaluado = lider.lider)
         ###CONSTRUCCION TABLA DE PLANES POR LIDER
         planes = lider.planes_set.all()
+        print 'planes %s'%planes
         a = [idLiderColaborador]
         for i in planes:
-            b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,'fechaInicio':'%s/%s/%s'%(i.fechaInicio.year,i.fechaInicio.month,i.fechaInicio.day),'fechaFin':'%s/%s/%s'%(i.fechaFin.year,i.fechaFin.month,i.fechaFin.day)}
+            print 'holA'
+            # b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,'fechaInicio':'%s/%s/%s'%(i.fechaInicio.year,i.fechaInicio.month,i.fechaInicio.day),'fechaFin':'%s/%s/%s'%(i.fechaFin.year,i.fechaFin.month,i.fechaFin.day)}
+            b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,}
+            print 'b: %s'%b
             a.append(b)
+        #     print 'hola'
+        #     print a
         a = ujson.dumps(a)
 
 
