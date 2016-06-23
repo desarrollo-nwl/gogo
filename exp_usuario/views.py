@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from mensajeria_360.models import Streaming_360
 from usuarios.models import Empresas, Proyectos, Logs
-from exp_usuario.models import Planes, Lideres
+from exp_usuario.models import Planes, Lideres, ColaboradoresExpUsuario
 from cuestionarios_360.models import Variables_360, Preguntas_360
 import ujson
 # Create your views here.
@@ -73,9 +73,7 @@ def planesAccion(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def planesAccionPeticionAjax(request):
-
     if request.method == 'POST':
-
         idProyecto = int(request.POST['idProyecto'])
         idLider = request.POST['filtroLider']
         lider = Lideres.objects.get(id = idLider)
@@ -83,16 +81,11 @@ def planesAccionPeticionAjax(request):
         datosLider = Streaming_360.objects.filter(evaluado = lider.lider)
         ###CONSTRUCCION TABLA DE PLANES POR LIDER
         planes = lider.planes_set.all()
-        print 'planes %s'%planes
         a = [idLiderColaborador]
         for i in planes:
             print 'holA'
-            # b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,'fechaInicio':'%s/%s/%s'%(i.fechaInicio.year,i.fechaInicio.month,i.fechaInicio.day),'fechaFin':'%s/%s/%s'%(i.fechaFin.year,i.fechaFin.month,i.fechaFin.day)}
-            b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,}
-            print 'b: %s'%b
+            b = {'plan':i.plan,'avance':i.avance,'impacto':i.impacto,'fechaInicio':'%s/%s/%s'%(i.fechaInicio.year,i.fechaInicio.month,i.fechaInicio.day),'fechaFin':'%s/%s/%s'%(i.fechaFin.year,i.fechaFin.month,i.fechaFin.day)}
             a.append(b)
-        #     print 'hola'
-        #     print a
         a = ujson.dumps(a)
 
 
@@ -102,7 +95,10 @@ def planesAccionPeticionAjax(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def puntosTalenter(request):
+    proyecto = cache.get(request.user.username)
+    colaboradoresExpUsuario = ColaboradoresExpUsuario.objects.filter(proyecto_id = proyecto.id)
     return render_to_response('puntosTalenter.html',{
+        'colaboradoresExpUsuario': colaboradoresExpUsuario,
         'Activar':'Contenido','activar':'Instrumentos',
         },context_instance=RequestContext(request))
 

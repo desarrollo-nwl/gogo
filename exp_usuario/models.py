@@ -25,13 +25,14 @@ class Productos(models.Model):
 
 
 class ColaboradoresExpUsuario(models.Model):
-    id  = models.OneToOneField(Colaboradores,primary_key  = True )
+    id  = models.OneToOneField(Colaboradores_360,primary_key  = True )
+    proyecto = models.ForeignKey(Proyectos,blank = True,null = True)
     lider = models.ForeignKey(Lideres, blank  = True, null = True )
     puntosLogrados = models.FloatField(default = 0 )
     puntosDisponibles = models.FloatField(default = 0 )
     premiosCanjeados = models.ManyToManyField(Productos, blank = True)
 
-#####################3####################################3
+#####################3####################################
 class Planes(models.Model):
     proyecto = models.ForeignKey(Proyectos,blank = True, null = True)
     variables = models.ForeignKey(Variables_360,blank = True, null = True)

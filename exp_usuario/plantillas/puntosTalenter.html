@@ -118,36 +118,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for i in colaboradoresExpUsuario %}
                                     <tr>
-                                        <td align="center"> Juan Pablo J. </td>
-                                        <td> 700 </td>
-                                        <td> 2 </td>
-                                        <td> 380 </td>
+                                        <td align="center"> {{i.id.nombre|safe}} </td>
+                                        <td>{{i.puntosLogrados|safe}} </td>
+                                        <td id='{{i.id.id}}'> 2 </td>
+                                        <td> {{i.puntosDisponibles|safe}} </td>
                                     </tr>
-                                    <tr>
-                                        <td align="center"> Gustavo Preciado. </td>
-                                        <td> 1000 </td>
-                                        <td> 2 </td>
-                                        <td> 560 </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="center"> Francesca Lievano </td>
-                                        <td> 3000 </td>
-                                        <td> 2 </td>
-                                        <td> 200 </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="center"> Isabella Campos </td>
-                                        <td> 650 </td>
-                                        <td> 1	 </td>
-                                        <td> 360 </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="center"> Camila Ruiz</td>
-                                        <td> 700 </td>
-                                        <td> 1 </td>
-                                        <td> 1000 </td>
-                                    </tr>
+                                   {% endfor %}
 
                                 </tbody>
                             </table>
@@ -166,5 +144,26 @@
 {% endblock %}
 
 {%block scripts%}
+<script type="text/javascript">
+    var colaboradores = [{% for i in colaboradoresExpUsuario  %}
+        ['{{i.id.nombre|safe}}','{{i.puntosLogrados|safe}}' ,'{{i.puntosDisponibles|safe}}'],
+        {% endfor %}];
+    var premiosCanjeados = [{% for i in colaboradoresExpUsuario %}
+                                ['{{i.id.id}}',{% for j in i.premiosCanjeados.all %}'{{j.producto|safe}}',{%endfor%}],
+                            {% endfor %}];
+
+     var cantidadColaboradores = colaboradores.length;
+     console.log(cantidadColaboradores);
+     for(i=0;i<cantidadColaboradores;i++){
+         var id = premiosCanjeados[i][0]
+         var columna = $('#'+premiosCanjeados[i][0]);
+         for(j=1;j<premiosCanjeados[i].length;j++){
+             var cantidadPremiosCanjeados = premiosCanjeados[i].length -1;
+         }
+         columna.html(cantidadPremiosCanjeados);
+     }
+
+
+</script>
 
 {% endblock %}

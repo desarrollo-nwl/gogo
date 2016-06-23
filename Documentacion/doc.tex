@@ -57,29 +57,29 @@
 	\chapter{Motivaciones, lenguajes y otros.}
 
 	\section*{Introducción}
-	
+
 	El presente texto es un intento de exponer de la manera mas clara, sencilla y concreta el código referente a Go Analytics, también llamado talenter o gogo para el equipo de desarrollo. El desarrollo esta realizado casi en su totalidad en código pyhton en su versión 2.7.X y django 1.8.12+; algunas partes como veremos están escritas en código C++ compilado para python. De la misma manera de la parte del usuario se uso javascript con jquery y librerías estándar para diversas funcionalidades.\\
-	
+
 	Esta es la segunda y actual versión del código ya que inicialmente se tenia uno más sencillo, pero funcional, el cual por innumerables cambios de requerimientos se hizo inmanejable. Tratando de mantener una filosofía mas modular se elaboró pensando en un gogo sin versión 360. Esta versión 360 se agregó como módulos adicionales tratando de mantener el código que se había escrito sin modificaciones en miras a la estabilidad.\\
-	
+
 	Inicialmente se expondrá la arquitectura actual, versiones, requerimientos y demás paquetería necesaria. Se dedicará un capítulo para cada carpeta de código (app de django) en la cual se expondrá la necesidad, funcionalidad y errores probables de cada app, para entender la arquitectura se recomineda un estudio juicioso de los models.py de cada una. los errores no reportados a la fecha, significa que los usuarios que probaron la aplicación o no encontraron o no los reportaron\\
-	
+
 	Nota personal: Espero que el desarrollador que trate con el código sea muy comprensivo a la hora de examinarlo ya que el fue desarrollado sin unos requerimientos detallados, sino con cada nueva versión, se solicitaban nuevas modificaciones sobre lo ya elaborado lo que ha conllevado en una no clara consecución de un código completamente estable.\\
-	
-	
+
+
 	\section{Lenguajes.}
 	El uso de este manual requiere conocimiento en Django 1.8, Python 2.7, C++11
 	El código ha sido escrito en lenguaje Python y C++
 	\begin{verbatim}
-		Python 2.7.6 (default, Jun 22 2015, 17:58:13) 
+		Python 2.7.6 (default, Jun 22 2015, 17:58:13)
 		[GCC 4.8.2] on linux2
 	\end{verbatim}
-	para el framework Django 
+	para el framework Django
 	\begin{verbatim}
 		Django 1.8.13
 	\end{verbatim}
 	Javascript con JQuery 2.x.
-	
+
 	\section{Arquitectura.}
 	En AWS poseemos 3 servicios:
 	\begin{enumerate}
@@ -87,101 +87,101 @@
 		\item RDS: 1 Servidor T2 nano de base de datos en Postgresql de 5 Gb de almacenamiento y 1 Gb de memoria RAM, este servidor se inició por las previsiones de ventas del área comercial.
 		\item SES: 1 conexión smtp de alto envío de correos.
 	\end{enumerate}
-	
+
 	Las conexiones las realicé de la siguiente manera. La aplicación corre en un servidor apache
 	\begin{verbatim}
 		Server version: Apache/2.4.7 (Ubuntu)
 		Server built:   Jan 14 2016 17:45:23
 	\end{verbatim}
 	para el cual los certificados ssl los generé por medio de Let's Encript \url{https://letsencrypt.org/getting-started/}. estas claves ssl no estoy muy seguro de trasladarlas de servidor por el modo de generación, es por ello que no están incluidas y es altamente recomendable leer la documentación de este método de obtención  y mantenimiento de claves ssl.\\
-	
+
 	La aplicación se conecta localmente a una instancia de pgbouncer ( \textit{esto con la finalidad de mantener siempre una conexión abierta y evitar el overhead de estar abriendo conexiones})
 	\begin{verbatim}
 	pgbouncer version 1.5.4
 	(compiled by <buildd@roseapple> at 2013-06-18 17:16:50)
 	\end{verbatim}
-	
+
 	La clave de la conexión local con pgbouncer es
 	\begin{verbatim}
 		'USER': 'usuariodb_gogo',
 		'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
 	\end{verbatim}
-	
+
 	la clave de conexión de pgbouncer a la base de datos es
 	\begin{verbatim}
 	user=usuariodb_gogo
 	password=W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas
 	\end{verbatim}
-	
+
 	El archivo de configuración apache2.conf, los sites-availables, gogo pgbouncer.ini al igual que el userlist.txt se encuentran en ./gogo/gogo/configs/ \\
-	
+
 	La base de datos contiene 3 bases de datos una llamada gogo perteneciente a esta aplicación, otra llamada talenter que no es mas que una copia incompleta de la primera y una tercera perteneciente a slam. Se cuentan con tres Group Roles y tres Login Roles uno para cada aplicación y un rol maestro (no superusuario, RDS no lo proporciona ) :
 	\begin{verbatim}
-	user=suidi 
+	user=suidi
 	password=Networks123*
 	\end{verbatim}
-	
+
 	Las claves de administración de dominios están bajo Juan Sebastián Henao P. y Ricardo Montoya Meneses.
-	
+
 	\section{Dependencias}
-	
+
 	Se deben instalar los siguientes paquetes para que la aplicación se ejecute según es debido:
-	
+
 	\begin{enumerate}
 		\item gcc
 		\item python-crypto
 		\item python-psycopg2
-		\item apache2 
-		\item libapache2-mod-wsgi 
+		\item apache2
+		\item libapache2-mod-wsgi
 		\item python-scipy
-		\item python-xlrd 
-		\item python-xlwt 
-		\item python-pip 
-		\item redis-server 
+		\item python-xlrd
+		\item python-xlwt
+		\item python-pip
+		\item redis-server
 		\item libpq-dev
 		\item python-dev
 		\item ctemplate (librería de template en c++ conocida también como google-template)
 	\end{enumerate}
-	
+
 	y las siguientes con el uso de pip
 	\begin{enumerate}
-		\item django==1.8.13 
-		\item django-mptt 
-		\item redis 
+		\item django==1.8.13
+		\item django-mptt
+		\item redis
 		\item django-redis-cache
 		\item django-pgjsonb
 	\end{enumerate}
-	
+
 	\section{Terminología}
 	Un \textbf{usuario} es un individuo consultor o cliente que tiene acceso a la administración o visualización de resultados en la herramienta por medio de un usuario y una contraseña. Un usuario \textbf{consultor} es la persona encargada de gestionar el ingreso de la mayor parte de la información en los proyecto. Un usuario \textbf{cliente} es la encargada de visualizar resultados. Un \textbf{participante} (denominado colaborador dentro del código) es la persona a la cual le llega el link para llenar las encuestas. Un \textbf{evaluado} es la persona o entidad de la cual se realiza la encuesta. Un \textbf{evaluador} una persona que contesta encuestas.
-	
+
 	\chapter{Código: Usuarios}
-		
+
 	Es la aplicación columna vertebral del proyecto, se encuentras las tablas que son trasversales a la aplicación.
 
 	\section{Necesidad}
-	
+
 	Se escribió con el objetivo de mantener lo mas centralizado la aplicación con la tabla proyectos. En una versión anterior ésta tabla pertenecía a \textit{cuestionarios} de manera que se puede notar como aun conserva dicho nombre asociado \textit{``cuestionarios\_proyectos"}. También es importante tener en cuenta que existen dos tipos de proyectos para esta primera parte los proyectos internos o de colaboradores identificados y los de proyectos externos o colaboradores anónimos, estas últimas se acceden por un único link mientras que las internas se acceden por links que cambian a lo largo del tiempo para cada usuario. También es importante recalcar la diferencia entre proyecto \textit{``360 redes"} y \textit{``360 unico"}; en el primero se hace un uso exhaustivo de las relaciones entre los colaboradores para asignar evaluados a evaluadores mientras que en la última solo se evalúa una entidad y todos los colaboradores son evaluadores de esa entidad.
-	
+
 	\section{Funcionalidad}
-	
+
 	\subsection{index}
 	Controlador de la página index.
-		
+
 	\subsubsection{errores} Al formulario le hace falta una buena implementación del formulario de contacto, aprovisionado de una mejor seguridad (captcha).
-	
-	
-	\subsection{acceder} 
+
+
+	\subsection{acceder}
 	Controlador de la página de logueo.
-	
+
 	\subsubsection{errores}
 	Al igual que la página de inicio le hace falta un captcha de seguridad.
-	
+
 	\subsection{home}
 	Controlador encargado de enlistar los proyectos asociados a cada usuario
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{menu}
 	Controlador encargado de la redirección según tipo de usuario al intentar ingresar a un proyecto. Además de fijar en cache el proyecto que se va a visualizar.
 	\subsubsection{errores}
@@ -191,63 +191,63 @@
 	Controlador depreciado marcado para ser eliminado.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-		
+
 	\subsection{salir}
 	Controlador encargado de destruir las sesiones.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{recuperar}\label{recuperar}
 	Controlador encargado de enviar email con los pasos para recobrar contraseñas.
 	\subsubsection{errores}
 	Al igual que la página de inicio le hace falta un captcha de seguridad.
-	
+
 	\subsection{usuariorecuperar}
 	Controlador encargado de researle el pasword a los usuarios que realizaron el proceso del controlador  recuperar \ref{recuperar}
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{empresas}
 	Controlador encargado de consultar las empresas que cada usuario ha registrado.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{empresaeditar}
 	Controlador encargado de proveer los datos para la edición de la empresa
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Se podría fusionar con el template de creación.
-	
+
 	\subsection{empresaeliminar}
 	Controlador encargado de eliminar las empresas.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{empresanueva}
 	Controlador encargado de crear empresas. Estas empresas están asociadas de muchas a uno con User (usuarios).
 	\subsubsection{errores}
 	Ninguna conocido.
-	
-	
+
+
 	\subsection{proyectonuevo}\label{proyectonuevo}
 	Controlador encargado de la creación de proyectos. Los User están asociados de muchos a muchos con los Proyectos.
 	\subsubsection{errores}
 	En versiones anteriores se ocultaba el botón de creación cuando subían un archivo no imagen, desembocó en errores. Esta característica fue eliminada. No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{proyectoeditar}
 	Controlador encargado de hacer modificaciones al proyecto. Por motivos de tipos de encuesta y demás muchos los campos no son alterables y se aconseja se mantengan así. Se puede fusionar con el template de renderizado de \ref{proyectonuevo}.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{proyectoeliminar}
 	Controlador encargado de eliminar proyectos, la verdadera eliminación se ejecuta como tarea externa programada.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{usuarios}
 	Controlador encargado de mostrar los usuarios creados por cada participante, de manera recursiva (se pueden ver los usuarios creados por los usuarios que yo haya creado recursivamente). Se usa una biblioteca de querys trasversales para este propósito.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{usuarioeditar}
 	Controlador encargado de editar al usuario accedido.
 	\subsubsection{errores}
@@ -267,7 +267,7 @@
 	Controlador encargado de darle al bienvenida a un nuevo usuario.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{usuarionuevo}
 	Controlador encargado de ingresar los datos de un nuevo usuario.
 	\subsubsection{errores}
@@ -303,39 +303,39 @@
 	Controladores de renderizar los errores correspondientes. Debido a la "satanización" de la palabra \textit{error} se ha cambiado por bloqueo gran parte de los textos de estos templates.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 
 	\chapter{Código: Colaboradores}
-	
+
 	En esta aplicación podremos encontrar las características referentes al almacenamiento de colaboradores, cabe aclarar que por cada proyecto no se puede repetir correo (dato del colaborador).
-	
+
 	\section{Necesidad}
-	
-	Se escribió con el objetivo de manipular los colaboradores de la aplicación esta hace referencia a las tablas \textit{``colaboradores\_*"}. 
-	
+
+	Se escribió con el objetivo de manipular los colaboradores de la aplicación esta hace referencia a las tablas \textit{``colaboradores\_*"}.
+
 	\section{Funcionalidad}
-	
+
 	\subsection{colaboradores\_ind}
 	Controlador encargado de listar individualmente los colaboradores inscritos en el proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
-	
+
+
 	\subsection{colaboradornuevo}
 	Controlador encargado de adicionar colaboradores al proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha, pero se ha criticado frecuentemente que los campos necesarios para agregar un colaborador son exagerados e inútiles en algunos casos, más sin embargo este problema de suavizó en la aplicación paralela 360.
-	
+
 	\subsection{colaboradoreditar}
 	Controlador encargado de editar los colaboradores registrados en el proyecto.
-	\subsubsection{errores} 
+	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradoractivar}
 	Controlador encargado de intercambiar el estado activo/inactivo de cada colaborador para el proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{archivo}
 	Controlador encargado de generar el archivo para subir a los colaboradores.
 	\subsubsection{errores}\label{e_archivo}
@@ -353,329 +353,329 @@
 
 
 	\chapter{Código: Cuestionarios}
-	
+
 	En esta aplicación podremos encontrar las características referentes al almacenamiento variables y preguntas.
-	
+
 	\section{Necesidad}
-	
-	Se escribió con el objetivo de manipular las variables, las cuales son agrupaciones de preguntas. Esta asociada a las tablas  \textit{``cuestionarios\_*"}. 
-	
+
+	Se escribió con el objetivo de manipular las variables, las cuales son agrupaciones de preguntas. Esta asociada a las tablas  \textit{``cuestionarios\_*"}.
+
 	\section{Funcionalidad}
 
 	\subsection{variables}
 	Controlador encargado de listar las variables del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntas}
 	Controlador encargado de listar las preguntas del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variablenueva}
 	Controlador encargado de la creación de nuevas variables del proyecto
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableactivar}
 	Controlador encargado de intercambiar el estado activo/inactivo de una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntanueva}
 	Controlador encargado de almacenar una nueva pregunta del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaactivar}
 	Controlador encargado de intercambiar el estado activo/inactivo de una pregunta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableeditar}
 	Controlador encargado de la edición de una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaeditar}
 	Controlador encargado de editar una pregunta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableclonar}
 	Controlador encargado de copiar una variable dentro del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaclonar}
 	Controlador encargado de copiar preguntas dentro de una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableliminar}
 	Controlador encargado de marcar para eliminar una variable moviéndola al proyecto maestro (id = 1).
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaeliminar}
 	Controlador encargado de marcar para eliminar asignándola a la variable maestra (id = 1 ).
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preencuesta}
 	Controlador encargado de una visualización previa de las variables y preguntas del proyecto.
 	\subsubsection{errores}
 	No se implemento su html por lo tanto no está accesible.
-	
+
 
 	\chapter{Código: Mensajería}
-	
+
 	En esta aplicación podremos encontrar las características referentes a las condiciones de despliegue de cada proyecto.
-	
+
 	\section{Necesidad}
-	
-	Se escribió con el objetivo de asignar los parámetros de envío del proyecto, al igual que manipular las asignaciones de preguntas a los usuarios y renderizar a necesidad las preguntas a los colaboradores. \textit{``cuestionarios\_*"}. 
-	
+
+	Se escribió con el objetivo de asignar los parámetros de envío del proyecto, al igual que manipular las asignaciones de preguntas a los usuarios y renderizar a necesidad las preguntas a los colaboradores. \textit{``cuestionarios\_*"}.
+
 	\section{Funcionalidad}
-		
+
 	\subsection{gosurvey}
 	Controlador encargado de asignar los parámetros necesarios para ejecutar un proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Pero debido a un error de planeación verificar si cada colaborador posee cada pregunta del cuestionario al detener el proyecto posee un costo muy alto, se debe optar por realizar este procedimiento al agregar una nueva pregunta.
-	
+
 	\subsection{detalladas}
 	Controlador encargado de renderizar el html para acceder al excel de las respuestas. Anteriormente renderizaba las respuestas en pantalla pero se decidió eliminar y solo dejar el botón  de exportación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{metricas}
 	Controlador encargado de listar los colaboradores y las métricas con respecto al proyecto
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradoractivarmensajeria}
 	Controlador encargado de activar/desactivar un colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradoreenviar}
 	Controlador encargado de forzar los emails a cada colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{encuesta}
 	Controlador encargado de renderizar a los colaboradores sus encuestas.
 	\subsubsection{errores}
 	El template de este controlador es crítico y está muy poco pulido debido a la priorización en pro de características de cara al usuario tipo consultor. Se recomienda en caso de mantener este código replantear su estructura.
-	
+
 	\subsection{encuestaexterna}
 	Controlador encargado de renderizar a los colaboradores de proyectos externos es decir encuesta de usuario \textit{anónimo}.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{encuestaexterna2}
 	Controlador encargado de preguntar para volver a renderizar para completar la encuesta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{exportarexterna}
 	Controlador encargado de exportar las respuestas de proyectos externos.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{exportarinterna}
 	Controlador encargado de exportar las respuestas de los proyectos internos.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{importarespuestas\_exportar}
 	Controlador encargado de generar el excel necesario para importar respuestas desde excel.
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha. 
-	
+	No se ha reportado ninguno a la fecha.
+
 	\subsection{importarespuestas\_preguntas}
 	Controlador encargado de guardar las respuestas a preguntas del proyecto, manualmente.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Pero dada la introducción de las preguntas tipo cuerpo humano este controlador no ha sido verificado para su compatibilidad, además debido a que nunca se usó ni se probó rigurosamente debe estar muy inestable.
-	
-	
+
+
 	\chapter{Código: Análisis}
-	
+
 	En esta aplicación podremos encontrar las características referentes a las gráficas de los resultados del proyecto.
-	
+
 	\section{Necesidad}
-	
+
 	Se escribió con el objetivo de mostrar eficientemente grandes volúmenes de datos (los datos de las encuestas). Debido a problemas en escalabilidad con respecto a número de preguntas y de colaboradores esta sección se optimizó en un 75\% con c++ integrado en python. esta parte de la aplicación tiene un fuerte componente de javascript que puede ser muy enriquecido si se opta por mantener el código.
-	
+
 	\section{Funcionalidad}
-		
+
 
 	\subsection{humanize}
 	Controlador encargado de generar un string del tiempo restante en formato amigable para el usuario, se puede depreciar en favor de moment.js
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{participacion}
 	Controlador encargado de mostrar un mensaje en caso de no existir datos o pasarlos a función compilada de c++ para su procesamiento. Aquí se muestra la participación de TODO el proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{general}
 	Controlador encargado de mostrar un mensaje en caso de no existir datos o pasarlos a función compilada de c++ para su procesamiento. Aquí se muestra un \textit{``análisis"} global de los resultados.
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha. Hay un asunto por resolver con respecto a el escape de html, por ahora se está omitiendo en pro de que las gráficas funcionen correctamente. 
-	
+	No se ha reportado ninguno a la fecha. Hay un asunto por resolver con respecto a el escape de html, por ahora se está omitiendo en pro de que las gráficas funcionen correctamente.
+
 	\subsection{focalizado}
 	Controlador encargado de mostrar un mensaje en caso de no existir datos o pasarlos a función compilada de c++ para su procesamiento. Aquí se muestra un \textit{``análisis"} un poco más específico de los resultados.
 	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha. Hay un asunto por resolver con respecto a el escape de html, por ahora se está omitiendo en pro de que las gráficas funcionen correctamente. 
-	
+	No se ha reportado ninguno a la fecha. Hay un asunto por resolver con respecto a el escape de html, por ahora se está omitiendo en pro de que las gráficas funcionen correctamente.
+
 	\subsection{solucion}
 	Controlador encargado de limpiar los textos de las respuestas abiertas para entrada de los grafos.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{wordanalytics}
 	Controlador encargado de recoger las preguntas abiertas del proyecto, y entrega tres variables: grafoPorPregunta, diccionariosPorPregunta, cantidades. Donde diccionarioPorPregunta es la lista de las palabras encontradas en todas las textos y entrega el grafo. Cada número es la cantidad de veces que se encuentra cada palabra del diccionarioPorPregunta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{cuerpo}
-	Controlador encargado de extraer los datos necesarios para graficar resultados para las preguntas de tipo cuerpo humano. 
+	Controlador encargado de extraer los datos necesarios para graficar resultados para las preguntas de tipo cuerpo humano.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 
 
 	\chapter{Código: Cuestionarios\_360}
-	
+
 	En esta aplicación podremos encontrar las características referentes a los componentes de las preguntas de los cuestionarios 360.
-	
+
 	\section{Necesidad}
-	
+
 	Se escribió con el objetivo de administrar de una forma un poco más natural lo que se realizo en el la aplicación cuestionarios. Adicionalmente aquí manejamos el concepto siguiente: las preguntas están agrupadas en variables, estas a su ves están agrupadas en dimensiones, a su vez estas están agrupadas en instrumentos y finalmente un proyecto de tipo \textit{``360 redes"} en su tipo puede poseer muchos instrumentos, mientras que el tipo \textit{``360 unico"} solo puede poseer un instrumento.
-	
+
 	\section{Funcionalidad}
 
 	\subsection{instrumentos}
 	Controlador encargado de listar todos los instrumentos del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{dimensiones}
 	Controlador encargado de listar todas las dimensiones del instrumento.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variables\_360}
 	Controlador encargado de listar todas las variables de la dimensión.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntas\_360}
 	Controlador encargado de listar todas las preguntas de una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{instrumentonuevo}
 	Controlador encargado de guardar un nuevo instrumento en un proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{dimensionueva}
-	Controlador encargado de guardar una nueva dimensión para un instrumento. 
+	Controlador encargado de guardar una nueva dimensión para un instrumento.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variablenueva\_360}
 	Controlador encargado de guardar una nueva variable para una dimensión.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntanueva\_360}
 	Controlador encargado de guardar una nueva pregunta para una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{instrumentoactivar}
 	Controlador encargado de activar/desactivar el instrumento y sus dependientes.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{dimensionactivar}
 	Controlador encargado de activar/desactivar la dimensión y sus dependientes.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableactivar\_360}
 	Controlador encargado de activar/desactivar la variable y sus dependientes.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntactivar\_360}
 	Controlador encargado de activar/desactivar la pregunta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{instrumentoeditar}
 	Controlador encargado de editar un instrumento.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{dimensioneditar}
 	Controlador encargado de editar una dimensión.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableditar\_360}
 	Controlador encargado de editar una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaeditar\_360}
 	Controlador encargado de editar una pregunta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaclonar\_360}
 	Controlador encargado de copiar una pregunta dentro de la variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{preguntaeliminar\_360}
 	Controlador encargado de marcar para eliminar un pregunta moviéndola a unas dependencias permanentes para postergar su eliminación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{variableliminar\_360}
 	Controlador encargado de marcar para eliminar una variable moviéndola a unas dependencias permanentes para postergar su eliminación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{dimensioneliminar}
 	Controlador encargado de marcar para eliminar una dimensión moviéndola a unas dependencias permanentes para postergar su eliminación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{instrumentoeliminar}
 	Controlador encargado de marcar para eliminar un instrumento moviéndola a unas dependencias permanentes para postergar su eliminación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{previsualizacion\_360}
 	Controlador encargado de previsualizar completamente el instrumento seleccionado.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{exportar\_instrumento\_360}
 	Controlador encargado de generar un excel con los datos de un instrumento, para su portabilidad a otros instrumentos.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{plantilla\_instrumento\_360}
 	Controlador encargado de generar un excel plantilla vacío para ingresar un instrumento desde cero.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{importar\_instrumento\_360}
 	Controlador encargado de leer el excel con los datos del instrumento y registrarlo al proyecto.
 	\subsubsection{errores}
@@ -683,11 +683,11 @@
 
 
 	\chapter{Código: Colaboradores\_360}
-	
+
 	En esta aplicación podremos encontrar las características referentes a los componentes de los colaboradores 360.
-	
+
 	\section{Necesidad}
-	
+
 	Se escribió con el objetivo de administrar de una forma un poco más natural lo que se realizo en el la aplicación colaboradores. Adicionalmente se agregó un nuevo tipo de colaborador \textit{externo} para el cual se relajaron los requerimientos para guardarse dentro del proyecto.
 
 	\section{Funcionalidad}
@@ -697,52 +697,52 @@
 	Controlador encargado de listar a los colaboradores del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradornuevo\_360}
 	Controlador encargado de guardar individualmente a un colaborador dentro del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradoreditar\_360}
 	Controlador encargado de editar las propiedades de un colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradoractivar\_360}
 	Controlador encargado de intercambiar los estados activo/inactivo de un colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{archivo\_360}
 	Controlador encargado de generar el excel para completar datos para subir colaboradores.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradores\_xls\_360}
 	Controlador encargado de guardar los colaboradores que se suben desde archivo excel.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Mas sin embargo es importante validar que los formatos estén consistentes para evitar errores.
-	
+
 	\subsection{colaboradoreliminar\_360}
 	Controlador encargado de eliminar inmediatamente un colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{roles\_360}
 	Controlador encargado de listar los roles del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{rolnuevo\_360}
 	Controlador encargado de guardar un nuevo rol al proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{roleditar\_360}
 	Controlador encargado de editar un rol del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{roleliminar\_360}
 	Controlador encargado de eliminar un rol del proyecto.
 	\subsubsection{errores}
@@ -750,45 +750,45 @@
 
 
 	\chapter{Código: Redes\_360}
-	
+
 	En esta aplicación podremos encontrar las características referentes a los componentes de las redes en 360.
-	
+
 	\section{Necesidad}
-	
+
 	Para los proyectos de único evaluado solo se tiene una red por defecto que se crea al momento de crear un proyecto de este tipo, a los de múltiples evaluados se tiene como centro administrativo esta aplicación para las redes. Recuerde que una red es una relación de dos colaboradores no distintos, uno como evaluador y otro como evaluado, estos dos se relacionan con un único rol y el evaluador responde un instrumento asignado por el consultor.
-	
+
 	\section{Funcionalidad}
 
 	\subsection{redes\_360}
-	Controlador encargado de listar las redes del proyecto en caso de que sea único evaluado esta página es inaccesible. 
+	Controlador encargado de listar las redes del proyecto en caso de que sea único evaluado esta página es inaccesible.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{rednueva\_360}
 	Controlador encargado de guardar una nueva red para el proyecto. Tenga en cuenta que un evaluado y un evaluador se relacionan por un único rol.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{reditar\_360}
 	Controlador encargado de editar una red del proyecto. Tenga en cuenta que un evaluado y un evaluador se relacionan por un único rol.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{redeliminar\_360}
 	Controlador encargado de eliminar inmediatamente una red.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{redes\_archivo\_generar}
 	Controlador encargado de generar el archivo de excel para subir las redes.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{redes\_xls\_360}
 	Controlador encargado de guardar las redes subidas por excel. Tenga en cuenta que un evaluado y un evaluador se relacionan por un único rol.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{redes\_activar\_360}
 	Controlador encargado de activar/desactivar una red.
 	\subsubsection{errores}
@@ -796,12 +796,12 @@
 
 
 	\chapter{Código: Mensajería\_360}
-	
+
 	En esta aplicación podremos encontrar las características referentes a los componentes de la configuración de envío del proyecto 360.
-	
+
 	\section{Necesidad}
 	Al igualo que con mensajería este modulo requiere que se agregue la capacidad que al agregar una nueva pregunta se agreguen al streaming ya que si se deja al botón actualizar datos el costo de verificación es muy alto.
-	
+
 	\section{Funcionalidad}
 
 
@@ -809,71 +809,108 @@
 	Controlador encargado de verificar que el streaming este completo (cada pregunta para cada red).
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Es necesario dividir este controlador funcionalmente para que su mantenimiento sea viable.
-	
+
 	\subsection{metricas\_360}
 	Controlador encargado de listar las métricas de los usuarios evaluadores en un modo general.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{metricas\_ind\_360}
 	Controlador encargado de mostrar las métricas de cada evaluador para cada una de sus redes.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{colaboradoreenviar}
 	Controlador encargado de forzar manualmente el envío de la encuesta a un colaborador.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{encuesta\_360}
 	Controlador encargado de renderizar las preguntas que un colaborador debe responder para cada red. Una con cada vez de interacción.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. Se debe dividir funcionalmente para que su mantenimiento sea mas viable.
-	
+
 	\subsection{detalladas\_360}
 	Controlador encargado de renderizar la pagina con el botón de exportación.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{exportarinterna\_360}
 	Controlador encargado de exportar excel para importar las respuestas del proyecto.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha. No se ha comprobado compatibilidad con el tipo de pregunta cuerpo humano.
-	
+
 	\subsection{importarespuestas\_exportar\_360}
 	Controlador no implementado para exportar excel con redes para llenar respuesta manualmente
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{importarespuestas\_preguntas\_360}
-	Controlador no implementado para guardar las respuestas subidas manualmente con archivo. 
+	Controlador no implementado para guardar las respuestas subidas manualmente con archivo.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
-	
-	
+
+
+
 	\chapter{Código: Apéndice A - gogo}
-	
+
 	Se describirá cada uno de las funciones de los archivos contenidos en la carpeta gogo interna.
-	
+
 	\section{Necesidad}
-	
+
 	Se escribieron unos scripts internos programados con el gestor de tareas de unix para su ejecucíon.
-	
+
 	\subsection{contador}
 	Script que contendría el \textit{pre-procesamiento} de los datos para la visualización de los datos del proyecto tipo 360. No se han escrito los models de almacenamiento para ello.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{escoba}
 	Script de eliminación de datos en la base que estén marcados para eliminar, en el servidor se tienen con 60 días de posibilidades de recuperación manual.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
+
 	\subsection{mensajero}
-	Script de envío de correos basado en el promedio de tiempo de demora en la respuesta de los usuarios. Esta pensado en horas y teniendo en cuenta las métricas de respuesta.  
+	Script de envío de correos basado en el promedio de tiempo de demora en la respuesta de los usuarios. Esta pensado en horas y teniendo en cuenta las métricas de respuesta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-	
-	
+
+
+	\chapter{Código: exp_usuario}
+
+	En esta aplicación encontramos todo lo referente que se ha definido como Experiencia de Usuario.
+
+	\section{Necesidad}
+
+	Esta aplicación se escribió para cumplir los requerimientos de Experiencia de usuario, esta a groso modo se define como una app en donde el usuario consultor pueda sugerir a los lideres planes de acción a ejecutar según su proyecto, ademas de ver la gestión de dichos planes; también pueden dar puntos a los participantes para canjes de premios. \textit{``colaboradores\_*"}.
+
+	\section{Funcionalidad}
+
+	\subsection{planesAccion}
+	 Función que entrega los planes, lideres, datos asociados a estos. También recibe los nuevos planes y lideres.
+
+	\subsubsection{errores}
+	Sin revisar , sin errores conocidos en etapa de desarrollo.
+
+	\subsection{ planesAccionPeticionAjax}
+	 Función  que recibe una petición Post con ajax, entrega los datos de los planes y datos relacionados por lider.
+
+	\subsubsection{errores}
+	Sin revisar , sin errores conocidos en etapa de desarrollo.
+
+	\subsection{puntosTalenter}
+	 Función que entrega los datos de todos los colaboradores asociados a experiencia de usuario
+	\subsubsection{errores}
+	Sin revisar , sin errores conocidos en etapa de desarrollo.
+
+	\subsectionmiLiderazgo}
+	Sin construir.
+
+	\subsection{dashBoard}
+	 Sin construir.
+
+	\subsection{Observaciones}
+	 La arquitectura de la aplicación funciona con unos supuestos de configuración (por ejemplo, supone que los lideres están dados y a quién lidera). Por lo demás está completa.
+
+
 \end{document}
