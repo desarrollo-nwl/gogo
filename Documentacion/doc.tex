@@ -57,23 +57,13 @@
 	\chapter{Motivaciones, lenguajes y otros.}
 
 	\section*{Introducción}
-<<<<<<< HEAD
-
-	El presente texto es un intento de exponer de la manera mas clara, sencilla y concreta el código referente a Go Analytics, también llamado talenter o gogo para el equipo de desarrollo. El desarrollo esta realizado casi en su totalidad en código pyhton en su versión 2.7.X y django 1.8.12+; algunas partes como veremos están escritas en código C++ compilado para python. De la misma manera de la parte del usuario se uso javascript con jquery y librerías estándar para diversas funcionalidades.\\
-
-	Esta es la segunda y actual versión del código ya que inicialmente se tenia uno más sencillo, pero funcional, el cual por innumerables cambios de requerimientos se hizo inmanejable. Tratando de mantener una filosofía mas modular se elaboró pensando en un gogo sin versión 360. Esta versión 360 se agregó como módulos adicionales tratando de mantener el código que se había escrito sin modificaciones en miras a la estabilidad.\\
-
-	Inicialmente se expondrá la arquitectura actual, versiones, requerimientos y demás paquetería necesaria. Se dedicará un capítulo para cada carpeta de código (app de django) en la cual se expondrá la necesidad, funcionalidad y errores probables de cada app, para entender la arquitectura se recomineda un estudio juicioso de los models.py de cada una. los errores no reportados a la fecha, significa que los usuarios que probaron la aplicación o no encontraron o no los reportaron\\
-
-=======
 	
 	El presente texto es un intento de exponer de la manera más clara, sencilla y concreta el código referente a Go Analytics, también llamado talenter o gogo para el equipo de desarrollo. Está realizado casi en su totalidad en código pyhton en su versión 2.7.x y django 1.8.x; algunas partes como veremos están escritas en código C++ compilado para python. De la misma manera de la parte del usuario se usó javascript con jquery y librerías estándar para diversas funcionalidades.\\
 	
 	Esta es la segunda y actual versión del código ya que inicialmente se tenia uno más sencillo, aunque funcional, el cual por innumerables cambios de requerimientos se hizo inmanejable. Tratando de mantener una filosofía mas modular, se elaboró esta versión pensando en un gogo sin características 360. Las características 360 se agregaron como módulos adicionales tratando de mantener el código que se había escrito sin modificaciones en miras a la estabilidad y teniendo a la aplicación usuarios prácticamente sin cambios notables.\\
 	
 	Inicialmente se expondrá la arquitectura actual, versiones, requerimientos y demás paquetería necesaria. Se dedicará un capítulo para cada carpeta de código (app de django) en la cual se expondrá la necesidad, funcionalidad y errores probables de cada app. Para entender la arquitectura se recomienda un estudio juicioso de los models.py de cada una. Los errores no reportados a la fecha, significa que los usuarios que probaron la aplicación o no encontraron o no los reportaron.\\
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	Nota personal: Espero que el desarrollador que trate con el código sea muy comprensivo a la hora de examinarlo ya que el fue desarrollado sin unos requerimientos detallados, sino con cada nueva versión, se solicitaban nuevas modificaciones sobre lo ya elaborado lo que ha conllevado en una no clara consecución de un código completamente estable.\\
 
 
@@ -97,26 +87,17 @@
 		\item RDS: 1 Servidor T2 nano de base de datos en Postgresql de 5 Gb de almacenamiento y 1 Gb de memoria RAM, este servidor se inició por las previsiones de ventas del área comercial.
 		\item SES: 1 conexión smtp de con capacidad de 100.000 correos en 24 horas a 28 correos/segundo.
 	\end{enumerate}
-<<<<<<< HEAD
-
-	Las conexiones las realicé de la siguiente manera. La aplicación corre en un servidor apache
-=======
-	
 	Las conexiones las realicé de la siguiente manera: La aplicación corre en un servidor apache
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	\begin{verbatim}
 		Server version: Apache/2.4.7 (Ubuntu)
 		Server built:   Jan 14 2016 17:45:23
 	\end{verbatim}
-<<<<<<< HEAD
-	para el cual los certificados ssl los generé por medio de Let's Encript \url{https://letsencrypt.org/getting-started/}. estas claves ssl no estoy muy seguro de trasladarlas de servidor por el modo de generación, es por ello que no están incluidas y es altamente recomendable leer la documentación de este método de obtención  y mantenimiento de claves ssl.\\
-
-	La aplicación se conecta localmente a una instancia de pgbouncer ( \textit{esto con la finalidad de mantener siempre una conexión abierta y evitar el overhead de estar abriendo conexiones})
-=======
-	para el cual los certificados ssl los generé por medio de Let's Encript \url{https://letsencrypt.org/getting-started/}. Estas claves ssl no están incluidas de forma explícita ya que poseen vencimientos de 3 meses y es altamente recomendable leer la documentación de este método de obtención y mantenimiento de claves ssl. Aunque por la filosofía empresarial manejada es recomendable regresar al estándar de certificado ssl anual.\\
+	
+	Para el cual los certificados ssl los generé por medio de Let's Encript \url{https://letsencrypt.org/getting-started/}. Estas claves ssl no están incluidas de forma explícita ya que poseen vencimientos de 3 meses y es altamente recomendable leer la documentación de este método de obtención y mantenimiento de claves ssl. Aunque por la filosofía empresarial manejada es recomendable regresar al estándar de certificado ssl anual.\\
 	
 	La aplicación se conecta localmente a una instancia de pgbouncer ( \textit{esto con la finalidad de mantener siempre una conexión abierta y evitar el overhead de estar abriendo conexiones}), aunque este paso es claramente no necesario.
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	\begin{verbatim}
 	pgbouncer version 1.5.4
 	(compiled by <buildd@roseapple> at 2013-06-18 17:16:50)
@@ -141,9 +122,6 @@
 	user=suidi
 	password=Networks123*
 	\end{verbatim}
-<<<<<<< HEAD
-
-=======
 	
 	Con respecto a la configuración de memoria cache se usa un servidor local de bases de datos en memoria Redis con configuración directa en los settings de django del lado del servidor.
 	
@@ -160,8 +138,7 @@
 	 }
 	\end{verbatim}
 	
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	Las claves de administración de dominios están bajo Juan Sebastián Henao P. y Ricardo Montoya Meneses.
 
 	\section{Dependencias}
@@ -186,32 +163,15 @@
 
 	y las siguientes con el uso de pip
 	\begin{enumerate}
-<<<<<<< HEAD
-		\item django==1.8.13
-		\item django-mptt
-		\item redis
-=======
 		\item django==1.8.13+ 
 		\item django-mptt 
 		\item redis 
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 		\item django-redis-cache
 		\item django-pgjsonb (opcional)
 	\end{enumerate}
 
 	\section{Terminología}
-<<<<<<< HEAD
-	Un \textbf{usuario} es un individuo consultor o cliente que tiene acceso a la administración o visualización de resultados en la herramienta por medio de un usuario y una contraseña. Un usuario \textbf{consultor} es la persona encargada de gestionar el ingreso de la mayor parte de la información en los proyecto. Un usuario \textbf{cliente} es la encargada de visualizar resultados. Un \textbf{participante} (denominado colaborador dentro del código) es la persona a la cual le llega el link para llenar las encuestas. Un \textbf{evaluado} es la persona o entidad de la cual se realiza la encuesta. Un \textbf{evaluador} una persona que contesta encuestas.
 
-	\chapter{Código: Usuarios}
-
-	Es la aplicación columna vertebral del proyecto, se encuentras las tablas que son trasversales a la aplicación.
-
-	\section{Necesidad}
-
-	Se escribió con el objetivo de mantener lo mas centralizado la aplicación con la tabla proyectos. En una versión anterior ésta tabla pertenecía a \textit{cuestionarios} de manera que se puede notar como aun conserva dicho nombre asociado \textit{``cuestionarios\_proyectos"}. También es importante tener en cuenta que existen dos tipos de proyectos para esta primera parte los proyectos internos o de colaboradores identificados y los de proyectos externos o colaboradores anónimos, estas últimas se acceden por un único link mientras que las internas se acceden por links que cambian a lo largo del tiempo para cada usuario. También es importante recalcar la diferencia entre proyecto \textit{``360 redes"} y \textit{``360 unico"}; en el primero se hace un uso exhaustivo de las relaciones entre los colaboradores para asignar evaluados a evaluadores mientras que en la última solo se evalúa una entidad y todos los colaboradores son evaluadores de esa entidad.
-
-=======
 	Un \textbf{usuario} es un individuo consultor o cliente que tiene acceso a la administración o visualización de resultados en la herramienta por medio de un usuario y una contraseña. Un usuario \textbf{consultor} es la persona encargada de gestionar el ingreso de la mayor parte de la información en los proyecto. Un usuario \textbf{cliente} es la encargada de visualizar resultados. Un \textbf{participante} (denominado colaborador dentro del código) es la persona a la cual le llega el link para llenar las encuestas. Un \textbf{evaluado} es la persona o entidad de la cual se realiza la encuesta. Un \textbf{evaluador} una persona que contesta dichas encuestas. Las apps que tienen la terminación \_360 son código para las características 360 mientras que las que no posean esa terminación (exceptuando usuarios que es \textit{usada} por ambos segmentos) son código para la versión \textit{clásica} del Go.
 	
 	\chapter{Código: Usuarios}
@@ -221,8 +181,7 @@
 	\section{Necesidad}
 	
 	Se escribió con el objetivo de mantener lo más centralizado posible la aplicación con la tabla proyectos. En una versión anterior ésta tabla pertenecía a \textit{cuestionarios} de manera que se puede notar como aun conserva dicho nombre asociado \textit{``cuestionarios\_proyectos"}. También es importante tener en cuenta que existen dos tipos de proyectos, para esta primera parte los proyectos internos o de colaboradores identificados y los de proyectos externos o colaboradores anónimos, estas últimas se acceden por un único link mientras que las internas se acceden por links que cambian a lo largo del tiempo para cada usuario. También es importante recalcar la diferencia entre proyecto \textit{``360 redes"} y \textit{``360 unico"}; en el primero se hace un uso exhaustivo de las relaciones entre los colaboradores para asignar evaluados a evaluadores mientras que en la última solo se evalúa una entidad y todos los colaboradores son evaluadores de esa entidad.
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	\section{Funcionalidad}
 
 	\subsection{index}
@@ -235,13 +194,8 @@
 	Controlador de la página de logueo.
 
 	\subsubsection{errores}
-<<<<<<< HEAD
-	Al igual que la página de inicio le hace falta un captcha de seguridad.
-
-=======
 	Al igual que la página de inicio le hace falta un captcha de seguridad que se active a los múltiples intentos fallidos.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{home}
 	Controlador encargado de enlistar los proyectos asociados a cada usuario
 	\subsubsection{errores}
@@ -296,13 +250,8 @@
 	\subsection{proyectonuevo}\label{proyectonuevo}
 	Controlador encargado de la creación de proyectos. Los User están asociados de muchos a muchos con los Proyectos, en donde el rango de visibilidad de usuarios depende de su herencia en el árbol de creación.
 	\subsubsection{errores}
-<<<<<<< HEAD
-	En versiones anteriores se ocultaba el botón de creación cuando subían un archivo no imagen, desembocó en errores. Esta característica fue eliminada. No se ha reportado ninguno a la fecha.
-
-=======
 	En versiones anteriores se ocultaba el botón de creación cuando subían un archivo no imagen, desembocó en errores. Esta característica fue eliminada. No se ha reportado ninguno adicional a la fecha.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{proyectoeditar}
 	Controlador encargado de hacer modificaciones al proyecto. Por motivos de tipos de encuesta y demás muchos los campos no son alterables y se aconseja se mantengan así. Se puede fusionar con el template de renderizado de \ref{proyectonuevo}.
 	\subsubsection{errores}
@@ -336,18 +285,12 @@
 	\subsection{usuarioactivar}
 	Controlador encargado de darle al bienvenida a un nuevo usuario para la asignación de credenciales y aceptar las políticas de la aplicación.
 	\subsubsection{errores}
-<<<<<<< HEAD
-	No se ha reportado ninguno a la fecha.
-
-=======
 	No se ha reportado ninguno a la fecha. Se debe mejorar mucho la parte visual de este template.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{usuarionuevo}
 	Controlador encargado de ingresar los datos de un nuevo usuario.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-
 
 	\subsection{licencia}
 	Controlador ``\textit{decorativo}" que muestra el número de proyectos que ha ``\textit{adquirido}'' y el número de proyectos que ha activado.
@@ -399,13 +342,8 @@
 	\subsection{colaboradornuevo}
 	Controlador encargado de adicionar colaboradores al proyecto.
 	\subsubsection{errores}
-<<<<<<< HEAD
-	No se ha reportado ninguno a la fecha, pero se ha criticado frecuentemente que los campos necesarios para agregar un colaborador son exagerados e inútiles en algunos casos, más sin embargo este problema de suavizó en la aplicación paralela 360.
-
-=======
 	No se ha reportado ninguno a la fecha, pero se ha criticado frecuentemente que los campos necesarios para agregar un colaborador son exagerados e inútiles en algunos casos, más sin embargo este problema de suavizó en las características 360.
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	\subsection{colaboradoreditar}
 	Controlador encargado de editar los colaboradores registrados en el proyecto.
 	\subsubsection{errores}
@@ -437,15 +375,9 @@
 	En esta aplicación podremos encontrar las características referentes al almacenamiento variables y preguntas.
 
 	\section{Necesidad}
-<<<<<<< HEAD
-
+	
 	Se escribió con el objetivo de manipular las variables, las cuales son agrupaciones de preguntas. Esta asociada a las tablas  \textit{``cuestionarios\_*"}.
 
-=======
-	
-	Se escribió con el objetivo de manipular las variables y preguntas, aquellas son agrupaciones de preguntas. Esta asociada a las tablas  \textit{``cuestionarios\_*"}. 
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\section{Funcionalidad}
 
 	\subsection{variables}
@@ -472,23 +404,13 @@
 	Controlador encargado de almacenar una nueva pregunta para una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
-<<<<<<< HEAD
 
-	\subsection{preguntaactivar}
-	Controlador encargado de intercambiar el estado activo/inactivo de una pregunta.
-	\subsubsection{errores}
-	No se ha reportado ninguno a la fecha.
-
-	\subsection{variableeditar}
-=======
-	
 	\subsection{preguntactivar}
 	Controlador encargado de intercambiar el estado activo/inactivo de una pregunta.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 	
 	\subsection{variableditar}
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	Controlador encargado de la edición de una variable.
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
@@ -529,27 +451,17 @@
 	En esta aplicación podremos encontrar las características referentes a las condiciones de despliegue de cada proyecto.
 
 	\section{Necesidad}
-<<<<<<< HEAD
-
-	Se escribió con el objetivo de asignar los parámetros de envío del proyecto, al igual que manipular las asignaciones de preguntas a los usuarios y renderizar a necesidad las preguntas a los colaboradores. \textit{``cuestionarios\_*"}.
-
-=======
-	
+		
 	Se escribió con el objetivo de asignar los parámetros de envío del proyecto, al igual que manipular las asignaciones de preguntas a los usuarios y renderizar a necesidad las preguntas a los colaboradores. \textit{``mensajeria\_*"}. 
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\section{Funcionalidad}
 
 	\subsection{gosurvey}
 	Controlador encargado de asignar los parámetros necesarios para ejecutar un proyecto.
+	
 	\subsubsection{errores}
-<<<<<<< HEAD
-	No se ha reportado ninguno a la fecha. Pero debido a un error de planeación verificar si cada colaborador posee cada pregunta del cuestionario al detener el proyecto posee un costo muy alto, se debe optar por realizar este procedimiento al agregar una nueva pregunta.
-
-=======
 	No se ha reportado ninguno a la fecha. Debido a un error de planeación y dimensionalidad, \textit{no conocía las cantidades de datos que se pretendían manipular aquí}, verificar si cada colaborador posee cada pregunta del cuestionario al detener el proyecto posee un costo muy alto, se debe optar por realizar este procedimiento al agregar una nueva pregunta.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{detalladas}
 	Controlador encargado de renderizar el html para acceder al excel de las respuestas. Anteriormente renderizaba las respuestas en pantalla pero se decidió eliminar y solo dejar el botón  de exportación.
 	\subsubsection{errores}
@@ -573,13 +485,8 @@
 	\subsection{encuesta}
 	Controlador encargado de renderizar a los colaboradores sus encuestas.
 	\subsubsection{errores}
-<<<<<<< HEAD
-	El template de este controlador es crítico y está muy poco pulido debido a la priorización en pro de características de cara al usuario tipo consultor. Se recomienda en caso de mantener este código replantear su estructura.
-
-=======
 	El template de este controlador es crítico y está muy poco pulido debido a la priorización en pro de características de cara al usuario tipo consultor. Se recomienda en caso de mantener este código replantear su estructura. Adicionalmente usar un sistema para organizar las preguntas en el mismo orden de introducción ya que el id puede resultar algo azaroso.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{encuestaexterna}
 	Controlador encargado de renderizar a los colaboradores de proyectos externos, es decir, encuestas de usuarios \textit{anónimos}.
 	\subsubsection{errores}
@@ -608,29 +515,15 @@
 	\subsection{importarespuestas\_preguntas}
 	Controlador encargado de guardar las respuestas a preguntas del proyecto, manualmente, en proyectos internos.
 	\subsubsection{errores}
-<<<<<<< HEAD
-	No se ha reportado ninguno a la fecha. Pero dada la introducción de las preguntas tipo cuerpo humano este controlador no ha sido verificado para su compatibilidad, además debido a que nunca se usó ni se probó rigurosamente debe estar muy inestable.
-
-
-=======
 	No se ha reportado ninguno a la fecha. Dada la introducción de las preguntas tipo cuerpo humano, este controlador no ha sido verificado para su compatibilidad, además debido a que nunca se usó ni se probó rigurosamente, su estabilidad es desconocida.
 	
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\chapter{Código: Análisis}
 
 	En esta aplicación podremos encontrar las características referentes a las gráficas de los resultados del proyecto.
 
 	\section{Necesidad}
-<<<<<<< HEAD
-
-	Se escribió con el objetivo de mostrar eficientemente grandes volúmenes de datos (los datos de las encuestas). Debido a problemas en escalabilidad con respecto a número de preguntas y de colaboradores esta sección se optimizó en un 75\% con c++ integrado en python. esta parte de la aplicación tiene un fuerte componente de javascript que puede ser muy enriquecido si se opta por mantener el código.
-
-=======
-	
 	Se escribió con el objetivo de mostrar eficientemente grandes volúmenes de datos (los datos de las encuestas) renderizando desde el servidor. Debido a problemas en escalabilidad con respecto a número de preguntas y de colaboradores esta sección se optimizó en un 50\%, aproximadamente, con C++ integrado en python. Aunque es redundante, recalco que es importante recompilar estos binarios al intentar desplegar. Esta parte de la aplicación tiene un fuerte componente de javascript que puede ser muy enriquecido si se opta por mantener el código.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\section{Funcionalidad}
 
 
@@ -932,13 +825,8 @@
 	\subsection{gosurvey\_360}
 	Controlador encargado de verificar que el streaming este completo (cada pregunta para cada red).
 	\subsubsection{errores}
-<<<<<<< HEAD
-	No se ha reportado ninguno a la fecha. Es necesario dividir este controlador funcionalmente para que su mantenimiento sea viable.
-
-=======
 	No se ha reportado ninguno a la fecha. Es necesario dividir este controlador funcionalmente para que su mantenimiento sea viable. Adicionalmente el botón actualizar datos presenta el mismo problema de diseño en el cual la verificación de cada pregunta para cada colaborador es demasiado costosa, adicionalmente el separar estas funcionalidades genera que las personas no actualicen datos, \textit{no se generaría la tabla streaming correspondiente}, pero si inicien los proyectos a lo cual ningún colaborador poseería preguntas para responder.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{metricas\_360}
 	Controlador encargado de listar las métricas de los usuarios evaluadores en un modo general.
 	\subsubsection{errores}
@@ -979,32 +867,54 @@
 	\subsubsection{errores}
 	No se ha reportado ninguno a la fecha.
 
-
+	\chapter{Código: exp\_usuario}
+	
+	En esta aplicación encontramos todo lo referente que se ha definido como Experiencia de Usuario.
+	
+	\section{Necesidad}
+	
+	Esta aplicación se escribió para cumplir los requerimientos de Experiencia de usuario, esta a groso modo se define como una app en donde el usuario consultor pueda sugerir a los lideres planes de acción a ejecutar según su proyecto, ademas de ver la gestión de dichos planes; también pueden dar puntos a los participantes para canjes de premios. \textit{``colaboradores\_*"}.
+	
+	\section{Funcionalidad}
+	
+	\subsection{planesAccion}
+	Función que entrega los planes, lideres, datos asociados a estos. También recibe los nuevos planes y lideres.
+	
+	\subsubsection{errores}
+	Sin revisar, sin errores conocidos en etapa de desarrollo.
+	
+	\subsection{ planesAccionPeticionAjax}
+	Función  que recibe una petición Post con ajax, entrega los datos de los planes y datos relacionados por lider.
+	
+	\subsubsection{errores}
+	Sin revisar , sin errores conocidos en etapa de desarrollo.
+	
+	\subsection{puntosTalenter}
+	Función que entrega los datos de todos los colaboradores asociados a experiencia de usuario
+	\subsubsection{errores}
+	Sin revisar , sin errores conocidos en etapa de desarrollo.
+	
+	\subsection{miLiderazgo}
+	Sin construir.
+	
+	\subsection{dashBoard}
+	Sin construir.
+	
+	\subsection{Observaciones}
+	La arquitectura de la aplicación funciona con unos supuestos de configuración (por ejemplo, supone que los lideres están dados y a quién lidera). Por lo demás está completa.
 
 	\chapter{Código: Apéndice A - gogo}
 
 	Se describirá cada uno de las funciones de los archivos contenidos en la carpeta gogo interna.
 
 	\section{Necesidad}
-<<<<<<< HEAD
-
-	Se escribieron unos scripts internos programados con el gestor de tareas de unix para su ejecucíon.
-
-=======
-	
 	Se escribieron unos scripts internos programados con el gestor de tareas de linux para su ejecución.
-	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
+
 	\subsection{contador}
 	Script que contendría el \textit{pre-procesamiento} de los datos para la visualización de los datos del proyecto tipo 360.
 	\subsubsection{errores}
-<<<<<<< HEAD
-	No se ha reportado ninguno a la fecha.
-
-=======
 	No se han escrito los models de almacenamiento para ello. su estado de desarrollo es muy bajo. Se debe replantear el diseño ya que de él depende las visualizaciones de los datos del proyecto 360.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 	\subsection{escoba}
 	Script de eliminación de datos en la base que estén marcados para eliminar, en el servidor se tienen con 60 días de posibilidades de recuperación manual.
 	\subsubsection{errores}
@@ -1013,51 +923,8 @@
 	\subsection{mensajero}
 	Script de envío de correos basado en el promedio de tiempo de demora en la respuesta de los usuarios. Esta pensado en horas y teniendo en cuenta las métricas de respuesta.
 	\subsubsection{errores}
-<<<<<<< HEAD
 	No se ha reportado ninguno a la fecha.
-
-
-	\chapter{Código: exp_usuario}
-
-	En esta aplicación encontramos todo lo referente que se ha definido como Experiencia de Usuario.
-
-	\section{Necesidad}
-
-	Esta aplicación se escribió para cumplir los requerimientos de Experiencia de usuario, esta a groso modo se define como una app en donde el usuario consultor pueda sugerir a los lideres planes de acción a ejecutar según su proyecto, ademas de ver la gestión de dichos planes; también pueden dar puntos a los participantes para canjes de premios. \textit{``colaboradores\_*"}.
-
-	\section{Funcionalidad}
-
-	\subsection{planesAccion}
-	 Función que entrega los planes, lideres, datos asociados a estos. También recibe los nuevos planes y lideres.
-
-	\subsubsection{errores}
-	Sin revisar , sin errores conocidos en etapa de desarrollo.
-
-	\subsection{ planesAccionPeticionAjax}
-	 Función  que recibe una petición Post con ajax, entrega los datos de los planes y datos relacionados por lider.
-
-	\subsubsection{errores}
-	Sin revisar , sin errores conocidos en etapa de desarrollo.
-
-	\subsection{puntosTalenter}
-	 Función que entrega los datos de todos los colaboradores asociados a experiencia de usuario
-	\subsubsection{errores}
-	Sin revisar , sin errores conocidos en etapa de desarrollo.
-
-	\subsectionmiLiderazgo}
-	Sin construir.
-
-	\subsection{dashBoard}
-	 Sin construir.
-
-	\subsection{Observaciones}
-	 La arquitectura de la aplicación funciona con unos supuestos de configuración (por ejemplo, supone que los lideres están dados y a quién lidera). Por lo demás está completa.
-
-
-=======
-	No se ha reportado ninguno a la fecha.\\
 	
 	Como Matemático de la Universidad Nacional muchos de los errores que cometí en el diseño e implementación, me corresponden unicamente a mi, ya que mi formación como notarán no fue la de ingeniero de sistemas, ni de arquitecto de hadware/sofware. Espero estas notas sirvan de mapa general de navegación a través del código, para un entendimiento del mismo lo invito a leerlo juiciosamente, con mucha paciencia y disposición.
 	
->>>>>>> 4542419e6189a055a907abc344f0f231f57a70e2
 \end{document}

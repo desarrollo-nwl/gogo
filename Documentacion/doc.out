@@ -148,8 +148,17 @@
 \BOOKMARK [2][-]{subsection.10.2.7}{exportarinterna\137360}{section.10.2}% 148
 \BOOKMARK [2][-]{subsection.10.2.8}{importarespuestas\137exportar\137360}{section.10.2}% 149
 \BOOKMARK [2][-]{subsection.10.2.9}{importarespuestas\137preguntas\137360}{section.10.2}% 150
-\BOOKMARK [0][-]{chapter.11}{C\363digo: Ap\351ndice A - gogo}{}% 151
+\BOOKMARK [0][-]{chapter.11}{C\363digo: exp\137usuario}{}% 151
 \BOOKMARK [1][-]{section.11.1}{Necesidad}{chapter.11}% 152
-\BOOKMARK [2][-]{subsection.11.1.1}{contador}{section.11.1}% 153
-\BOOKMARK [2][-]{subsection.11.1.2}{escoba}{section.11.1}% 154
-\BOOKMARK [2][-]{subsection.11.1.3}{mensajero}{section.11.1}% 155
+\BOOKMARK [1][-]{section.11.2}{Funcionalidad}{chapter.11}% 153
+\BOOKMARK [2][-]{subsection.11.2.1}{planesAccion}{section.11.2}% 154
+\BOOKMARK [2][-]{subsection.11.2.2}{ planesAccionPeticionAjax}{section.11.2}% 155
+\BOOKMARK [2][-]{subsection.11.2.3}{puntosTalenter}{section.11.2}% 156
+\BOOKMARK [2][-]{subsection.11.2.4}{miLiderazgo}{section.11.2}% 157
+\BOOKMARK [2][-]{subsection.11.2.5}{dashBoard}{section.11.2}% 158
+\BOOKMARK [2][-]{subsection.11.2.6}{Observaciones}{section.11.2}% 159
+\BOOKMARK [0][-]{chapter.12}{C\363digo: Ap\351ndice A - gogo}{}% 160
+\BOOKMARK [1][-]{section.12.1}{Necesidad}{chapter.12}% 161
+\BOOKMARK [2][-]{subsection.12.1.1}{contador}{section.12.1}% 162
+\BOOKMARK [2][-]{subsection.12.1.2}{escoba}{section.12.1}% 163
+\BOOKMARK [2][-]{subsection.12.1.3}{mensajero}{section.12.1}% 164
