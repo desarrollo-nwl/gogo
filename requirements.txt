@@ -1,0 +1,4 @@
+Django==1.8.13
+django-mptt==0.8.4
+django-redis-cache==1.6.5
+redis==2.10.5
