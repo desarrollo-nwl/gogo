@@ -95,12 +95,12 @@ DATABASES = {
 			'NAME': 'gogo',
 			# 'USER': 'usuariodb_gogo',
 			# 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
-			'HOST':'127.0.0.1',
+			#'HOST':'127.0.0.1',
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'PORT':'5432',
-
+			'HOST': 'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'USER': 'suidi',
-			'PASSWORD':'Su1357*-',
+			'PASSWORD':'Networks123*',
 
 	}
 }
