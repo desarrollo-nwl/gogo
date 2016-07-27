@@ -13,7 +13,7 @@ USER=root
 cd /home/webapps/gogo/gogo
 . ../gogo_venv/bin/activate
 test -d $LOGDIR || mkdir -p $LOGDIR
-exec ../gogo_venv/bin/gunicorn --timeout 400 -w $NUM_WORKERS \
---user=$USER --log-level=debug \
---log-file=$LOGFILE 2>>$LOGFILE -b 127.0.0.1:8002 .
-
+exec ../gogo_venv/bin/gunicorn --worker-class gevent \
+--timeout 30 -w $NUM_WORKERS \
+--log-file=$LOGFILE 2>>$LOGFILE  \
+--log-level=info -b 0.0.0.0:8002 gogo.wsgi
