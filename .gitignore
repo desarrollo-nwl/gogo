@@ -1,0 +1,25 @@
+*.log
+*.pot
+*.pyc
+.ropeproject/
+# Front side
+node_modules
+.sass-cache
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+bower_components
+.DS_Store
+
+content/styles/css
+content/styles/css/index.css
+*.djcache

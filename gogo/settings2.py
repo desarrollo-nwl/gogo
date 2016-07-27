@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['www.changelabtools.com',]
+ALLOWED_HOSTS = ['www.changelabtools.com', 'localhost']
 
 
 # Application definition
@@ -50,7 +50,7 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
+	#'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
@@ -95,8 +95,8 @@ DATABASES = {
 			'NAME': 'gogo',
 			'USER': 'usuariodb_gogo',
 			'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
-			'HOST':'127.0.0.1',
-			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
+			#'HOST':'127.0.0.1',
+			'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'PORT':'5432',
 	}
 }
@@ -124,9 +124,9 @@ MEDIA_URL  = '/media/'
 # )
 MEDIA_ROOT = BASE_DIR + '/media/'
 # secure proxy SSL header and secure cookies
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # session expire at browser close
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
