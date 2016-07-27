@@ -1,8 +1,14 @@
 Django==1.8.13
 django-debug-toolbar==1.4
+django-extensions==1.6.7
 django-mptt==0.8.4
 django-redis-cache==1.6.5
+django-shell-plus==1.1.7
+gunicorn==0.7.12
+numpy==1.11.1
+Pillow==3.3.0
 psycopg2==2.6.2
 redis==2.10.5
+six==1.10.0
 sqlparse==0.1.19
-gunicorn==0.17.2
+ujson==1.35
