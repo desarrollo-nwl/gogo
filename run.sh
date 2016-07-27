@@ -15,5 +15,5 @@ cd /home/webapps/gogo/gogo
 test -d $LOGDIR || mkdir -p $LOGDIR
 exec ../gogo_venv/bin/gunicorn_django --timeout 400 -w $NUM_WORKERS \
 --user=$USER --log-level=debug \
---log-file=$LOGFILE 2>>$LOGFILE gogo.wsgi:application -b 127.0.0.1:8002 .
+--log-file=$LOGFILE 2>>$LOGFILE -b 127.0.0.1:8002 .
 
