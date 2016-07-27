@@ -11,9 +11,9 @@ NUM_WORKERS=3
 USER=root
 GROUP=gogo
 cd /home/webapps/gogo/gogo
-. ../bin/activate
+. ../gogo_venv/bin/activate
 test -d $LOGDIR || mkdir -p $LOGDIR
-exec ../bin/gunicorn_django --timeout 400 -w $NUM_WORKERS \
+exec ../gogo_venv/bin/gunicorn_django --timeout 400 -w $NUM_WORKERS \
 --user=$USER --group=$GROUP --log-level=debug \
 --log-file=$LOGFILE 2>>$LOGFILE -b 127.0.0.1:8002 .
 
