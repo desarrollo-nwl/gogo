@@ -25,8 +25,13 @@ SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'www.changelabtools.com',]
 
+ALLOWED_HOSTS = ['159.203.190.248', 'localhost', 'www.changelabtools.com',]
+
+
+ADMINS = (
+    ('Jose Andrade', 'avarajame@gmail.com'),
+)
 
 
 # Application definition
@@ -96,7 +101,7 @@ DATABASES = {
 			'NAME': 'gogo_db',
 			# 'USER': 'usuariodb_gogo',
 			# 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
-			'HOST':'127.0.0.1',
+			#'HOST':'127.0.0.1',
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'PORT':'5432',
 
