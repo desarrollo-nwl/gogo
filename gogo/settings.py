@@ -101,12 +101,12 @@ DATABASES = {
 			'NAME': 'gogo_db',
 			# 'USER': 'usuariodb_gogo',
 			# 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
-			#'HOST':'127.0.0.1',
+			'HOST':'127.0.0.1',
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'PORT':'5432',
 
 			'USER': 'user_gogo_db',
-			'PASSWORD':'pass_db_gogo_#asdf',
+			'PASSWORD': 'pass_db_gogo_#asdf',
 
 	}
 }
