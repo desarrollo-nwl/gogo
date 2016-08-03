@@ -25,7 +25,8 @@ SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'www.changelabtools.com',]
+
 
 
 # Application definition
@@ -53,7 +54,7 @@ MIDDLEWARE_CLASSES = (
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-	# 'django.contrib.messages.middleware.MessageMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 )
@@ -92,15 +93,15 @@ DATABASES = {
 			# 'ENGINE':'django.db.backends.sqlite3',
 			# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 			'ENGINE': 'django.db.backends.postgresql_psycopg2',
-			'NAME': 'gogo',
+			'NAME': 'gogo_db',
 			# 'USER': 'usuariodb_gogo',
 			# 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
 			'HOST':'127.0.0.1',
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
 			'PORT':'5432',
 
-			'USER': 'suidi',
-			'PASSWORD':'Su1357*-',
+			'USER': 'user_gogo_db',
+			'PASSWORD':'pass_db_gogo_#asdf',
 
 	}
 }
@@ -144,15 +145,15 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 
-CACHES = {
- 	'default':{
- 		'BACKEND':'redis_cache.RedisCache',
- 		'LOCATION':'127.0.0.1:6379',
- 		'OPTIONS':{
- 			'DB':2,
- 			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
- 		},
- 	},
-}
+# CACHES = {
+#  	'default':{
+#  		'BACKEND':'redis_cache.RedisCache',
+#  		'LOCATION':'127.0.0.1:6379',
+#  		'OPTIONS':{
+#  			'DB':2,
+#  			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
+#  		},
+#  	},
+# }
 
 # SESSION_ENGINE = "django.contrib.sessions.backends.cache_db"
