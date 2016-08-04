@@ -53,7 +53,7 @@ INSTALLED_APPS = (
 	'mensajeria_360',
 	'redes_360',
 	'mptt',
-	'debug_toolbar',
+	#'debug_toolbar',
 	'exp_usuario',
 	'entornoPruebas',
 
