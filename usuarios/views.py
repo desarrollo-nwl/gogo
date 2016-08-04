@@ -12,7 +12,8 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_control
 from usuarios.models import *
 import random
-
+from colaboradores_360.models import Colaboradores_360
+from redes_360.models import Redes_360
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import email.utils
@@ -135,10 +136,15 @@ def menu(request,id_proyecto):
 		else:
 			return render_to_response('403.html')
 		cache.set(request.user.username,proyecto,86400)
-		if(permisos.consultor):
+		if( permisos.consultor and proyecto.tipo != "360 unico" and proyecto.tipo != "360 redes" ):
 			return HttpResponseRedirect('/respuestas/metricas')
+		elif( permisos.consultor and ( proyecto.tipo == "360 unico" or proyecto.tipo == "360 redes" ) ):
+			return HttpResponseRedirect('/360/respuestas/metricas')
+		elif( proyecto.tipo == "Lineal 360" or proyecto.tipo == "Redes 360" ):
+			return HttpResponseRedirect('/360/focalizado/')
 		else:
 			return HttpResponseRedirect('/analisis/focalizado/')
+
 	except:
 		return render_to_response('403.html')
 
@@ -146,17 +152,17 @@ def menu(request,id_proyecto):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def home2(request):
-	permisos = request.user.permisos
-	if permisos.consultor or permisos.pro_see:
-		proyecto = cache.get(request.user.username)
-		if(proyecto):
-			return render_to_response('home2.html',{
-			'Activar':'Configuracion','Permisos':permisos,'Proyecto':proyecto
-			}, context_instance=RequestContext(request))
-		else:
-			return render_to_response('423.html')
-	else:
-		return render_to_response('403.html')
+  permisos = request.user.permisos
+  if permisos.consultor or permisos.pro_see:
+    proyecto = cache.get(request.user.username)
+    if(proyecto):
+      return render_to_response('home2.html',{
+      'Activar':'Configuracion','Permisos':permisos,'Proyecto':proyecto
+      }, context_instance=RequestContext(request))
+    else:
+      return render_to_response('423.html')
+  else:
+    return render_to_response('403.html')
 
 
 @cache_control(no_store=True)
@@ -372,6 +378,7 @@ def proyectonuevo(request):
 		if request.method == 'POST':
 			chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 			key = ''.join(random.sample(chars, 64))
+			key2 = ''.join(random.sample(chars, 64))
 			with transaction.atomic():
 				proyecto = Proyectos(
 							empresa_id = request.POST['empresa'],
@@ -382,9 +389,30 @@ def proyectonuevo(request):
 					if(request.POST['pordenadas']):proyecto.pordenadas = True
 				except:
 					proyecto.pordenadas = False
+
+				try:
+					if(request.POST['circular']):proyecto.circular = True
+				except:
+					proyecto.circular= False
+
 				if int(request.POST['interna']):
 					proyecto.interna = True
 				proyecto.save()
+
+				if proyecto.tipo == "360 unico":
+					colaborador = Colaboradores_360.objects.create(
+					apellido = "Empresa",
+					email = "ninguno@que.registrar",
+					estado = False,
+					key = key2,
+					nombre = "Empresa",
+					proyecto_id = proyecto.id)
+
+					Redes_360.objects.create(
+						colaborador_id = colaborador.id,
+						evaluado_id = colaborador.id,
+						proyecto_id = proyecto.id)
+
 				proyecto.usuarios.add(request.user)
 				for i in request.POST.getlist('usuarios'):
 					proyecto.usuarios.add(i)
@@ -417,7 +445,12 @@ def proyectonuevo(request):
 				nom_log =request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el proyecto",descripcion=proyecto.nombre)
 			cache.set(request.user.username,proyecto,86400)
-			return HttpResponseRedirect('/variable/nueva/')
+
+			if( proyecto.tipo == "360 unico" or proyecto.tipo == "360 redes" ):
+				return HttpResponseRedirect('/360/instrumento/nuevo')
+			else:
+				return HttpResponseRedirect('/variable/nueva/')
+
 		return render_to_response('proyectonuevo.html',{
 		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
 		'Usuarios':usuarios,'Permisos':permisos,
@@ -451,10 +484,6 @@ def proyectoeditar(request,id_proyecto):
 			with transaction.atomic():
 				proyecto.empresa_id = request.POST['empresa']
 				proyecto.nombre = request.POST['nombre']
-				try:
-					proyecto.tipo = request.POST['tipo']
-				except:
-					pass
 				try:
 					if(request.POST['pordenadas']):proyecto.pordenadas = True
 				except:
@@ -532,21 +561,19 @@ def proyectoeliminar(request,id_proyecto):
 				return render_to_response('403.html')
 		if request.method == 'POST':
 			proyecto.zdel = timezone.now()
-			# try:
-			# 	command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
-			# 	os.system(command)
-			# except:
-			# 	pass
-			# try:
-			# 	command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
-			# 	os.system(command)
-			# except:
-			# 	pass
 			with transaction.atomic():
 				proyecto.usuarios.clear()
 				proyecto.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
+			try:
+				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
+				os.system(command)
+			except:pass
+			try:
+				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logoenc.url
+				os.system(command)
+			except:pass
 			return HttpResponseRedirect('/home/')
 		return render_to_response('eliminar.html',{
 		'Activar':'MisProyectos','objeto':'Proyecto','Permisos':permisos,
@@ -590,8 +617,15 @@ def usuarioeditar(request,id_usuario):
 			usuario = User.objects.select_related('permisos').get(id=int(id_usuario))
 			if usuario.indiceusuarios in usuarios:
 				if request.method == 'POST':
+					if  User.objects.filter(email=request.POST['email'].lower()).exists():
+						return render_to_response('usuarioeditar.html',{
+						'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,'Usuario':usuario,
+						'Error':'Ocurrió un error al procesar la solicitud, este correo ya existe'
+						}, context_instance=RequestContext(request))
 					usuario.first_name = request.POST['nombre']
 					usuario.last_name = request.POST['apellido']
+					usuario.email = request.POST['email'].lower()
+					usuario.username = request.POST['email'].lower()
 					with transaction.atomic():
 						try:
 							if(request.POST['activo']):usuario.is_active = True
@@ -689,26 +723,26 @@ def usuarioeditar(request,id_usuario):
 								if(request.POST['var_del']):usu_perm.var_del = True
 							except:
 								usu_perm.var_del = False
-						if permisos.pre_see:
+						if permisos.red_see:
 							try:
-								if(request.POST['pre_see']):usu_perm.pre_see = True
+								if(request.POST['red_see']):usu_perm.red_see = True
 							except:
-								usu_perm.pre_see = False
-						if permisos.pre_add:
+								usu_perm.red_see = False
+						if permisos.red_add:
 							try:
-								if(request.POST['pre_add']):usu_perm.pre_add = True
+								if(request.POST['red_add']):usu_perm.red_add = True
 							except:
-								usu_perm.pre_add = False
-						if permisos.pre_edit:
+								usu_perm.red_add = False
+						if permisos.red_edit:
 							try:
-								if(request.POST['pre_edit']):usu_perm.pre_edit = True
+								if(request.POST['red_edit']):usu_perm.red_edit = True
 							except:
-								usu_perm.pre_edit = False
-						if permisos.pre_del:
+								usu_perm.red_edit = False
+						if permisos.red_del:
 							try:
-								if(request.POST['pre_del']):usu_perm.pre_del = True
+								if(request.POST['red_del']):usu_perm.red_del = True
 							except:
-								usu_perm.pre_del = False
+								usu_perm.red_del = False
 						usu_perm.save()
 						nom_log =request.user.first_name+' '+request.user.last_name
 						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
@@ -931,16 +965,16 @@ def usuarionuevo(request):
 						if(request.POST['var_del']):usu_perm.var_del = True
 					except:pass
 					try:
-						if(request.POST['pre_see']):usu_perm.pre_see = True
+						if(request.POST['red_see']):usu_perm.red_see = True
 					except:pass
 					try:
-						if(request.POST['pre_add']):usu_perm.pre_add = True
+						if(request.POST['red_add']):usu_perm.red_add = True
 					except:pass
 					try:
-						if(request.POST['pre_edit']):usu_perm.pre_edit = True
+						if(request.POST['red_edit']):usu_perm.red_edit = True
 					except:pass
 					try:
-						if(request.POST['pre_del']):usu_perm.pre_del = True
+						if(request.POST['red_del']):usu_perm.red_del = True
 					except:pass
 					usu_perm.save()
 					IndiceUsuarios.objects.create(
@@ -1030,7 +1064,7 @@ def logs(request):
 		aux = []
 		for  i in usuarios_creados:
 			aux.append(i.usuario.username)
-		print aux
+
 		logs = Logs.objects.filter(usuario_username__in=aux)
 		return render_to_response('logs.html',{
 		'Activar':'Configuracion','activar':'Logs','Logs':logs,'Permisos':permisos
@@ -1100,14 +1134,6 @@ def terminos(request):
 def privacidad(request):
 	return render_to_response('privacidad.html')
 
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
-def faq(request):
-	cache.delete(request.user)
-	permisos = request.user.permisos
-	return render_to_response('faq.html',{
-	'Activar':'CentroDeAyuda','activar':'Faq','Permisos':permisos,
-	}, context_instance=RequestContext(request))
 
 #===============================================================================
 #    Páginas de errores

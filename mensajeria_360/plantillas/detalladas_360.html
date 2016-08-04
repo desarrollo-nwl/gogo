@@ -1,0 +1,21 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% load custom_filters %}
+{% block title %} Proyecto | Respuestas detalladas{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Respuestas detalladas</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Respuestas del proyecto:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Permisos.res_exp%}Para exportar las respuestas de tu proyecto presiona el botón de exportar respuestas; se descargará un archivo que contiene todas las respuestas completadas de tu proyecto. Según el tamaño del proyecto esta exportación puede tomar algo de tiempo.
+			<div class="container-fluid"><a href="/360/respuestas/exportar/interna/" class="btn btn-primary pull-right m-t"><i class="fa fa-file-xls"></i> Exportar respuestas</a></div>{%endif%}
+		</div>
+	</div>
+</div>
+{% endblock %}

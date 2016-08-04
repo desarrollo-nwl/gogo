@@ -1,0 +1,26 @@
+{% extends "dash2.html" %}{% load staticfiles%}
+{% block title %} Proyecto | Forzar envío {% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/respuestas/metricas/"><i><span>/ Envíos y respuestas</span></i></a></li>
+<li><a href="#"><i><span>/ Reenvío</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> {{user.first_name | capfirst | escape }}, Confirme el reenvío:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<div class="m" style="text-rendering: optimizeLegibility;">El correo puede tardar un máximo de 10 minutos en llegar. Adicionalmente si el usuario ha contestado todo el cuestionario la plataforma no le permitirá el acceso.<br><br><br> ¿Está seguro de querer reenviar el correo de encuesta a <strong>{{Colaborador.nombre |escape}} {{Colaborador.apellido |escape}} < {{Colaborador.email |escape}} > </strong>?</div>
+			<form  method="POST">{%csrf_token%}
+				<div class="container-fluid">
+					<a href="/360/respuestas/metricas/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Regresar</a>
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-envelope-o"></i> Enviar</button>
+				</div>
+			</form>
+			{%if Alerta%}<p id="alerta">{{Alerta | escape}}</p>{%endif%}
+		</div>
+	</div>
+</div>
+{% endblock %}

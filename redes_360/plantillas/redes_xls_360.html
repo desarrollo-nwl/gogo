@@ -1,0 +1,55 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Participantes{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Participantes</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Agregar redes por medio de archivo plano:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+
+			{%if Permisos.red_add%}
+			<p> El sistema posee un archivo excel (.xls) el cual usted podrá descargar y completar para grabar sus redes. Para obtener el archivo presione el botón descargar</p><br>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/360/redes/archivo/generar/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
+			<p><strong>Recomendaciones: </strong><p><br>
+				<ol><li> <b>Los nombres y appelidos de los evaluadores y evaluados deben poseer exactamente la misma ortografía que cuando fueron ingresados en el sistema.</b> </li><br>
+					<li> De forma similar el nombre del rol debe conervar exactamente la misma ortografía con la que se ingresó al sistema.</li><br>
+					<li> Para el instrumento se debe usar el nombre con el que está registrado.</li><br>
+					<li> Tenga en cuenta la distinción entre mayúsculas, minúsculas y tildes, en donde "Area uno" , "area uno", "Área uno" y "área uno", son todas palabras distintas para el sistema y puede tener <b>inconvenientes a la hora de registrar</b>.</li><br>
+				</ol><br>
+			<p>Ahora suba su archivo (.xls) editado:</p><br>
+			<form  enctype="multipart/form-data" method='POST'>{% csrf_token %}
+	            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"></div>
+				<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><input id="id_docfile" type="file" name="docfile" required /></div><br><br>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-paper-plane-o"></i>Enviar</buton></div>{%endif%}
+			</form>
+
+			{% if Personas %}Las siguientes <b>personas</b> no pudieron ser encontradas, se ignoraron sus redes asociadas:
+				<ol>
+					{% for per in Personas %}<li>{{ per }}</li>{% endfor %}
+				</ol><br>
+			{% endif %}
+			{% if Roles %}Los siguientes <b>roles</b> no pudieron ser encontrados, se ignoraron sus redes asociadas:
+				<ol>
+					{% for rol in Roles %}<li>{{ rol }}</li>{% endfor %}
+				</ol><br>
+			{% endif %}
+			{% if Instrumentos %}Los siguientes <b>Intrumentos</b> no pudieron ser encontrados, se ignoraron sus redes asociadas:
+				<ol>
+					{% for ins in Instrumentos %}<li>{{ ins }}</li>{% endfor %}
+				</ol><br>
+			{% endif %}
+			{% if Redes %}Las siguientes <b>redes</b> ya se encontraban registradas y fueron ignoradas:
+				<ol>
+					{% for red in Redes %}<li>{{ red }}</li>{% endfor %}
+				</ol><br>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}

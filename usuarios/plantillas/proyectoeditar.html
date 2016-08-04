@@ -37,12 +37,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Tipo de encuesta:</label>
 						<div class="col-lg-5 col-md-5 col-sm-9 col-xs-8" >
-							{%if Proyecto.interna%}
-							<select class="select2 form-control" name="tipo">
-								<option {%ifequal "Completa" Proyecto.tipo%}selected{%endifequal%} value="Completa">Encuesta Completa</option>
-								<option {%ifequal "Fragmentada" Proyecto.tipo%}selected{%endifequal%} value="Fragmentada">Encuesta Fragmentada</option>
-							</select>
-							{%else%}<spam class="form-control">Encuesta {{Proyecto.tipo | escape}}</span>{%endif%}
+							<spam class="form-control">Encuesta {{Proyecto.tipo | escape}}</span>
 						</div>
 					</div>
 					<div class="form-group">
@@ -67,7 +62,7 @@
 					</div>
 					<input type="hidden" value="" name="cue_correo" />
 					<div class="form-group">
-						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label norequired">Logo Principal (correo):</label>
+						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Logo Principal (correo):</label>
 						<div class="col-lg-8 col-md-8 col-sm-9 col-xs-8" >
 							<input id ="logo" name="logo" type="file">
 							{% if Proyecto.proyectosdatos.logo %}<img class="logos" src="{{Proyecto.proyectosdatos.logo.url}}"/>{% endif %}
@@ -125,10 +120,14 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label style="display:none" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Usar muestreo:</label>
-						<div style="display:none" class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
-							<input type="checkbox" {%if not Proyecto.proyectosdatos.censo%}checked{%endif%} name="censo" class="switch" />
+
+						<div>
+							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Circular:</label>
+							<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
+								<input type="checkbox" disabled {% if Proyecto.circular %}checked{% endif %} name="circular" class="switch" />
+							</div>
 						</div>
+
 						<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label required">Preguntas ordenadas:</label>
 						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
 							<input type="checkbox" {%if Proyecto.pordenadas%}checked{%endif%} name="pordenadas" class="switch" />
@@ -179,24 +178,20 @@ $("#logo").change(function() {
     var val = $(this).val();
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'jpg': case 'png':
-            $("#Go").show();
             break;
         default:
             $(this).val('');
             alert("Por favor seleccione una imagen");
-            $("#Go").hide();
     }
 });
 $("#logoenc").change(function() {
     var val = $(this).val();
     switch(val.substring(val.lastIndexOf('.') + 1).toLowerCase()){
         case 'jpg': case 'png':
-            $("#Go").show();
             break;
         default:
             $(this).val('');
             alert("Por favor seleccione una imagen");
-            $("#Go").hide();
     }
 });
 var nombres =[],$nombre = $("#nombre"),$error=$('#error');

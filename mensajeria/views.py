@@ -110,7 +110,7 @@ def gosurvey(request):
 			except:
 				pass
 		return render_to_response('gosurvey.html',{
-		'Activar':'Configuracion','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
+		'Activar':'EstadoAvance','activar':'IniciarDetener','Proyecto':proyecto,'Permisos':permisos
 		}, context_instance=RequestContext(request))
 	else:
 		return render_to_response('403.html')
@@ -466,7 +466,7 @@ def encuestaexterna(request,id_proyecto,key):
 		return HttpResponseRedirect('/externa2/'+str(proyecto.id)+'/'+key)
 
 	return render_to_response('encuesta.html',{
-	'Proyecto':proyecto,'Preguntas':preguntas,
+	'Proyecto':proyecto,'Preguntas_encuesta':preguntas,
 	},	context_instance=RequestContext(request))
 
 @cache_control(no_store=True)
@@ -677,8 +677,11 @@ def exportarinterna(request):
 			elif stream[i].pregunta.numerica and not stream[i].pregunta.multiple:
 				for respuesta in stream[i].pregunta.respuestas_set.all():
 					if stream[i].respuesta == respuesta.texto:
-						ws.write(i+1,21-k,respuesta.numerico,str_format)
-						ws.write(i+1,22-k,stream[i].respuesta,str_format)
+						try:
+							ws.write(i+1,21-k,respuesta.numerico,str_format)
+							ws.write(i+1,22-k,stream[i].respuesta,str_format)
+						except:
+							pass
 
 			elif stream[i].pregunta.multiple and not stream[i].pregunta.numerica:
 				ws.write(i+1,21-k,u'',str_format)
@@ -819,7 +822,7 @@ def importarespuestas_preguntas(request):
 	if not proyecto.interna:
 		return render_to_response('404.html')
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_add:
+	if permisos.consultor and permisos.var_add:
 		error = None
 		if request.method == 'POST':
 			import xlrd,xlwt

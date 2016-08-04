@@ -21,7 +21,7 @@ from usuarios.models import Empresas, Proyectos, Logs
 @login_required(login_url='/acceder/')
 def variables(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
@@ -39,11 +39,11 @@ def variables(request):
 @login_required(login_url='/acceder/')
 def preguntas(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_see:
+	if permisos.consultor and permisos.var_see:
 		try:variable = Variables.objects.prefetch_related('preguntas_set'
 						).get(id=id_variable)
 		except:return render_to_response('403.html')
@@ -63,7 +63,7 @@ def preguntas(request,id_variable):
 @login_required(login_url='/acceder/')
 def variablenueva(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
@@ -71,7 +71,7 @@ def variablenueva(request):
 		if request.method == 'POST':
 			with transaction.atomic():
 				variable = Variables(
-					nombre = request.POST['nombre'],
+					nombre = request.POST['nombre'].strip(),
 					descripcion = request.POST['descripcion'],
 					posicion = request.POST['posicion'],
 					proyecto = proyecto)
@@ -102,7 +102,7 @@ def variablenueva(request):
 @login_required(login_url='/acceder/')
 def variableactivar(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
@@ -131,12 +131,12 @@ def preguntanueva(request,id_variable):
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_add:
+	if permisos.consultor and permisos.var_add:
 		try:variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id = int(id_variable))
 		except:return render_to_response('403.html')
 		if request.method == 'POST':
 			pregunta = Preguntas(
-						texto = request.POST['texto'],
+						texto = request.POST['texto'].strip(),
 						posicion = request.POST['posicion'],
 						variable = variable)
 
@@ -144,22 +144,32 @@ def preguntanueva(request,id_variable):
 				pregunta.abierta = True
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Unica"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Numerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Multiple"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple =True
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="MultipleNumerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
-				pregunta.multiple =True
+				pregunta.multiple = True
+				pregunta.cuerpo = False
+			elif(request.POST['tipo'] =="CuerpoHumano"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+				pregunta.cuerpo = True
 			else:
 				return render_to_response('500.html')
 			try:
@@ -174,7 +184,7 @@ def preguntanueva(request,id_variable):
 				if ((not  pregunta.abierta) and pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
 						Respuestas.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
@@ -204,11 +214,11 @@ def preguntanueva(request,id_variable):
 @login_required(login_url='/acceder/')
 def preguntactivar(request,id_pregunta):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.act_variables and permisos.pre_edit:
+	if permisos.consultor and permisos.act_variables and permisos.var_edit:
 		try:
 			pregunta = Preguntas.objects.get(id=int(id_pregunta))
 			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
@@ -234,7 +244,7 @@ def preguntactivar(request,id_pregunta):
 @login_required(login_url='/acceder/')
 def variableditar(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
@@ -243,7 +253,7 @@ def variableditar(request,id_variable):
 		except:render_to_response('403.html')
 		if request.method == 'POST':
 			with transaction.atomic():
-				variable.nombre = request.POST['nombre']
+				variable.nombre = request.POST['nombre'].strip()
 				variable.descripcion = request.POST['descripcion']
 				variable.posicion = request.POST['posicion']
 				if(permisos.act_variables):
@@ -272,14 +282,14 @@ def preguntaeditar(request,id_pregunta):
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_edit:
+	if permisos.consultor and permisos.var_edit:
 		try:
 			pregunta = Preguntas.objects.get(id=int(id_pregunta))
 			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
 			num_respuestas = pregunta.respuestas_set.count()
 		except:render_to_response('403.html')
 		if request.method == 'POST':
-			pregunta.texto = request.POST['texto']
+			pregunta.texto = request.POST['texto'].strip()
 			pregunta.posicion = request.POST['posicion']
 			pregunta.variable = variable
 
@@ -287,24 +297,35 @@ def preguntaeditar(request,id_pregunta):
 				pregunta.abierta = True
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Unica"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Numerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
 				pregunta.multiple = False
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="Multiple"):
 				pregunta.abierta = False
 				pregunta.numerica = False
 				pregunta.multiple =True
+				pregunta.cuerpo = False
 			elif(request.POST['tipo'] =="MultipleNumerica"):
 				pregunta.abierta = False
 				pregunta.numerica = True
-				pregunta.multiple =True
+				pregunta.multiple = True
+				pregunta.cuerpo = False
+			elif(request.POST['tipo'] =="CuerpoHumano"):
+				pregunta.abierta = True
+				pregunta.numerica = False
+				pregunta.multiple = False
+				pregunta.cuerpo = True
 			else:
 				return render_to_response('500.html')
+
 			try:
 				if(request.POST['estado']):
 					if(variable.estado):
@@ -319,7 +340,7 @@ def preguntaeditar(request,id_pregunta):
 				if ((not  pregunta.abierta) and pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						aux_numerico = 'numerico%s'%(i)
 						numerico = request.POST[aux_numerico]
 						Respuestas.objects.create(texto = respuesta, numerico = numerico, pregunta = pregunta )
@@ -327,7 +348,7 @@ def preguntaeditar(request,id_pregunta):
 				elif not( pregunta.abierta or pregunta.numerica):
 					for i in xrange(int(request.POST['contador'])):
 						aux_texto = 'respuesta%s'%(i)
-						respuesta = request.POST[aux_texto]
+						respuesta = request.POST[aux_texto].strip()
 						R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
 				nom_log = request.user.first_name+' '+request.user.last_name
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Editó la pregunta',descripcion=pregunta.texto)
@@ -349,59 +370,13 @@ def preguntaeditar(request,id_pregunta):
 
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
-def proyectoclonar(request,id_proyecto):
-	try:proyecto = Proyectos.objects.filter(usuarios=request.user
-					).select_related('proyectosdatos'
-					).prefetch_related('variables_set__preguntas_set__respuestas_set'
-					).get(id=int(id_proyecto))
-	except:return render_to_response('403.html')
-	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_add and permisos.pre_add and permisos.pro_add:
-		from copy import deepcopy
-		proyecto_back = deepcopy(proyecto)
-		datos = proyecto.proyectosdatos
-		proyecto.id = None
-		proyecto.nombre = 'Copia de '+proyecto.nombre
-		with transaction.atomic():
-			proyecto.tot_preguntas = proyecto_back.tot_preguntas
-			proyecto.tot_participantes = 0
-			proyecto.tot_aresponder = 0
-			proyecto.tot_respuestas = 0
-			proyecto.total = 0
-			proyecto.save()
-			datos.id = proyecto
-			datos.save()
-			proyecto.usuarios.add(*proyecto_back.usuarios.all())
-			respuestas_nuevas = []
-			for variable in proyecto.variables_set.all():
-				variable.id = None
-				variable.proyecto = proyecto
-				variable.save()
-				for pregunta in variable.preguntas_set.all():
-					pregunta.id = None
-					pregunta.variable = variable
-					pregunta.save()
-					for respuesta in pregunta.respuestas_set.all():
-						respuesta.id = None
-						respuesta.pregunta = pregunta
-						respuestas_nuevas.append(respuesta)
-			Respuestas.objects.bulk_create(respuestas_nuevas)
-			nom_log = request.user.first_name+' '+request.user.last_name
-			Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó el proyecto",descripcion=proyecto.nombre)
-		return HttpResponseRedirect('/home/')
-	else:
-		return render_to_response('403.html')
-
-
-@cache_control(no_store=True)
-@login_required(login_url='/acceder/')
 def variableclonar(request,id_variable):
 	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.var_add and permisos.pre_add:
+	if permisos.consultor and permisos.var_add:
 		try:
 			variable = Variables.objects.select_related('proyecto__max_variables'
 						).prefetch_related('preguntas_set__respuestas_set'
@@ -442,7 +417,7 @@ def preguntaclonar(request,id_pregunta):
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_add:
+	if permisos.consultor and permisos.var_add:
 		try:
 			pregunta = Preguntas.objects.prefetch_related('respuestas_set'
 						).get(id = int(id_pregunta))
@@ -478,7 +453,7 @@ def preguntaclonar(request,id_pregunta):
 @login_required(login_url='/acceder/')
 def variableliminar(request,id_variable):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
@@ -517,7 +492,7 @@ def preguntaeliminar(request,id_pregunta):
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pre_del:
+	if permisos.consultor and permisos.var_del:
 		try:
 			pregunta = Preguntas.objects.get(id=int(id_pregunta))
 			variable = Variables.objects.filter(proyecto_id=proyecto.id).get(id=pregunta.variable_id)
@@ -553,7 +528,7 @@ def preguntaeliminar(request,id_pregunta):
 def preencuesta(request):
 	proyecto = cache.get(request.user.username)
 	permisos = request.user.permisos
-	if permisos.consultor and permisos.pro_see and permisos.var_see and permisos.pre_see:
+	if permisos.consultor and permisos.pro_see and permisos.var_see:
 		cuestionario = Proyectos.objects.prefetch_related(
 		'variables_set__preguntas_set__respuestas_set').get(id=proyecto.id)
 		return render_to_response('preencuesta.html',{

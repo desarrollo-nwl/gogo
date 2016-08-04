@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es" id="Networks Lab" class="no-js">
+<!--[if lt IE 8]><html class="no-js lt-ie8"> <![endif]-->
+	<head>
+		<title>A. General</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+		<!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-2.1.1.min.js">\x3C/script>')</script>
+		<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+		<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-ui-1.10.4.min.js">\x3C/script>')</script>
+		<link rel="shortcut icon" href="/static/img/ico/favicon.ico"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>
+		<link href="/static/css/icons.min.css" rel="stylesheet" />
+		<!-- <link href="/static/css/bootstrap.min.css" rel="stylesheet" /> -->
+		<link href="/static/css/plugins.min.css" rel="stylesheet" />
+		<link href="/static/css/main.min.css" rel="stylesheet" />
+		<link href="/static/css/custom.min.css" rel="stylesheet" />
+		<link href="/static/css/icons.min.css" rel="stylesheet" />
+		<!-- Fav and touch icons -->
+		<link rel="apple-touch-icon" sizes="144x144" href="/static/img/ico/favicon144.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="/static/img/ico/favicon114.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="/static/img/ico/favicon72.png">
+		<link rel="apple-touch-icon" href="/static/img/ico/favicon57.png">
+		<!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
+		<meta name="msapplication-TileColor" content="#3399cc" />
+		<link rel="stylesheet" href=" /static/plugins/jQRangeSlider-master/css/iThing.css  " type="text/css" />
+		<style media="screen">.multiselect{margin-left: -15px !important;}.panel-body .panel{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
+	</head>
+	<body>
+	<!--[if lt IE 9]>
+	<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+        <!-- .page-navbar -->
+        <div id="header" class="page-navbar">
+            <!-- .navbar-brand -->
+            <a href="/index/" class="navbar-brand hidden-xs hidden-sm">
+                <img src="/static/img/logo.png" class="logo hidden-xs" alt="Dynamic logo" style="margin:5px 0px 0px -10px">
+                <img src="/static/img/logosm.png" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo" style="margin:5px 0px 0px -5px">
+            </a>
+            <!-- / navbar-brand -->
+            <!-- .no-collapse -->
+            <div id="navbar-no-collapse" class="navbar-no-collapse">
+                <!-- top left nav -->
+                <ul class="nav navbar-nav">
+                    <li class="toggle-sidebar">
+                        <a href="#">
+                            <i class="fa fa-reorder"></i>
+                            <span class="sr-only">Colapsar sidebar</span>
+                        </a>
+                    </li>
+					<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+					<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+					<li><a href="#"><i><span>/ General</span></i></a></li>
+                </ul>
+                <!-- / top left nav -->
+                <!-- top right nav -->
+                <ul class="nav navbar-nav navbar-right">
+					<li>
+                        <a href="/salir/">
+                            <i class="fa fa-power-off"></i>
+                            <span class="sr-only">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- / top right nav -->
+            </div>
+            <!-- / collapse -->
+        </div>
+        <!-- / page-navbar -->
+
+        <!-- #wrapper -->
+        <div id="wrapper">
+            <!-- .page-sidebar -->
+            <aside id="sidebar" class="page-sidebar hidden-md hidden-sm hidden-xs">
+                <!-- Start .sidebar-inner -->
+                <div class="sidebar-inner">
+                    <!-- Start .sidebar-scrollarea -->
+                    <div class="sidebar-scrollarea">
+                        <!--  .sidebar-panel -->
+                        <div class="sidebar-panel">
+                            <h5 class="sidebar-panel-title">{{PROYECTO_NOMBRE}} </h5>
+                        </div>
+                        <!-- / .sidebar-panel -->
+                        <!-- .side-nav -->
+                        <div class="side-nav">
+							<ul  class="nav">
+							{{#PERMISOS_CONSULTOR}}
+							<li id="Configuracion">
+								<a href="#"><i class="l-basic-gear"></i><span class="nav-label"><span class="txt"> Contenido </span></a>
+								<ul class="sub">
+									{{#PERMISOS_VAR_SEE}}
+									<li><a id="Variables" href="/variables/"><span class="txt"> Variables y preguntas </span></a></li>
+									{{/PERMISOS_VAR_SEE}}
+									{{#PROYECTO_INTERNA}}
+										{{#PERMISOS_COL_ADD}}
+										<li><a id="AcrhivoPlano" href="/participantes/archivo/"><span class="txt"> Múltiples participantes </span></a></li>
+										{{#PERMISOS_COL_SEE}}
+											<li><a id="Individual" href="/participantes/individual/"><span class="txt"> Participantes Individual </span></a></li>
+										{{/PERMISOS_COL_SEE}}
+										{{/PERMISOS_COL_ADD}}
+									{{/PROYECTO_INTERNA}}
+									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
+								</ul>
+							</li>
+							{{/PERMISOS_CONSULTOR}}
+							<li id="EstadoAvance">
+								<a href="#"><i class="l-basic-pencil-ruler"></i><span class="nav-label"><span class="txt"> Estado de avance </span></a>
+								<ul class="sub">
+									{{#PROYECTO_INTERNA}}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
+										{{#PERMISOS_RES_EXP}}
+											<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>
+										{{/PERMISOS_RES_EXP}}
+									{{/PROYECTO_INTERNA}}
+									{{#PERMISOS_VAR_ADD}}
+										<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>
+									{{/PERMISOS_VAR_ADD}}
+								</ul>
+							</li>
+							<li id="AnalisisResultados">
+								<a href="#"><i class="l-ecommerce-graph3"></i><span class="txt">Análisis <span class="txt"></a>
+								<ul class="sub">
+									<li><a id="Participacion" href="/analisis/participacion/"><span class="txt">Participación</span></a></li>
+                                    <li><a id="General" href="/analisis/general/"><span class="txt">General</span></a></li>
+									<li><a id="Focalizados" href="/analisis/focalizado/"><span class="txt"> Focalizado</span></a></li>
+									<li><a id="WordAnalytics" href="/analisis/wordanalytics/"><span class="txt"> Grafo Word Analytics </span></a></li>
+									<!-- <li><a id="CruceVariables" href="#"><span class="txt"> Cruce de variables </span></a></li> -->
+									<!-- <li><a id="AnalisisPropension" href="#"><span class="txt"> Propensión </span></a></li> -->
+								</ul>
+							</li>
+							</ul>
+                        </div>
+                        <!-- / side-nav -->
+                    </div>
+                    <!-- End .sidebar-scrollarea -->
+                </div>
+                <!-- End .sidebar-inner -->
+            </aside>
+            <!-- / page-sidebar -->
+<div class="page-content sidebar-page right-sidebar-page clearfix">
+	<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Promedio general en tiempo real</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div align="center">
+					<input id="lastDay" type="button" value="Ultimo Dia" />
+					<input id="lastWeek" type="button" value="Ultima Semana" />
+					<input id="lastMonth" type="button" value="Ultimo Mes" />
+				</div>
+				<div style='margin: 0 5px 0 5px' id="grafica_uno_div"></div>
+				<div style='margin: 0 5px 0 5px' id="control_grafica_uno_div"></div>
+			</div>
+
+			<div class="col-lg-3 m-t-xs">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{{#PDATOS_OPCIONAL1}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_1}}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL1}}
+								{{#PDATOS_OPCIONAL2}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_2}}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL2}}
+								{{#PDATOS_OPCIONAL3}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_3}}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL3}}
+								{{#PDATOS_OPCIONAL4}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_4}}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL4}}
+								{{#PDATOS_OPCIONAL5}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_5}}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL5}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Resultados promedio comparativos por variable</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
+				<br>
+				<div id="control_grafica_dos_div"></div>
+				<br><br>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{{#PDATOS_OPCIONAL1}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_1}}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL1}}
+								{{#PDATOS_OPCIONAL2}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_2}}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL2}}
+								{{#PDATOS_OPCIONAL3}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_3}}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL3}}
+								{{#PDATOS_OPCIONAL4}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_4}}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL4}}
+								{{#PDATOS_OPCIONAL5}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_5}}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL5}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Histograma:</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 5px 0 5px' id="grafica_tres_div"></div>
+				<br>
+				<div style='margin: 0 5px 0 5px' id="control_grafica_tres_div"></div>
+				<br><br>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g3" class="filtros_tres form-control"></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Preguntas</label>
+									<div class="col-xs-2">
+										<select id="preguntas_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{{#PDATOS_OPCIONAL1}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_1}}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL1}}
+								{{#PDATOS_OPCIONAL2}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_2}}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL2}}
+								{{#PDATOS_OPCIONAL3}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_3}}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL3}}
+								{{#PDATOS_OPCIONAL4}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_4}}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL4}}
+								{{#PDATOS_OPCIONAL5}}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{PDATOS_NOM_OPCIONAL_5}}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{{/PDATOS_OPCIONAL5}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- / #wrapper -->
+<div id="footer" class="clearfix sidebar-page right-sidebar-page">
+	<!-- Start #footer  -->
+	<p class="pull-left">Copyrights &copy; 2016 <a href="https://www.networkslab.co/" class="color-blue strong" target="_blank">Networkslab</a>. All rights reserved.</p>
+	<p class="pull-right">
+		<a target="_blank"  href="/terminos/" class="mr5">Términos de uso</a> | <a target="_blank"  href="/privacidad/" class="ml5 mr25">Política de privacidad</a>
+	</p>
+</div>
+<!-- End #footer  -->
+<!-- Back to top -->
+<div id="back-to-top"><a href="#">Back to Top</a>
+</div>
+<!-- Javascripts -->
+<!-- Load pace first -->
+<script src="/static/js/plugins/pace/pace.min.js"></script>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/static/js/libs/excanvas.min.js"></script>
+<script type="text/javascript" src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<script type="text/javascript" src="/static/js/libs/respond.min.js' "></script>
+<![endif]-->
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/libs/modernizr.custom.min.js"></script>
+<!-- Handle responsive view functions -->
+<script src="/static/js/jRespond.min.js"></script>
+<!-- Custom scroll for sidebars,tables and etc. -->
+<script src="/static/plugins/core/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/static/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
+<!-- Remove click delay in touch -->
+<script src="/static/plugins/core/fastclick/fastclick.min.js"></script>
+<!-- Increase jquery animation speed -->
+<script src="/static/plugins/core/velocity/jquery.velocity.min.js"></script>
+<!-- <script src="/static/plugins/ui/bootbox/bootbox.min.js"></script> -->
+<script src="/static/js/jquery.dynamic.min.js"></script>
+<script src="/static/js/main.min.js"></script>
+
+<script>$('#AnalisisResultados').addClass('highlight-menu');$('#AnalisisResultados > a').addClass('expand active-state');$('#AnalisisResultados > ul.sub').addClass('show');$(document).ready(function(){$('#AnalisisResultados a').click();$('#General').addClass('expand activate-state');});</script>
+
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.2','packages':['corechart']}]}"></script>
+<script type="text/javascript" src="/static/js/plugins/multiselect/bootstrap-multiselect.min.js"></script>
+
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQRangeSliderDraggable.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQRangeSliderBar.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQRangeSliderHandle.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQDateRangeSliderHandle.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQRangeSliderLabel.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQRangeSlider.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jQRangeSlider-master/jQDateRangeSlider.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.2','packages':['corechart']}]}"></script>
+<script type="text/javascript" src="/static/js/plugins/multiselect/bootstrap-multiselect.min.js"></script>
+
+<script type="text/javascript">
+var Datos = {{DATOS}};
+var Participantes = {{PARTICIPANTES}};
+var Cuestionario = {{CUESTIONARIO}};
+var contenido = function(a,x){
+	if (a == undefined ) return true;
+	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
+	return false;
+}
+var contenido_date = function(a,x){
+	for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
+	return false;
+}
+
+var minmax_resf = function minmax_resf(){
+   var min = Infinity, max = -Infinity, cache;
+	for (var i in Cuestionario) {
+		cache = Cuestionario[i];
+		for (var respuesta in cache['respuestas']) {
+			if ( cache['respuestas'][respuesta] < min ) min = cache['respuestas'][respuesta];
+			if ( cache['respuestas'][respuesta] > max ) max = cache['respuestas'][respuesta];
+		}
+	}
+	return [min,max];
+}
+
+var tiemposIniciales = function(fechas){
+	var max_gt = new Date(2000,1,20).getTime(),
+		min_gt = new Date(2030,1,20).getTime(),
+		f_max = new Date(2030,1,20),
+		f_min = new Date(2000,1,20);
+
+	for(var i = 0; i < fechas.length; i++){
+			var tiempo = fechas[i].getTime();
+			if( tiempo > max_gt ){
+				max_gt = tiempo;
+                f_max = fechas[i];
+				}
+			if( tiempo < min_gt ){
+				min_gt = tiempo;
+				f_min = fechas[i];
+			}
+		}
+    return [f_min,f_max];
+}
+
+//==============================================================================
+//   variables GLOBALES
+//==============================================================================
+
+var regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[], variables = [], preguntas = [],
+	$var_g1=$('#variables_g1'), $reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
+	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[],minmax_res=[],
+	variables_str="",variables_str_lig="",preguntas_str_lig="",preguntas_str="",regionales_str="",ciudades_str="",areas_str="",cargos_str="",
+	opcional1_str="",opcional2_str="",opcional3_str="",opcional4_str="",opcional5_str="";
+{{#PDATOS_OPCIONAL1}}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{{/PDATOS_OPCIONAL1}}
+{{#PDATOS_OPCIONAL2}} var $op2_g1 = $('#opcional2_g1'),opcional2=[];{{/PDATOS_OPCIONAL2}}
+{{#PDATOS_OPCIONAL3}} var $op3_g1 = $('#opcional3_g1'),opcional3=[];{{/PDATOS_OPCIONAL3}}
+{{#PDATOS_OPCIONAL4}} var $op4_g1 = $('#opcional4_g1'),opcional4=[];{{/PDATOS_OPCIONAL4}}
+{{#PDATOS_OPCIONAL5}}var $op5_g1 = $('#opcional5_g1'),opcional5=[];{{/PDATOS_OPCIONAL5}}
+
+var $reg_g2 = $('#regionales_g2'), $ciu_g2 = $('#ciudades_g2'), $var_g2 = $('#variables_g2'),
+	$are_g2 = $('#areas_g2'), $car_g2 = $('#cargos_g2');
+
+{{#PDATOS_OPCIONAL1}}var $op1_g2 = $('#opcional1_g2');{{/PDATOS_OPCIONAL1}}
+{{#PDATOS_OPCIONAL2}} var $op2_g2 = $('#opcional2_g2');{{/PDATOS_OPCIONAL2}}
+{{#PDATOS_OPCIONAL3}} var $op3_g2 = $('#opcional3_g2');{{/PDATOS_OPCIONAL3}}
+{{#PDATOS_OPCIONAL4}} var $op4_g2 = $('#opcional4_g2');{{/PDATOS_OPCIONAL4}}
+{{#PDATOS_OPCIONAL5}}var $op5_g2 = $('#opcional5_g2');{{/PDATOS_OPCIONAL5}}
+
+
+var $reg_g3 = $('#regionales_g3'), $ciu_g3 = $('#ciudades_g3'),
+	$are_g3 = $('#areas_g3'), $car_g3 = $('#cargos_g3')
+	$var_g3 = $('#variables_g3'), $pre_g3 = $('#preguntas_g3');
+
+{{#PDATOS_OPCIONAL1}}var $op1_g3 = $('#opcional1_g3');{{/PDATOS_OPCIONAL1}}
+{{#PDATOS_OPCIONAL2}} var $op2_g3 = $('#opcional2_g3');{{/PDATOS_OPCIONAL2}}
+{{#PDATOS_OPCIONAL3}} var $op3_g3 = $('#opcional3_g3');{{/PDATOS_OPCIONAL3}}
+{{#PDATOS_OPCIONAL4}} var $op4_g3 = $('#opcional4_g3');{{/PDATOS_OPCIONAL4}}
+{{#PDATOS_OPCIONAL5}}var $op5_g3 = $('#opcional5_g3');{{/PDATOS_OPCIONAL5}}
+
+
+var Elementos = {
+	//==============================================================================
+	//   Selects
+	//==============================================================================
+	inicio : function(){
+
+		var cache;
+
+		for (var i in Participantes) {
+
+			cache = Participantes[i]['regional'];
+			if (!contenido(cache,regionales)){
+				regionales.push(cache);
+				regionales_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			cache = Participantes[i]['ciudad'];
+			if (!contenido(cache,ciudades)){
+				ciudades.push(cache);
+				ciudades_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			cache = Participantes[i]['area'];
+			if (!contenido(cache,areas)){
+				areas.push(cache);
+				areas_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			cache = Participantes[i]['cargo'];
+			if (!contenido(cache,cargos)){
+				cargos.push(cache);
+				cargos_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+
+			{{#PDATOS_OPCIONAL1}}
+			cache = Participantes[i]['opcional1'];
+			if (!contenido(cache,opcional1)){
+				opcional1.push(cache);
+				opcional1_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}}
+			cache = Participantes[i]['opcional2'];
+			if (!contenido(cache,opcional2)){
+				opcional2.push(cache);
+				opcional2_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}}
+			cache = Participantes[i]['opcional3'];
+			if (!contenido(cache,opcional3)){
+				opcional3.push(cache);
+				opcional3_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}}
+			cache = Participantes[i]['opcional4'];
+			if (!contenido(cache,opcional4)){
+				opcional4.push(cache);
+				opcional4_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}}
+			cache = Participantes[i]['opcional5'];
+			if (!contenido(cache,opcional5)){
+				opcional5.push(cache);
+				opcional5_str += '<option value="'+cache+'">'+cache+'</option>';
+			}
+			{{/PDATOS_OPCIONAL5}}
+
+		}
+
+		for (var i in Cuestionario) {
+			cache = Cuestionario[i];
+			if (!contenido(cache['variable'],variables)){
+				variables.push(cache['variable']);
+				variables_str += "<option value='"+cache['variable']+"'>"+cache['variable_str']+"</option>";
+				variables_str_lig += "<option value='"+cache['variable']+"'>"+cache['variable_str']+"</option>"
+			}
+
+			if (!contenido(i,preguntas) ){
+				if ( cache['variable'] == variables[0] ) preguntas_str += "<option value='"+i+"'>"+cache['texto']+"</option>"
+				preguntas.push(i);
+			}
+		}
+
+		$var_g1.html(variables_str);
+		$var_g2.html(variables_str_lig);
+		$var_g3.html(variables_str_lig);
+		$pre_g3.html(preguntas_str);
+		$reg_g1.html(regionales_str);
+		$reg_g2.html(regionales_str);
+		$reg_g3.html(regionales_str);
+		$ciu_g1.html(ciudades_str);
+		$ciu_g2.html(ciudades_str);
+		$ciu_g3.html(ciudades_str);
+		$are_g1.html(areas_str);
+		$are_g2.html(areas_str);
+		$are_g3.html(areas_str);
+		$car_g1.html(cargos_str);
+		$car_g2.html(cargos_str);
+		$car_g3.html(cargos_str);
+	{{#PDATOS_OPCIONAL1}}
+		$op1_g1.html(opcional1_str);
+		$op1_g2.html(opcional1_str);
+		$op1_g3.html(opcional1_str);
+	{{/PDATOS_OPCIONAL1}}
+	{{#PDATOS_OPCIONAL2}}
+		$op2_g1.html(opcional2_str);
+		$op2_g2.html(opcional2_str);
+		$op2_g3.html(opcional2_str);
+	{{/PDATOS_OPCIONAL2}}
+	{{#PDATOS_OPCIONAL3}}
+		$op3_g1.html(opcional3_str);
+		$op3_g2.html(opcional3_str);
+		$op3_g3.html(opcional3_str);
+	{{/PDATOS_OPCIONAL3}}
+	{{#PDATOS_OPCIONAL4}}
+		$op4_g1.html(opcional4_str);
+		$op4_g2.html(opcional4_str);
+		$op4_g3.html(opcional4_str);
+	{{/PDATOS_OPCIONAL4}}
+	{{#PDATOS_OPCIONAL5}}
+		$op5_g1.html(opcional5_str);
+		$op5_g2.html(opcional5_str);
+		$op5_g3.html(opcional5_str);
+	{{/PDATOS_OPCIONAL5}}
+
+		$var_g3.change(function(){
+			var preguntas3 = [],preguntas3_str="",var_sel = $var_g3.val();
+			for (var i in Cuestionario) {
+				cache = Cuestionario[i];
+				if (cache['variable'] == var_sel && !contenido(i,preguntas3)){
+					preguntas3.push(i);
+					preguntas3_str += "<option value='"+i+"'>"+cache['texto']+"</option>";
+				}
+			}
+			$pre_g3.html(preguntas3_str);
+			$pre_g3.multiselect('rebuild');
+			$pre_g3.multiselect('selectAll', false);
+			$pre_g3.multiselect('updateButtonText');
+		});
+
+		//  UPDATE Selects
+		$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+		$('.filtro').multiselect('selectAll', false);
+		$('.filtro').multiselect('updateButtonText');
+		$var_g3.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+		$var_g3.selectedIndex = 0;
+		$var_g3.multiselect('updateButtonText');
+
+		var date_sort_asc = function (date1, date2) {
+		  if (date1 > date2) return 1;
+		  if (date1 < date2) return -1;
+		  return 0;
+		};
+		for (var i = 0; i < Datos.length; i++) if(!contenido_date(Datos[i][2],fechas)) fechas.push(Datos[i][2]);
+		fechas.sort(date_sort_asc);
+	},
+
+	//==============================================================================
+	//   Grafica UNO
+	//==============================================================================
+	grafica_uno: function(){
+		// cacheamos las seleccionadas
+		var {{#PDATOS_OPCIONAL1}}opcional1_seleccionadas = $op1_g1.val() || [],{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}} opcional2_seleccionadas = $op2_g1.val() || [],{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}} opcional3_seleccionadas = $op3_g1.val() || [],{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}} opcional4_seleccionadas = $op4_g1.val() || [],{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}}opcional5_seleccionadas = $op5_g1.val() || [],{{/PDATOS_OPCIONAL5}}
+			variables_seleccionadas = $var_g1.val() || [],
+			regionales_seleccionadas = $reg_g1.val() || [],
+			ciudades_seleccionadas = $ciu_g1.val() || [],
+			areas_seleccionadas = $are_g1.val() || [],
+			cargos_seleccionados = $car_g1.val() || [];
+
+		// inicializamos las variables de la data table
+		var data = new google.visualization.DataTable();
+		data.addColumn('date', 'Fecha');
+		data.addColumn('number', 'Promedio Medición');
+		var matriz_g1 = [], auxiliar=0, matriz_dic_g1 = {};
+
+		// generamos un diccionario para evitar sobrecosto
+		for (var i = 0; i < fechas.length; i++) {
+			matriz_dic_g1[fechas[i]] = 0.0;
+			matriz_dic_g1[fechas[i]+'_total'] = 0.0;
+		}
+
+		// contamos
+		var cache_C,cache_P,cache_M;
+		for (var j = 0; j < Datos.length; j++) {
+			cache_P = Participantes[Datos[j][0]];
+			cache_C = Cuestionario[Datos[j][3]];
+			if( contenido( cache_C['variable'], variables_seleccionadas )
+			&& contenido(cache_P['regional'],regionales_seleccionadas)
+			&& contenido(cache_P['ciudad'],ciudades_seleccionadas)
+			&& contenido(cache_P['area'],areas_seleccionadas)
+			&& contenido(cache_P['cargo'],cargos_seleccionados)
+			{{#PDATOS_OPCIONAL1}}
+				&& contenido(cache_P['opcional1'],opcional1_seleccionadas)
+			{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}}
+				&& contenido(cache_P['opcional2'],opcional2_seleccionadas)
+			{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}}
+				&& contenido(cache_P['opcional3'],opcional3_seleccionadas)
+			{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}}
+				&& contenido(cache_P['opcional4'],opcional4_seleccionadas)
+			{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}}
+				&& contenido(cache_P['opcional5'],opcional5_seleccionadas)
+			{{/PDATOS_OPCIONAL5}}
+		){
+			cache_M = matriz_dic_g1[Datos[j][2]];
+			for (var respuesta in cache_C['respuestas'])
+				if (contenido(respuesta, Datos[j][1]))
+					cache_M += cache_C['respuestas'][respuesta];
+
+			matriz_dic_g1[Datos[j][2]] = cache_M;
+			matriz_dic_g1[Datos[j][2]+'_total'] += 1;
+		}
+	}
+
+	for (var i = 0; i < fechas.length; i++){
+		if ( matriz_dic_g1[fechas[i]+'_total'] != 0 ){
+			matriz_g1[i] = [ fechas[i], +(Math.round(matriz_dic_g1[fechas[i]]/matriz_dic_g1[fechas[i]+'_total']+ "e+2")  + "e-2") ];
+		} else {
+			if ( i == 0 ){
+				matriz_g1[i] = 0;
+			} else {
+				matriz_g1[i] = matriz_g1[i-1];
+			}
+		}
+	}
+
+		data.addRows( matriz_g1 );
+
+		var altura = 200;
+		{{#PDATOS_OPCIONAL1}}altura+=40;{{/PDATOS_OPCIONAL1}}
+		{{#PDATOS_OPCIONAL2}} altura+=40;{{/PDATOS_OPCIONAL2}}
+		{{#PDATOS_OPCIONAL3}} altura+=40;{{/PDATOS_OPCIONAL3}}
+		{{#PDATOS_OPCIONAL4}} altura+=40;{{/PDATOS_OPCIONAL4}}
+		{{#PDATOS_OPCIONAL5}}altura+=40;{{/PDATOS_OPCIONAL5}}
+
+		var chart = new google.visualization.ChartWrapper({
+			chartType: 'LineChart',
+			containerId: 'grafica_uno_div',
+			options: {
+				height: altura,
+				legend: 'none',
+				colors: ['#43AEA8'],
+				chartArea: {
+					width: '90%'
+				},
+				vAxis : {
+					viewWindowMode:'explicit',
+					viewWindow:{
+						max:minmax_res[1],
+						min:0
+				  }
+			   },
+			}
+		});
+
+		var control = new google.visualization.ControlWrapper({
+			controlType: 'ChartRangeFilter',
+			containerId: 'control_grafica_uno_div',
+			options: {
+				filterColumnIndex: 0,
+				ui: {
+					chartOptions: {
+						height: 50,
+						colors: ['#43AEA8'],
+						chartArea: {
+							width: '90%'
+						}
+					}
+				}
+			}
+		});
+
+		var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
+		dashboard.bind([control], [chart]);
+		dashboard.draw(data);
+
+		function zoomLastDay () {
+			var range = data.getColumnRange(0);
+			control.setState({
+				range: {
+					start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 1),
+					end: range.max
+				}
+			});
+			control.draw();
+		}
+		function zoomLastWeek () {
+			var range = data.getColumnRange(0);
+			control.setState({
+				range: {
+					start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 7),
+					end: range.max
+				}
+			});
+			control.draw();
+		}
+		function zoomLastMonth () {
+			// zoom here sets the month back 1, which can have odd effects when the last month has more days than the previous month
+			// eg: if the last day is March 31, then zooming last month will give a range of March 3 - March 31, as this sets the start date to February 31, which doesn't exist
+			// you can tweak this to make it function differently if you want
+			var range = data.getColumnRange(0);
+			control.setState({
+				range: {
+					start: new Date(range.max.getFullYear(), range.max.getMonth() - 1, range.max.getDate()),
+					end: range.max
+				}
+			});
+			control.draw();
+		}
+
+		var runOnce = google.visualization.events.addListener(dashboard, 'ready', function () {
+			google.visualization.events.removeListener(runOnce);
+
+			if (document.addEventListener) {
+				document.querySelector('#lastDay').addEventListener('click', zoomLastDay);
+				document.querySelector('#lastWeek').addEventListener('click', zoomLastWeek);
+				document.querySelector('#lastMonth').addEventListener('click', zoomLastMonth);
+			}
+			else if (document.attachEvent) {
+				document.querySelector('#lastDay').attachEvent('onclick', zoomLastDay);
+				document.querySelector('#lastWeek').attachEvent('onclick', zoomLastWeek);
+				document.querySelector('#lastMonth').attachEvent('onclick', zoomLastMonth);
+			}
+			else {
+				document.querySelector('#lastDay').onclick = zoomLastDay;
+				document.querySelector('#lastWeek').onclick = zoomLastWeek;
+				document.querySelector('#lastMonth').onclick = zoomLastMonth;
+			}
+		});
+	},
+
+	//==============================================================================
+	//   Grafica DOS
+	//==============================================================================
+grafica_dos: function(max,min,finicio, ffin){
+
+	var {{#PDATOS_OPCIONAL1}}opcional1_seleccionadas = $op1_g2.val() || [],{{/PDATOS_OPCIONAL1}}
+		{{#PDATOS_OPCIONAL2}} opcional2_seleccionadas = $op2_g2.val() || [],{{/PDATOS_OPCIONAL2}}
+		{{#PDATOS_OPCIONAL3}} opcional3_seleccionadas = $op3_g2.val() || [],{{/PDATOS_OPCIONAL3}}
+		{{#PDATOS_OPCIONAL4}} opcional4_seleccionadas = $op4_g2.val() || [],{{/PDATOS_OPCIONAL4}}
+		{{#PDATOS_OPCIONAL5}}opcional5_seleccionadas = $op5_g2.val() || [],{{/PDATOS_OPCIONAL5}}
+		variables_seleccionadas = $var_g2.val() || [],
+		regionales_seleccionadas = $reg_g2.val() || [],
+		ciudades_seleccionadas = $ciu_g2.val() || [],
+		areas_seleccionadas = $are_g2.val() || [],
+		cargos_seleccionados = $car_g2.val() || [],
+		matriz_g2 = [],matriz_dic_g2={}, nombres_var={};
+
+		// generamos un diccionario para evitar sobrecosto
+		for (var i = 0; i < variables.length; i++) {
+			matriz_dic_g2[variables[i]] = 0.0;
+			matriz_dic_g2[variables[i]+'_total_ind'] = 0.0;
+			matriz_dic_g2[variables[i]+'_var'] = 0.0;
+			matriz_dic_g2[variables[i]+'_total'] = 0.0;
+		}
+
+		var cache_C,cache_P,cache_M;
+		for(var j = 0; j < Datos.length; j++) {
+
+			cache_P = Participantes[Datos[j][0]];
+			cache_C = Cuestionario[Datos[j][3]];
+
+			if(  finicio <= Datos[j][2].getTime()
+				&& Datos[j][2].getTime() <= ffin
+				&& contenido( cache_C['variable'], variables_seleccionadas)
+				&& contenido( cache_P['regional'], regionales_seleccionadas)
+				&& contenido( cache_P['ciudad'], ciudades_seleccionadas)
+				&& contenido( cache_P['area'], areas_seleccionadas)
+				&& contenido( cache_P['cargo'], cargos_seleccionados)
+				{{#PDATOS_OPCIONAL1}}
+					&& contenido(cache_P['opcional1'], opcional1_seleccionadas)
+				{{/PDATOS_OPCIONAL1}}
+				{{#PDATOS_OPCIONAL2}}
+					&& contenido(cache_P['opcional2'], opcional2_seleccionadas)
+				{{/PDATOS_OPCIONAL2}}
+				{{#PDATOS_OPCIONAL3}}
+					&& contenido(cache_P['opcional3'], opcional3_seleccionadas)
+				{{/PDATOS_OPCIONAL3}}
+				{{#PDATOS_OPCIONAL4}}
+					&& contenido(cache_P['opcional4'], opcional4_seleccionadas)
+				{{/PDATOS_OPCIONAL4}}
+				{{#PDATOS_OPCIONAL5}}
+					&& contenido(cache_P['opcional5'], opcional5_seleccionadas)
+				{{/PDATOS_OPCIONAL5}}
+			){
+				suma = true;
+				if (! nombres_var.hasOwnProperty(cache_C['variable']))
+					nombres_var[cache_C['variable']] = cache_C['variable_str']
+
+				cache_M = matriz_dic_g2[cache_C['variable']] ;
+				for (var respuesta in cache_C['respuestas'])
+					if (contenido(respuesta, Datos[j][1]))
+						cache_M += cache_C['respuestas'][respuesta];
+
+				matriz_dic_g2[cache_C['variable']] = cache_M;
+				matriz_dic_g2[cache_C['variable']+'_total_ind'] += 1;
+			}
+
+			for (var respuesta in cache_C['respuestas'])
+				if (contenido(respuesta, Datos[j][1]))
+					matriz_dic_g2[cache_C['variable']+'_var'] += cache_C['respuestas'][respuesta];
+
+			matriz_dic_g2[cache_C['variable']+'_total'] += 1;
+		}
+
+		if(!suma) throw "Sin datos";
+
+		for (var i = 0; i < variables_seleccionadas.length; i++) {
+
+			if (matriz_dic_g2[variables_seleccionadas[i]+'_total_ind'] && matriz_dic_g2[variables_seleccionadas[i]+'_total'])
+				matriz_g2[i] = [
+								nombres_var[variables_seleccionadas[i]],
+											+(Math.round(matriz_dic_g2[variables_seleccionadas[i]]/matriz_dic_g2[variables_seleccionadas[i]+'_total_ind']+ "e+2")  + "e-2"),
+											+(Math.round(matriz_dic_g2[variables_seleccionadas[i]+'_var']/matriz_dic_g2[variables_seleccionadas[i]+'_total']+ "e+2")  + "e-2")
+							];
+			else if (matriz_dic_g2[variables_seleccionadas[i]+'_total']){
+				matriz_g2[i] = [
+					nombres_var[variables_seleccionadas[i]],
+					0,
+					+(Math.round(matriz_dic_g2[variables_seleccionadas[i]+'_var']/matriz_dic_g2[variables_seleccionadas[i]+'_total']+ "e+2")  + "e-2")
+				];
+			} else {
+				matriz_g2[i] = [nombres_var[variables_seleccionadas[i]],0,0];
+			}
+		}
+
+    var data2 = new google.visualization.DataTable();
+	data2.addColumn('string','Variable');
+	data2.addColumn('number','Promedio Filtro');
+	data2.addColumn('number','Promedio Total');
+
+	data2.addRows(matriz_g2);
+	var altura = 260;
+	{{#PDATOS_OPCIONAL1}}altura+=40;{{/PDATOS_OPCIONAL1}}
+	{{#PDATOS_OPCIONAL2}} altura+=40;{{/PDATOS_OPCIONAL2}}
+	{{#PDATOS_OPCIONAL3}} altura+=40;{{/PDATOS_OPCIONAL3}}
+	{{#PDATOS_OPCIONAL4}} altura+=40;{{/PDATOS_OPCIONAL4}}
+	{{#PDATOS_OPCIONAL5}}altura+=40;{{/PDATOS_OPCIONAL5}}
+
+	var options = {   height: altura,
+					  legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+					  vAxis : {
+							maxValue: max,
+							minValue: min
+							},
+	};
+	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+	chart.draw(data2, options);
+},
+
+	//==============================================================================
+	//   Grafica TRES
+	//==============================================================================
+grafica_tres:  function(finicio, ffin){
+
+	var {{#PDATOS_OPCIONAL1}}opcional1_seleccionadas = $op1_g3.val() || [],{{/PDATOS_OPCIONAL1}}
+		{{#PDATOS_OPCIONAL2}} opcional2_seleccionadas = $op2_g3.val() || [],{{/PDATOS_OPCIONAL2}}
+		{{#PDATOS_OPCIONAL3}} opcional3_seleccionadas = $op3_g3.val() || [],{{/PDATOS_OPCIONAL3}}
+		{{#PDATOS_OPCIONAL4}} opcional4_seleccionadas = $op4_g3.val() || [],{{/PDATOS_OPCIONAL4}}
+		{{#PDATOS_OPCIONAL5}}opcional5_seleccionadas = $op5_g3.val() || [],{{/PDATOS_OPCIONAL5}}
+		variable_seleccionadas = $var_g3.val(),
+		preguntas_seleccionadas = $pre_g3.val() || [],
+		regionales_seleccionadas = $reg_g3.val() || [],
+		ciudades_seleccionadas = $ciu_g3.val() || [],
+		areas_seleccionadas = $are_g3.val() || [],
+		cargos_seleccionados = $car_g3.val() || [];
+
+	var matriz_g3 = [], personas = {}, suma=false, cache_pp, cache_pt;
+
+	for (var persona in Participantes) {
+		personas[persona] = 0;
+		personas[persona+'_total'] = 0;
+	}
+
+	for(var j = 0; j < Datos.length; j++){
+
+		cache_P = Participantes[Datos[j][0]];
+		cache_C = Cuestionario[Datos[j][3]];
+
+		if( cache_C['variable'] == variable_seleccionadas
+			&& finicio <= Datos[j][2].getTime()
+			&& Datos[j][2].getTime() <= ffin
+			&& contenido( cache_P['regional'], regionales_seleccionadas)
+			&& contenido( cache_P['ciudad'], ciudades_seleccionadas)
+			&& contenido( cache_P['area'], areas_seleccionadas)
+			&& contenido( cache_P['cargo'], cargos_seleccionados)
+			{{#PDATOS_OPCIONAL1}}
+				&& contenido(cache_P['opcional1'], opcional1_seleccionadas)
+			{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}}
+				&& contenido(cache_P['opcional2'], opcional2_seleccionadas)
+			{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}}
+				&& contenido(cache_P['opcional3'], opcional3_seleccionadas)
+			{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}}
+				&& contenido(cache_P['opcional4'], opcional4_seleccionadas)
+			{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}}
+				&& contenido(cache_P['opcional5'], opcional5_seleccionadas)
+			{{/PDATOS_OPCIONAL5}}
+		){
+
+			suma = true;
+
+			cache_pp = personas[Datos[j][0]];
+			cache_pt = personas[Datos[j][0]+'_total'];
+			for (var respuesta in cache_C['respuestas']){
+				if (contenido(respuesta, Datos[j][1])){
+					cache_pp += cache_C['respuestas'][respuesta];
+					cache_pt += 1;
+				}
+			}
+			personas[Datos[j][0]] += cache_pp;
+			personas[Datos[j][0]+'_total'] += cache_pt;
+		}
+	}
+
+	if(!suma) throw "Sin datos";
+
+	for (var p in personas)
+		matriz_g3.push([+(Math.round( personas[p]/personas[p+'_total'] + "e+2")  + "e-2")]);
+
+    var data2 = new google.visualization.DataTable();
+    data2.addColumn('number','Puntaje');
+
+	data2.addRows(matriz_g3);
+	var altura = 260;
+	{{#PDATOS_OPCIONAL1}}altura+=40;{{/PDATOS_OPCIONAL1}}
+	{{#PDATOS_OPCIONAL2}} altura+=40;{{/PDATOS_OPCIONAL2}}
+	{{#PDATOS_OPCIONAL3}} altura+=40;{{/PDATOS_OPCIONAL3}}
+	{{#PDATOS_OPCIONAL4}} altura+=40;{{/PDATOS_OPCIONAL4}}
+	{{#PDATOS_OPCIONAL5}}altura+=40;{{/PDATOS_OPCIONAL5}}
+
+	var options = {   height: altura,
+					  legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+					  hAxis: {
+      								maxValue: minmax_res[0],
+									minValue: minmax_res[1]
+      						},
+	};
+
+	var chart = new google.visualization.Histogram(document.getElementById('grafica_tres_div'));
+	chart.draw(data2, options);
+},
+
+verifica_uno: function(){
+
+	try {
+		if (Datos.length > 0){
+			{{#PDATOS_OPCIONAL1}} $op1_g1.val().length{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}} $op2_g1.val().length{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}} $op3_g1.val().length{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}} $op4_g1.val().length{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}} $op5_g1.val().length{{/PDATOS_OPCIONAL5}}
+			$var_g1.val().length
+			$reg_g1.val().length
+			$ciu_g1.val().length
+			$are_g1.val().length
+			$car_g1.val().length
+			google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+		} else {
+			$("#grafica_uno_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_uno_div").html('');
+		}
+		}
+		catch(e){
+			$("#grafica_uno_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_uno_div").html('');
+		}
+},
+
+verifica_dos: function(){
+
+	try {
+			var altura = 260;
+			{{#PDATOS_OPCIONAL1}} $op1_g2.val().length,altura+=40;{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}} $op2_g2.val().length,altura+=40;{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}} $op3_g2.val().length,altura+=40;{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}} $op4_g2.val().length,altura+=40;{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}} $op5_g2.val().length,altura+=40;{{/PDATOS_OPCIONAL5}}
+			$var_g2.val().length
+			$reg_g2.val().length
+			$ciu_g2.val().length
+			$are_g2.val().length
+			$car_g2.val().length
+			$("#control_grafica_dos_div").css("margin-top","0px");
+			var fecha = $('#control_grafica_dos_div').dateRangeSlider('values');
+	    	google.setOnLoadCallback(this.grafica_dos(minmax_res[0],minmax_res[1],fecha.min.getTime(),fecha.max.getTime()));
+		 }
+		catch(e){
+			$("#grafica_dos_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_dos_div").css("margin-top",altura+"px");
+		}
+},
+
+verifica_tres: function(){
+
+	try {
+			var altura = 260;
+			{{#PDATOS_OPCIONAL1}} $op1_g3.val().length,altura+=40;{{/PDATOS_OPCIONAL1}}
+			{{#PDATOS_OPCIONAL2}} $op2_g3.val().length,altura+=40;{{/PDATOS_OPCIONAL2}}
+			{{#PDATOS_OPCIONAL3}} $op3_g3.val().length,altura+=40;{{/PDATOS_OPCIONAL3}}
+			{{#PDATOS_OPCIONAL4}} $op4_g3.val().length,altura+=40;{{/PDATOS_OPCIONAL4}}
+			{{#PDATOS_OPCIONAL5}} $op5_g3.val().length,altura+=40;{{/PDATOS_OPCIONAL5}}
+			$var_g3.val().length
+			$pre_g3.val().length
+			$reg_g3.val().length
+			$ciu_g3.val().length
+			$are_g3.val().length
+			$car_g3.val().length
+			$("#control_grafica_tres_div").css("margin-top","0px");
+			var fecha = $('#control_grafica_tres_div').dateRangeSlider('values');
+	    	google.setOnLoadCallback(this.grafica_tres(fecha.min.getTime(),fecha.max.getTime()));
+
+		 }
+		catch(e){
+			$("#grafica_tres_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_tres_div").css("margin-top",altura+"px");
+		}
+},
+//==============================================================================
+//   Fin de objeto
+//==============================================================================
+}
+
+//==============================================================================
+//   Control de mision
+//==============================================================================
+$(document).ready(function() {
+	Elementos.inicio();
+	Elementos.verifica_uno();
+
+	$('.panel-body .panel').fadeTo(100,100);
+	$('.filtros_uno').change(function(){	Elementos.verifica_uno();});
+	minmax_res = minmax_resf();
+
+	// Grafica 2
+	tiemposInicio_0 = tiemposIniciales(fechas);
+
+    // Slider
+	 $("#control_grafica_dos_div").dateRangeSlider({
+ 		bounds:{
+ 			min: {{FINICIO}},
+ 			max: {{FFIN}}
+ 		},
+ 		defaultValues:{
+ 			min: tiemposInicio_0[0],
+ 			max: tiemposInicio_0[1]
+ 		}
+ 	});
+
+	$('#control_grafica_dos_div').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
+	$('.filtros_dos').change(function(){ Elementos.verifica_dos(); });
+
+	// Grafica 3
+	$("#control_grafica_tres_div").dateRangeSlider({
+		bounds:{
+			min: {{FINICIO}},
+			max: {{FFIN}}
+		},
+		defaultValues:{
+			min: tiemposInicio_0[0],
+			max: tiemposInicio_0[1]
+		}
+	});
+
+	$('#control_grafica_tres_div').on('valuesChanged',function(e,data){ Elementos.verifica_tres(); })
+	$('.filtros_tres').change(function(){ Elementos.verifica_tres(); });
+
+	$(window).resize(function() {
+		Elementos.grafica_uno();
+		Elementos.verifica_dos();
+		Elementos.verifica_tres();
+	});
+
+});
+</script>
+</body>
+</html>

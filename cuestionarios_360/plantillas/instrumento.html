@@ -1,0 +1,70 @@
+{% extends "dash_360.html" %}{%load staticfiles%}
+{% block title %} Proyecto | Instrumentos{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumento</span></i></a></li>
+<li><a href="#"><i><span>/ {{ accion | title }}</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Complete los siguientes campos para {{ accion }} el instrumento:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<form class="form-horizontal" method="POST">
+    			<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Nombre:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input  id="nombre" required title="Se requiere un nombre" type="text" name="nombre" class="form-control" maxlength="254" placeholder="Nombre del instrumento a {{ accion }}" value="{{ Instrumento.nombre | escape}}">
+					</div>
+				</div>
+				<div id="nombre_error" class="form-group" {% if not Error %}style="display:none"{% endif %}>
+					<div class="col-lg-2 col-md-2 col-xs-2 col-sm-2"></div>
+					<div class="col-lg-5 col-md-6 col-xs-8 col-sm-7">
+						<span style="color:#cd1e21"> Este instrumento ya se encuentra registrado en el proyecto, el envío de este formulario será ignorado.</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 col-md-2 col-xs-2 col-sm-2 control-label required">Activo:</label>
+					<div class="col-lg-5 col-md-5 col-xs-9 col-sm-8">
+						<input id="estado" {% if "registrar" == accion %}checked{% else %}{% if Instrumento.estado %}checked{% endif %}{% endif %} {% if not Permisos.act_variables %}disabled{% endif %} type="checkbox" name="estado" class="switch" >
+					</div>
+				</div>
+				<div class="container-fluid">
+					<a href="/360/instrumentos/" class="btn btn-warning pull-left m-t"><i class="fa fa-times"></i> Cancelar </a>
+					<button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-save"></i> {{ accion | title }} instrumento</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script type="text/javascript" src="{% static 'js/plugins/switchery/switchery.min.js' %}"></script>
+<script>var elems = $('.switch'), lenelems = elems.length;for (var i = 0; i < lenelems; i++) {var switchery = new Switchery(elems[i]);}</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script type="text/javascript">
+var contenido = function(a,x){
+	for (var i = 0; i < x.length; i++) {
+		if (a == x[i]){return true;}
+	}
+	return false;
+}
+var nombres = function(){
+	var $nombreerror=$("#nombre_error"),$nombre=$('#nombre'),nombres=[{%for i in Instrumentos%}'{{i.nombre | lower}}',{%endfor%}];
+	$nombreerror.hide();
+	$nombre.bind("keyup change", function(){
+		if(contenido($nombre.val().toLowerCase(),nombres)){
+			$nombreerror.show();
+		}else{
+			$nombreerror.hide();
+		}
+	});
+}
+nombres();
+</script>
+<script type="text/javascript">$('form').validate({ errorPlacement:function(error,element){	error.appendTo(element.parent());}	});</script>
+{%endblock%}

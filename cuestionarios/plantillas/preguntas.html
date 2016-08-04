@@ -27,15 +27,15 @@
 					{% for i in Variable.preguntas_set.all %}
 					<tr>
 						<td>{{i.posicion | capfirst | escape}}</td>
-						<td>{%if Permisos.pre_edit%}<a href="/pregunta/{{i.id}}/">{{i.texto | capfirst | escape}}</a>{%else%}{{i.texto | capfirst | escape}}{%endif%}</td>
-						<td>{%if i.abierta %}Abierta{%else%}{%if i.multiple %}Multiple respuesta {%else%}Única respuesta {%endif%}{%endif%}{%if i.numerica%}numérica{%endif%}</td>
+						<td>{%if Permisos.var_edit%}<a href="/pregunta/{{i.id}}/">{{i.texto | capfirst | escape}}</a>{%else%}{{i.texto | capfirst | escape}}{%endif%}</td>
+						<td>{%if i.abierta %}Abierta {% if i.cuerpo %} - cuerpo humano {% endif %}{%else%}{%if i.multiple %}Multiple respuesta {%else%}Única respuesta {%endif%}{%endif%}{%if i.numerica%}numérica{%endif%}</td>
 						<td>{%if i.estado%}<span style="color:#1d9d73">Activa</span>{%else%}<span style="color:#cd1e21">Inactiva</span>{%endif%}</td>
-						<td>{%if Permisos.act_variables%}<a href="/pregunta/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{%endif%}{%if Permisos.pre_add%}<a href="/pregunta/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.pre_edit%}<a href="/pregunta/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.pre_del%}<a href="/pregunta/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>
+						<td>{%if Permisos.act_variables%}<a href="/pregunta/activar/{{i.id}}/"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></a>{%endif%}{%if Permisos.var_add%}<a href="/pregunta/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="clonar"></i></a>{%endif%}{%if Permisos.var_edit%}<a href="/pregunta/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.var_del%}<a href="/pregunta/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>
 					</tr>{% endfor %}
 				</tbody>
 			</table>
 
-			{%if Permisos.pre_add%}<div class="container-fluid"><a href="/variable/{{Variable.id}}/pregunta/nueva/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar pregunta</a></div>{%endif%}
+			{%if Permisos.var_add%}<div class="container-fluid"><a href="/variable/{{Variable.id}}/pregunta/nueva/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar pregunta</a></div>{%endif%}
 
 		</div>
 	</div>

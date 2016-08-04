@@ -1,0 +1,20 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} A. {{Localizacion}}{% endblock %}
+
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+<li><a href="#"><i><span>/ {{Localizacion}}</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Gráficas del proyecto no disponibles.</h4>
+		</div>
+		<div class="panel-body">
+			<p> Debe iniciar el proyecto antes de poder visualizar cualquier resultado. <a href="/gosurvey/">Click aquí para configurar inicio</a>.</p>
+		</div>
+	</div>
+</div>
+{% endblock %}

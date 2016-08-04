@@ -1,0 +1,290 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} A. General{% endblock %}
+{% block head2 %}
+<style media="screen">#formtable .select2-container {position:relative;z-index:1;float:left;width:100%;margin-bottom:0;display:table;table-layout:fixed;max-width:100%!important;}</style>
+<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+<li><a href="#"><i><span>/ General</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+    <div class="panel panel-default toggle m-t-xs ml20 mr20">
+        <div class="panel-heading">
+            <h4 class="panel-title"> Bienvenido, proyectos asociados:</h4>
+        </div>
+        <div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+            <!-- Inicio Dash -->
+            <!-- Sección 1 -->
+            <div class="col-lg-3">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Porcentaje de Avance </strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-9">
+                            <h1>Gráfica</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <div class="panel-heading">
+                        <h4 class="panel-title"></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div align="center" class="col-lg-12">
+                            <i class="fa fa-shopping-cart" style="color: #8CB126; font-size: 4em;" title="" aria-hidden="true"></i>
+                            <!-- -->
+                            <h3>Tienes 450 Puntos Acumulados</h3>
+                            <button onclick="window.open('talenter_ecommerce.html')" type="button" class="btn btn-success btn-lg mr5 mb10">
+                                Redimir Puntos
+                            </button>
+                        </div>
+                    </div>
+               </div>
+          </div>
+
+            <div class="col-lg-3">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div align="center" class="col-lg-12">
+                            <i style="color: #8CB126; font-size: 4em;" class="fa fa-star"></i>
+                            <h3>Tienes 3 reconocimientos</h3>
+                                <button type="button" class="btn btn-success btn-lg mr5 mb10" id="myBtn">Reconocimientos</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Start .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div align="center" class="col-lg-12">
+                            <i style="color: #8CB126; font-size: 4em;" class="fa fa-list-ol"></i>
+                            <h3>Tienes 1 Encuesta Pendiente por Contestar</h3>
+                            <a href="mac_survey_form_stage_two.html">
+                                <button type="button" class="btn btn-success btn-lg mr5 mb10">
+                                    Contestar Encuesta
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 2 -->
+
+            <!-- Sección 4 -->
+            <div class="col-lg-12">
+                <div class="panel panel-success plain toggle panelMove panelClose panelRefresh">
+                    <!-- Start .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Planes en Acción</strong> </h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="col-lg-3" bgcolor="#8CB126" align="center"> # </th>
+                                    <th class="col-lg-3" bgcolor="#8CB126" align="center">Plan</th>
+                                    <th class="col-lg-3" bgcolor="#8CB126" align="center">¿Lo has visto en acción?</th>
+                                    <th class="col-lg-3" bgcolor="#8CB126" align="center">¿Que impacto ha tenido?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td align="center"> 1 </td>
+                                    <td>Fortalecer los mensajes  de Conciencia de Cambio</td>
+                                    <td width="15%">
+                                    <div >
+                                        <select class="form-control input-sm" id="sel1">
+                                            <option value="AK">Si</option>
+                                            <option value="HI">No</option>
+                                            <option value="HI">No me aplica</option>
+                                        </select>
+                                    </div></td>
+                                    <td>
+                                    <select class="form-control" id="sel1">
+                                        <option value="AK">Alto</option>
+                                        <option value="HI">Medio</option>
+                                        <option value="CA">Nada</option>
+                                    </select></td>
+                                </tr>
+
+                                <tr>
+                                    <td align="center"> 1 </td>
+                                    <td>Fortalecer la red de Promotores de cambio </td>
+                                    <td width="15%">
+                                    <div >
+                                        <select class="form-control input-sm" id="sel1">
+                                            <option value="AK">Si</option>
+                                            <option value="HI">No</option>
+                                            <option value="HI">No me aplica</option>
+                                        </select>
+                                    </div></td>
+                                    <td>
+                                    <select class="form-control" id="sel1">
+                                        <option value="AK">Alto</option>
+                                        <option value="HI">Medio</option>
+                                        <option value="CA">Nada</option>
+                                    </select></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"> 1 </td>
+                                    <td>Implemntar acciones de bienestar en el equipo de proyecto</td>
+                                    <td width="15%">
+                                    <div >
+                                        <select class="form-control input-sm" id="sel1">
+                                            <option value="AK">Si</option>
+                                            <option value="HI">No</option>
+                                            <option value="HI">No me aplica</option>
+                                        </select>
+                                    </div></td>
+                                    <td>
+                                    <select class="form-control" id="sel1">
+                                        <option value="AK">Alto</option>
+                                        <option value="HI">Medio</option>
+                                        <option value="CA">Nada</option>
+                                    </select></td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                        <div class="col-lg-12 center-block">
+                            <button type="button" class="btn btn-primary center-block">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 4 -->
+            <div class="col-lg-12">
+                <div class="panel panel-success plain toggle panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Reconocimientos</strong></h4>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <div class="panel panel-default plain toggle panelClose panelRefresh">
+                                <!-- Start .panel -->
+                                <div class="panel-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-lg-1" bgcolor="#8CB126" align="center"> # </th>
+                                                <th class="col-lg-2" bgcolor="#8CB126" align="center">Colaborador</th>
+
+                                                <th class="col-lg-4" bgcolor="#8CB126" align="center">Comentario</th>
+                                                <th class="col-lg-3" bgcolor="#8CB126" align="center">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td align="center"> 1 </td>
+                                                <td>
+                                                <select class="form-control input-sm" id="sel1">
+                                                    <option value="AK">Juan Quiñones</option>
+                                                    <option value="HI">Pedro Guzman</option>
+                                                    <option value="HI">Fernando Albarracin</option>
+                                                    <option value="HI">Lina Quevedo</option>
+                                                    <option value="HI">Juliana Castellanos</option>
+                                                    <option value="HI">Rafael Carmona</option>
+
+                                                </select>
+                                                </td>
+
+                                                <td> <input type="text" class="form-control" id="usr"> </td>
+                                                <td> <button onclick="window.open('talenter_medalla_liderazgo.html')" type="button" class="btn btn-primary center-block">
+                                            Enviar
+                                        </button> </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="col-lg-12 center-block">
+                                        <button type="button" class="btn btn-primary center-block">
+                                            Nuevo Reconocimiento
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End .panel -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 5 -->
+            <div class="container">
+                      <!-- Modal -->
+                      <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+
+                          <!-- Modal content-->
+                          <div class="modal-content" >
+                            <div class="modal-header"  style="background-color:#8CB126" >
+                              <button type="button" class="close" data-dismiss="modal" >&times;</button>
+                              <h4 class="modal-title" ><strong>Te han reconocido por:</strong></h4>
+                            </div>
+                            <div class="modal-body">
+                              <table class="table table-bordered">
+                                 <tr>
+                                    <td>
+                                        La presentación de tu reporte fue impecable
+                                    </td>
+                                    <td>
+                                        Juan Quiñones
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>
+                                        Buena integración con los miembros del equipo de proyectos
+                                    </td>
+                                    <td>
+                                        Juan Quiñones
+                                    </td>
+                                 </tr>
+                              </table>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+            <!-- Fin Dash -->
+
+
+            <!-- Fin Dash -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{%block scripts%}
+
+{% endblock %}

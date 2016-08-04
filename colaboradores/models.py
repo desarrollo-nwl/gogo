@@ -17,7 +17,6 @@ class Colaboradores( models.Model ):
 	proyecto = models.ForeignKey( Proyectos )
 	puntaje = models.FloatField( default = 0 )
 	reenviados = models.PositiveSmallIntegerField( default = 0)
-	res_salud = models.PositiveSmallIntegerField( default = 0 )
 	respuestas = models.PositiveSmallIntegerField( default = 0 )
 	zdel = models.DateTimeField( blank = True, null = True )
 

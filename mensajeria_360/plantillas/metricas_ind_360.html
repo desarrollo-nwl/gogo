@@ -1,0 +1,75 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% load custom_filters %}
+{% block title %} Proyecto | Respuestas detalladas{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/respuestas/metricas/"><i><span>/ Envios y respuestas</span></i></a></li>
+<li><a href="#"><i><span>/ Red personal</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Avance de <b>{{ Redes.0.colaborador.nombre }}  {{ Redes.0.colaborador.apellido }}</b></h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Permisos.red_edit%}
+			<script type="text/javascript">
+			var actualizar = function(id){
+				$.ajax({url:"/360/redes/activar/"+id}).done(function( json ) {
+					if(json['id']){
+						if(json['estado'])
+							$('#e'+json['id']).html('<span style="color:#1d9d73">Activa</span>');
+						else
+							$('#e'+json['id']).html('<span style="color:#cd1e21">Inactiva</span>');
+						}
+			  }).fail(function(json) {
+			  	console.log(json['responseText']);
+			  });
+			};
+			</script>
+			{% endif %}
+			{%if Permisos.col_see%}
+			<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th> Porcentaje de avance</th>
+						<th> Rol</th>
+						<th> Evaluado</th>
+						<th> Posibles </th>
+						<th> Contestadas </th>
+						<th> Estado</th>
+						<th> Acciones </th>
+					</tr>
+				</thead>
+				<tbody>
+					{%for i in Redes %}
+					<tr id="r{{i.id |safe}}">
+						<td><span class="pull-center text-muted " >{{ i.tot_porcentaje | floatformat:"-2" | safe }}</b>% Completo</span>
+						<div class="pull-middle progress active" style="width: 250px;margin: 0 auto;">
+							<div class="progress-bar {% if i.activo %}  progress-bar-primary {%else%} progress-bar-success {% endif %}" role="progressbar" aria-valuenow="{{ i.tot_porcentaje | floatformat:"0" | safe }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ i.tot_porcentaje | floatformat:"0" | safe }}%">
+								<span class="sr-only">{{ i.tot_porcentaje | floatformat:"-2" | safe }}% Completado. {% ifequal i.total 100 %}(success){% endifequal %}</span>
+							</div>
+						</div></td>
+						<td>{{ i.rol }}
+						<td>{{ i.evaluado.nombre  }} {{ i.evaluado.apellido }}</td>
+						<td>{% widthratio i.instrumento.max_preguntas 1 Proyecto.ciclos %}</td>
+						<td>{{ i.pre_respuestas | safe }}</td>
+						<td id ="e{{i.id|safe}}">{% if i.estado%}<span style="color:#1d9d73">Activa</span>{% else %}<span style="color:#cd1e21">Inactiva</span>{% endif %}</td>
+						<td>{% if Permisos.red_edit %}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id |safe}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{% endif %}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],"order": [[ 0, "desc" ],[ 2, "asc" ]],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ métricas",sZeroRecords:"No se encontraron métricas",sEmptyTable:"Este usuario no posee redes asociadas.",sInfo:"Métricas del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty:"Métricas del  0 al 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ métricas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{%endblock%}

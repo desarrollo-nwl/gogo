@@ -48,8 +48,14 @@ INSTALLED_APPS = (
 	'cuestionarios',
 	'mensajeria',
 	'usuarios',
+	'colaboradores_360',
+	'cuestionarios_360',
+	'mensajeria_360',
+	'redes_360',
 	'mptt',
 	'debug_toolbar',
+	'exp_usuario',
+	'entornoPruebas',
 
 )
 
@@ -74,14 +80,20 @@ TEMPLATES = [
 				BASE_DIR+'/colaboradores/plantillas/',
 				BASE_DIR+'/cuestionarios/plantillas/',
 				BASE_DIR+'/mensajeria/plantillas/',
-				BASE_DIR+'/usuarios/plantillas/'],
+				BASE_DIR+'/usuarios/plantillas/',
+				BASE_DIR+'/cuestionarios_360/plantillas/',
+				BASE_DIR+'/mensajeria_360/plantillas/',
+				BASE_DIR+'/colaboradores_360/plantillas/',
+				BASE_DIR+'/redes_360/plantillas/',
+				BASE_DIR+'/exp_usuario/plantillas',
+				BASE_DIR+'/entornoPruebas/plantillas',],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
 				'django.template.context_processors.debug',
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
-				# 'django.contrib.messages.context_processors.messages',
+				'django.contrib.messages.context_processors.messages',
 			],
 		},
 	},
@@ -95,18 +107,28 @@ WSGI_APPLICATION = 'gogo.wsgi.application'
 
 DATABASES = {
 	'default': {
+
 			# 'ENGINE':'django.db.backends.sqlite3',
 			# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 			'ENGINE': 'django.db.backends.postgresql_psycopg2',
 			'NAME': 'gogo_db',
+
 			# 'USER': 'usuariodb_gogo',
 			# 'PASSWORD':'W#y2d@uV4+eSPuwrEc$UTrE4eCruTHas',
 			'HOST':'127.0.0.1',
 			# 'HOST':'networksdb.co3mxnuop6eu.us-east-1.rds.amazonaws.com',
-			'PORT':'5432',
+
 
 			'USER': 'user_gogo_db',
 			'PASSWORD': 'pass_db_gogo_#asdf',
+
+
+			# 'PORT':'5432',
+
+			# master PASSWORD
+			#'USER': 'suidi',
+			#'PASSWORD':'Networks123*',
+
 
 	}
 }
@@ -141,6 +163,7 @@ MEDIA_ROOT = BASE_DIR + '/media/'
 # session expire at browser close
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+
 # CACHES = {
 # 	 'default': {
 # 		 'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
@@ -150,6 +173,19 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 
+# CACHES = {
+#  	'default':{
+#  		'BACKEND':'redis_cache.RedisCache',
+#  		'LOCATION':'127.0.0.1:6379',
+#  		'OPTIONS':{
+#  			'DB':2,
+#  			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
+#  		},
+#  	},
+# }
+
+#
+#
 # CACHES = {
 #  	'default':{
 #  		'BACKEND':'redis_cache.RedisCache',

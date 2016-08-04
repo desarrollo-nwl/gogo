@@ -1,0 +1,1215 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} A. Focalizado{% endblock %}
+{% block head2 %}
+<link rel="stylesheet" href=" {% static 'plugins/jQRangeSlider-master/css/iThing.css' %}  " type="text/css" />
+<style media="screen">div.charts-tooltip div{border-color: #ccc !important;background-color: #fff !important}.multiselect{margin-left: -15px !important;}.panel-body .panel{opacity:0}#control_grafica_dos_div div div span,#control_grafica_tres_div div div span,#control_grafica_uno_div div div span,#grafica_dos_div div div span,#grafica_tres_div div div span,#grafica_uno_div div div span{display:none!important}</style>
+{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+<li><a href="#"><i><span>/ Focalizado</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Promedio general por variable en tiempo real</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div align="center">
+					<input id="lastDay" type="button" value="Ultimo Dia" />
+					<input id="lastWeek" type="button" value="Ultima Semana" />
+					<input id="lastMonth" type="button" value="Ultimo Mes" />
+				</div>
+				<div style='margin: 0 5px 0 5px' id="grafica_uno_div"></div>
+				<div style='margin: 0 5px 0 5px' id="control_grafica_uno_div"></div>
+			</div>
+
+			<div class="col-lg-3 m-t-xs">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Preguntas</label>
+									<div class="col-xs-2">
+										<select id="preguntas_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{%if PDatos.opcional1 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional2 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional3 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional4 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional5 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g1" class="filtro filtros_uno form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Resultados Generales Recuento Por Variable</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 5px 0 5px' id="grafica_dos_div"></div>
+				<br>
+				<div id="slider"></div>
+				<br><br>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g2" class="filtros_dos form-control"></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Preguntas</label>
+									<div class="col-xs-2">
+										<select id="preguntas_g2" class="filtros_dos form-control"></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{%if PDatos.opcional1 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional2 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional3 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional4 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional5 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g2" class="filtro filtros_dos form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title">Resultados Generales Porcentaje Por Variable</h4>
+		</div>
+		<div class="panel-body">
+			<div class="col-lg-9">
+				<div style='margin: 0 5px 0 5px' id="grafica_tres_div"></div>
+				<br>
+				<div style='margin: 0 5px 0 5px' id="control_grafica_tres_div"></div>
+				<br><br>
+			</div>
+
+			<div class="col-lg-3">
+				<div class="panel panel-default toggle">
+					<!-- Inicio .panel -->
+					<div class="panel-heading">
+						<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros</h4>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Variables</label>
+									<div class="col-xs-2">
+										<select id="variables_g3" class="filtros_tres form-control"></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Preguntas</label>
+									<div class="col-xs-2">
+										<select id="preguntas_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Regionales</label>
+									<div class="col-xs-2">
+										<select id="regionales_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Ciudades</label>
+									<div class="col-xs-2">
+										<select id="ciudades_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Áreas</label>
+									<div class="col-xs-2">
+										<select id="areas_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-5 control-label">Cargos</label>
+									<div class="col-xs-2">
+										<select id="cargos_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{%if PDatos.opcional1 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional1 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional1_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional2 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional2 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional2_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional3 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional3 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional3_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional4 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional4 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional4_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+								{%if PDatos.opcional5 %}
+								<div class="form-group">
+									<label class="col-xs-5 control-label">{{ PDatos.opcional5 | escape }}</label>
+									<div class="col-xs-2">
+										<select id="opcional5_g3" class="filtro filtros_tres form-control" multiple></select>
+									</div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{%block scripts%}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
+
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderMouseTouch.min.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderDraggable.min.js'%} "></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderBar.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderHandle.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSliderHandle.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSliderLabel.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQRangeSlider.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
+  <!-- <script type="text/javascript" src="https://www.google.com/jsapi"></script> -->
+<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.2','packages':['corechart']}]}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
+<script type="text/javascript">
+var Datos = {{ Datos | safe}}
+var Cuestionario = [ {% for i in Preguntas %}['{{ i.variable_id | escape }}',{ '{{ i.id | escape }}':{ {% for j in i.respuestas_set.all %} '{{ j.texto | escape}}': {% if j.numerico %}{{ j.numerico | escape }}{% else %}0{% endif %},{% endfor %} } } ],{% endfor %}];
+var sintaxis = [{% for i in Preguntas %}[`{{i.id | escape}}`,[ {% for j in i.respuestas_set.all %}`{{ j.texto | escape }}`,{% endfor %}]],{% endfor %}]
+
+
+var contenido = function(a,x){
+	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
+	return false;
+}
+var contenido_date = function(a,x){
+	for (var i = 0; i < x.length; i++) if (a - x[i] == 0) return true;
+	return false;
+}
+var limpiar_filas_nulas = function(matriz_datos){
+	var long_fila = matriz_datos[0].length;
+	for( var i = 1; i < matriz_datos.length; i++ ) {
+		for (var j = 1; j < long_fila; j++)
+			if (matriz_datos[i][j] == 0 )
+				matriz_datos[i][j] = matriz_datos[i-1][j];
+	}
+	return matriz_datos;
+}
+var eliminar_filas_nulas = function(matriz_datos){
+	var matriz_limpia =[], suma = 0;
+	for( var i = 1; i < matriz_datos.length; i++ ) {
+		suma = 0;
+		for ( var j = 1; j < matriz_datos[i].length; j++ )
+			suma += matriz_datos[i][j];
+
+		if ( suma != 0 ) matriz_limpia.push(matriz_datos[i]);
+	}
+	return matriz_limpia;
+}
+var maximo_cuestionario = 5;
+for (var i = 0; i < Cuestionario.length; i++) {
+	for (var key in Cuestionario[i][1]) {
+		if (Cuestionario[i][1].hasOwnProperty(key)){
+			for (var key2 in Cuestionario[i][1][key]) {
+				if (Cuestionario[i][1][key].hasOwnProperty(key2) && Cuestionario[i][1][key][key2] > maximo_cuestionario)
+			 		maximo_cuestionario = Cuestionario[i][1][key][key2];
+			 }
+		}
+	}
+}
+
+var integrarDatos = function(tiempoMin,tiempoMax,matriz_g2,matrizIntegral,respuestas){
+      var matrizIntegrada = matrizIntegral,suma=0;
+	  for(var m=0;m<matrizIntegrada.length;m++){
+		  for(var i=0;i<matriz_g2.length;i++){
+				if(matriz_g2[i][1]>= tiempoMin && matriz_g2[i][1]<=tiempoMax && matriz_g2[i][0]==matrizIntegrada[m][0]){
+					for(var k = 0; k<respuestas.length; k++){
+						matrizIntegrada[m][k+1] += matriz_g2[i][k+2];
+						suma += matriz_g2[i][k+2];
+					}
+			  }
+		}
+	}
+	if(suma === 0) throw "Sin datos";
+    return matrizIntegrada;
+}
+
+var tiemposIniciales = function(variables){
+	var tiempoMaximo = new Date(2000,1,20).getTime(),
+		tiempoMinimo = new Date(2030,1,20).getTime(),
+		fechaMaxima = new Date(2030,1,20),
+		fechaMinima = new Date(2000,1,20);
+	for(var i=0;i<variables[3].length;i++){
+			var tiempo = variables[3][i].getTime(),
+				fecha = variables[3][i];
+			if(tiempo>tiempoMaximo){
+				tiempoMaximo = tiempo;
+                fechaMaxima = fecha;
+				}
+			if(tiempo<tiempoMinimo){
+				tiempoMinimo = tiempo;
+				fechaMinima = fecha;
+			}
+		}
+    return [tiempoMinimo,tiempoMaximo,fechaMinima,fechaMaxima];
+}
+//==============================================================================
+//   variables GLOBALES
+//==============================================================================
+
+var variables=[],preguntas=[],regionales=[],ciudades=[],areas=[],cargos=[], 	fechas=[],
+	$var_g1 = $('#variables_g1'), $pre_g1 = $('#preguntas_g1'),
+	$reg_g1 = $('#regionales_g1'), $ciu_g1 = $('#ciudades_g1'),
+	$are_g1 = $('#areas_g1'), $car_g1 = $('#cargos_g1'),tiemposInicio_0=[],
+	variables_str="",preguntas_str_lig="",preguntas_str="",regionales_str="",ciudades_str="",areas_str="",cargos_str="",
+	opcional1_str="",opcional2_str="",opcional3_str="",opcional4_str="",opcional5_str="";
+
+{%if PDatos.opcional1 %}var $op1_g1 = $('#opcional1_g1'),opcional1=[];{% endif %}
+{%if PDatos.opcional2 %}var $op2_g1 = $('#opcional2_g1'),opcional2=[];{% endif %}
+{%if PDatos.opcional3 %}var $op3_g1 = $('#opcional3_g1'),opcional3=[];{% endif %}
+{%if PDatos.opcional4 %}var $op4_g1 = $('#opcional4_g1'),opcional4=[];{% endif %}
+{%if PDatos.opcional5 %}var $op5_g1 = $('#opcional5_g1'),opcional5=[];{% endif %}
+
+var $var_g2 = $('#variables_g2'), $pre_g2 = $('#preguntas_g2'),
+	$reg_g2 = $('#regionales_g2'), $ciu_g2 = $('#ciudades_g2'),
+	$are_g2 = $('#areas_g2'), $car_g2 = $('#cargos_g2');
+
+{%if PDatos.opcional1 %}var $op1_g2 = $('#opcional1_g2');{% endif %}
+{%if PDatos.opcional2 %}var $op2_g2 = $('#opcional2_g2');{% endif %}
+{%if PDatos.opcional3 %}var $op3_g2 = $('#opcional3_g2');{% endif %}
+{%if PDatos.opcional4 %}var $op4_g2 = $('#opcional4_g2');{% endif %}
+{%if PDatos.opcional5 %}var $op5_g2 = $('#opcional5_g2');{% endif %}
+
+
+var $var_g3 = $('#variables_g3'), $pre_g3 = $('#preguntas_g3'),
+	$reg_g3 = $('#regionales_g3'), $ciu_g3 = $('#ciudades_g3'),
+	$are_g3 = $('#areas_g3'), $car_g3 = $('#cargos_g3');
+
+{%if PDatos.opcional1 %}var $op1_g3 = $('#opcional1_g3');{% endif %}
+{%if PDatos.opcional2 %}var $op2_g3 = $('#opcional2_g3');{% endif %}
+{%if PDatos.opcional3 %}var $op3_g3 = $('#opcional3_g3');{% endif %}
+{%if PDatos.opcional4 %}var $op4_g3 = $('#opcional4_g3');{% endif %}
+{%if PDatos.opcional5 %}var $op5_g3 = $('#opcional5_g3');{% endif %}
+
+
+var Elementos = {
+//==============================================================================
+//   Selects
+//==============================================================================
+inicio : function(){
+
+	for (var i = 0; i < Datos.length; i++) {
+
+		if(!contenido_date(Datos[i][8],fechas)) fechas.push(Datos[i][8]);
+
+		if (!contenido(Datos[i][14],variables)){
+			variables.push(Datos[i][14]);
+			variables_str += "<option value='"+Datos[i][14]+"'>"+Datos[i][1]+"</option>"
+		}
+
+		if ( !contenido(Datos[i][15],preguntas) ){
+			if ( Datos[i][14] == variables[0] ) preguntas_str_lig += "<option value='"+Datos[i][15]+"'>"+Datos[i][2]+"</option>"
+			preguntas_str += "<option value='"+Datos[i][15]+"'>"+Datos[i][2]+"</option>"
+			preguntas.push(Datos[i][15]);
+		}
+		if (!contenido(Datos[i][3],regionales)){
+			regionales.push(Datos[i][3]);
+			regionales_str += "<option value='"+Datos[i][3]+"'>"+Datos[i][3]+"</option>"
+		}
+		if (!contenido(Datos[i][4],ciudades)){
+			ciudades.push(Datos[i][4]);
+			ciudades_str += "<option value='"+Datos[i][4]+"'>"+Datos[i][4]+"</option>"
+		}
+		if (!contenido(Datos[i][5],areas)){
+			areas.push(Datos[i][5]);
+			areas_str += "<option value='"+Datos[i][5]+"'>"+Datos[i][5]+"</option>"
+		}
+		if (!contenido(Datos[i][6],cargos)){
+			cargos.push(Datos[i][6]);
+			cargos_str += "<option value='"+Datos[i][6]+"'>"+Datos[i][6]+"</option>"
+		}
+
+		{%if PDatos.opcional1 %}
+		if (!contenido(Datos[i][9],opcional1)){
+			opcional1.push(Datos[i][9]);
+			opcional1_str += "<option value='"+Datos[i][9]+"'>"+Datos[i][9]+"</option>"
+		}
+		{% endif %}
+		{%if PDatos.opcional2 %}
+		if (!contenido(Datos[i][10],opcional2)){
+			opcional2.push(Datos[i][10]);
+			opcional2_str += "<option value='"+Datos[i][10]+"'>"+Datos[i][10]+"</option>"
+		}
+		{% endif %}
+		{%if PDatos.opcional3 %}
+		if (!contenido(Datos[i][11],opcional3)){
+			opcional3.push(Datos[i][11]);
+			opcional3_str += "<option value='"+Datos[i][11]+"'>"+Datos[i][11]+"</option>"
+		}
+		{% endif %}
+		{%if PDatos.opcional4 %}
+		if (!contenido(Datos[i][12],opcional4)){
+			opcional4.push(Datos[i][12]);
+			opcional4_str += "<option value='"+Datos[i][12]+"'>"+Datos[i][12]+"</option>"
+		}
+		{% endif %}
+		{%if PDatos.opcional5 %}
+		if (!contenido(Datos[i][13],opcional5)){
+			opcional5.push(Datos[i][13]);
+			opcional5_str += "<option value='"+Datos[i][13]+"'>"+Datos[i][13]+"</option>"
+		}
+		{% endif %}
+	}
+
+	$var_g1.append(variables_str);
+	$var_g2.append(variables_str);
+	$var_g3.append(variables_str);
+	$pre_g1.append(preguntas_str);
+	$pre_g2.append(preguntas_str_lig);
+	$pre_g3.append(preguntas_str_lig);
+	$reg_g1.append(regionales_str);
+	$reg_g2.append(regionales_str);
+	$reg_g3.append(regionales_str);
+	$ciu_g1.append(ciudades_str);
+	$ciu_g2.append(ciudades_str);
+	$ciu_g3.append(ciudades_str);
+	$are_g1.append(areas_str);
+	$are_g2.append(areas_str);
+	$are_g3.append(areas_str);
+	$car_g1.append(cargos_str);
+	$car_g2.append(cargos_str);
+	$car_g3.append(cargos_str);
+{% if PDatos.opcional1 %}
+	$op1_g1.append(opcional1_str);
+	$op1_g2.append(opcional1_str);
+	$op1_g3.append(opcional1_str);
+{% endif %}
+{% if PDatos.opcional2 %}
+	$op2_g1.append(opcional2_str);
+	$op2_g2.append(opcional2_str);
+	$op2_g3.append(opcional2_str);
+{% endif %}
+{% if PDatos.opcional3 %}
+	$op3_g1.append(opcional3_str);
+	$op3_g2.append(opcional3_str);
+	$op3_g3.append(opcional3_str);
+{% endif %}
+{% if PDatos.opcional4 %}
+	$op4_g1.append(opcional4_str);
+	$op4_g2.append(opcional4_str);
+	$op4_g3.append(opcional4_str);
+{% endif %}
+{% if PDatos.opcional5 %}
+	$op5_g1.append(opcional5_str);
+	$op5_g2.append(opcional5_str);
+	$op5_g3.append(opcional5_str);
+{% endif %}
+
+	$var_g1.change(function(){
+		var preguntas1 = [];
+		$pre_g1.find('option').remove();
+		if($var_g1.val()){
+			for (var i = 0; i < Datos.length; i++) {
+				if ( !contenido(Datos[i][15],preguntas1) && contenido(Datos[i][14],$var_g1.val()) ){
+					preguntas1.push(Datos[i][15]);
+					$pre_g1.append($('<option>', {
+						value: Datos[i][15],
+						text : Datos[i][2]
+					}));
+				}
+			}
+		}
+		$pre_g1.multiselect('rebuild');
+		$pre_g1.multiselect('selectAll', false);
+		$pre_g1.multiselect('updateButtonText');
+	});
+	$var_g2.change(function(){
+		var preguntas2 = [];
+		$pre_g2.find('option').remove();
+		for (var i = 0; i < Datos.length; i++) {
+			if ( !contenido(Datos[i][15],preguntas2) && Datos[i][14] == $var_g2.val() ){
+				preguntas2.push(Datos[i][15]);
+				$pre_g2.append($('<option>', {
+					value: Datos[i][15],
+					text : Datos[i][2]
+				}));
+			}
+		}
+		$pre_g2.multiselect('rebuild');
+		$pre_g2.selectedIndex = 0;
+		$pre_g2.multiselect('updateButtonText');
+	});
+	$var_g3.change(function(){
+		var preguntas3 = [];
+		$pre_g3.find('option').remove();
+		for (var i = 0; i < Datos.length; i++) {
+			if ( !contenido(Datos[i][15],preguntas3) && Datos[i][14] == $var_g3.val() ){
+				preguntas3.push(Datos[i][15]);
+				$pre_g3.append($('<option>', {
+					value: Datos[i][15],
+					text : Datos[i][2]
+				}));
+			}
+		}
+		$pre_g3.multiselect('rebuild');
+		$pre_g3.multiselect('selectAll', false);
+		$pre_g3.multiselect('updateButtonText');
+	});
+
+	//  UPDATE Selects
+	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$('.filtro').multiselect('selectAll', false);
+	$('.filtro').multiselect('updateButtonText');
+	$var_g2.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$var_g2.selectedIndex = 0;
+	$var_g2.multiselect('updateButtonText');
+	$pre_g2.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$pre_g2.selectedIndex = 0;
+	$pre_g2.multiselect('updateButtonText');
+	$var_g3.multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '130px',dropRight: true,disableIfEmpty: true	});
+	$var_g3.selectedIndex = 0;
+	$var_g3.multiselect('updateButtonText');
+
+},
+
+//==============================================================================
+//   Grafica UNO
+//==============================================================================
+grafica_uno: function(){
+	// cacheamos las seleccionadas
+	var variables_seleccionadas=$var_g1.val() || [],
+		{%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g1.val() || [],{% endif %}
+		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g1.val() || [],{% endif %}
+		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g1.val() || [],{% endif %}
+		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g1.val() || [],{% endif %}
+		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g1.val() || [],{% endif %}
+		preguntas_seleccionadas = $pre_g1.val() || [],
+		regionales_seleccionadas = $reg_g1.val() || [],
+		ciudades_seleccionadas = $ciu_g1.val() || [],
+		areas_seleccionadas = $are_g1.val() || [],
+		cargos_seleccionados = $car_g1.val() || [];
+
+	// inicializamos las variables de la data table
+	var data = new google.visualization.DataTable(),
+		variables_seleccionadas_textos = [], v = $('#variables_g1 option');
+	for(var  i=0; i< v.length; i++){ if(v[i].selected){variables_seleccionadas_textos.push(v[i].text)}};
+	data.addColumn('date', 'Fecha');
+
+	for (var i = 0; i < variables_seleccionadas_textos.length; i++) {
+		data.addColumn('number',variables_seleccionadas_textos[i] );
+	}
+	var matriz_g1 = [],auxiliar=0;
+
+	// inicializamos la date tables
+	for (var i = 0; i < fechas.length; i++) {
+		matriz_g1.push([ fechas[i] ]);
+		// llenamos de ceros la date tables
+		for (var j = 0; j < variables_seleccionadas.length; j++) {
+			matriz_g1[i].push(0);
+		}
+	}
+
+	// contamos
+	for (var i = 0; i < matriz_g1.length; i++) {
+		for (var k = 0; k < variables_seleccionadas.length; k++) {
+			for (var j = 0; j < Datos.length; j++) {
+				if( matriz_g1[i][0].getTime() === Datos[j][8].getTime()
+				&& variables_seleccionadas[k] == Datos[j][14]
+				&& Datos[j][16] == "True"
+				&& contenido(Datos[j][15],preguntas_seleccionadas)
+				&& contenido(Datos[j][3],regionales_seleccionadas)
+				&& contenido(Datos[j][4],ciudades_seleccionadas)
+				&& contenido(Datos[j][5],areas_seleccionadas)
+				&& contenido(Datos[j][6],cargos_seleccionados)
+				{%if PDatos.opcional1 %}
+					&& contenido(Datos[j][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional2 %}
+					&& contenido(Datos[j][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional3 %}
+					&& contenido(Datos[j][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional4 %}
+					&& contenido(Datos[j][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional5 %}
+					&& contenido(Datos[j][13],opcional5_seleccionadas)
+				{% endif %}
+			){
+					for (var l = 0; l < Cuestionario.length; l++) {
+						if( Cuestionario[l][0] == Datos[j][14] && Cuestionario[l][1][Datos[j][15]] )
+						{
+							for (var m = 0; m < Datos[j][7].length; m++) {
+								if( Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ] ){
+									matriz_g1[i][k+1] += Cuestionario[l][1][Datos[j][15]][ Datos[j][7][m] ];
+									auxiliar++;
+								}
+							}
+						}
+					}
+				}
+			}
+
+		if(auxiliar){
+			matriz_g1[i][k+1] = +(Math.round(matriz_g1[i][k+1]/auxiliar+ "e+2")  + "e-2");
+			auxiliar = 0;
+		}
+
+		}
+	}
+
+	matriz_g1 = limpiar_filas_nulas(matriz_g1);
+
+	data.addRows( matriz_g1 );
+
+	var altura = 200;
+	{%if PDatos.opcional1 %}altura+=40;{% endif %}
+	{%if PDatos.opcional2 %}altura+=40;{% endif %}
+	{%if PDatos.opcional3 %}altura+=40;{% endif %}
+	{%if PDatos.opcional4 %}altura+=40;{% endif %}
+	{%if PDatos.opcional5 %}altura+=40;{% endif %}
+
+	var chart = new google.visualization.ChartWrapper({
+		chartType: 'LineChart',
+		containerId: 'grafica_uno_div',
+		options: {
+			height: altura,
+			legend: 'none',
+			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
+			chartArea: {
+				width: '90%'
+			},
+			legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+			vAxis : {
+				viewWindowMode:'explicit',
+				viewWindow:{
+                	max:maximo_cuestionario,
+                	min:0
+              }
+		   },
+		}
+	});
+
+	var control = new google.visualization.ControlWrapper({
+		controlType: 'ChartRangeFilter',
+		containerId: 'control_grafica_uno_div',
+		options: {
+			filterColumnIndex: 0,
+			ui: {
+				chartOptions: {
+					height: 50,
+					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
+					chartArea: {
+						width: '90%'
+					}
+				}
+			}
+		}
+	});
+
+	var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
+	dashboard.bind([control], [chart]);
+	dashboard.draw(data);
+
+	function zoomLastDay () {
+		var range = data.getColumnRange(0);
+		control.setState({
+			range: {
+				start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 1),
+				end: range.max
+			}
+		});
+		control.draw();
+	}
+	function zoomLastWeek () {
+		var range = data.getColumnRange(0);
+		control.setState({
+			range: {
+				start: new Date(range.max.getFullYear(), range.max.getMonth(), range.max.getDate() - 7),
+				end: range.max
+			}
+		});
+		control.draw();
+	}
+	function zoomLastMonth () {
+		// zoom here sets the month back 1, which can have odd effects when the last month has more days than the previous month
+		// eg: if the last day is March 31, then zooming last month will give a range of March 3 - March 31, as this sets the start date to February 31, which doesn't exist
+		// you can tweak this to make it function differently if you want
+		var range = data.getColumnRange(0);
+		control.setState({
+			range: {
+				start: new Date(range.max.getFullYear(), range.max.getMonth() - 1, range.max.getDate()),
+				end: range.max
+			}
+		});
+		control.draw();
+	}
+
+	var runOnce = google.visualization.events.addListener(dashboard, 'ready', function () {
+		google.visualization.events.removeListener(runOnce);
+
+		if (document.addEventListener) {
+			document.querySelector('#lastDay').addEventListener('click', zoomLastDay);
+			document.querySelector('#lastWeek').addEventListener('click', zoomLastWeek);
+			document.querySelector('#lastMonth').addEventListener('click', zoomLastMonth);
+		}
+		else if (document.attachEvent) {
+			document.querySelector('#lastDay').attachEvent('onclick', zoomLastDay);
+			document.querySelector('#lastWeek').attachEvent('onclick', zoomLastWeek);
+			document.querySelector('#lastMonth').attachEvent('onclick', zoomLastMonth);
+		}
+		else {
+			document.querySelector('#lastDay').onclick = zoomLastDay;
+			document.querySelector('#lastWeek').onclick = zoomLastWeek;
+			document.querySelector('#lastMonth').onclick = zoomLastMonth;
+		}
+	});
+},
+
+//==============================================================================
+//   Grafica DOS
+//==============================================================================
+grafica_dos : function(dataTable,vector) {
+    var paila = dataTable;
+	var preguntaSelecionada = $pre_g2.val() || [];
+    var data2 = new google.visualization.DataTable();
+	data2.addColumn('string','Area');
+
+	for (var i = 0; i < vector.length; i++) {
+		data2.addColumn('number',vector[i] );
+	}
+
+	data2.addRows(dataTable);
+	var altura = 260;
+	{%if PDatos.opcional1 %}altura+=40;{% endif %}
+	{%if PDatos.opcional2 %}altura+=40;{% endif %}
+	{%if PDatos.opcional3 %}altura+=40;{% endif %}
+	{%if PDatos.opcional4 %}altura+=40;{% endif %}
+	{%if PDatos.opcional5 %}altura+=40;{% endif %}
+
+	var options = {
+		height: altura,
+		legend:{ position: 'top', maxLines: 3, 'alignment':'center' },
+	};
+	var chart = new google.visualization.ColumnChart(document.getElementById('grafica_dos_div'));
+	chart.draw(data2, options);
+},
+
+dataTotal : function(){
+
+	    var preguntaSelecionada =  $pre_g2.val() || [],
+		{%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g2.val() || [],{% endif %}
+		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g2.val() || [],{% endif %}
+		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g2.val() || [],{% endif %}
+		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g2.val() || [],{% endif %}
+		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g2.val() || [],{% endif %}
+		regionales_seleccionadas = $reg_g2.val() || [],
+		ciudades_seleccionadas = $ciu_g2.val() || [],
+		areas_seleccionadas = $are_g2.val() || [],
+		cargos_seleccionados = $car_g2.val() || [];
+
+		var matriz_g2 = [];
+
+		for (var j = 0; j <sintaxis.length; j++){
+			 if(sintaxis[j][0] == preguntaSelecionada){
+				 var vectorRespuestas = sintaxis[j][1];
+				 var longitudRespuesta = vectorRespuestas.length;
+			 }
+		}
+
+		var cerosRespuestas = []
+		for(var k=0;k<longitudRespuesta;k++){
+			cerosRespuestas.push(0);
+		}
+
+		var matrizIntegral = []
+		for(var m=0;m<areas_seleccionadas.length;m++){
+
+			var vectorMatrizIntegral = [areas_seleccionadas[m]];
+
+			matrizIntegral.push(vectorMatrizIntegral.concat(cerosRespuestas));
+
+			for(var l=0;l<fechas.length;l++){
+			   var a = [areas_seleccionadas[m],fechas[l].getTime()]
+			   matriz_g2.push(a.concat(cerosRespuestas));
+			}
+		}
+
+
+		for(var k=0;k<Datos.length;k++){
+			if(contenido(Datos[k][5],areas_seleccionadas)
+			   && Datos[k][15]==preguntaSelecionada
+			   && contenido(Datos[k][3],regionales_seleccionadas)
+			   && contenido(Datos[k][4],ciudades_seleccionadas)
+			   && contenido(Datos[k][6],cargos_seleccionados)
+			   {%if PDatos.opcional1 %}
+				   && contenido(Datos[k][9],opcional1_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional2 %}
+				   && contenido(Datos[k][10],opcional2_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional3 %}
+				   && contenido(Datos[k][11],opcional3_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional4 %}
+				   && contenido(Datos[k][12],opcional4_seleccionadas)
+			   {% endif %}
+			   {%if PDatos.opcional5 %}
+				   && contenido(Datos[k][13],opcional5_seleccionadas)
+			   {% endif %}
+			){
+
+				var numFila = 0;
+				while(numFila<matriz_g2.length && (matriz_g2[numFila][0]!=Datos[k][5] || matriz_g2[numFila][1] != Datos[k][8].getTime() ) ){  //************************************
+					numFila += 1;
+				}
+
+				var respuestas = []
+				for(z=0;z<Datos[k][7].length;z++){
+					var indice = vectorRespuestas.indexOf(Datos[k][7][z]);
+					respuestas.push(indice);
+				}
+
+				if(numFila<matriz_g2.length){
+
+					for(x=0;x<respuestas.length;x++){
+						var ind = respuestas[x] + 2;
+						matriz_g2[numFila][ind] += 1;
+					}
+				}
+			}
+		}
+
+        return [matriz_g2,vectorRespuestas,matrizIntegral,fechas]
+},
+//==============================================================================
+//   Grafica TRES
+//==============================================================================
+grafica_tres: function(){
+
+	// cacheamos las seleccionadas
+	var {%if PDatos.opcional1 %}opcional1_seleccionadas = $op1_g3.val() || [],{% endif %}
+		{%if PDatos.opcional2 %}opcional2_seleccionadas = $op2_g3.val() || [],{% endif %}
+		{%if PDatos.opcional3 %}opcional3_seleccionadas = $op3_g3.val() || [],{% endif %}
+		{%if PDatos.opcional4 %}opcional4_seleccionadas = $op4_g3.val() || [],{% endif %}
+		{%if PDatos.opcional5 %}opcional5_seleccionadas = $op5_g3.val() || [],{% endif %}
+		preguntas_seleccionadas = $pre_g3.val() || [],
+		regionales_seleccionadas = $reg_g3.val() || [],
+		ciudades_seleccionadas = $ciu_g3.val() || [],
+		areas_seleccionadas = $are_g3.val() || [],
+		cargos_seleccionados = $car_g3.val() || [];
+
+	// inicializamos las respuestas en la data table
+	var v = document.getElementById("variables_g3"),
+		variable_seleccionada = v.options[v.selectedIndex].value,
+		p = $('#preguntas_g3 option'),
+		respuestas_seleccionadas_textos = [], preguntas_control=[];
+
+	// Obtenemos las posibles respuestas de la encuesta
+	for (var i = 0; i < Cuestionario.length; i++) {
+		if( Cuestionario[i][0] == variable_seleccionada ){
+			for (var j = 0; j < p.length; j++) {
+				if( Cuestionario[i][1][p[j].value] && p[j].selected && ( !contenido( p[j].value, preguntas_control ) ) ){
+					for ( var key in Cuestionario[i][1][p[j].value] ) {
+					  if ( Cuestionario[i][1][p[j].value].hasOwnProperty(key) && !contenido(key,respuestas_seleccionadas_textos) ) {
+					    respuestas_seleccionadas_textos.push(key);
+					  }
+					}
+					preguntas_control.push( p[j].value )
+				}
+			}
+		}
+	}
+
+	// inicializamos la date tables
+	var data3 = new google.visualization.DataTable();
+	data3.addColumn('date', 'Fecha');
+	for (var i = 0; i < respuestas_seleccionadas_textos.length; i++) {
+		data3.addColumn('number',respuestas_seleccionadas_textos[i] );
+	}
+
+	// llenamos de ceros la date tables
+	var matriz_g3 = [];
+	for (var i = 0; i < fechas.length; i++) {
+		matriz_g3.push([ fechas[i] ]);
+		for (var j = 0; j < respuestas_seleccionadas_textos.length; j++) {
+			matriz_g3[i].push(0);
+		}
+	}
+
+	// contamos
+	for (var i = 0; i < matriz_g3.length; i++) {
+		for (var k = 0; k < respuestas_seleccionadas_textos.length; k++) {
+			for (var j = 0; j < Datos.length; j++) {
+				if( matriz_g3[i][0].getTime() === Datos[j][8].getTime()
+				&& variable_seleccionada == Datos[j][14]
+				&& contenido(Datos[j][15],preguntas_seleccionadas)
+				&& contenido(Datos[j][3],regionales_seleccionadas)
+				&& contenido(Datos[j][4],ciudades_seleccionadas)
+				&& contenido(Datos[j][5],areas_seleccionadas)
+				&& contenido(Datos[j][6],cargos_seleccionados)
+				{%if PDatos.opcional1 %}
+					&& contenido(Datos[j][9],opcional1_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional2 %}
+					&& contenido(Datos[j][10],opcional2_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional3 %}
+					&& contenido(Datos[j][11],opcional3_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional4 %}
+					&& contenido(Datos[j][12],opcional4_seleccionadas)
+				{% endif %}
+				{%if PDatos.opcional5 %}
+					&& contenido(Datos[j][13],opcional5_seleccionadas)
+				{% endif %}
+				){
+					for (var l = 0; l < Datos[j][7].length; l++) {
+						if( Datos[j][7][l] == respuestas_seleccionadas_textos[k] ){
+							matriz_g3[i][k+1] += 1;
+						}
+					}
+				}
+			}
+		}
+	}
+	matriz_g3 = eliminar_filas_nulas(matriz_g3);
+
+	data3.addRows( matriz_g3 );
+
+	var altura = 200;
+	{%if PDatos.opcional1 %}altura+=40;{% endif %}
+	{%if PDatos.opcional2 %}altura+=40;{% endif %}
+	{%if PDatos.opcional3 %}altura+=40;{% endif %}
+	{%if PDatos.opcional4 %}altura+=40;{% endif %}
+	{%if PDatos.opcional5 %}altura+=40;{% endif %}
+
+	var chart3 = new google.visualization.ChartWrapper({
+		chartType: 'AreaChart',
+		containerId: 'grafica_tres_div',
+		options: {
+			isStacked: 'relative',
+			height: altura,
+			legend:{ position: 'top', maxLines: 3, 'alignment':'center'},
+			vAxis: {
+				minValue: 0,
+				ticks: [0, .25, .5, .75, 1]
+			},
+			colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
+			chartArea: {
+				width: '90%'
+			}
+		}
+	});
+
+	var control3 = new google.visualization.ControlWrapper({
+		controlType: 'ChartRangeFilter',
+		containerId: 'control_grafica_tres_div',
+		options: {
+			filterColumnIndex: 0,
+			ui: {
+				chartOptions: {
+					height: 100,
+					colors: ['#e2431e', '#f1ca3a', '#6f9654', '#1c91c0','#4374e0', '#5c3c0c', '#a73b3b','#0d5c8a','#ab943d','#fa973b'],
+					chartArea: {
+						width: '90%'
+					}
+				}
+			}
+		}
+	});
+	var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard_div'));
+	dashboard.bind([control3], [chart3]);
+	dashboard.draw(data3);
+},
+verifica_uno: function(){
+
+	try {
+			{%if PDatos.opcional1 %}$op1_g1.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g1.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g1.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g1.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g1.val().length{% endif %}
+			$var_g1.val().length
+			$pre_g1.val().length
+			$reg_g1.val().length
+			$ciu_g1.val().length
+			$are_g1.val().length
+			$car_g1.val().length
+			google.load('visualization', '1', {packages:['controls'], callback: Elementos.grafica_uno});
+		}
+		catch(e){
+			$("#grafica_uno_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#control_grafica_uno_div").html('');
+		}
+},
+
+verifica_dos: function(){
+
+	try {
+			var altura = 260;
+			{%if PDatos.opcional1 %}$op1_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional2 %}$op2_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional3 %}$op3_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional4 %}$op4_g2.val().length;altura+=40;{% endif %}
+			{%if PDatos.opcional5 %}$op5_g2.val().length;altura+=40;{% endif %}
+			$var_g2.val().length
+			$pre_g2.val().length
+			$reg_g2.val().length
+			$ciu_g2.val().length
+			$are_g2.val().length
+			$car_g2.val().length
+			$("#slider").css("margin-top","0px");
+
+			var fecha = $('#slider').dateRangeSlider('values'),
+				tiempoMin = fecha.min.getTime(), tiempoMax = fecha.max.getTime(),
+				variables = this.dataTotal(),
+				esperanza =  integrarDatos(tiempoMin,tiempoMax,variables[0],variables[2],variables[1]);
+				google.setOnLoadCallback(Elementos.grafica_dos(esperanza,variables[1]));
+
+		 }
+		catch(e){
+			$("#grafica_dos_div").html('<span class="m20 p20" style="position:absolute"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			$("#slider").css("margin-top",altura+"px");
+		}
+},
+
+verifica_tres: function(){
+
+	try {
+			{%if PDatos.opcional1 %}$op1_g3.val().length{% endif %}
+			{%if PDatos.opcional2 %}$op2_g3.val().length{% endif %}
+			{%if PDatos.opcional3 %}$op3_g3.val().length{% endif %}
+			{%if PDatos.opcional4 %}$op4_g3.val().length{% endif %}
+			{%if PDatos.opcional5 %}$op5_g3.val().length{% endif %}
+			$pre_g3.val().length
+			$reg_g3.val().length
+			$ciu_g3.val().length
+			$are_g3.val().length
+			$car_g3.val().length
+			document.getElementById("control_grafica_tres_div").style.opacity = 1;
+			google.load('visualization', '1', {packages:['controls'], callback: this.grafica_tres});
+
+		 }
+		catch(e){
+			$("#grafica_tres_div").html('<span class="m" style="position:relative"><h4>Esta selección de filtros no posee datos para graficar.</h4></span>');
+			document.getElementById("control_grafica_tres_div").style.opacity = 0;
+		}
+},
+}
+
+//==============================================================================
+//   Control de mision
+//==============================================================================
+$(document).ready(function() {
+	Elementos.inicio();
+	{% if Datos %}
+	Elementos.verifica_uno();
+	$('.panel-body .panel').fadeTo(100,100);
+	$('.filtros_uno').change(function(){ Elementos.verifica_uno(); });
+
+	variables = Elementos.dataTotal(),
+	tiemposInicio_0 = tiemposIniciales(variables);
+
+	$("#slider").dateRangeSlider({
+		bounds:{
+	      min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
+	      max: new Date({{ PDatos.ffin.year }},{{ PDatos.ffin.month | add:-1 }},{{ PDatos.ffin.day }})
+	    },
+	    defaultValues:{
+	      min: tiemposInicio_0[2],
+	      max: tiemposInicio_0[3]
+	    }
+	});
+
+	Elementos.verifica_dos();
+	$('#slider').on('valuesChanged',function(e,data){ Elementos.verifica_dos(); })
+	$('.filtros_dos').change(function(){ Elementos.verifica_dos(); });
+
+	Elementos.verifica_tres();
+	$('.filtros_tres').change(function(){ Elementos.verifica_tres(); });
+
+	$(window).resize(function() {
+		Elementos.verifica_uno();
+		Elementos.verifica_tres();
+		Elementos.verifica_dos();
+	});
+
+	{% endif %}
+});
+</script>
+{%endblock%}

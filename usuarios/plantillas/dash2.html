@@ -87,23 +87,24 @@
                         <div class="side-nav">
 							<ul  class="nav">{%if Permisos.consultor%}
 							<li id="Configuracion">
-								<a href="#"><i class="l-basic-gear"></i><span class="nav-label"><span class="txt"> Configuración </span></a>
+								<a href="#"><i class="l-basic-gear"></i><span class="nav-label"><span class="txt"> Contenido </span></a>
 								<ul class="sub">
-									{%if Permisos.var_see or Permisos.pre_see%}
+									{%if Permisos.var_see %}
 									<li><a id="Variables" href="/variables/"><span class="txt"> Variables y preguntas </span></a></li>{%endif%}
 									{%if Proyecto.interna%}{%if Permisos.col_add%}
 									<li><a id="AcrhivoPlano" href="/participantes/archivo/"><span class="txt"> Múltiples participantes </span></a></li>
 									{%if Permisos.col_see%}<li><a id="Individual" href="/participantes/individual/"><span class="txt"> Participantes Individual </span></a></li>{%endif%}
 									{%endif%}{%endif%}
-									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
 								</ul>
 							</li>{%endif%}
 							<li id="EstadoAvance">
 								<a href="#"><i class="l-basic-pencil-ruler"></i><span class="nav-label"><span class="txt"> Estado de avance </span></a>
 								<ul class="sub">
-									{%if Proyecto.interna%}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
-									{%if Permisos.det_see%}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}{%endif%}
-									{%if Permisos.pre_add%}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}
+									{% if Proyecto.interna %}<li><a id="EnviosRespuestas" href="/respuestas/metricas/"><span class="txt"> Envíos y respuestas </span></a></li>
+									{% if Permisos.res_exp %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{%endif%}
+									{% if Permisos.var_add %}<li><a id="ImportarRespuestas" href="/respuestas/importar/"><span class="txt"> Importar respuestas </span></a></li>{%endif%}{%endif%}
+									{% if not Proyecto.interna %}<li><a id="RespuestasDetalladas" href="/respuestas/detalladas/"><span class="txt"> Respuestas detalladas </span></a></li>{% endif %}
+									<li><a id="IniciarDetener" href="/gosurvey/"><span class="txt"> Iniciar | detener </span></a></li>
 								</ul>
 							</li>
 							<li id="AnalisisResultados">
@@ -113,6 +114,7 @@
                                     <li><a id="General" href="/analisis/general/"><span class="txt">General</span></a></li>
 									<li><a id="Focalizados" href="/analisis/focalizado/"><span class="txt"> Focalizado</span></a></li>
 									<li><a id="WordAnalytics" href="/analisis/wordanalytics/"><span class="txt"> Grafo Word Analytics </span></a></li>
+									<li><a id="CuerpoHumano" href="/analisis/cuerpo/"><span class="txt"> Cuerpo Humano</span></a></li>
 									<!-- <li><a id="CruceVariables" href="#"><span class="txt"> Cruce de variables </span></a></li> -->
 									<!-- <li><a id="AnalisisPropension" href="#"><span class="txt"> Propensión </span></a></li> -->
 								</ul>

@@ -20,7 +20,6 @@ urlpatterns = patterns('usuarios.views',
 	url(r'^terminos/$', 'terminos'),
 	url(r'^privacidad/$', 'privacidad'),
 	url(r'^reportar/$', 'reportarerror'),
-	url(r'^faq/$', 'faq'),
 	url(r'^salir/$', 'salir')
 )
 
@@ -64,11 +63,10 @@ urlpatterns += patterns('cuestionarios.views',
 	url(r'^variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar'),
 	url(r'^variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar'),
 	url(r'^variable/activar/(?P<id_variable>[0-9]{1,10})/$', 'variableactivar'),
-	url(r'^proyecto/clonar/(?P<id_proyecto>[0-9]{1,10})/$', 'proyectoclonar'),
 )
 
 #===============================================================================
-# urls de errores
+# urls de participantes
 #===============================================================================
 
 urlpatterns += patterns('colaboradores.views',
@@ -110,8 +108,111 @@ urlpatterns += patterns('analisis.views',
 	url(r'^analisis/focalizado/$', 'focalizado'),
 	url(r'^analisis/general/$', 'general'),
 	url(r'^analisis/wordanalytics/$', 'wordanalytics'),
+	url(r'^analisis/cuerpo/$', 'cuerpo'),
 )
 
+
+#===============================================================================
+# urls de cuestionarios 360
+#===============================================================================
+
+urlpatterns += patterns('cuestionarios_360.views',
+	url(r'^360/instrumento/eliminar/(?P<id_instrumento>[0-9]{1,10})/$', 'instrumentoeliminar'),
+	url(r'^360/pregunta/activar/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntactivar_360'),
+	url(r'^360/pregunta/clonar/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntaclonar_360'),
+	url(r'^360/variable/activar/(?P<id_variable>[0-9]{1,10})/$', 'variableactivar_360'),
+	url(r'^360/instrumento/activar/(?P<id_instrumento>[0-9]{1,10})/$', 'instrumentoactivar'),
+	url(r'^360/dimension/activar/(?P<id_dimension>[0-9]{1,10})/$', 'dimensionactivar'),
+	url(r'^360/dimension/(?P<id_dimension>[0-9]{1,10})/variable/nueva/$', 'variablenueva_360'),
+	url(r'^360/dimension/(?P<id_dimension>[0-9]{1,10})/variables/$', 'variables_360'),
+	url(r'^360/dimension/editar/(?P<id_dimension>[0-9]{1,10})/$', 'dimensioneditar'),
+	url(r'^360/dimension/eliminar/(?P<id_dimension>[0-9]{1,10})/$', 'dimensioneliminar'),
+	url(r'^360/instrumento/(?P<id_instrumento>[0-9]{1,10})/dimension/nueva/$', 'dimensionueva'),
+	url(r'^360/instrumento/(?P<id_instrumento>[0-9]{1,10})/dimensiones/$', 'dimensiones'),
+	url(r'^360/instrumento/editar/(?P<id_instrumento>[0-9]{1,10})/$', 'instrumentoeditar'),
+	url(r'^360/instrumento/nuevo/$', 'instrumentonuevo'),
+	url(r'^360/instrumentos/$', 'instrumentos'),
+	url(r'^360/instrumentos/exportar/$', 'plantilla_instrumento_360'),
+	url(r'^360/instrumento/exportar/(?P<id_instrumento>[0-9]{1,10})/$', 'exportar_instrumento_360'),
+	url(r'^360/instrumento/importar/$', 'importar_instrumento_360'),
+	url(r'^360/pregunta/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntaeditar_360'),
+	url(r'^360/pregunta/eliminar/(?P<id_pregunta>[0-9]{1,10})/$', 'preguntaeliminar_360'),
+	url(r'^360/variable/(?P<id_variable>[0-9]{1,10})/pregunta/nueva/$', 'preguntanueva_360'),
+	url(r'^360/variable/(?P<id_variable>[0-9]{1,10})/preguntas/$', 'preguntas_360'),
+	url(r'^360/variable/editar/(?P<id_variable>[0-9]{1,10})/$', 'variableditar_360'),
+	url(r'^360/variable/eliminar/(?P<id_variable>[0-9]{1,10})/$', 'variableliminar_360'),
+	url(r'^360/previsualizacion/(?P<id_instrumento>[0-9]{1,10})/$', 'previsualizacion_360'),
+)
+
+
+#===============================================================================
+# urls de participantes_360
+#===============================================================================
+
+urlpatterns += patterns('colaboradores_360.views',
+	url(r'^360/participante/eliminar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreliminar_360'),
+	url(r'^360/participantes/individual/$', 'colaboradores_ind_360'),
+	url(r'^360/participantes/archivo/$', 'colaboradores_xls_360'),
+	url(r'^360/participante/nuevo/$', 'colaboradornuevo_360'),
+	url(r'^360/participante/editar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreditar_360'),
+	url(r'^360/participante/activar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivar_360'),
+	url(r'^360/archivo/$', 'archivo_360'),
+	url(r'^360/roles/$', 'roles_360'),
+	url(r'^360/rol/editar/(?P<id_rol>[0-9]{1,10})/$', 'roleditar_360'),
+	url(r'^360/rol/eliminar/(?P<id_rol>[0-9]{1,10})/$', 'roleliminar_360'),
+	url(r'^360/rol/nuevo/$', 'rolnuevo_360'),
+)
+
+#===============================================================================
+# urls de redes_360
+#===============================================================================
+
+urlpatterns += patterns('redes_360.views',
+#	url(r'^360/archivo/$', 'archivo_360'),
+	url(r'^360/redes/$', 'redes_360'),
+	url(r'^360/red/editar/(?P<id_red>[0-9]{1,10})/$', 'reditar_360'),
+	url(r'^360/red/eliminar/(?P<id_red>[0-9]{1,10})/$', 'redeliminar_360'),
+	url(r'^360/red/nueva/$', 'rednueva_360'),
+	url(r'^360/redes/archivo/$', 'redes_xls_360'),
+	url(r'^360/redes/archivo/generar/$', 'redes_archivo_generar'),
+	url(r'^360/redes/activar/(?P<id_red>[0-9]{1,10})/$', 'redes_activar_360'),
+)
+
+#===============================================================================
+# urls de mensajeria
+#===============================================================================
+
+urlpatterns += patterns('mensajeria_360.views',
+	url(r'^360/gosurvey/$', 'gosurvey_360'),
+	url(r'^360/encuesta/(?P<id_proyecto>[0-9]{1,10})/(?P<key>[0-9a-zA-Z]{1,65})/$', 'encuesta_360'),
+	url(r'^360/respuestas/detalladas/$', 'detalladas_360'),
+    url(r'^360/respuestas/metricas/$', 'metricas_360'),
+    url(r'^360/respuestas/metricas/(?P<id_colaborador>[0-9]{1,10})/$', 'metricas_ind_360'),
+    url(r'^360/respuestas/forzar/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoreenviar'),
+	# url(r'^participante/activar2/(?P<id_colaborador>[0-9]{1,10})/$', 'colaboradoractivarmensajeria'),
+	url(r'^360/respuestas/exportar/interna/$', 'exportarinterna_360'),
+	# url(r'^respuestas/importar/exportar/$', 'importarespuestas_exportar'),
+	# url(r'^respuestas/importar/$', 'importarespuestas_preguntas'),
+)
+
+#===============================================================================
+# urls de exp_usuario
+#===============================================================================
+urlpatterns += patterns('exp_usuario.views',
+	url(r'^expUsuario/consultor/planesAccion/$', 'planesAccion'),
+	url(r'^expUsuario/consultor/puntosTalenter/$', 'puntosTalenter'),
+	url(r'^expUsuario/lider/miLiderazgo/$', 'miLiderazgo'),
+	url(r'^expUsuario/lider/dashBoard/$', 'dashBoard'),
+	url(r'^expUsuario/colaborador/dashBoard/$', 'dashBoard'),
+	url(r'^expUsuario/colaborador/planesAccionPeticionAjax/$', 'planesAccionPeticionAjax'),
+)
+#===============================================================================
+# urls entorno pruebas
+#===============================================================================
+urlpatterns += patterns('entornoPruebas.views',
+	url(r'^entornoPruebas/cuerpoHumano$', 'cuerpoHumano'),
+	url(r'^entornoPruebas/pruebaModal$', 'pruebaModal'),
+)
 
 #===============================================================================
 # urls de errores

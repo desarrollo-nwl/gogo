@@ -30,12 +30,14 @@ class Proyectos( models.Model ):
 	id = models.AutoField( primary_key=True )
 	activo = models.BooleanField( default = False )
 	can_envio = models.IntegerField( default = 5 )
+	ciclico = models.BooleanField( default = False ) #pendientemigracion
+	ciclos = models.PositiveSmallIntegerField( default = 1 ) #pendientemigracion
 	empresa = models.ForeignKey( Empresas )
 	fec_registro =  models.DateTimeField( auto_now_add = True )
 	iniciable = models.BooleanField( default = False )
 	interna = models.BooleanField( default = False )
 	pordenadas = models.BooleanField( default = False )
-	max_variables = models.PositiveSmallIntegerField( default = 0 )
+	max_variables = models.PositiveSmallIntegerField( default = 0 ) #Intrumentos para Go2.1+
 	nombre =  models.CharField( max_length = 255 )
 	prudenciamax = models.FloatField( default = 2 )
 	prudenciamin = models.FloatField( default = 1 )
@@ -85,31 +87,31 @@ class ProyectosDatos( models.Model ):
 		db_table = 'usuarios_proyectosdatos'
 		verbose_name_plural = "Proyectos datos"
 
-
+# para la migracion cambiar pre por red
 class Permisos( models.Model ):
 	id = models.OneToOneField( User, primary_key = True )
 	consultor = models.BooleanField( default = False )
-	cre_usuarios = models.BooleanField( default = False )
 	act_surveys = models.BooleanField( default = False )
 	act_variables = models.BooleanField( default = False )
 	col_add = models.BooleanField( default = False )#colaboradores
 	col_del = models.BooleanField( default = False )
 	col_edit = models.BooleanField( default = False )
 	col_see = models.BooleanField( default = False )
-	det_see = models.BooleanField( default = False )#respuestas detalladas
-	max_proyectos = models.PositiveSmallIntegerField( default = 0 )
+	cre_usuarios = models.BooleanField( default = False )
+	det_see = models.BooleanField( default = False )#exportar graficas verlas en detallado
 	max_pro_usados = models.PositiveSmallIntegerField( default = 0 )
-	pre_add = models.BooleanField( default = False )#preguntas
-	pre_del = models.BooleanField( default = False )
-	pre_edit = models.BooleanField( default = False )
-	pre_see = models.BooleanField( default = False )
+	max_proyectos = models.PositiveSmallIntegerField( default = 0 )
 	pro_add = models.BooleanField( default = False )#proyectos
 	pro_del = models.BooleanField( default = False )
 	pro_edit = models.BooleanField( default = False )
 	pro_see = models.BooleanField( default = False )
-	res_exp = models.BooleanField( default = False )#exportar resultados
+	red_add = models.BooleanField( default = False ) #Columna_Agregar antes pre (preguntas) #pendientemigracion
+	red_del = models.BooleanField( default = False ) #pendientemigracion
+	red_edit = models.BooleanField( default = False ) #pendientemigracion
+	red_see = models.BooleanField( default = False )#redes #pendientemigracion
+	res_exp = models.BooleanField( default = False )#exportar resultados #pendientemigracion
 	res_see = models.BooleanField( default = False )#graficas
-	var_add = models.BooleanField( default = False )#variables
+	var_add = models.BooleanField( default = False )#"variacion" pasan a a ser cuestionarios
 	var_del = models.BooleanField( default = False )
 	var_edit = models.BooleanField( default = False )
 	var_see = models.BooleanField( default = False )

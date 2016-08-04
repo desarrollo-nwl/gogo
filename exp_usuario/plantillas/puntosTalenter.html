@@ -1,0 +1,169 @@
+{% extends "dash2.html" %}{%load staticfiles %}
+{% block title %} A. General{% endblock %}
+{% block head2 %}
+<style media="screen">#formtable .select2-container {position:relative;z-index:1;float:left;width:100%;margin-bottom:0;display:table;table-layout:fixed;max-width:100%!important;}</style>
+<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+<li><a href="#"><i><span>/ General</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+
+<div class="row">
+    <div class="panel panel-default toggle m-t-xs ml20 mr20">
+        <div class="panel-heading">
+            <h4 class="panel-title"> Bienvenido, proyectos asociados:</h4>
+        </div>
+        <div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+            <!-- Inicio Dash -->
+            <!-- Sección 1 -->
+            <div class="col-lg-6">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Total de puntos </strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-9">
+                            <h1>Gráfica</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Categorias Canjeadas</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-12">
+
+                            <h1>Grafica !!!</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 2 -->
+
+            <!-- Sección 3 -->
+            <div class="col-lg-12">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4><strong>Resumen de productos canjeados</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                            <!-- col-lg-12 start here -->
+
+                        <div class="col-lg-12">
+                            <div class="panel panel-success plain toggle panelClose panelRefresh">
+                                <!-- Start .panel -->
+                                <div class="panel-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-lg-6" bgcolor="#8CB126" align="center">Tres Premios más Canjeados</th>
+                                                <th class="col-lg-6" bgcolor="#8CB126" align="center">Tres Premios menos Canjeados</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td align="center"> Medio Día libre </td>
+                                                <td align="center"> Tarde de Spa </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center">Bono Cine </td>
+                                                <td align="center">USB </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center"> Pasa día en Hotel  Caja de Compensación </td>
+                                                <td align="center"> Gimnasio </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                            <!-- End .panel -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Fin Sección 3 -->
+            <!-- Sección 4 -->
+            <div class="col-lg-12">
+                <div class="panel panel-default toggle plain panelMove panelClose panelRefresh">
+                    <!-- Inicio .panel -->
+                    <div class="panel-heading">
+                        <h4 class="panel-title"><strong>Puntos Canjeados por colaborador</strong></h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-lg-12">
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="col-lg-6" bgcolor="#8CB126" align="center">Usuario</th>
+                                        <th class="col-lg-2" bgcolor="#8CB126" align="center">Puntos Alcanzados</th>
+                                        <th class="col-lg-2" bgcolor="#8CB126" align="center">Premios Canjeados</th>
+                                        <th class="col-lg-2" bgcolor="#8CB126" align="center">Puntos Disponibles</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in colaboradoresExpUsuario %}
+                                    <tr>
+                                        <td align="center"> {{i.id.nombre|safe}} </td>
+                                        <td>{{i.puntosLogrados|safe}} </td>
+                                        <td id='{{i.id.id}}'> 2 </td>
+                                        <td> {{i.puntosDisponibles|safe}} </td>
+                                    </tr>
+                                   {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Fin Dash -->
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{%block scripts%}
+<script type="text/javascript">
+    var colaboradores = [{% for i in colaboradoresExpUsuario  %}
+        ['{{i.id.nombre|safe}}','{{i.puntosLogrados|safe}}' ,'{{i.puntosDisponibles|safe}}'],
+        {% endfor %}];
+    var premiosCanjeados = [{% for i in colaboradoresExpUsuario %}
+                                ['{{i.id.id}}',{% for j in i.premiosCanjeados.all %}'{{j.producto|safe}}',{%endfor%}],
+                            {% endfor %}];
+
+     var cantidadColaboradores = colaboradores.length;
+     console.log(cantidadColaboradores);
+     for(i=0;i<cantidadColaboradores;i++){
+         var id = premiosCanjeados[i][0]
+         var columna = $('#'+premiosCanjeados[i][0]);
+         for(j=1;j<premiosCanjeados[i].length;j++){
+             var cantidadPremiosCanjeados = premiosCanjeados[i].length -1;
+         }
+         columna.html(cantidadPremiosCanjeados);
+     }
+
+
+</script>
+
+{% endblock %}

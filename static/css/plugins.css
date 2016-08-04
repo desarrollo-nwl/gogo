@@ -7156,7 +7156,7 @@ div.fancy-select ul.options li.hover {
   font-size: 1px;
   text-decoration: none;
   border: 0;
-  background: url('../../plugins/forms/select2/select2.png') right top no-repeat;
+  background: url('../../static/plugins/forms/select2/select2.png') right top no-repeat;
   cursor: pointer;
   outline: 0;
 }
@@ -7232,7 +7232,7 @@ div.fancy-select ul.options li.hover {
   height: 18px;
   margin-left: 7px;
   margin-top: 3px;
-  background: url('../../plugins/forms/select2/select2.png') no-repeat 0 2px;
+  background: url('../../static/plugins/forms/select2/select2.png') no-repeat 0 2px;
 }
 .select2-container .select2-choice:hover {
   border-color: #bdbdbd;
@@ -7263,8 +7263,8 @@ div.fancy-select ul.options li.hover {
   border: 1px solid #cacaca;
   border-radius: 0;
   box-shadow: none;
-  background: #ffffff url('../../plugins/forms/select2/select2.png') no-repeat 100% -22px;
-  background: url('../../plugins/forms/select2/select2.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+  background: #ffffff url('../../static/plugins/forms/select2/select2.png') no-repeat 100% -22px;
+  background: url('../../static/plugins/forms/select2/select2.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
 }
 .select2-drop.select2-drop-above .select2-search input {
   margin-top: 4px;
@@ -7500,7 +7500,7 @@ disabled look for disabled choices in the results dropdown
   top: 6px;
   font-size: 1px;
   outline: none;
-  background: url('../../plugins/forms/select2/select2.png') right top no-repeat;
+  background: url('../../static/plugins/forms/select2/select2.png') right top no-repeat;
 }
 .select2-container-multi .select2-search-choice-close {
   left: 5px;

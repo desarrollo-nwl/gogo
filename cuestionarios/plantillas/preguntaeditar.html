@@ -51,6 +51,7 @@
 							<option {%if not Pregunta.abierta%}{%if Pregunta.multiple%}{%if not Pregunta.numerica%}selected{%endif%}{%endif%}{%endif%} value="Multiple">Múltiple respuesta</option>
 							<option {%if not Pregunta.abierta%}{%if Pregunta.multiple%}{%if Pregunta.numerica%}selected{%endif%}{%endif%}{%endif%} value="MultipleNumerica">Múltiple respuesta con valor numérico</option>
 							<option {%if Pregunta.abierta%}selected{%endif%} value="Abierta">Abierta</option>
+							<option {%if Pregunta.cuerpo%}selected{%endif%} value="CuerpoHumano">Cuerpo Humano</option>
 						</select>
 					</div>
 				</div>
@@ -93,6 +94,11 @@ $(document).ready(function(){
 	$tipo.change(function(){
 		$('.numerica').addClass('oculto');
 		switch ($tipo[0].selectedIndex) {
+			case 5:
+				$contenedor.html('');
+				aux_cantidad = 0;
+				cantidad = 0;
+				break;
 			case 4:
 				$contenedor.html('');
 				aux_cantidad = 0;

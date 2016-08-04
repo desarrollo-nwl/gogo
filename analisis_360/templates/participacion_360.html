@@ -1,0 +1,283 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% block title %} A. Participación{% endblock %}
+{% block head2 %}
+<style media="screen">li{list-style-type:none}.multiselect{margin-left: -15px !important;}span.strong{margin-left: -13px}#cargando{opacity: 0;}</style>
+{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Análisis</span></i></a></li>
+<li><a href="#"><i><span>/ Participación</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row m-t-xs mt20 mr5 ml5">
+	<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+		<div class="panel panel-info tile">
+			<div class="panel-heading">
+				<h4 class="panel-title" style="font-size:30px">Finaliza en:</h4>
+			</div>
+			<div class="panel-body pt0">
+				<div class="progressbar-stats-1">
+					<div class="stats">
+						<div class="stats-number" data-from="0" data-to="50">
+							{{ Proyecto.proyectosdatos.ffin | timeuntil }}
+						</div>
+					</div>
+					<div class="progress progress-bar-sm">
+						<div class="progress-bar progress-bar-success" style="width: {{Proyecto.total | floatformat:"0" }}%;" aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{Proyecto.total  |floatformat:"0" }}" role="progressbar"></div>
+					</div>
+					<div class="comparison mt10">
+						<p class="mb0">
+							<i class="fa fa-arrow-circle-o-up s20 mr5 pull-left"></i> Llevas un {{Proyecto.total  |floatformat:"-2" }}% de avance.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default tile btrr0 bbrr0" data-mh="sales-locations">
+			<div class="panel-heading">
+				<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Ficha técnica </h4>
+			</div>
+			<div class="panel-body pt0">
+				<div class="container-fluid">
+					<ul class="list-unstyled mb0">
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de Dimensiones:</span> <div style="display:inline" class="color-red"> {{ Proyecto.max_variables }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de variables:</span> <div style="display:inline" class="color-red"> {{ Proyecto.max_variables }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de preguntas:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_preguntas }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Número de participantes:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_participantes }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Respuestas posibles:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_aresponder }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Respuestas completadas:</span> <div style="display:inline" class="color-red"> {{ Proyecto.tot_respuestas }} </div>
+						</li>
+						<li class="mb5 pb5 bbdashed">
+							<span class="strong">Estado:</span> <div style="display:inline" class="color-red">{% if Proyecto.activo %}Activo{% else %}Inactivo{% endif %} </div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-9 col-md-8 col-sm-8 col-xs-12">
+		<div class="panel panel-default toggle">
+			<div class="panel-heading">
+				<h4 class="panel-title">Gráfica de participación</h4>
+			</div>
+			<div  class="panel-body">
+				<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+					<div class="text-center mt20 ml50" >
+						<div id="customer-exp" class="custom-progressbar blue" style="width:300px;height:300px;color:#1c9aa7">
+						<div class="pie-charts green-pie">
+							<div id="descripcion_pie" class="pie easyPieChart" data-percent="0" style="width: 300px; height: 300px; line-height: 300px;"></div>
+						</div>
+							<div id="descripcion" class="description m" style="font-size:50px;margin-top:-10%"> 100%</div>
+						</div>
+					</div>
+				</div>
+				<div id="cargando" class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+					<div class="panel panel-default toggle">
+						<!-- Inicio .panel -->
+						<div class="panel-heading">
+							<h4 class="panel-title"><i class="glyphicon glyphicon-list-alt"></i> Filtros </h4>
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="form-horizontal">
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Regionales</label>
+										<div class="col-xs-2">
+											<select id="regionales" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Ciudades</label>
+										<div class="col-xs-2">
+											<select id="ciudades" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Áreas</label>
+										<div class="col-xs-2">
+											<select id="areas" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-xs-5 control-label">Cargos</label>
+										<div class="col-xs-2">
+											<select id="cargos" class="filtro form-control" multiple></select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row mr5 ml5">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<!-- col-lg-12 start here -->
+		<div class="panel panel-default plain toggle panelMove panelClose panelRefresh">
+			<!-- Start .panel -->
+			<div class="panel-heading white-bg">
+				<h4 class="panel-title"><i class="fa fa-building fa-2x"></i>Participación por Área / Regional</h4>
+			</div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="per35">Area / Regional</th>
+							<th class="per15">Respuestas posibles</th>
+							<th class="per15">Respuestas completadas</th>
+							<th class="per15">Avance Actual</th>
+						</tr>
+					</thead>
+					<tbody id="tabla"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{%block scripts%}
+<script type="text/javascript" src="{% static 'js/plugins/piechart/jquery.easy-pie-chart.min.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
+<script type="text/javascript">
+var Datos = {{ Arbol | safe }};
+
+var contenido = function(a,x){
+	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
+	return false;
+}
+
+//==============================================================================
+//   variables GLOBALES
+//==============================================================================
+
+var regionales=[],ciudades=[],areas=[],cargos=[],
+	$reg = $('#regionales'), $ciu = $('#ciudades'),
+	$are = $('#areas'), $car = $('#cargos'),
+	$des_pie=$("#descripcion_pie"),$tabla = $("#tabla"),
+	str_regionales = "", str_ciudades = "", str_areas = "", str_cargos ="";
+
+var Elementos = {
+
+pie: function(){
+	$(".pie").easyPieChart({
+        barColor: '#29b6d8',
+        borderColor: '#29b6d8',
+        trackColor: '#b4cbd1',
+        scaleColor: false,
+        lineCap: 'butt',
+        lineWidth: 40,
+        size: 300,
+        animate: 1500
+    });
+},
+
+inicio : function(){
+
+	// armamos el arbol de selects
+	for (var reg = 0; reg < Arbol.length; reg++) {
+		str_regionales += '<option value="'+Arbol[reg]["nombre"]+'">'+Arbol[reg]["nombre"]+'</option>';
+		c_reg = Arbol[reg]["Ciudades"];
+
+		for (var ciu = 0; ciu < c_reg.length; ciu++) {
+			str_ciudades += '<option value="'+c_reg[ciu]+'">'+c_reg[ciu]+'</option>';
+			c_ciu = c_reg[ciu]["Areas"];
+
+			for (var are = 0; are < c_ciu.length; are++) {
+				str_areas += '<option value="'+c_ciu[are]["nombre"]+'">'+c_ciu[are]["nombre"]+'</option>';
+				c_are = c_ciu[are]["Cargos"];
+
+				for (var car = 0; car < c_are.length; car++) {
+					str_cargos += '<option value="'+c_are[car]+'">'+c_are[car]+'</option>';
+				}
+
+			}
+		}
+	}
+	$reg.html(str_regionales);
+	$ciu.html(str_ciudades);
+	$are.html(str_areas);
+	$car.html(str_cargos);
+
+	//  UPDATE Selects
+	$('.filtro').multiselect({numberDisplayed: 1,includeSelectAllOption: true,buttonWidth: '100px',dropRight: true,disableIfEmpty: true	});
+	$('.filtro').multiselect('selectAll', false);
+	$('.filtro').multiselect('updateButtonText');
+
+},
+
+circulo: function( ){
+
+	// cacheamos las seleccionadas
+	var cargos_seleccionados = $car.val() || [],
+		participante = 0, todos = 0;
+
+		for (var reg = 0; reg < Arbol.length; reg++) {
+			str_regionales += '<option value="'+Arbol[reg]["nombre"]+'">'+Arbol[reg]["nombre"]+'</option>';
+			c_reg = Arbol[reg]["Ciudades"];
+
+			for (var ciu = 0; ciu < c_reg.length; ciu++) {
+				str_ciudades += '<option value="'+c_reg[ciu]+'">'+c_reg[ciu]+'</option>';
+				c_ciu = c_reg[ciu]["Areas"];
+
+				for (var are = 0; are < c_ciu.length; are++) {
+					str_areas += '<option value="'+c_ciu[are]["nombre"]+'">'+c_ciu[are]["nombre"]+'</option>';
+					c_are = c_ciu[are]["Cargos"];
+
+					for (var car = 0; car < c_are.length; car++) {
+						if ( contenido(c_area[car]["nombre"],cargos_seleccionados)  ){
+							participante += c_area[car]["contestadas"];
+							todos += c_area[car]["total"];
+						}
+					}
+				}
+			}
+		}
+
+	if(todos) var participacion = +(Math.round( (100*participante)/todos + "e+2")  + "e-2");
+	else var participacion = 0;
+	$des_pie.prop('data-percent',participacion);
+	this.pie()
+	$('.pie').data('easyPieChart').update(participacion);
+	participacion += " %";
+	$descripcion.html(participacion);
+},
+
+}
+
+//==============================================================================
+//   Control de mision
+//==============================================================================
+$(document).ready(function() {
+
+	Elementos.inicio();
+	document.getElementById("cargando").style.opacity = 1;
+
+	$('.filtro').change(function(){
+		Elementos.circulo()
+	});
+
+	// $("#pro").dataTable({"columns" : [{className : "center"}, {className : "center"}, {className : "center"}, {className : "center"}],language : {sProcessing : "Procesando...",sLengthMenu : "Mostrar _MENU_ proyectos",sZeroRecords : "No se encontraron resultados",sEmptyTable : "No posees ningún proyecto creado o asociado.",sInfo : "Proyectos del _START_ al _END_ de un total de _TOTAL_",sInfoEmpty : "Proyectos del 0 al 0 de un total de 0",sInfoFiltered : "(filtrado de un total de _MAX_ proyectos)",sInfoPostFix : "",sSearch : "Buscar",sUrl : "",sInfoThousands : ",",sLoadingRecords : "Cargando...",oPaginate : {sFirst : "Primero",sLast : "Último",sNext : "Siguiente",sPrevious : "Anterior"},oAria : {sSortAscending : ": Activar para ordenar la columna de manera ascendente",sSortDescending : ": Activar para ordenar la columna de manera descendente"}}});
+});
+</script>
+{%endblock%}

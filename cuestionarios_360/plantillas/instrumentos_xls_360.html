@@ -1,0 +1,38 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Participantes{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
+<li><a href="#"><i><span>/ Importar</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Agregar instrumento por medio de archivo plano:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Error%}<p id="esconder" class="center"><strong class="btn btn-info">{{Error}}</strong></p><br><br>{%endif%}
+			{%if Permisos.col_add%}
+			<p> El sistema posee un archivo excel (.xls) el cual usted podrá descargar y completar para grabar a su(s) instrumento(s). Para obtener el archivo presione el botón descargar</p><br>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/360/instrumentos/exportar/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
+			<p><strong>Recomendaciones: </strong><p><br>
+				<ol><li>Al finalizar de ingresar los datos no olvide ingresar la palabra <b>FIN</b> en la columna A fila siguiente a los datos.</li><br>
+					<li>Mantenga los formatos de las celdas con los cuales se descarga el archivo.</li><br>
+					<li>Las celdas con <b>(R)</b> son requeridas.</li><br>
+					<li>Los tipos de pregunta son Única (Múltiples opciones, única respuesta), Múltiple (Múltiples opciones, múltiples respuestas) y Abierta (pregunta de respuesta abierta).</li><br>
+					<li>Dada una pregunta, si alguna repuesta de esta no contiene valor numérico, la <b>pregunta</b> se asume sin valor numérico.</li>
+				</ol><br>
+			<p>Ahora suba su archivo (.xls) editado:</p><br>
+			<form  enctype="multipart/form-data" method='POST'>{% csrf_token %}
+	            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"></div>
+				<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><input id="id_docfile" type="file" name="docfile" required /></div><br><br>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-paper-plane-o"></i>Enviar</buton></div>
+			</form>
+			{%endif%}
+		</div>
+	</div>
+</div>
+{% endblock %}
+{%if Error%}{%block scripts%}<script>$(document).ready(function(){var $esconder=$('#esconder');$esconder.click(function(){$esconder.hide();});});</script>{%endblock%}{%endif%}

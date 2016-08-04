@@ -1,0 +1,47 @@
+{% extends "dash_360.html" %}{%load staticfiles %}
+{% block title %} Proyecto | Participantes{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="#"><i><span>/ Participantes</span></i></a></li>
+{%endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Agregar participantes por medio de archivo plano:</h4>
+		</div>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			{%if Error%}<p id="esconder" class="center"><strong class="btn btn-info">{{Error}}</strong></p><br><br>{%endif%}
+			{%if Permisos.col_add%}
+			<p> El sistema posee un archivo excel (.xls) el cual usted podrá descargar y completar para grabar a sus participantes. Para obtener el archivo presione el botón descargar</p><br>
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center"><a href="/360/archivo/" class="btn btn-info"> <i class="fa fa-download"></i> Descargar</a></div>
+			<p><strong>Recomendaciones: </strong><p><br>
+				<ol><li> <b>Mantenga los formatos de las celdas con los cuales se descarga el archivo</b> </li><br>
+					<li> La fecha de nacimiento es muy importante, pero si por motivos ajenos a usted no la conoce, no la coloque.</li><br>
+					<li> Recuerde que la descripción solo es relevante para los evaluadores externos. Si un participante posee no posee cargo se asume como externo.</li><br>
+					<li> Tenga en cuenta la distinción entre mayúsculas, minúsculas y tildes, en donde "Area uno" , "area uno", "Área uno" y "área uno", son todas palabras distintas para el sistema y puede tener <b>inconvenientes a la hora de filtrar información</b>.</li><br>
+					<li> Si agregó un filtro opcional a la hora de la creación del proyecto, debe llenar dicha columna en el archivo plano o puede presentar <b>inconvenientes a la hora de filtrar información</b>. Recuerde que esos filtros son opcionales y desactivables desde el link de editar proyecto, con simplemente limpiar el campo correspondiente.</li><br>
+					<li> Para el género se debe determinar entre Masculino y Femenino. La primera letra debe ser en mayúscula.</li><br>
+					<li> El esquema recomendado de niveles académicos es:<br><br>
+						<ul>
+							<li>Primaria</li>
+							<li>Bachillerato</li>
+							<li>Tecnología/Tecnólogo</li>
+							<li>Profesional</li>
+							<li>Maestría</li>
+							<li>Doctorado</li>
+						</ul>
+					</li>
+				</ol><br>
+			<p>Ahora suba su archivo (.xls) editado:</p><br>
+			<form  enctype="multipart/form-data" method='POST'>{% csrf_token %}
+	            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"></div>
+				<div class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><input id="id_docfile" type="file" name="docfile" required /></div><br><br>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"></div>
+				<div class="container-fluid"><button type="submit" class="btn btn-primary pull-right m-t"><i class="fa fa-paper-plane-o"></i>Enviar</buton></div>{%endif%}
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{%if Error%}{%block scripts%}<script>$(document).ready(function(){var $esconder=$('#esconder');$esconder.click(function(){$esconder.hide();});});</script>{%endblock%}{%endif%}

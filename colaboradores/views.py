@@ -24,7 +24,7 @@ import random
 @login_required(login_url='/acceder/')
 def colaboradores_ind(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -50,7 +50,7 @@ def colaboradores_ind(request):
 @login_required(login_url='/acceder/')
 def colaboradornuevo(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -143,7 +143,7 @@ def colaboradornuevo(request):
 @login_required(login_url='/acceder/')
 def colaboradoreditar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -211,7 +211,7 @@ def colaboradoreditar(request,id_colaborador):
 @login_required(login_url='/acceder/')
 def colaboradoractivar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -240,7 +240,7 @@ def archivo(request):
 	date_format.num_format_str = 'dd/mm/yyyy'
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -290,7 +290,7 @@ def archivo(request):
 @login_required(login_url='/acceder/')
 def colaboradores_xls(request):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')
@@ -400,7 +400,7 @@ def colaboradores_xls(request):
 @login_required(login_url='/acceder/')
 def colaboradoreliminar(request,id_colaborador):
 	proyecto = cache.get(request.user.username)
-	if not proyecto:
+	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	if not proyecto.interna:
 		return render_to_response('404.html')

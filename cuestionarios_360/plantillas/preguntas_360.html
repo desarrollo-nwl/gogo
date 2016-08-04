@@ -1,0 +1,60 @@
+{% extends "dash_360.html" %}
+{% block title %} Proyecto | Preguntas{% endblock %}
+{% block head2 %}<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>{% endblock %}
+{% block navegacion%}
+<li><a href="/home/"><i class="fa fa-home"></i></a></li>
+<li><a href="/360/instrumentos/"><i><span>/ Instrumentos</span></i></a></li>
+<li><a href="/360/instrumento/{{Instrumento_id}}/dimensiones/"><i><span>/ Dimensiones</span></i></a></li>
+<li><a href="/360/dimension/{{Dimension_id}}/variables/"><i><span>/ Variables</span></i></a></li>
+<li><a href="#"><i><span>/ Preguntas</span></i></a></li>
+{% endblock%}
+{% block contenido2 %}
+<div class="row">
+	<div class="panel panel-default toggle m-t-xs ml20 mr20">
+		<div class="panel-heading">
+			<h4 class="panel-title"> Preguntas de la variable <b>{{Variable.nombre | capfirst}}</b>:</h4>
+		</div>
+		<script type="text/javascript">
+		var actualizar = function(l){
+			$.ajax({url:"/360/pregunta/activar/"+l}).done(function( json ) {
+				if(json['estado']) $('#e'+json['id']).html('<span style="color:#1d9d73">Activa</span>');
+				else $('#e'+json['id']).html('<span style="color:#cd1e21">Inactiva</span>');
+		  });
+		};
+		</script>
+		<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+			<table id="pro" class="table table-striped table-bordered" cellspacing="0" width="99%">
+				<thead>
+					<tr>
+						<th style="width:10%">Posición</th>
+						<th >Tipo</th>
+						<th style="max-width:40%">Texto</th>
+						<th> Puntaje </th>
+						<th>Estado</th>
+						<th style="width:80px">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in Preguntas %}
+					<tr>
+						<td>{{i.posicion | capfirst | escape}}</td>
+						<td>{%if i.abierta %}Abierta{%else%}{%if i.multiple %}Multiple respuesta {%else%}Única respuesta {%endif%}{%endif%}{%if i.numerica%}numérica{%endif%}</td>
+						<td>{%if Permisos.var_edit%}<a href="/360/pregunta/{{i.id}}/">{{i.texto | capfirst | escape}}</a>{%else%}{{i.texto | capfirst | escape}}{%endif%}</td>
+						<td>{{ i.puntaje | safe }}</td>
+						<td id="e{{i.id}}">{%if i.estado%}<span style="color:#1d9d73">Activa</span>{%else%}<span style="color:#cd1e21">Inactiva</span>{%endif%}</td>
+						<td>{%if Permisos.act_variables%}<span style="cursor:pointer;color:#0bacd3" onclick="actualizar({{i.id}})"><i class="fa fa-retweet m-r" title="activar/desactivar"></i></span>{%endif%}{%if Permisos.var_add%}<a href="/360/pregunta/clonar/{{i.id}}/"><i class="fa fa-copy m-r" title="copiar"></i></a>{%endif%}{%if Permisos.var_edit%}<a href="/360/pregunta/{{i.id}}/"><i class="fa fa-edit m-r" title="editar"></i></a>{%endif%}{%if Permisos.var_del%}<a href="/360/pregunta/eliminar/{{i.id}}/"><i class="fa fa-trash m-r" title="eliminar"></i></a>{%endif%}</td>
+					</tr>{% endfor %}
+				</tbody>
+			</table>
+
+			{% if Permisos.var_add %}<div class="container-fluid"><a href="/360/variable/{{Variable.id}}/pregunta/nueva/" class="btn btn-primary pull-right m-t"><i class="fa fa-plus"></i> Agregar Pregunta</a></div>{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block scripts%}
+<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script>$("#pro").dataTable({"columns":[{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" },{ className: "center" }],language:{sProcessing:"Procesando...",sLengthMenu:"Mostrar _MENU_ Preguntas",sZeroRecords:"No se encontraron resultados",sEmptyTable:"El Proyecto no posee ninguna Pregunta.",sInfo:"Preguntas de la _START_ a la _END_ de un total de _TOTAL_",sInfoEmpty:"Preguntas de la  0 a la 0 de un total de 0",sInfoFiltered:"(filtrado de un total de _MAX_ Preguntas)",sInfoPostFix:"",sSearch:"Buscar:",sUrl:"",sInfoThousands:",",sLoadingRecords:"Cargando...",oPaginate:{sFirst:"Primero",sLast:"Último",sNext:"Siguiente",sPrevious:"Anterior"},oAria:{sSortAscending:": Activar para ordenar la columna de manera ascendente",sSortDescending:": Activar para ordenar la columna de manera descendente"}}});</script>
+{% endblock%}
