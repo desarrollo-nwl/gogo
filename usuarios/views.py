@@ -211,7 +211,7 @@ def recuperar(request):
 				msg["subject"]=  'Cambio de clave.'
 				# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 				msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
-				url = 'http://www.changelabtools.com/recuperar/'+key
+				url = 'http://159.203.190.248/recuperar/'+key
 				html = recuperar_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")
 				msg.attach(mensaje)
@@ -826,7 +826,7 @@ def usuarioreenviar(request,id_usuario):
 					msg["subject"]=  'Registro de cuenta.'
 					# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 					msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
-					url = 'http://www.changelabtools.com/activar/'+key
+					url = 'http://159.203.190.248/activar/'+key
 					nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 					html = crear_cuenta(nombre,url)
 					mensaje = MIMEText(html,"html")
@@ -990,7 +990,7 @@ def usuarionuevo(request):
 				msg["subject"]=  'Registro de cuenta.'
 				# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
 				msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
-				url = 'http://www.changelabtools.com/activar/'+key
+				url = 'http://159.203.190.248/activar/'+key
 				nombre = (usuario.first_name).encode("ascii", "xmlcharrefreplace")
 				html = crear_cuenta(nombre,url)
 				mensaje = MIMEText(html,"html")

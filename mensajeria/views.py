@@ -216,7 +216,7 @@ def colaboradoreenviar(request,id_colaborador):
 						msg["subject"]=  datos.asunto
 						# msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'Team@goanalytics.com'))
 						msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
-						urlimg = 'http://www.changelabtools.com'+datos.logo.url
+						urlimg = 'http://159.203.190.248'+datos.logo.url
 						if colaborador.colaboradoresdatos.genero.lower() == "femenino":
 							genero = "a"
 						else:
@@ -224,7 +224,7 @@ def colaboradoreenviar(request,id_colaborador):
 						nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
 						titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
 						texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-						url = 'http://www.changelabtools.com/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+						url = 'http://159.203.190.248/encuesta/'+str(proyecto.id)+'/'+colaborador.key
 						html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
 						mensaje = MIMEText(html,"html")
 						msg.attach(mensaje)

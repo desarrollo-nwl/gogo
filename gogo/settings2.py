@@ -25,7 +25,7 @@ SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.changelabtools.com', 'localhost']
+ALLOWED_HOSTS = ['159.203.190.248', 'localhost']
 
 
 # Application definition

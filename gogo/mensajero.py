@@ -43,14 +43,14 @@ def sendmail(stream_i,stream,tiempo,indice):
 			desde="Team@goanalytics.com"
 			destinatario = colaborador.email
 			msg=MIMEMultipart()
-			urlimg = 'http://www.changelabtools.com'+stream_i.proyecto.proyectosdatos.logo.url
+			urlimg = 'http://159.203.190.248'+stream_i.proyecto.proyectosdatos.logo.url
 			if colaborador.colaboradoresdatos.genero.lower() == "femenino" :
 				genero = "a"
 			else:
 				genero = "o"
 			nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")#cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 			titulo = (stream_i.proyecto.proyectosdatos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
-			url = 'http://www.changelabtools.com/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
+			url = 'http://159.203.190.248/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
 			texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 			msg["subject"]=  stream_i.proyecto.proyectosdatos.asunto
 			msg['From'] = email.utils.formataddr(((stream_i.proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
@@ -119,14 +119,14 @@ def sendmail_360(stream_i,stream,tiempo,indice):
 		desde="Team@goanalytics.com"
 		destinatario = colaborador.email
 		msg=MIMEMultipart()
-		urlimg = 'http://www.changelabtools.com'+stream_i.proyecto.proyectosdatos.logo.url
+		urlimg = 'http://159.203.190.248'+stream_i.proyecto.proyectosdatos.logo.url
 		if colaborador.genero.lower() == "femenino" :
 			genero = "a"
 		else:
 			genero = "o"
 		nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")#cgi.escape(colaborador.nombre).decode("utf-8").encode("ascii", "xmlcharrefreplace")
 		titulo = (stream_i.proyecto.proyectosdatos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
-		url = 'http://www.changelabtools.com/360/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
+		url = 'http://159.203.190.248/360/encuesta/'+str(stream_i.proyecto.id)+'/'+colaborador.key
 		texto_correo = salvar_html(cgi.escape(stream_i.proyecto.proyectosdatos.cue_correo).encode("ascii", "xmlcharrefreplace"))
 		msg["subject"]=  stream_i.proyecto.proyectosdatos.asunto
 		msg['From'] = email.utils.formataddr(((stream_i.proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
