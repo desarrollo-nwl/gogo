@@ -33,7 +33,7 @@ from django.db.models import Max
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def gosurvey(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -50,8 +50,8 @@ def gosurvey(request):
 							permisos.save()
 							proyecto.save()
 							nom_log = request.user.first_name+' '+request.user.last_name
-							Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Activó el proyecto',descripcion=proyecto.nombre)
-							cache.set(request.user.username,proyecto,86400)
+							Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Activó el proyecto',descripcion=proyecto.nombre)
+							cache.set(cache.get(request.user.username),proyecto,86400)
 
 					else:
 						return render_to_response('gosurvey.html',{
@@ -106,7 +106,7 @@ def gosurvey(request):
 						Streaming.objects.bulk_create(streaming_crear)
 					proyecto.save()
 					datos.save()
-					cache.set(request.user.username,proyecto,86400)
+					cache.set(cache.get(request.user.username),proyecto,86400)
 			except:
 				pass
 		return render_to_response('gosurvey.html',{
@@ -119,7 +119,7 @@ def gosurvey(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def detalladas(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -141,7 +141,7 @@ def detalladas(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def metricas(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -168,7 +168,7 @@ def metricas(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradoractivarmensajeria(request,id_colaborador):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -188,7 +188,7 @@ def colaboradoractivarmensajeria(request,id_colaborador):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradoreenviar(request,id_colaborador):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -210,7 +210,7 @@ def colaboradoreenviar(request,id_colaborador):
 						# server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
 						server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 						nom_log =request.user.first_name+' '+request.user.last_name
-						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
+						Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = colaborador.email
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
@@ -482,7 +482,7 @@ def exportarexterna(request):
 	import xlwt
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -556,7 +556,7 @@ def exportarinterna(request):
 	import xlwt
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -707,7 +707,7 @@ def importarespuestas_exportar(request):
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
 	str_format = xlwt.easyxf(num_format_str="@")
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -816,7 +816,7 @@ def importarespuestas_exportar(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def importarespuestas_preguntas(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto:
 		return render_to_response('423.html')
 	if not proyecto.interna:
@@ -940,9 +940,9 @@ def importarespuestas_preguntas(request):
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
+					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
 					proyecto.save()
-					cache.set(request.user.username,proyecto,86400)
+					cache.set(cache.get(request.user.username),proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/respuestas/detalladas/')
 				else:

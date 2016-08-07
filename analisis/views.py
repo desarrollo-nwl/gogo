@@ -85,7 +85,7 @@ def humanize(dt):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def participacion(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 
 	if not proyecto:
 		return render_to_response('423.html')
@@ -112,7 +112,7 @@ def participacion(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def general(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 
 	if not proyecto:
 		return render_to_response('423.html')
@@ -140,7 +140,7 @@ def general(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def focalizado(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 
 	pdatos = proyecto.proyectosdatos
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
@@ -222,7 +222,7 @@ def solucion(a):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def wordanalytics(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -267,7 +267,7 @@ def wordanalytics(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def cuerpo(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos

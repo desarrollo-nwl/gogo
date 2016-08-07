@@ -27,7 +27,7 @@ import xlrd,xlwt,ujson
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def redes_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -54,7 +54,7 @@ def redes_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def rednueva_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -120,7 +120,7 @@ def rednueva_360(request):
 								tot_aresponder = F('tot_aresponder')+instrumento.max_preguntas,
 								total = total,
 								)
-							cache.set(request.user.username,proyecto,86400)
+							cache.set(cache.get(request.user.username),proyecto,86400)
 
 				red = Redes_360.objects.only(
 						'colaborador_id','evaluado_id','instrumento_id',
@@ -148,7 +148,7 @@ def rednueva_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def reditar_360(request,id_red):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -324,7 +324,7 @@ def reditar_360(request,id_red):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def redeliminar_360(request,id_red):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -386,7 +386,7 @@ def redeliminar_360(request,id_red):
 						)
 				Redes_360.objects.filter(id=id_red).delete()
 
-			cache.set(request.user.username,proyecto,86400)
+			cache.set(cache.get(request.user.username),proyecto,86400)
 			return JsonResponse({'id':id_red})
 		else:
 			return JsonResponse({'id':0})
@@ -404,7 +404,7 @@ def redeliminar_360(request,id_red):
 @login_required(login_url='/acceder/')
 def redes_archivo_generar(request):
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -430,7 +430,7 @@ def redes_archivo_generar(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def redes_xls_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -583,7 +583,7 @@ def redes_xls_360(request):
 
 				Proyectos.objects.filter(id=proyecto.id).update(
 							tot_aresponder = proyecto.tot_aresponder)
-				cache.set(request.user.username,proyecto,86400)
+				cache.set(cache.get(request.user.username),proyecto,86400)
 				if any([personas_404,roles_404,instrumentos_404,redes_500]):
 					return render_to_response('redes_xls_360.html',{
 						'Activar':'Contenido','activar':'AcrhivoPlano',
@@ -604,7 +604,7 @@ def redes_xls_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def redes_activar_360(request,id_red):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos

@@ -24,7 +24,7 @@ from analisis_360.models import *
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def participacion_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos

@@ -32,7 +32,7 @@ import smtplib
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def gosurvey_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	proyecto = Proyectos.objects.get(id=proyecto.id)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
@@ -50,8 +50,8 @@ def gosurvey_360(request):
 							permisos.save()
 							proyecto.save()
 							nom_log = request.user.first_name+' '+request.user.last_name
-							Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Activó el proyecto',descripcion=proyecto.nombre)
-							cache.set(request.user.username,proyecto,86400)
+							Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Activó el proyecto',descripcion=proyecto.nombre)
+							cache.set(cache.get(request.user.username),proyecto,86400)
 
 						else:
 							return render_to_response('gosurvey.html',{
@@ -76,7 +76,7 @@ def gosurvey_360(request):
 						if not proyecto.activo or not request.is_ajax():
 							proyecto.save()
 							datos.save()
-							cache.set(request.user.username,proyecto,86400)
+							cache.set(cache.get(request.user.username),proyecto,86400)
 
 
 					if request.is_ajax():
@@ -210,7 +210,7 @@ def gosurvey_360(request):
 
 						proyecto.save()
 						datos.save()
-						cache.set(request.user.username,proyecto,86400)
+						cache.set(cache.get(request.user.username),proyecto,86400)
 
 					if request.is_ajax():
 						return HttpResponse(ujson.dumps({'estado':1}),content_type="aplication/json")
@@ -230,7 +230,7 @@ def gosurvey_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def metricas_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -267,7 +267,7 @@ def metricas_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def metricas_ind_360(request,id_colaborador):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -291,7 +291,7 @@ def metricas_ind_360(request,id_colaborador):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradoreenviar(request,id_colaborador):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -312,7 +312,7 @@ def colaboradoreenviar(request,id_colaborador):
 						server.starttls()
 						server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 						nom_log =request.user.first_name+' '+request.user.last_name
-						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
+						Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = [colaborador.email]
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
@@ -575,7 +575,7 @@ def encuesta_360(request,id_proyecto,key):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def detalladas_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -594,7 +594,7 @@ def exportarinterna_360(request):
 	import xlwt
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
 	str_format = xlwt.easyxf(num_format_str="@")
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -767,7 +767,7 @@ def importarespuestas_exportar_360(request):
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = 'dd/mm/yyyy'
 	str_format = xlwt.easyxf(num_format_str="@")
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -876,7 +876,7 @@ def importarespuestas_exportar_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def importarespuestas_preguntas_360(request):
-	proyecto = request.user.username
+	proyecto = cache.get(request.user.username)
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	if not proyecto.interna:
@@ -1000,9 +1000,9 @@ def importarespuestas_preguntas_360(request):
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
+					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
 					proyecto.save()
-					cache.set(request.user.username,proyecto,86400)
+					cache.set(cache.get(request.user.username),proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/respuestas/detalladas/')
 				else:
