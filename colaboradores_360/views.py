@@ -145,9 +145,9 @@ def colaboradornuevo_360(request):
 							Streaming_360.objects.bulk_create(streaming_crear)
 							Proyectos.objects.filter(id=proyecto.id).update(tot_aresponder=F("tot_aresponder")+adicionales)
 					proyecto = Proyectos.objects.get(id=proyecto.id)
-					cache.set(cache.get(request.user.username),proyecto,86400)
+					cache.set(request.user.username,proyecto,86400)
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 					accion="Creó al participante",descripcion=participante.nombre+' '+participante.apellido)
 				return HttpResponseRedirect('/360/participantes/individual')
 
@@ -227,7 +227,7 @@ def colaboradoreditar_360(request,id_colaborador):
 					participante.save()
 					datos.save()
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 					accion="Editó al participante",descripcion=participante.nombre+' '+participante.apellido)
 				return HttpResponseRedirect('/360/participantes/individual')
 		return render_to_response('colaborador.html',{
@@ -424,7 +424,7 @@ def colaboradores_xls_360(request):
 					ColaboradoresMetricas_360.objects.bulk_create(vector_metricas)
 					Proyectos.objects.filter(id=proyecto.id).update(tot_participantes=F("tot_participantes")+participantes_conteo)
 				proyecto = Proyectos.objects.get(id=proyecto.id)
-				cache.set(cache.get(request.user.username),proyecto,86400)
+				cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/360/participantes/individual/')
 				else:
@@ -467,10 +467,10 @@ def colaboradoreliminar_360(request,id_colaborador):
 				if(proyecto.tot_aresponder):
 					proyecto.total = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)
 				proyecto.save()
-				cache.set(cache.get(request.user.username),proyecto,86400)
+				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/360/participantes/individual/')
 	return render_to_response('col_eliminar_360.html',{
 	'Activar':'Contenido','activar':'Individual',

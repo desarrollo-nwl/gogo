@@ -50,8 +50,8 @@ def gosurvey(request):
 							permisos.save()
 							proyecto.save()
 							nom_log = request.user.first_name+' '+request.user.last_name
-							Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Activó el proyecto',descripcion=proyecto.nombre)
-							cache.set(cache.get(request.user.username),proyecto,86400)
+							Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Activó el proyecto',descripcion=proyecto.nombre)
+							cache.set(request.user.username,proyecto,86400)
 
 					else:
 						return render_to_response('gosurvey.html',{
@@ -106,7 +106,7 @@ def gosurvey(request):
 						Streaming.objects.bulk_create(streaming_crear)
 					proyecto.save()
 					datos.save()
-					cache.set(cache.get(request.user.username),proyecto,86400)
+					cache.set(request.user.username,proyecto,86400)
 			except:
 				pass
 		return render_to_response('gosurvey.html',{
@@ -210,7 +210,7 @@ def colaboradoreenviar(request,id_colaborador):
 						# server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
 						server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 						nom_log =request.user.first_name+' '+request.user.last_name
-						Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
+						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
 						destinatario = colaborador.email
 						msg=MIMEMultipart()
 						msg["subject"]=  datos.asunto
@@ -940,9 +940,9 @@ def importarespuestas_preguntas(request):
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Usó el archivo para importar respuestas',descripcion=proyecto.nombre)
 					proyecto.save()
-					cache.set(cache.get(request.user.username),proyecto,86400)
+					cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/respuestas/detalladas/')
 				else:

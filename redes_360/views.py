@@ -120,7 +120,7 @@ def rednueva_360(request):
 								tot_aresponder = F('tot_aresponder')+instrumento.max_preguntas,
 								total = total,
 								)
-							cache.set(cache.get(request.user.username),proyecto,86400)
+							cache.set(request.user.username,proyecto,86400)
 
 				red = Redes_360.objects.only(
 						'colaborador_id','evaluado_id','instrumento_id',
@@ -386,7 +386,7 @@ def redeliminar_360(request,id_red):
 						)
 				Redes_360.objects.filter(id=id_red).delete()
 
-			cache.set(cache.get(request.user.username),proyecto,86400)
+			cache.set(request.user.username,proyecto,86400)
 			return JsonResponse({'id':id_red})
 		else:
 			return JsonResponse({'id':0})
@@ -583,7 +583,7 @@ def redes_xls_360(request):
 
 				Proyectos.objects.filter(id=proyecto.id).update(
 							tot_aresponder = proyecto.tot_aresponder)
-				cache.set(cache.get(request.user.username),proyecto,86400)
+				cache.set(request.user.username,proyecto,86400)
 				if any([personas_404,roles_404,instrumentos_404,redes_500]):
 					return render_to_response('redes_xls_360.html',{
 						'Activar':'Contenido','activar':'AcrhivoPlano',

@@ -135,7 +135,7 @@ def menu(request,id_proyecto):
 			).get(id=int(id_proyecto))
 		else:
 			return render_to_response('403.html')
-		cache.set(cache.get(request.user.username),proyecto,86400)
+		cache.set(request.user.username,proyecto,86400)
 		if( permisos.consultor and proyecto.tipo != "360 unico" and proyecto.tipo != "360 redes" ):
 			return HttpResponseRedirect('/respuestas/metricas')
 		elif( permisos.consultor and ( proyecto.tipo == "360 unico" or proyecto.tipo == "360 redes" ) ):
@@ -295,7 +295,7 @@ def empresaeditar(request,id_empresa):
 			with transaction.atomic():
 				empresa.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó la empresa",descripcion=empresa.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó la empresa",descripcion=empresa.nombre)
 			return HttpResponseRedirect('/empresas/')
 		return render_to_response('empresaeditar.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresa':empresa,
@@ -322,7 +322,7 @@ def empresaeliminar(request,id_empresa):
 				for i in empresa.proyectos_set.all():
 					i.usuarios.clear()
 				nom_log =request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó la empresa",descripcion=empresa.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la empresa",descripcion=empresa.nombre)
 			return HttpResponseRedirect('/empresas/')
 		return render_to_response('eliminar.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresa':empresa,
@@ -351,7 +351,7 @@ def empresanueva(request):
 					departamento  = request.POST['departamento'],
 					usuario = request.user)
 				nom_log =request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó la empresa",descripcion=request.POST['nombre'])
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó la empresa",descripcion=request.POST['nombre'])
 			return HttpResponseRedirect('/empresas/')
 		return render_to_response('empresanueva.html',{
 		'Activar':'Configuracion','activar':'Empresas','Empresas':empresas,
@@ -443,8 +443,8 @@ def proyectonuevo(request):
 					datos.censo = True
 				datos.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó el proyecto",descripcion=proyecto.nombre)
-			cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el proyecto",descripcion=proyecto.nombre)
+			cache.set(request.user.username,proyecto,86400)
 
 			if( proyecto.tipo == "360 unico" or proyecto.tipo == "360 redes" ):
 				return HttpResponseRedirect('/360/instrumento/nuevo')
@@ -535,7 +535,7 @@ def proyectoeditar(request,id_proyecto):
 					datos.censo = True
 				datos.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó el proyecto",descripcion=proyecto.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó el proyecto",descripcion=proyecto.nombre)
 			return HttpResponseRedirect('/home/')
 		return render_to_response('proyectoeditar.html',{
 		'Activar':'MisProyectos','Empresas':empresas,'Proyectos':proyectos,
@@ -565,7 +565,7 @@ def proyectoeliminar(request,id_proyecto):
 				proyecto.usuarios.clear()
 				proyecto.save()
 				nom_log =request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó el proyecto",descripcion=proyecto.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó el proyecto",descripcion=proyecto.nombre)
 			try:
 				command = "rm "+os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+proyecto.proyectosdatos.logo.url
 				os.system(command)
@@ -745,7 +745,7 @@ def usuarioeditar(request,id_usuario):
 								usu_perm.red_del = False
 						usu_perm.save()
 						nom_log =request.user.first_name+' '+request.user.last_name
-						Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
+						Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
 					return HttpResponseRedirect('/usuarios/')
 				return render_to_response('usuarioeditar.html',{
 				'Activar':'Configuracion','activar':'Usuarios','Permisos':permisos,
@@ -779,7 +779,7 @@ def usuarioeliminar(request,id_usuario):
 							except:pass
 						nom_log =request.user.first_name+' '+request.user.last_name
 						Logs.objects.create(usuario=nom_log,
-											usuario_username=cache.get(request.user.username),
+											usuario_username=request.user.username,
 											accion="Eliminó al usuario",
 											descripcion=usuario.first_name+" "+usuario.last_name)
 					return HttpResponseRedirect('/usuarios/')
@@ -820,7 +820,7 @@ def usuarioreenviar(request,id_usuario):
 					Recuperar.objects.filter(usuario=usuario).delete()
 					Recuperar.objects.create(usuario=usuario,link=key)
 					nom_log =request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Reenvió activación a",descripcion=usuario.first_name+" "+usuario.last_name)
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Reenvió activación a",descripcion=usuario.first_name+" "+usuario.last_name)
 					destinatario = [usuario.email]
 					msg=MIMEMultipart()
 					msg["subject"]=  'Registro de cuenta.'
@@ -983,7 +983,7 @@ def usuarionuevo(request):
 					parent=request.user.indiceusuarios)
 					Recuperar.objects.create(usuario=usuario,link=key)
 					nom_log =request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó al usuario",descripcion=usuario.first_name+" "+usuario.last_name)
 
 				destinatario = [usuario.email]
 				msg=MIMEMultipart()
@@ -1093,7 +1093,7 @@ def reportarerror(request):
 				error = Errores(usuario=nom_log,reporte=request.POST['reporte'])
 
 			with transaction.atomic():
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Reportó un error",descripcion='Esperando respuesta')
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Reportó un error",descripcion='Esperando respuesta')
 				error.save()
 				aviso = "ok"
 			# server=smtplib.SMTP('smtp.mandrillapp.com',587)
@@ -1109,7 +1109,7 @@ def reportarerror(request):
 			msg['From'] = email.utils.formataddr(('GoAnalytics', 'no-reply@gochangeanalytics.com'))
 
 			nombre = (nom_log).encode("ascii", "xmlcharrefreplace")
-			usuario = (cache.get(request.user.username)).encode("ascii", "xmlcharrefreplace")
+			usuario = (request.user.username).encode("ascii", "xmlcharrefreplace")
 			html = 'El usuario '+nombre+' con usuario '+usuario+' ha reportado un error en Goanalytics: <br>'+(request.POST['reporte']).encode("ascii", "xmlcharrefreplace")
 			parte2=MIMEText(html,"html")
 			msg.attach(parte2)

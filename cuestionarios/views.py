@@ -84,8 +84,8 @@ def variablenueva(request):
 				proyecto.max_variables += 1
 				proyecto.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó la variable",descripcion=variable.nombre)
-				cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó la variable",descripcion=variable.nombre)
+				cache.set(request.user.username,proyecto,86400)
 			if(proyecto.max_variables == 1 ):
 				return HttpResponseRedirect('/variable/'+str(variable.id)+'/pregunta/nueva/')
 			else:
@@ -199,8 +199,8 @@ def preguntanueva(request,id_variable):
 				variable.max_preguntas += 1
 				variable.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Creó la pregunta',descripcion=pregunta.texto)
-			cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Creó la pregunta',descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect( '/variable/'+id_variable+'/preguntas/' )
 		return render_to_response('preguntanueva.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -264,7 +264,7 @@ def variableditar(request,id_variable):
 							variable.estado = False
 				variable.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó la variable",descripcion=variable.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó la variable",descripcion=variable.nombre)
 				return HttpResponseRedirect('/variables/')
 		return render_to_response('variableditar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -351,8 +351,8 @@ def preguntaeditar(request,id_pregunta):
 						respuesta = request.POST[aux_texto].strip()
 						R = Respuestas.objects.create( texto = respuesta, pregunta = pregunta )
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Editó la pregunta',descripcion=pregunta.texto)
-			cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Editó la pregunta',descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect( '/variable/'+str(variable.id)+'/preguntas/' )
 		return render_to_response('preguntaeditar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -401,8 +401,8 @@ def variableclonar(request,id_variable):
 					respuestas_nuevas.append(respuesta)
 			Respuestas.objects.bulk_create(respuestas_nuevas)
 			nom_log = request.user.first_name+' '+request.user.last_name
-			Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Clonó la variable",descripcion=variable.nombre)
-		cache.set(cache.get(request.user.username),proyecto,86400)
+			Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la variable",descripcion=variable.nombre)
+		cache.set(request.user.username,proyecto,86400)
 
 		return HttpResponseRedirect('/variables/')
 	else:
@@ -437,8 +437,8 @@ def preguntaclonar(request,id_pregunta):
 					respuestas_nuevas.append(respuesta)
 				Respuestas.objects.bulk_create(respuestas_nuevas)
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Clonó la pregunta",descripcion=pregunta.texto)
-			cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Clonó la pregunta",descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
 		except:
 			return render_to_response('403.html')
 		return HttpResponseRedirect( '/variable/'+str(variable.id)+'/preguntas/')
@@ -473,8 +473,8 @@ def variableliminar(request,id_variable):
 				proyecto.tot_preguntas -= variable.max_preguntas;
 				proyecto.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó la variable",descripcion=variable.nombre)
-			cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la variable",descripcion=variable.nombre)
+			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/variables/')
 		return render_to_response('cue_eliminar.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -508,8 +508,8 @@ def preguntaeliminar(request,id_pregunta):
 				pregunta.save()
 				variable.save()
 				proyecto.save()
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó la pregunta",descripcion=pregunta.texto)
-			cache.set(cache.get(request.user.username),proyecto,86400)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la pregunta",descripcion=pregunta.texto)
+			cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/variable/'+str(variable.id)+'/preguntas/')
 
 		return render_to_response('cue_eliminar.html',{

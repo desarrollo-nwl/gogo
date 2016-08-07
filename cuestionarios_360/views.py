@@ -135,9 +135,9 @@ def instrumentonuevo(request):
 				Proyectos.objects.filter(id=proyecto.id).update(
 					max_variables = F('max_variables') + 1)
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó el instrumento",descripcion=instrumento.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el instrumento",descripcion=instrumento.nombre)
 				proyecto.max_variables += 1
-				cache.set(cache.get(request.user.username),proyecto,86400)
+				cache.set(request.user.username,proyecto,86400)
 				proyecto = cache.get(request.user.username)
 				return HttpResponseRedirect(''.join(['/360/instrumento/',str(instrumento.id),'/dimension/nueva/']))
 
@@ -176,7 +176,7 @@ def dimensionueva(request,id_instrumento):
 				Instrumentos_360.objects.filter(id=instrumento.id).update(
 					max_dimensiones = F('max_dimensiones') + 1)
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó la dimensión",descripcion=dimension.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó la dimensión",descripcion=dimension.nombre)
 
 				return HttpResponseRedirect(''.join(['/360/dimension/',str(dimension.id),'/variable/nueva']))
 
@@ -217,7 +217,7 @@ def variablenueva_360(request,id_dimension):
 				Dimensiones_360.objects.filter(id=dimension.id).update(
 					max_variables = F('max_variables') + 1)
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Creó la variable",descripcion=variable.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó la variable",descripcion=variable.nombre)
 				return HttpResponseRedirect(''.join(['/360/variable/',str(variable.id),'/pregunta/nueva']))
 
 		return render_to_response('variable.html',{
@@ -305,7 +305,7 @@ def preguntanueva_360(request,id_variable):
 				Variables_360.objects.filter(id=variable.id).update(max_preguntas = F('max_preguntas') + 1)
 				Instrumentos_360.objects.filter(id=variable.instrumento_id).update(max_preguntas = F('max_preguntas') + 1)
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Creó la pregunta',descripcion=pregunta.texto)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Creó la pregunta',descripcion=pregunta.texto)
 
 			return HttpResponseRedirect(''.join(['/360/variable/',str(variable.id),'/preguntas/']))
 		return render_to_response('pregunta.html',{
@@ -449,7 +449,7 @@ def instrumentoeditar(request,id_instrumento):
 						instrumento.estado = False
 				instrumento.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó el instrumento",descripcion=instrumento.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó el instrumento",descripcion=instrumento.nombre)
 				return HttpResponseRedirect('/360/instrumentos/')
 
 		return render_to_response('instrumento.html',{
@@ -484,7 +484,7 @@ def dimensioneditar(request,id_dimension):
 							dimension.estado = False
 				dimension.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó la dimension",descripcion=dimension.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó la dimension",descripcion=dimension.nombre)
 				return HttpResponseRedirect(''.join(['/360/instrumento/',str(dimension.instrumento_id),'/dimensiones/']))
 		return render_to_response('dimension.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,
@@ -518,7 +518,7 @@ def variableditar_360(request,id_variable):
 							variable.estado = False
 				variable.save()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Editó la variable",descripcion=variable.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Editó la variable",descripcion=variable.nombre)
 				return HttpResponseRedirect(''.join(['/360/dimension/',str(variable.dimension_id),'/variables/']))
 		return render_to_response('variable.html',{
 		'Activar':'Configuracion','activar':'Variables','Permisos':permisos,'Variable':variable,
@@ -604,7 +604,7 @@ def preguntaeditar_360(request,id_pregunta):
 						respuesta = request.POST[aux_texto]
 						R = Respuestas_360.objects.create( texto = respuesta, pregunta = pregunta )
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion='Editó la pregunta',descripcion=pregunta.texto)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion='Editó la pregunta',descripcion=pregunta.texto)
 
 			return HttpResponseRedirect( ''.join(['/360/variable/',str(variable.id),'/preguntas/']) )
 		return render_to_response('pregunta.html',{
@@ -648,7 +648,7 @@ def preguntaclonar_360(request,id_pregunta):
 					respuestas_nuevas.append(respuesta)
 				Respuestas_360.objects.bulk_create(respuestas_nuevas)
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Copió la pregunta",descripcion=pregunta.texto)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Copió la pregunta",descripcion=pregunta.texto)
 			return HttpResponseRedirect( ''.join(['/360/variable/',str(variable.id),'/preguntas/']) )
 		except:
 			return render_to_response('404.html')
@@ -683,7 +683,7 @@ def preguntaeliminar_360(request,id_pregunta):
 				pregunta.zdel = timezone.now()
 				nom_log = request.user.first_name+' '+request.user.last_name
 				pregunta.save()
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó la pregunta",descripcion=pregunta.texto)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la pregunta",descripcion=pregunta.texto)
 
 			return HttpResponseRedirect(''.join(['/360/variable/',variable_id_old,'/preguntas/']) )
 
@@ -716,7 +716,7 @@ def variableliminar_360(request,id_variable):
 				variable.zdel = timezone.now()
 				nom_log = request.user.first_name+' '+request.user.last_name
 				variable.save()
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó la variable",descripcion=variable.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la variable",descripcion=variable.nombre)
 
 			return HttpResponseRedirect(''.join(['/360/dimension/',dimension_id_old,'/variables/']) )
 
@@ -749,7 +749,7 @@ def dimensioneliminar(request,id_dimension):
 				dimension.zdel = timezone.now()
 				nom_log = request.user.first_name+' '+request.user.last_name
 				dimension.save()
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó la dimension",descripcion=dimension.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó la dimension",descripcion=dimension.nombre)
 
 			return HttpResponseRedirect(''.join(['/360/instrumento/',instrumento_id_old,'/dimensiones/']) )
 
@@ -781,7 +781,7 @@ def instrumentoeliminar(request,id_instrumento):
 				instrumento.zdel = timezone.now()
 				nom_log = request.user.first_name+' '+request.user.last_name
 				instrumento.save()
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),accion="Eliminó el instrumento",descripcion=instrumento.nombre)
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Eliminó el instrumento",descripcion=instrumento.nombre)
 
 			return HttpResponseRedirect( '/360/instrumentos/' )
 

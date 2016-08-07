@@ -122,9 +122,9 @@ def colaboradornuevo(request):
 						Streaming.objects.bulk_create(streaming_crear)
 					proyecto.save()
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 					accion="Creó al participante",descripcion=participante.nombre+' '+participante.apellido)
-					cache.set(cache.get(request.user.username),proyecto,86400)
+					cache.set(request.user.username,proyecto,86400)
 				return HttpResponseRedirect('/participantes/individual')
 
 		return render_to_response('colaboradornuevo.html',{
@@ -193,7 +193,7 @@ def colaboradoreditar(request,id_colaborador):
 					participante.save()
 					datos.save()
 					nom_log = request.user.first_name+' '+request.user.last_name
-					Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),
+					Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 					accion="Editó al participante",descripcion=participante.nombre+' '+participante.apellido)
 				return HttpResponseRedirect('/participantes/individual')
 		return render_to_response('colaboradoreditar.html',{
@@ -377,7 +377,7 @@ def colaboradores_xls(request):
 					if(streaming_crear):
 						Streaming.objects.bulk_create(streaming_crear)
 					proyecto.save()
-					cache.set(cache.get(request.user.username),proyecto,86400)
+					cache.set(request.user.username,proyecto,86400)
 				if(permisos.col_see):
 					return HttpResponseRedirect('/participantes/individual/')
 				else:
@@ -422,10 +422,10 @@ def colaboradoreliminar(request,id_colaborador):
 			with transaction.atomic():
 				Colaboradores.objects.filter(id=id_colaborador).delete()
 				nom_log = request.user.first_name+' '+request.user.last_name
-				Logs.objects.create(usuario=nom_log,usuario_username=cache.get(request.user.username),
+				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,
 				accion="Eliminó al participante",descripcion=participante.nombre+' '+participante.apellido)
 				proyecto.save()
-				cache.set(cache.get(request.user.username),proyecto,86400)
+				cache.set(request.user.username,proyecto,86400)
 			return HttpResponseRedirect('/participantes/individual/')
 	return render_to_response('col_eliminar.html',{
 	'Activar':'Configuracion','activar':'Individual',
