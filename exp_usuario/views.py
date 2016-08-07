@@ -24,7 +24,7 @@ import ujson
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def planesAccion(request):
-    proyecto = cache.get(request.user.username)
+    proyecto = request.user.username
     planes = Planes.objects.select_related().filter(proyecto_id = proyecto.id )
     variables = Variables_360.objects.filter(proyecto_id = proyecto.id,estado = True)
     lideres = Lideres.objects.filter(proyecto_id = proyecto.id)
@@ -95,7 +95,7 @@ def planesAccionPeticionAjax(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def puntosTalenter(request):
-    proyecto = cache.get(request.user.username)
+    proyecto = request.user.username
     colaboradoresExpUsuario = ColaboradoresExpUsuario.objects.filter(proyecto_id = proyecto.id)
     return render_to_response('puntosTalenter.html',{
         'colaboradoresExpUsuario': colaboradoresExpUsuario,

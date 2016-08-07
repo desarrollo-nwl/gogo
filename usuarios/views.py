@@ -154,7 +154,7 @@ def menu(request,id_proyecto):
 def home2(request):
   permisos = request.user.permisos
   if permisos.consultor or permisos.pro_see:
-    proyecto = cache.get(request.user.username)
+    proyecto = request.user.username
     if(proyecto):
       return render_to_response('home2.html',{
       'Activar':'Configuracion','Permisos':permisos,'Proyecto':proyecto

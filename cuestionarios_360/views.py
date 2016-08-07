@@ -22,7 +22,7 @@ from mensajeria_360.models import Streaming_360
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def instrumentos(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -43,7 +43,7 @@ def instrumentos(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def dimensiones(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -62,7 +62,7 @@ def dimensiones(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variables_360(request,id_dimension):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -82,7 +82,7 @@ def variables_360(request,id_dimension):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntas_360(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -106,7 +106,7 @@ def preguntas_360(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def instrumentonuevo(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -138,7 +138,7 @@ def instrumentonuevo(request):
 				Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Creó el instrumento",descripcion=instrumento.nombre)
 				proyecto.max_variables += 1
 				cache.set(request.user.username,proyecto,86400)
-				proyecto = cache.get(request.user.username)
+				proyecto = request.user.username
 				return HttpResponseRedirect(''.join(['/360/instrumento/',str(instrumento.id),'/dimension/nueva/']))
 
 		return render_to_response('instrumento.html',{
@@ -152,7 +152,7 @@ def instrumentonuevo(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def dimensionueva(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -191,7 +191,7 @@ def dimensionueva(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variablenueva_360(request,id_dimension):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -232,7 +232,7 @@ def variablenueva_360(request,id_dimension):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntanueva_360(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.var_add:
 		try:variable = Variables_360.objects.filter(proyecto_id=proyecto.id).get(id = id_variable)
@@ -323,7 +323,7 @@ def preguntanueva_360(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def instrumentoactivar(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -349,7 +349,7 @@ def instrumentoactivar(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def dimensionactivar(request,id_dimension):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -374,7 +374,7 @@ def dimensionactivar(request,id_dimension):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableactivar_360(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -398,7 +398,7 @@ def variableactivar_360(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntactivar_360(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -424,7 +424,7 @@ def preguntactivar_360(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def instrumentoeditar(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -464,7 +464,7 @@ def instrumentoeditar(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def dimensioneditar(request,id_dimension):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -497,7 +497,7 @@ def dimensioneditar(request,id_dimension):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableditar_360(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -531,7 +531,7 @@ def variableditar_360(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntaeditar_360(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -623,7 +623,7 @@ def preguntaeditar_360(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntaclonar_360(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -663,7 +663,7 @@ def preguntaclonar_360(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntaeliminar_360(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -698,7 +698,7 @@ def preguntaeliminar_360(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableliminar_360(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -731,7 +731,7 @@ def variableliminar_360(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def dimensioneliminar(request,id_dimension):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -764,7 +764,7 @@ def dimensioneliminar(request,id_dimension):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def instrumentoeliminar(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -800,7 +800,7 @@ def instrumentoeliminar(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/login')
 def previsualizacion_360(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"]:
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -829,7 +829,7 @@ def previsualizacion_360(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def exportar_instrumento_360(request,id_instrumento):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -926,7 +926,7 @@ def exportar_instrumento_360(request,id_instrumento):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def plantilla_instrumento_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -955,7 +955,7 @@ def plantilla_instrumento_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def importar_instrumento_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	error = ""

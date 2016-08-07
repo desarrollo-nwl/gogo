@@ -24,7 +24,7 @@ import random
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradores_ind_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -44,7 +44,7 @@ def colaboradores_ind_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradornuevo_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -166,7 +166,7 @@ def colaboradornuevo_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradoreditar_360(request,id_colaborador):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -244,7 +244,7 @@ def colaboradoreditar_360(request,id_colaborador):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradoractivar_360(request,id_colaborador):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -270,7 +270,7 @@ def archivo_360(request):
 	date_format = xlwt.XFStyle()
 	date_format.num_format_str = '@'
 	tit_format = xlwt.easyxf('font:bold on ;align:wrap on, vert centre, horz center;')
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -318,7 +318,7 @@ def archivo_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradores_xls_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -446,7 +446,7 @@ def colaboradores_xls_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def colaboradoreliminar_360(request,id_colaborador):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa"] :
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -485,7 +485,7 @@ def colaboradoreliminar_360(request,id_colaborador):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def roles_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -501,7 +501,7 @@ def roles_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def rolnuevo_360(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -519,7 +519,7 @@ def rolnuevo_360(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def roleditar_360(request,id_rol):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos
@@ -537,7 +537,7 @@ def roleditar_360(request,id_rol):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def roleliminar_360(request,id_rol):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["Completa","Fragmenta","Externa","360 unico"] :
 		return render_to_response('423.html')
 	permisos = request.user.permisos

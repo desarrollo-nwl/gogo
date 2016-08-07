@@ -20,7 +20,7 @@ from usuarios.models import Empresas, Proyectos, Logs
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variables(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -38,7 +38,7 @@ def variables(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntas(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -62,7 +62,7 @@ def preguntas(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variablenueva(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -101,7 +101,7 @@ def variablenueva(request):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableactivar(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -126,7 +126,7 @@ def variableactivar(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntanueva(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -213,7 +213,7 @@ def preguntanueva(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntactivar(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -243,7 +243,7 @@ def preguntactivar(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableditar(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -277,7 +277,7 @@ def variableditar(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntaeditar(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -371,7 +371,7 @@ def preguntaeditar(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableclonar(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -412,7 +412,7 @@ def variableclonar(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntaclonar(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -452,7 +452,7 @@ def preguntaclonar(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def variableliminar(request,id_variable):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto or proyecto.tipo in ["360 redes","360 unico"]:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -487,7 +487,7 @@ def variableliminar(request,id_variable):
 @cache_control(no_store=True)
 @login_required(login_url='/acceder/')
 def preguntaeliminar(request,id_pregunta):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	if not proyecto:
 		return render_to_response('423.html')
 	proyecto = Proyectos.objects.get(id=proyecto.id)
@@ -526,7 +526,7 @@ def preguntaeliminar(request,id_pregunta):
 @cache_control(no_store=True)
 @login_required(login_url='/login')
 def preencuesta(request):
-	proyecto = cache.get(request.user.username)
+	proyecto = request.user.username
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.pro_see and permisos.var_see:
 		cuestionario = Proyectos.objects.prefetch_related(
