@@ -86,6 +86,8 @@ def humanize(dt):
 @login_required(login_url='/acceder/')
 def participacion(request):
 	proyecto = cache.get(request.user.username)
+	print '#################################'
+	print request.user.username
 
 	if not proyecto:
 		return render_to_response('423.html')

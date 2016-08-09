@@ -187,15 +187,15 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 #
 #
-# CACHES = {
-#  	'default':{
-#  		'BACKEND':'redis_cache.RedisCache',
-#  		'LOCATION':'127.0.0.1:6379',
-#  		'OPTIONS':{
-#  			'DB':2,
-#  			'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
-#  		},
-#  	},
-# }
+CACHES = {
+ 	'default':{
+ 		'BACKEND':'redis_cache.RedisCache',
+ 		'LOCATION':'127.0.0.1:6379',
+ 		# 'OPTIONS':{
+ 		# 	'DB':2,
+ 		# 	'PASSWORD':'frec5epEbucHene27E4re6uspuT7ayus'
+ 		# },
+ 	},
+}
 
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache_db"
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
