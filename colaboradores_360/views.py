@@ -16,6 +16,9 @@ from mensajeria_360.models import Streaming_360
 from usuarios.models import Proyectos, Logs
 from redes_360.models import Redes_360
 import random
+# from .colabora import ver_colaboradores
+from colaboradores.models import Colaboradores
+from usuarios.models import Proyectos
 #===============================================================================
 # indices
 #===============================================================================
@@ -29,7 +32,8 @@ def colaboradores_ind_360(request):
 		return render_to_response('423.html')
 	permisos = request.user.permisos
 	if permisos.consultor and permisos.col_see:
-		# tabla = colabora.ver_colaboradores(str(proyecto.id),permisos.col_edit,permisos.col_del)
+		#tabla = ver_colaboradores(str(proyecto.id),permisos.col_edit,permisos.col_del)
+		tabla = Colaboradores.objects.filter(proyecto=proyecto.id)
 		return render_to_response('colaboradores_ind_360.html',{
 		'Activar':'Contenido','activar':'Individual',
 		'Proyecto':proyecto,'Permisos':permisos,'Tabla':tabla
