@@ -63,8 +63,8 @@ def colaboradores_ind_360(request):
             tabla += "<a href='/360/participante/eliminar/"+str(id_)+"/'><i class='fa fa-trash m-r' title='eliminar'></i></a></td></tr>"
             #else:
                 #output += "<td></tr>"
-        print '################################################'
-        print tabla
+        # print '################################################'
+        # print tabla
         return render_to_response('colaboradores_ind_360.html',{
         'Activar':'Contenido','activar':'Individual',
         'Proyecto':proyecto,'Permisos':permisos,'Tabla':tabla
