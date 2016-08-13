@@ -46,9 +46,12 @@ def colaboradores_ind_360(request):
                 auxiliar = i.descripcion
                 tabla += auxiliar + "</td><td>"
             else:
-                col_datos = ColaboradoresDatos_360.objects.get(id=i.id)
-                auxiliar = col_datos.cargo
-                tabla += auxiliar + "</td><td>"
+                try:
+                    col_datos = ColaboradoresDatos_360.objects.get(id=i.id)
+                    auxiliar = col_datos.cargo
+                    tabla += auxiliar + "</td><td>"
+                except:
+                    tabla += "</td><td>"
 
             id_ = i.id
             auxiliar = i.email
