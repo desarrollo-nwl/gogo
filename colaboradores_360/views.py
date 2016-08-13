@@ -119,7 +119,6 @@ def colaboradornuevo_360(request):
 
                     participante.save()
                     print '######################################'
-                    print par
                     datos = ColaboradoresDatos_360(id = participante)
                     try:datos.area = request.POST['area'].strip()
                     except:pass
