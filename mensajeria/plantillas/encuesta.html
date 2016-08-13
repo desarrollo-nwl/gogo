@@ -1313,14 +1313,14 @@
 					{% endif %}
 				{%endif%}
 				{%if pregunta.multiple%}
-					{%for i in pregunta.respuestas_set.all%}
+					{%for i in pregunta.respuestas_set.all|dictsort:"id"%}
 						<input type="checkbox" class="checkbox" name="{{pregunta.id}}" value="{{i.texto|escape}}" >
 						<label class="light">{{i.texto|escape}}</label><br>
 					{% endfor %}<br>
 				{% endif %}
 				{%if pregunta.abierta or pregunta.multiple%}{%else%}
 				<select required title="Por favor responda la pregunta" name="{{pregunta.id}}">
-					{%for i in pregunta.respuestas_set.all%}
+					{%for i in pregunta.respuestas_set.all|dictsort:"id"%}
 						<option value="{{i.texto| escape}}" >{{i.texto | escape}}</option>
 					{% endfor %}
 				</select>
@@ -1347,14 +1347,14 @@
 					{% endif %}
 				{%endif%}
 				{%if i.pregunta.multiple %}
-					{%for j in i.pregunta.respuestas_set.all%}
+					{%for j in i.pregunta.respuestas_set.all|dictsort:"id"%}
 						<input type="checkbox" class="checkbox" name="{{i.pregunta.id}}" value="{{j.texto|escape}}" >
 						<label class="light">{{ j.texto | escape }}</label><br>
 					{% endfor %}<br>
 				{% endif %}
 				{%if i.pregunta.abierta or i.pregunta.multiple%}{%else%}
 				<select required title="Por favor responda la pregunta" name="{{i.pregunta.id}}">
-					{%for j in i.pregunta.respuestas_set.all%}
+					{%for j in i.pregunta.respuestas_set.all|dictsort:"id"%}
 						<option value="{{j.texto| escape}}" >{{ j.texto | escape}}</option>
 					{% endfor %}
 				</select>

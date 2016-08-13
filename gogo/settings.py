@@ -26,7 +26,7 @@ SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['159.203.190.248', 'localhost', '159.203.190.248',]
+ALLOWED_HOSTS = ['localhost', '159.203.190.248',]
 
 
 ADMINS = (

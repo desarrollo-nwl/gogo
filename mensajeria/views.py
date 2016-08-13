@@ -387,7 +387,8 @@ def encuesta(request,id_proyecto,key):
 			return HttpResponseRedirect('http://'+str(encuestado.poyecto.empresa.pagina))
 		except:
 			return HttpResponseRedirect('https://networkslab.co')
-
+	print '######################################################'
+	print cuestionario_preguntas
 	return render_to_response('encuesta.html',{
 	'Encuestado':encuestado,'Preguntas_encuesta':cuestionario_preguntas,'Proyecto':proyecto,'Cuestionario':cuestionario
 	},	context_instance=RequestContext(request))

@@ -86,8 +86,6 @@ def humanize(dt):
 @login_required(login_url='/acceder/')
 def participacion(request):
 	proyecto = cache.get(request.user.username)
-	print '#################################'
-	print request.user.username
 
 	if not proyecto:
 		return render_to_response('423.html')
@@ -103,6 +101,8 @@ def participacion(request):
 			finalizados = proyecto.tot_respuestas/proyecto.tot_preguntas
 		else:
 			finalizados = 0
+		print '#################################################3'
+		print datos
 		return render_to_response('participacion.html',{
 			'Activar':'AnalisisResultados','activar':'Participacion',
 			'Proyecto':proyecto,'Permisos':permisos,'Datos':datos,'Finalizados':finalizados
