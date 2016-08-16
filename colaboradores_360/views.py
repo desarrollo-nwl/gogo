@@ -332,8 +332,8 @@ def archivo_360(request):
         ws.write(0,8,u"Ciudad",tit_format)
         ws.write(0,9,u"Nivel académico",tit_format)
         ws.write(0,10,u"Profesión",tit_format)
-        ws.write(0,11,u"Fecha de nacimiento dd/mm/yyyy",tit_format)
-        ws.write(0,12,u"Fecha de ingreso dd/mm/yyyy",tit_format)
+        ws.write(0,11,u"Fecha de nacimiento mm/dd/yyyy",tit_format)
+        ws.write(0,12,u"Fecha de ingreso mm/dd/yyyy",tit_format)
         for i in xrange(1,10000):
             ws.write(i,11,"",date_format)
             ws.write(i,12,"",date_format)
@@ -403,43 +403,68 @@ def colaboradores_xls_360(request):
                 vector_metricas = []
                 with transaction.atomic():
                     participantes_conteo = 0
-                    for i in xrange(1,filas):
+                    for i in xrange(1, filas):
                         if i not in vector_ignorar:
                             participantes_conteo += 1
                             vector_personas[i-1].save()
                             vector_metricas.append(ColaboradoresMetricas_360(id=vector_personas[i-1]))
-                            datos = ColaboradoresDatos_360(id = vector_personas[i-1])
-                            if sheet.cell_value(i,5):
-                                datos.area=sheet.cell_value(i,5).strip()
-                            if sheet.cell_value(i,6):
-                                datos.cargo=sheet.cell_value(i,6).strip()
-                            if sheet.cell_value(i,7):
-                                datos.regional=sheet.cell_value(i,7).strip()
-                            if sheet.cell_value(i,8):
-                                datos.ciudad=sheet.cell_value(i,8).strip()
-                            if sheet.cell_value(i,9):
-                                datos.niv_academico=sheet.cell_value(i,9).strip()
-                            if sheet.cell_value(i,10):
-                                datos.profesion=sheet.cell_value(i,10).strip()
-                            if sheet.cell_value(i,11):
-                                datos.fec_nacimiento =  DT.strptime(sheet.cell_value(i,11), '%d/%m/%Y')
-                            if sheet.cell_value(i,12):
-                                datos.fec_ingreso =  DT.strptime(sheet.cell_value(i,12), '%d/%m/%Y')
+                            datos = ColaboradoresDatos_360(id=vector_personas[i-1])
+                            if sheet.cell_value(i, 5):
+                                datos.area = sheet.cell_value(i, 5).strip()
+                                # datos.save()
+                            if sheet.cell_value(i, 6):
+                                datos.cargo = sheet.cell_value(i, 6).strip()
+                                # datos.save()
+                            if sheet.cell_value(i, 7):
+                                datos.regional = sheet.cell_value(i, 7).strip()
+                                # datos.save()
+                            if sheet.cell_value(i, 8):
+                                datos.ciudad = sheet.cell_value(i, 8).strip()
+                                # datos.save()
+                            if sheet.cell_value(i, 9):
+                                datos.niv_academico = sheet.cell_value(i, 9).strip()
+                                # datos.save()
+                            if sheet.cell_value(i, 10):
+                                datos.profesion = sheet.cell_value(i, 10).strip()
+                                # datos.save()
+                            if sheet.cell_value(i, 11):
+                                a1 = sheet.cell_value(i, 11)
+                                # print doc.datemode
+                                a1_tuple = xlrd.xldate_as_tuple(a1, doc.datemode)
+                                # print a1_tuple
+                                datos.fec_nacimiento = DT(*a1_tuple).strftime("%Y-%m-%d")
+                                # print '##################################################'
+                                # datos.save()
+                                # print datos.fec_nacimiento
+                                # datos.fec_nacimiento =  DT.strptime(sheet.cell_value(i, 11), '%d/%m/%Y')
+                            if sheet.cell_value(i, 12):
+                                a1 = sheet.cell_value(i, 12)
+                                a1_tuple = xlrd.xldate_as_tuple(a1, doc.datemode)
+                                datos.fec_ingreso = DT(*a1_tuple).strftime("%Y-%m-%d")
+                                # datos.save()
+                                # datos.fec_ingreso =  DT.strptime(sheet.cell_value(i,12), '%d/%m/%Y')
                             if proyecto_datos.opcional1:
-                                datos.opcional1 = sheet.cell_value(i,13).strip()
+                                datos.opcional1 = sheet.cell_value(i, 13).strip()
+                                # datos.save()
                             if proyecto_datos.opcional2:
-                                datos.opcional2 = sheet.cell_value(i,14).strip()
+                                datos.opcional2 = sheet.cell_value(i, 14).strip()
+                                # datos.save()
                             if proyecto_datos.opcional3:
-                                datos.opcional3 = sheet.cell_value(i,15).strip()
+                                datos.opcional3 = sheet.cell_value(i, 15).strip()
+                                # datos.save()
                             if proyecto_datos.opcional4:
-                                datos.opcional4 = sheet.cell_value(i,16).strip()
+                                datos.opcional4 = sheet.cell_value(i, 16).strip()
+                                # datos.save()
                             if proyecto_datos.opcional5:
-                                datos.opcional5 = sheet.cell_value(i,17).strip()
-                            vector_datos.append(datos)
+                                datos.opcional5 = sheet.cell_value(i, 17).strip()
+                                # datos.save()
+                            # vector_datos.append(datos)
+                            datos.save()
                             #  dependiendo del tipo se ejecuta auto o no
-                            if (proyecto.tipo =="360 unico"):
-                                instrumento = Instrumentos_360.objects.only('id').filter( proyecto_id = proyecto.id )[0]
-                                preguntas = Preguntas_360.objects.filter( proyecto_id = proyecto.id, instrumento_id=instrumento.id)
+                            if (proyecto.tipo == "360 unico"):
+                                instrumento = Instrumentos_360.objects.only('id').filter(proyecto_id=proyecto.id)[0]
+                                preguntas = Preguntas_360.objects.filter(proyecto_id=proyecto.id,
+                                                                         instrumento_id=instrumento.id)
                                 streaming_crear = []
                                 adicionales = 0
                                 for j in preguntas:
@@ -459,7 +484,7 @@ def colaboradores_xls_360(request):
                                 if(streaming_crear):
                                     Streaming_360.objects.bulk_create(streaming_crear)
                                     Proyectos.objects.filter(id=proyecto.id).update(tot_aresponder=F("tot_aresponder")+adicionales)
-                    ColaboradoresDatos_360.objects.bulk_create(vector_datos)
+                    #ColaboradoresDatos_360.objects.bulk_create(vector_datos)
                     ColaboradoresMetricas_360.objects.bulk_create(vector_metricas)
                     Proyectos.objects.filter(id=proyecto.id).update(tot_participantes=F("tot_participantes")+participantes_conteo)
                 proyecto = Proyectos.objects.get(id=proyecto.id)

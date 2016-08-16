@@ -39,10 +39,51 @@ def redes_360(request):
 
         instrumentos = Instrumentos_360.objects.only('nombre').filter(proyecto_id=proyecto.id)
 
-        personas = Colaboradores_360.objects.filter(proyecto=proyecto.id)
+        per = Colaboradores_360.objects.filter(proyecto=proyecto.id)
+
+        personas = ""
+        aux = ""
+        for i in per.all():
+            personas += "<option value='"
+            personas += str(i.id)+"'>"
+            aux = i.nombre
+            personas += aux+" "
+            aux = i.apellido
+            personas += aux
+            personas += "</option>"
 
         # redes = redes_cpp.ver_redes(str(proyecto.id),permisos.red_edit,permisos.red_del)
-        redes = Redes_360.objects.filter(proyecto=proyecto.id)
+        red = Redes_360.objects.filter(proyecto=proyecto.id)
+
+        redes = ""
+        aux = ""
+
+        for i in red.all():
+            id = str(i.id)
+            redes += "<tr id=tr" + id + "><td id=td" + id + ">"
+            nombre = i.nombre
+            redes += nombre + " "
+            apellido = i.apellido
+            redes += apellido + "</td><td >"
+            rol = i.rol
+            redes += rol + "</td><td >"
+            nom_eval = i.nom_eval
+            redes += nom_eval + " "
+            ape_eval = i.ape_eval
+            redes += ape_eval + "</td><td>"
+            nom_inst = i.nom_inst
+            redes += nom_inst + "</td><td style='min-width:210px' id='"+id+"' >"
+
+            #if  editar :           
+            redes += "<span id='act"+id+"' style='cursor:pointer;color:#0bacd3' onclick=\"acciones.actualizar("+id+",'"+nombre+" "+apellido+"','"+rol+"','"+i.rol_idn+"','"+nom_eval+" "+ape_eval+"','"+nom_inst+"','"+i.colaborador_id+"','"+i.evaluado_id+"','"+i.instrumento_id+"')\"><i class='fa fa-edit mr20' title='Editar'></i></span>"
+
+            #if  borrar :            
+            redes += "<span id=d"+id+" style='cursor:pointer;color:#0bacd3' onclick=\"acciones.eliminar("+id+")\"><i class='fa fa-trash ml20' title='Eliminar'></i></span>"
+
+
+            redes += "<span id='del"+id+"' style='display:none' class='btn btn-danger ml20' onclick=\"acciones.confirmado("+id+")\">Confirmar</span>"
+            redes += "<span id='can"+id+"' style='display:none' class='btn btn-warning ml20' onclick=\"acciones.cancelar("+id+",'"+nombre+" "+apellido+"','"+rol+"','"+i.rol_idn+"','"+nom_eval+" "+ape_eval+"','"+nom_inst+"','"+i.colaborador_id+"','"+i.evaluado_id+"','"+i.instrumento_id+"')\">Cancelar</span>"
+            redes += "<span id='env"+id+"' style='display:none' class='btn btn-warning ml20' onclick=\"acciones.enviar("+id+")\">Confirmar</span></td></tr>"
 
         return render_to_response('redes_ind.html',{
         'Activar':'Contenido','activar':'RedesIndividual',
