@@ -521,7 +521,7 @@ def colaboradoreliminar_360(request,id_colaborador):
         except:
             return render_to_response('403.html')
         if request.method == 'POST':
-            maestro = Proyectos.objects.get(id=1)
+            # maestro = Proyectos.objects.get(id=1)
 
             with transaction.atomic():
                 Colaboradores_360.objects.filter(id=id_colaborador).delete()
