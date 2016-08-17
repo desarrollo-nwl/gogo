@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-import os,django,time
-import sys
-sys.path.append('/home/webapps/gogo/')
-sys.path.append('/home/webapps/gogo/gogo/')
-# sys.path.append('/home/suidi/Documentos/gogo/')
-# sys.path.append('/home/suidi/Documentos/gogo/gogo/')
-os.environ["DJANGO_SETTINGS_MODULE"] = "gogo.settings"
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
-django.setup()
+# import os,django,time
+# import sys
+# sys.path.append('/home/webapps/gogo/')
+# sys.path.append('/home/webapps/gogo/gogo/')
+# # sys.path.append('/home/suidi/Documentos/gogo/')
+# # sys.path.append('/home/suidi/Documentos/gogo/gogo/')
+# os.environ["DJANGO_SETTINGS_MODULE"] = "gogo.settings"
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
+# django.setup()
 
 from colaboradores.models import *
 from mensajeria.corrector import salvar_html
@@ -20,7 +20,7 @@ from colaboradores_360.models import *
 from mensajeria_360.models import *
 
 from django.db import transaction
-from datetime import datetime,timedelta,date
+from datetime import datetime, timedelta, date
 from django.utils import timezone
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
