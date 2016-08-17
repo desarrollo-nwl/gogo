@@ -155,7 +155,8 @@ def enviar_360():
 			proyecto__proyectosdatos__ffin__gte=tiempo,
 			colaborador__estado=True,pregunta__estado=True).distinct('colaborador')
 	lens = len(stream)
-	# print lens
+	print '#############################################'
+	print lens
 	for i in xrange(lens):
 		if not stream[i].fec_controlenvio:#no se ha enviado?
 			stream = sendmail_360(stream[i],stream,tiempo,i)
