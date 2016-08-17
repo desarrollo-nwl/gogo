@@ -160,7 +160,7 @@ def enviar_360():
 	for i in xrange(lens):
 		if not stream[i].fec_controlenvio:#no se ha enviado?
 			stream = sendmail_360(stream[i],stream,tiempo,i)
-			# print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
+			print 'A:',stream[i].colaborador.email,' se le ha enviado por primera vez'
 		else:
 			delta = tiempo - stream[i].fec_controlenvio
 			if stream[i].colaborador.propension > 0:
@@ -170,17 +170,17 @@ def enviar_360():
 				if delta.days >= stream[i].proyecto.prudenciamin and (24*delta.days + delta.seconds/3600.0) >= propension:
 					stream = sendmail_360(stream[i],stream,tiempo,i)
 					delta = tiempo - stream[i].fec_controlenvio
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en A'
+					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en A'
 
 				elif delta.days >= stream[i].proyecto.prudenciamax:
 					stream = sendmail_360(stream[i],stream,tiempo,i)
 					delta = tiempo - stream[i].fec_controlenvio
-					# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en B'
+					print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en B'
 
 			elif delta.days >= stream[i].proyecto.prudenciamax: # x > M sin propension
 				stream = sendmail_360(stream[i],stream,tiempo,i)
 				delta = tiempo - stream[i].fec_controlenvio
-				# print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
+				print stream[i].colaborador.email,' respondio se le ha enviado nuevamente en alto lapsus'
 
 enviar()
 enviar_360()
