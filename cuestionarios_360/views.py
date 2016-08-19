@@ -642,7 +642,7 @@ def preguntaclonar_360(request,id_pregunta):
 				variable.max_preguntas += 1; variable.save()
 				Instrumentos_360.objects.filter(id=variable.instrumento_id).update(max_preguntas = F('max_preguntas') + 1)
 				respuestas_nuevas = []
-				for respuesta in pregunta.respuestas_360_set.all():
+				for respuesta in pregunta.respuestas_360_set.all().order_by('id'):
 					respuesta.id = None
 					respuesta.pregunta = pregunta
 					respuestas_nuevas.append(respuesta)
