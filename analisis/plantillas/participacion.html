@@ -235,7 +235,7 @@
 <script type="text/javascript" src="{% static 'plugins/jQRangeSlider-master/jQDateRangeSlider.min.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/plugins/multiselect/bootstrap-multiselect.min.js' %}"></script>
 <script type="text/javascript">
-var Datos = {{ Datos | safe }}
+var Datos ={{ Datos | safe }}
 
 var contenido = function(a,x){
 	for (var i = 0; i < x.length; i++) if (a == x[i]) return true;
@@ -499,8 +499,8 @@ $(document).ready(function() {
 	document.getElementById("cargando").style.opacity = 1;
 	$("#slider").dateRangeSlider({
 		bounds:{
-		  min: new Date({{ PDatos.finicio.year }},{{ PDatos.finicio.month | add:-1 }},{{ PDatos.finicio.day }}),
-		  max: new Date({{ PDatos.ffin.year }},{{ PDatos.ffin.month | add:-1 }},{{ PDatos.ffin.day }})
+		  min: new Date({{ Datos.finicio.year }},{{ Datos.finicio.month | add:-1 }},{{ Datos.finicio.day }}),
+		  max: new Date({{ Datos.ffin.year }},{{ Datos.ffin.month | add:-1 }},{{ Datos.ffin.day }})
 		},
 		defaultValues:{
 		  min: fec_minima,

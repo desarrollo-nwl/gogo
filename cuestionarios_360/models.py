@@ -27,7 +27,7 @@ class Dimensiones_360( models.Model ):
 	id = models.AutoField( primary_key = True )
 	descripcion = models.TextField( blank = True, null = True , max_length = 255 )
 	estado = models.BooleanField( default = True )
-	instrumento = models.ForeignKey( Instrumentos_360, blank = True, null = True )
+	instrumento = models.ForeignKey( Instrumentos_360, related_name="dimension", blank = True, null = True )
 	max_variables = models.PositiveSmallIntegerField( default = 0 )
 	nombre =  models.CharField( max_length = 255 )
 	posicion = models.PositiveSmallIntegerField( blank = True, null = True )

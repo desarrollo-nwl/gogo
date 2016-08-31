@@ -297,7 +297,20 @@ def colaboradoreenviar(request,id_colaborador):
     permisos = request.user.permisos
     if permisos.consultor and proyecto.activo:
         try:
-            colaborador = Colaboradores_360.objects.get(id = id_colaborador)
+            colaborador = Colaboradores_360.objects.get(id=id_colaborador)
+            col_met = colaborador.colaboradoresmetricas_360
+
+            red = col_met.ins_actual
+            reds = ujson.loads(col_met.ord_instrumentos)
+
+            if not red or reds.index(red) == (len(reds)-1):
+                print "ENTRAMOS"
+                if proyecto.tipo == "360 redes":
+                    red = reds[0]
+            else:
+                red = reds[ reds.index(red) +1 ]
+            red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
+                                        ).select_related('evaluado').filter(id = red )[0]
             if Streaming_360.objects.filter(colaborador_id = id_colaborador,
                 respuesta__isnull=True).exists() or proyecto.ciclico:
                 alerta = None
@@ -322,7 +335,7 @@ def colaboradoreenviar(request,id_colaborador):
                             genero = "a"
                         else:
                             genero = "o"
-                        nombre = (colaborador.nombre).encode("ascii", "xmlcharrefreplace")
+                        nombre = (colaborador.nombre+' estas evaluando a ' +'<strong>'+red.evaluado.nombre+ '</strong>'+' con el rol '+'<strong>'+red.rol+'</strong>').encode("ascii", "xmlcharrefreplace")
                         titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
                         texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
                         url = 'http://159.203.190.248/360/encuesta/'+str(proyecto.id)+'/'+colaborador.key

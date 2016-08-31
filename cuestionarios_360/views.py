@@ -975,6 +975,8 @@ def importar_instrumento_360(request):
 				pos_pre = 0
 
 				contador = 0
+				# print '########################################'
+				# print sheet.cell_value(i, 0)
 				while sheet.cell_value(i,0).strip() != 'FIN' and contador < 10000: #contador de seguridad
 					contador += 1
 					if len(sheet.cell_value(i,0).strip() ) > 0:
@@ -1012,27 +1014,27 @@ def importar_instrumento_360(request):
 						pos_var += 1
 						pos_pre = 1
 
-					if len(sheet.cell_value(i,6).strip() ) > 0:
-						pregunta = Preguntas_360(texto = sheet.cell_value(i,6).strip(),
+					if len(sheet.cell_value(i,5).strip() ) > 0:
+						pregunta = Preguntas_360(texto = sheet.cell_value(i,5).strip(),
 												instrumento_id = instrumento.id ,
 												dimension_id = dimension.id,
 						 						variable_id = variable.id,
 												proyecto_id = proyecto.id,
 												posicion = pos_pre)
 						pos_pre += 1
-						if sheet.cell_value(i,7):
-							pregunta.puntaje = float( sheet.cell_value(i,7) )
+						if sheet.cell_value(i,6):
+							pregunta.puntaje = float(sheet.cell_value(i,6))
 						else:
 							pregunta.puntaje = 1
 
 
-						if sheet.cell_value(i,8).lower().strip() == u'Abierta'.lower():
+						if sheet.cell_value(i,7).lower().strip() == u'Abierta'.lower():
 							pregunta.abierta = True
 							pregunta.multiple = False
 							pregunta.numerica = False
 							pregunta.cuerpo = False
 
-						elif sheet.cell_value(i,8).lower().strip() == u'Múltiple'.lower():
+						elif sheet.cell_value(i,7).lower().strip() == u'Múltiple'.lower():
 							pregunta.abierta = False
 							pregunta.multiple = True
 							pregunta.cuerpo = False
@@ -1041,7 +1043,7 @@ def importar_instrumento_360(request):
 							else:
 								pregunta.numerica = False
 
-						elif sheet.cell_value(i,8).lower().strip() == u'Única'.lower():
+						elif sheet.cell_value(i,7).lower().strip() == u'Única'.lower():
 							pregunta.abierta = False
 							pregunta.multiple = False
 							pregunta.cuerpo = False
@@ -1050,7 +1052,7 @@ def importar_instrumento_360(request):
 							else:
 								pregunta.numerica = False
 
-						elif sheet.cell_value(i,8).lower().strip() == u'Cuerpo'.lower():
+						elif sheet.cell_value(i,7).lower().strip() == u'Cuerpo'.lower():
 							pregunta.abierta = True
 							pregunta.multiple = False
 							pregunta.numerica = False
@@ -1062,11 +1064,11 @@ def importar_instrumento_360(request):
 						variable.save()
 						pregunta.save()
 
-					if len(sheet.cell_value(i,9).strip() ) > 0:
-						respuesta = Respuestas_360(texto = sheet.cell_value(i,9).strip(),
+					if len(sheet.cell_value(i,8).strip() ) > 0:
+						respuesta = Respuestas_360(texto = sheet.cell_value(i,8).strip(),
 										pregunta_id = pregunta.id)
-						if sheet.cell_value(i,10):
-							respuesta.numerico = float( sheet.cell_value(i,10) )
+						if sheet.cell_value(i,9):
+							respuesta.numerico = float( sheet.cell_value(i,9) )
 						respuesta.save()
 
 					i += 1
