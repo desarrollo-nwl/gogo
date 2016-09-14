@@ -462,28 +462,42 @@ def colaboradores_xls_360(request):
                             datos.save()
                             #  dependiendo del tipo se ejecuta auto o no
                             if (proyecto.tipo == "360 unico"):
+
                                 instrumento = Instrumentos_360.objects.only('id').filter(proyecto_id=proyecto.id)[0]
                                 preguntas = Preguntas_360.objects.filter(proyecto_id=proyecto.id,
                                                                          instrumento_id=instrumento.id)
                                 streaming_crear = []
+                                # streaming = Streaming_360(proyecto_id=proyecto.id)
                                 adicionales = 0
                                 for j in preguntas:
                                     try:
+                                        # print '##################################################'
+                                        # print proyecto.id, instrumento.id, vector_personas[i-1].id, j.id
                                         streaming_crear.append(Streaming_360(
                                                                 proyecto_id=proyecto.id,
                                                                 instrumento_id=instrumento.id,
                                                                 colaborador_id=vector_personas[i-1].id,
                                                                 pregunta_id=j.id))
+                                        # streaming.instrumento_id = instrumento.id
+                                        # streaming.colaborador_id = vector_personas[i-1].id
+                                        # streaming.pregunta_id = j.id
+                                        # # streaming.save()
                                         adicionales += 1
                                     except:
                                         pass
                                 if(proyecto.tot_aresponder):
                                     val = 100.0*proyecto.tot_respuestas/proyecto.tot_aresponder
                                     Proyectos.objects.filter(id=proyecto.id).update(total=val)
-
                                 if(streaming_crear):
-                                    Streaming_360.objects.bulk_create(streaming_crear)
+                                    # Streaming_360.objects.bulk_create(streaming_crear)
+                                    # print '##################################################'
+                                #     print streaming_crear
+                                    # streaming.save()
                                     Proyectos.objects.filter(id=proyecto.id).update(tot_aresponder=F("tot_aresponder")+adicionales)
+                    # if(streaming_crear):
+                    #     print '###########################'
+                    #     print streaming_crear
+                    #     Streaming_360.objects.bulk_create(streaming_crear)
                     #ColaboradoresDatos_360.objects.bulk_create(vector_datos)
                     ColaboradoresMetricas_360.objects.bulk_create(vector_metricas)
                     Proyectos.objects.filter(id=proyecto.id).update(tot_participantes=F("tot_participantes")+participantes_conteo)
