@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 	#'debug_toolbar',
 	'exp_usuario',
 	'entornoPruebas',
+	'daterange_filter',
 
 )
 

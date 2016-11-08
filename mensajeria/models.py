@@ -9,7 +9,7 @@ from django.utils import timezone
 
 class Streaming( models.Model ):
 	id = models.AutoField( primary_key = True)
-	colaborador = models.ForeignKey( Colaboradores )
+	colaborador = models.ForeignKey( Colaboradores, related_name="colaborador" )
 	pregunta = models.ForeignKey( Preguntas )
 	proyecto = models.ForeignKey( Proyectos )
 	fec_controlenvio = models.DateTimeField( blank = True, null = True  )
