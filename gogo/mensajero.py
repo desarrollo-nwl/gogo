@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 import os,django,time
 import sys
+import ujson
 sys.path.append('/home/webapps/gogo/')
 sys.path.append('/home/webapps/gogo/gogo/')
 # sys.path.append('/home/suidi/Documentos/gogo/')
