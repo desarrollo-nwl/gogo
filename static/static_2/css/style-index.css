@@ -1,0 +1,471 @@
+/*  www.bigtalenter.com
+/*  CSS - Index.html
+ *  ==========================*/
+
+/* =========================== */
+/* Body
+/* Color, Typography and Links */
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.container {
+    width: 100%;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+.row {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+/* =========================== */
+
+/* =========================== */
+/* NavBar
+/* Color, Typography and Links */
+
+ .navbar-default {
+    background-color: rgba(0, 0, 0, 1);
+    border-color: rgba(0, 0, 0, 1);
+}
+
+.navbar-brand {
+    max-width: 100%;
+}
+
+.navbar-right {
+    margin: 0 10px 0 0;
+}
+
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: 0px !important;
+}
+
+.navbar .nav > li > a {
+    float: none;
+    margin: 3px;
+    text-align: center;
+    font-weight: 100;
+    font-size: 14px;
+    color: #fff !important;
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.navbar .nav > li > a:hover {
+    float: none;
+    margin: 3px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: #fff !important;
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.navbar-default .navbar-nav > li > a.btnLogin {
+  white-space: nowrap;
+  background-color: transparent;
+  height: 40px;
+  line-height: 0px;
+  margin: 8px 20px 0 10px;
+  padding: 0 15px 3px 15px;
+  height: 40px;
+  line-height: 38px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  vertical-align: middle;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+    background-color: #000000;
+    border-bottom-color: #FFF;
+    border-bottom-style: solid;
+ }
+
+.container-fluid > .navbar-collapse {
+    margin-right: 45px;
+    margin-left: 45px;
+}
+
+.navbar-toggle {
+    margin-top: 20px !important;
+}
+
+/* =========================== */
+
+/* =========================== */
+/* Sections
+/* Color, Typography and Links */
+
+/* Demo Sections - You can use these as guides or delete them - the scroller will work with any sort of height, fixed, undefined, or percentage based.
+The padding is very important to make sure the scrollspy picks up the right area when scrolled to. Adjust the margin and padding of sections and children
+of those sections to manage the look and feel of the site. */
+
+.intro-section {
+    width= 100%;
+    /*padding-top: 100px;*/
+    text-align: center;
+    background: #000000;
+}
+
+.about-section {
+	position: relative;
+    width= 100%;
+    padding-top: 0px;
+    text-align: center;
+    background: #ffffff;
+}
+
+#seccion-1{
+	position: absolute; z-index: 1; top: 30%; left: 0%;
+}
+
+#seccion-2{
+	position: absolute; z-index: 1; top: 30%; left: 0%;
+}
+
+#call-contact {
+	position: absolute; z-index: 1; top: 20%; left: 0%;
+}
+
+#data-contact {
+	position: absolute; z-index: 1; top: 30%; left: 0%;
+}
+
+.services-section {
+    width= 100%;
+    padding-top: 0px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.we-netlab-section {
+    width= 100%;
+    padding-top: 0px;
+    text-align: center;
+    background: #ffffff;
+}
+
+/**.we-netlab-section .container {
+    background: url(../img/we_net.jpg) no-repeat bottom center scroll;
+    background-size: contain;**/
+}
+
+h3 {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.5em;
+    color: #fff;
+    margin: 450px 0px 50px 0px;
+    text-align: center;
+}
+
+
+p {
+
+}
+
+.contact-section {
+    width= 100%;
+    padding-top: 0px;
+    text-align: center;
+    background: #eee;
+}
+
+.contact-section .container {
+    background: url(../img/fondo_contacto.jpg) no-repeat center center scroll;
+    background-size: cover;
+}
+
+.main-footer {
+    width= 100%;
+    padding-top: 150px;
+    text-align: center;
+    background: #eee;
+}
+/* =========================== */
+
+/* =========================== */
+/* Contact
+/* Color, Typography and Links */
+
+p {
+	font-family: 'Raleway', sans-serif !important;
+}
+
+h4 {
+    font-size: 3.0em;
+    color: #fff;
+    margin: 30px 0px 0px 0px;
+    text-align: center;
+}
+
+h5 {
+    font-size: 3.0em;
+    color: #fff;
+    margin: 0px 0px 30px 0px;
+    text-align: center;
+}
+
+.form-control {
+	color: #ggg;
+}
+
+.floating-label-form-group {
+    position: relative;
+    margin-bottom: 0;
+    padding-bottom: .5em;
+    border-bottom: 1px solid #eee;
+}
+
+.floating-label-form-group input,
+.floating-label-form-group textarea {
+    z-index: 1;
+    position: relative;
+    padding-right: 0;
+    padding-left: 0;
+    border: 0;
+    border-radius: 0;
+    font-size: 1.5em;
+    background: 0 0;
+    box-shadow: none!important;
+    resize: none;
+}
+
+.floating-label-form-group label {
+    display: block;
+    z-index: 0;
+    position: relative;
+    top: 2em;
+    margin: 0;
+    font-size: .85em;
+    line-height: 1.764705882em;
+    vertical-align: middle;
+    vertical-align: baseline;
+    opacity: 0;
+    -webkit-transition: top .3s ease,opacity .3s ease;
+    -moz-transition: top .3s ease,opacity .3s ease;
+    -ms-transition: top .3s ease,opacity .3s ease;
+    transition: top .3s ease,opacity .3s ease;
+}
+
+.floating-label-form-group::not(:first-child) {
+    padding-left: 14px;
+    border-left: 1px solid #eee;
+}
+
+.floating-label-form-group-with-value label {
+    top: 0;
+    opacity: 0.8;
+}
+
+.floating-label-form-group-with-focus label {
+    color: #18bc9c;
+}
+
+form .row:first-child .floating-label-form-group {
+    border-top: 1px solid #fff;
+}
+
+.btn-success {
+  color: #ffffff;
+  font-size: 1.5em;
+  background-color: #b8d441;
+  border-color: #fff;
+}
+
+.btn-success:hover {
+  color: #ffffff;
+  font-size: 1.5em;
+  background-color: #b8d441;
+  border-color: #fff;
+  text-decoration: underline;
+}
+/* =========================== */
+
+/* =========================== */
+/* Footer
+/* Color, Typography and Links */
+
+.main-footer {
+    background-color: #1F1E1C !important;
+    color: #fff;
+    padding-top: 40px;
+    min-height: 220px;
+}
+
+.link-list .heading {
+    list-style-type: none;
+    /*font-family: 'Dosis', sans-serif !important;*/
+    font-weight: 600;
+    font-size: 14px !important;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.link-list {
+    list-style-type: none;
+    /*font-family: 'Dosis', sans-serif !important;*/
+    font-weight: 200;
+    line-height: 1.6;
+    font-size: 14px !important;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+a {
+    color: #fff;
+}
+a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+a:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+#social {
+    padding: 5px !important;
+}
+
+h6 {
+    font-size: 10px;
+    color: #fff;
+    margin: 22px 0 0 -45px;
+    text-align: left;
+}
+/* =========================== */
+
+/* =========================== */
+
+.funkyradio div {
+  clear: both;
+  overflow: hidden;
+}
+
+.funkyradio label {
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid #D1D3D4;
+  font-size: 1.2em;
+  color: white;
+  font-weight: normal;
+  background-color: #bad643;
+}
+
+.funkyradio input[type="radio"]:empty,
+.funkyradio input[type="checkbox"]:empty {
+  display: none;
+}
+
+.funkyradio input[type="radio"]:empty ~ label,
+.funkyradio input[type="checkbox"]:empty ~ label {
+  position: relative;
+  line-height: 2.9em;
+  text-indent: 3.25em;
+  margin-top: 0.3em;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.funkyradio input[type="radio"]:empty ~ label:before,
+.funkyradio input[type="checkbox"]:empty ~ label:before {
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  width: 2.5em;
+  background: #D1D3D4;
+  border-radius: 3px 0 0 3px;
+}
+
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+.funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+  color: #888;
+}
+
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+.funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+  content: '\2714';
+  text-indent: .9em;
+  color: #C2C2C2;
+}
+
+.funkyradio input[type="radio"]:checked ~ label,
+.funkyradio input[type="checkbox"]:checked ~ label {
+  color: white;
+}
+
+.funkyradio input[type="radio"]:checked ~ label:before,
+.funkyradio input[type="checkbox"]:checked ~ label:before {
+  content: '\2714';
+  text-indent: .9em;
+  color: #333;
+  background-color: #ccc;
+}
+
+.funkyradio input[type="radio"]:focus ~ label:before,
+.funkyradio input[type="checkbox"]:focus ~ label:before {
+  box-shadow: 0 0 0 3px #999;
+}
+
+.funkyradio-success input[type="radio"]:checked ~ label:before,
+.funkyradio-success input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #5cb85c;
+}
+
+/* =================== */
+
+/* =========================== */
+/* Resposive
+/* Color, Typography and Links */
+
+@media(min-width:767px) {
+    .navbar {
+        padding: 20px 0;
+        -webkit-transition: background .5s ease-in-out,padding .5s ease-in-out;
+        -moz-transition: background .5s ease-in-out,padding .5s ease-in-out;
+        transition: background .5s ease-in-out,padding .5s ease-in-out;
+    }
+
+	.navbar-brand {
+    	max-width: 95%;
+	}
+
+
+    .top-nav-collapse {
+        padding: 0;
+    }
+}
+
+@media(max-width:767px) {
+
+	.navbar-brand {
+    	max-width: 95%;
+	}
+
+    .top-nav-collapse {
+        padding: 0;
+    }
+
+}
+
+/* =========================== */

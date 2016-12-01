@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
@@ -22,57 +22,74 @@ import smtplib,os
 # Front end
 #===============================================================================
 
-@cache_control(no_store=True)
-def index(request):
+# @cache_control(no_store=True)
+# def index(request):
 
-	chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-	captcha = ''.join(random.sample(chars, 5))
+# 	chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+# 	captcha = ''.join(random.sample(chars, 5))
 
-	if not request.user.is_anonymous():
-		return HttpResponseRedirect('/home/')
+# 	if not request.user.is_anonymous():
+# 		return HttpResponseRedirect('/home/')
 
-	if request.method == 'POST':
-		try:
-			if( request.POST['variable'] == request.POST['captcha']):
-				# server=smtplib.SMTP('smtp.mandrillapp.com',587)
-				server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
-				server.ehlo()
-				server.starttls()
-				# server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
-				server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
+# 	if request.method == 'POST':
+# 		try:
+# 			if( request.POST['variable'] == request.POST['captcha']):
+# 				# server=smtplib.SMTP('smtp.mandrillapp.com',587)
+# 				server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
+# 				server.ehlo()
+# 				server.starttls()
+# 				# server.login('Team@goanalytics.com','pR6yG1ztNHT7xW6Y8yigfw')
+# 				server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 
-				destinatario = ['ilgaleanos@gmail.com','ricardo.montoya@networkslab.co']
-				msg=MIMEMultipart()
-				msg["subject"]=  'Persona interesada GoAnalytics xD.'
-				msg['To'] = email.utils.formataddr(('Respetado', destinatario))
-				# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
-				msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
-				n = (request.POST['nombre']).encode("ascii", "xmlcharrefreplace")
-				e = (request.POST['email']).encode("ascii", "xmlcharrefreplace")
-				t = (request.POST['telefono']).encode("ascii", "xmlcharrefreplace")
-				m = (request.POST['mensaje']).encode("ascii", "xmlcharrefreplace")
-				html = '<b>NOMBRE:</b> '+ n +'<br>'
-				html = html+'  <b>EMAIL:</b> '+str(e)+'<br>'
-				html = html+'  <b>TELEFONO: </b>'+str(t)+'<br>'
-				html = html+'  <b>MENSAJE: </b><br> '+ m
+# 				destinatario = ['ilgaleanos@gmail.com','ricardo.montoya@networkslab.co']
+# 				msg=MIMEMultipart()
+# 				msg["subject"]=  'Persona interesada GoAnalytics xD.'
+# 				msg['To'] = email.utils.formataddr(('Respetado', destinatario))
+# 				# msg['From'] = email.utils.formataddr(('GoAnalytics', 'Team@goanalytics.com'))
+# 				msg['From'] = email.utils.formataddr(('GoAnalytics', 'team@bigtalenter.com'))
+# 				n = (request.POST['nombre']).encode("ascii", "xmlcharrefreplace")
+# 				e = (request.POST['email']).encode("ascii", "xmlcharrefreplace")
+# 				t = (request.POST['telefono']).encode("ascii", "xmlcharrefreplace")
+# 				m = (request.POST['mensaje']).encode("ascii", "xmlcharrefreplace")
+# 				html = '<b>NOMBRE:</b> '+ n +'<br>'
+# 				html = html+'  <b>EMAIL:</b> '+str(e)+'<br>'
+# 				html = html+'  <b>TELEFONO: </b>'+str(t)+'<br>'
+# 				html = html+'  <b>MENSAJE: </b><br> '+ m
 
-				parte2=MIMEText(html,"html")
-				msg.attach(parte2)
+# 				parte2=MIMEText(html,"html")
+# 				msg.attach(parte2)
 
-				# server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
-				server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
-				server.quit()
-				return HttpResponseRedirect('/index/')
-		except:
-			return HttpResponseRedirect('/index/#contact/')
+# 				# server.sendmail('Team@goanalytics.com',destinatario,msg.as_string())
+# 				server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+# 				server.quit()
+# 				return HttpResponseRedirect('/index/')
+# 		except:
+# 			return HttpResponseRedirect('/index/#contact/')
 
-	return render_to_response('index.html',{
-	'captcha':captcha
-	}, context_instance=RequestContext(request))
+# 	return render_to_response('index_2.html',{
+# 	'captcha':captcha
+# 	}, context_instance=RequestContext(request))
 
 #===============================================================================
 # login - logout
 #===============================================================================
+
+@cache_control(no_store=True)
+def index(request):
+    """Home page JsConf"""
+    data = {}
+    desafios = Desafio.objects.all().order_by('id')
+    # # speakers = Speaker.objects.all().order_by('order')
+    # # countries = Set([])
+    # # for speaker in speakers:
+    # #     if speaker.country:
+    # #         countries.add(speaker.country.country)
+    
+    # # data['sponsors_scholarship'] = sponsors_scholarship
+    # data['sponsors_hardware'] = sponsors_hardware
+    data['desafios'] = desafios
+    return render(request, 'index_2.html', data)
+
 
 @cache_control(no_store=True)
 def acceder(request):
