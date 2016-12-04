@@ -13,6 +13,8 @@ from django.template import RequestContext
 from django.views.decorators.cache import cache_control
 from mensajeria_360.models import *
 from usuarios.models import *
+import sendgrid
+from sendgrid.helpers.mail import *
 
 from django.db.models import Avg,Sum
 from datetime import datetime as DT
@@ -320,10 +322,11 @@ def colaboradoreenviar(request,id_colaborador):
                         from usuarios.strings import correo_standar
                         from corrector import salvar_html
                         import unicodedata
-                        server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
-                        server.ehlo()
-                        server.starttls()
-                        server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
+                        # server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
+                        # server.ehlo()
+                        # server.starttls()
+                        # server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
+                        sg = sendgrid.SendGridAPIClient(apikey='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')
                         nom_log =request.user.first_name+' '+request.user.last_name
                         Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
                         destinatario = [colaborador.email]
@@ -346,8 +349,14 @@ def colaboradoreenviar(request,id_colaborador):
                             colaborador.reenviados = colaborador.reenviados + 1
                             Streaming_360.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
                             colaborador.save()
-                            server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
-                        server.quit()
+                            # server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+                            content = Content("text/html", html)
+                            print '####################################################################'
+                            mail = Mail(Email('team@bigtalenter.com'), msg["subject"], Email(destinatario), content)
+                            mail.set_template_id('09dd518c-04a1-45e1-8fea-b635274a02e2')
+                            response = sg.client.mail.send.post(request_body=mail.get())
+                            print response
+                        # server.quit()
                         alerta = 'Correo enviado exitosamente.'
                     else:
                         alerta = 'Debe activar primero al colaborador para forzar el envío. Asegúrese de tener los permisos necesarios para editar participantes.'

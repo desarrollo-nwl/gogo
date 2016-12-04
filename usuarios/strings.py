@@ -424,5 +424,5 @@ def correo_standar(urlimg,genero,nombre,titulo,texto_correo,url):
             </table>
         </center>
     </body>
-    </html>"""%(urlimg,genero,nombre,titulo,texto_correo,url)
+    </html>""" % (urlimg, genero, nombre, titulo, texto_correo, url)
     return str(cadena)

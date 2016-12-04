@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-import os,django,time
+import os
+import time
+import django
 import sys
 import ujson
-sys.path.append('/home/webapps/gogo/')
-sys.path.append('/home/webapps/gogo/gogo/')
-# sys.path.append('/home/suidi/Documentos/gogo/')
-# sys.path.append('/home/suidi/Documentos/gogo/gogo/')
-os.environ["DJANGO_SETTINGS_MODULE"] = "gogo.settings"
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
-django.setup()
+import sendgrid
+from sendgrid.helpers.mail import *
 
 from colaboradores.models import *
 from mensajeria.corrector import salvar_html
@@ -30,14 +26,26 @@ import email.utils
 import smtplib,cgi,unicodedata
 import datetime
 from django.db import models
+sys.path.append('/home/webapps/gogo/')
+sys.path.append('/home/webapps/gogo/gogo/')
+# sys.path.append('/home/suidi/Documentos/gogo/')
+# sys.path.append('/home/suidi/Documentos/gogo/gogo/')
+os.environ["DJANGO_SETTINGS_MODULE"] = "gogo.settings"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
+django.setup()
 
 
-server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
-server.ehlo()
-server.starttls()
-server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
 
-def sendmail(stream_i,stream,tiempo,indice):
+# server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
+# server.ehlo()
+# server.starttls()
+# server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
+
+sg = sendgrid.SendGridAPIClient(apikey='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')
+
+
+def sendmail(stream_i, stream, tiempo, indice):
     try:
         with transaction.atomic():
             colaborador = stream_i.colaborador
@@ -63,7 +71,14 @@ def sendmail(stream_i,stream,tiempo,indice):
                 colaborador.propension = 0
             colaborador.save()
             Streaming.objects.filter(colaborador=colaborador,proyecto=stream_i.proyecto).update(fec_controlenvio=tiempo)
-            server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+
+            # server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+            content = Content("text/html", html)
+            print '####################################################################'
+            mail = Mail(Email('team@bigtalenter.com'), msg["subject"], Email(destinatario), content)
+            mail.set_template_id('09dd518c-04a1-45e1-8fea-b635274a02e2')
+            response = sg.client.mail.send.post(request_body=mail.get())
+            print response
             # print 'Enviado.'
             stream_i.fec_controlenvio = tiempo
             time.sleep(.036)
@@ -153,7 +168,13 @@ def sendmail_360(stream_i,stream,tiempo,indice):
             colaborador.propension = 0
         colaborador.save()
         Streaming_360.objects.filter(colaborador=colaborador,proyecto=stream_i.proyecto).update(fec_controlenvio=tiempo)
-        server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+        # server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+        content = Content("text/html", html)
+        print '####################################################################'
+        mail = Mail(Email('team@bigtalenter.com'), msg["subject"], Email(destinatario), content)
+        mail.set_template_id('09dd518c-04a1-45e1-8fea-b635274a02e2')
+        response = sg.client.mail.send.post(request_body=mail.get())
+        print response
         stream_i.fec_controlenvio = tiempo
         time.sleep(.036)
 
