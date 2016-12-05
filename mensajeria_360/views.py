@@ -309,63 +309,72 @@ def colaboradoreenviar(request,id_colaborador):
                 print "ENTRAMOS"
                 if proyecto.tipo == "360 redes":
                     red = reds[0]
+                    red = Redes_360.objects.only('evaluado__nombre', 'evaluado__apellido', 'rol'
+                                                 ).select_related('evaluado').filter(id=red)[0]
             else:
-                red = reds[ reds.index(red) +1 ]
-            red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
-                                        ).select_related('evaluado').filter(id = red )[0]
-            if Streaming_360.objects.filter(colaborador_id = id_colaborador,
-                respuesta__isnull=True).exists() or proyecto.ciclico:
-                alerta = None
-                if request.method == 'POST':
-                    if colaborador.estado:
-                        datos = proyecto.proyectosdatos
-                        from usuarios.strings import correo_standar
-                        from corrector import salvar_html
-                        import unicodedata
-                        # server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
-                        # server.ehlo()
-                        # server.starttls()
-                        # server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
-                        sg = sendgrid.SendGridAPIClient(apikey='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')
-                        nom_log =request.user.first_name+' '+request.user.last_name
-                        Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
-                        destinatario = [colaborador.email]
-                        msg=MIMEMultipart()
-                        msg["subject"]=  datos.asunto
-                        msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
-                        urlimg = 'http://159.203.190.248'+datos.logo.url
-                        if colaborador.genero.lower() == "femenino":
-                            genero = "a"
-                        else:
-                            genero = "o"
-                        nombre = (colaborador.nombre+' estas evaluando a ' +'<strong>'+red.evaluado.nombre+ '</strong>'+' con el rol '+'<strong>'+red.rol+'</strong>').encode("ascii", "xmlcharrefreplace")
-                        titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
-                        texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
-                        url = 'http://159.203.190.248/360/encuesta/'+str(proyecto.id)+'/'+colaborador.key
-                        html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
-                        mensaje = MIMEText(html,"html")
-                        msg.attach(mensaje)
-                        with transaction.atomic():
-                            colaborador.reenviados = colaborador.reenviados + 1
-                            Streaming_360.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
-                            colaborador.save()
-                            # server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
-                            content = Content("text/html", html)
-                            print '####################################################################'
-                            mail = Mail(Email('team@bigtalenter.com'), msg["subject"], Email(destinatario), content)
-                            mail.set_template_id('09dd518c-04a1-45e1-8fea-b635274a02e2')
-                            response = sg.client.mail.send.post(request_body=mail.get())
-                            print response
-                        # server.quit()
-                        alerta = 'Correo enviado exitosamente.'
+                red = reds[reds.index(red) + 1]
+            # red = Redes_360.objects.only('evaluado__nombre','evaluado__apellido','rol'
+            #                             ).select_related('evaluado').filter(id = red )[0]
+            # if Streaming_360.objects.filter(colaborador_id = id_colaborador,
+            #     respuesta__isnull=True).exists() or proyecto.ciclico:
+            alerta = None
+            if request.method == 'POST':
+                if colaborador.estado:
+                    datos = proyecto.proyectosdatos
+                    from usuarios.strings import correo_standar
+                    from corrector import salvar_html
+                    import unicodedata
+                    # server=smtplib.SMTP('email-smtp.us-east-1.amazonaws.com',587)
+                    # server.ehlo()
+                    # server.starttls()
+                    # server.login('AKIAIIG3SGXTWBK23VEQ','AtDj4P2QhDWTSIpkVv9ySRsz50KUFnusZ1cjFt+ZsdHC')
+                    sg = sendgrid.SendGridAPIClient(apikey='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')
+                    nom_log =request.user.first_name+' '+request.user.last_name
+                    Logs.objects.create(usuario=nom_log,usuario_username=request.user.username,accion="Forzó reenvío a",descripcion=colaborador.nombre+" "+colaborador.apellido)
+                    destinatario = colaborador.email
+                    msg=MIMEMultipart()
+                    msg["subject"]=  datos.asunto
+                    msg['From'] = email.utils.formataddr(((proyecto.nombre).encode("ascii", "xmlcharrefreplace"), 'team@bigtalenter.com'))
+                    urlimg = 'http://159.203.190.248'+datos.logo.url
+                    if colaborador.genero.lower() == "femenino":
+                        genero = "a"
                     else:
-                        alerta = 'Debe activar primero al colaborador para forzar el envío. Asegúrese de tener los permisos necesarios para editar participantes.'
-                return render_to_response('colaboradoreenviar_360.html',{
-                'Activar':'EstadoAvance','activar':'EnviosRespuestas','Colaborador':colaborador,
-                'Permisos':permisos,'Proyecto':proyecto,'Alerta':alerta
-                }, context_instance=RequestContext(request))
-            else:
-                return render_to_response('403.html')
+                        genero = "o"
+                    print "ENTRAMOS AL POSTTTTTTT"
+                    if proyecto.tipo == "360 redes":
+                        evaluado = red.evaluado.nombre
+                        rol = red.rol
+                    else:
+                        evaluado = ''
+                        rol = ''
+                    nombre = (colaborador.nombre+' estas evaluando a ' +'<strong>'+evaluado+ '</strong>'+' con el rol '+'<strong>'+rol+'</strong>').encode("ascii", "xmlcharrefreplace")
+                    titulo = (datos.tit_encuesta).encode("ascii", "xmlcharrefreplace")
+                    texto_correo = salvar_html((datos.cue_correo).encode("ascii", "xmlcharrefreplace"))
+                    url = 'http://159.203.190.248/360/encuesta/'+str(proyecto.id)+'/'+colaborador.key
+                    html = correo_standar(urlimg,genero,nombre,titulo,texto_correo,url)
+                    mensaje = MIMEText(html,"html")
+                    msg.attach(mensaje)
+                    with transaction.atomic():
+                        colaborador.reenviados = colaborador.reenviados + 1
+                        Streaming_360.objects.filter(colaborador=colaborador).update(fec_controlenvio=timezone.now())
+                        colaborador.save()
+                        # server.sendmail('team@bigtalenter.com',destinatario,msg.as_string())
+                        content = Content("text/html", html)
+                        mail = Mail(Email('team@bigtalenter.com'), msg["subject"], Email(destinatario), content)
+                        mail.set_template_id('09dd518c-04a1-45e1-8fea-b635274a02e2')
+                        print '####################################################################'
+                        response = sg.client.mail.send.post(request_body=mail.get())
+                        print response
+                    # server.quit()
+                    alerta = 'Correo enviado exitosamente.'
+                else:
+                    alerta = 'Debe activar primero al colaborador para forzar el envío. Asegúrese de tener los permisos necesarios para editar participantes.'
+            return render_to_response('colaboradoreenviar_360.html',{
+            'Activar':'EstadoAvance','activar':'EnviosRespuestas','Colaborador':colaborador,
+            'Permisos':permisos,'Proyecto':proyecto,'Alerta':alerta
+            }, context_instance=RequestContext(request))
+            # else:
+                # return render_to_response('403.html')
         except:
             return render_to_response('404.html')
     else:
