@@ -1,0 +1,797 @@
+{%load staticfiles %}<!DOCTYPE html>
+<html lang="es" id="Networks Lab" class="no-js">
+	<!--[if lt IE 8]><html class="no-js lt-ie8"> <![endif]-->
+	<head>
+		<title> Analisis | Instrumento</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+		<!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+
+		<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script>
+			window.jQuery || document.write('<script src="{% static 'js/libs/jquery-2.1.1.min.js' %}">\x3C/script>')
+		</script>
+		<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+		<script>
+			window.jQuery || document.write('<script src="{% static 'js/libs/jquery-ui-1.10.4.min.js' %}">\x3C/script>')
+		</script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="shortcut icon" href="static/img/ico/favicon.ico"/>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>
+		<link href="static/css/icons.css" rel="stylesheet" />
+		<!-- <link href="/static/css/bootstrap.min.css" rel="stylesheet" /> -->
+		<link href="{% static 'css/plugins.css' %}" rel="stylesheet" />
+		<link href="{% static 'css/main.css' %}" rel="stylesheet" />
+		<link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+		<link href="{% static 'css/icons.css' %}" rel="stylesheet" />
+		<!-- Fav and touch icons -->
+		<link rel="apple-touch-icon" sizes="144x144" href="{% static 'img/ico/favicon144.png' %}">
+		<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/ico/favicon114.png' %}">
+		<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/ico/favicon72.png' %}">
+		<link rel="apple-touch-icon" href="{% static 'img/ico/favicon57.png' %}">
+		<!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
+		<meta name="msapplication-TileColor" content="#3399cc" />
+		<link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
+
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.2','packages':['corechart']}]}"></script>
+
+		<!-- Grafica Serie de Tiempo - 1 -->
+		<script type="text/javascript" src="{% static 'google_charts/modulo_perfil_predictivo serie_tiempo.js' %}"></script>
+
+		<script src="{% static 'plugins/charts/chartjs/Chart.js' %}"></script>
+		<style media="screen">
+			#resultadoGeneral {
+				color: rgb(20,220,220);
+			}
+			#resultadoFiltro {
+				color: rgb(151,187,205);
+			}
+			#circle {
+				width: 38px;
+				height: 38px;
+				-webkit-border-radius: 25px;
+				-moz-border-radius: 25px;
+				border-radius: 25px;
+				background: #061539;
+				padding-top: 6px;
+			}
+
+			.number {
+				background-color: #25AAE1;
+				color: #fff;
+				height: 30px;
+				width: 30px;
+				display: inline-block;
+				font-size: 0.8em;
+				margin-right: 4px;
+				line-height: 30px;
+				text-align: center;
+				text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+				border-radius: 100%;
+			}
+		</style>
+
+		<style type="text/css">
+			.tg {
+				border-collapse: collapse;
+				border-spacing: 0;
+				border-color: #999;
+				margin: 0px auto;
+			}
+			.tg td {
+				font-family: Arial, sans-serif;
+				padding: 10px 5px;
+				border-style: solid;
+				border-width: 0px;
+				overflow: hidden;
+				word-break: normal;
+				border-color: #999;
+				color: #444;
+				border-top-width: 1px;
+				border-bottom-width: 1px;
+			}
+			.tg th {
+				font-family: Arial, sans-serif;
+				font-weight: normal;
+				padding: 10px 5px;
+				border-style: solid;
+				border-width: 0px;
+				overflow: hidden;
+				word-break: normal;
+				border-color: #999;
+				border-top-width: 1px;
+				border-bottom-width: 1px;
+			}
+
+			.tg .encabezado {
+				background-color: #ffffff;
+				color: #656565;
+				text-align: center !important;
+			}
+
+			.tg .instrumento {
+				font-weight: bold;
+				font-size: 26px;
+				background-color: #ffffff;
+			}
+			
+			.tg .instrumento .cantidad-respuestas {
+				font-weight: bold;
+				color: #26ade4;
+				text-align: center;
+			}
+
+			.tg .instrumento .promedio-area {
+				font-weight: bold;
+				text-align: center;
+			}
+
+			.tg .instrumento .porcentaje-positivo {
+				font-weight: bold;
+				color: #036400;
+				text-align: center;
+			}
+
+			.tg .instrumento .porcentaje-negativo {
+				font-weight: bold;
+				color: #680100;
+				text-align: center;
+			}
+
+			.tg .dimension {
+				font-weight: bold;
+				font-size: 22px;
+				background-color: #efefef;
+			}
+
+			.tg .dimension .cantidad-respuestas {
+				font-weight: bold;
+				color: #26ade4;
+				text-align: center;
+			}
+
+			.tg .dimension .promedio-area {
+				font-weight: bold;
+				text-align: center;
+			}
+
+			.tg .dimension .porcentaje-positivo {
+				font-weight: bold;
+				color: #036400;
+				text-align: center;
+			}
+
+			.tg .dimension .porcentaje-negativo {
+				font-weight: bold;
+				color: #680100;
+				text-align: center
+			}
+
+			.tg .variable {
+				font-weight: bold;
+				font-size: 18px;
+				background-color: #DCEEF6
+			}
+
+			.tg .variable .cantidad-respuestas {
+				font-weight: bold;
+				color: #26ade4;
+				text-align: center
+			}
+
+			.tg .variable .promedio-area {
+				font-weight: bold;
+				text-align: center
+			}
+
+			.tg .variable .porcentaje-positivo {
+				font-weight: bold;
+				color: #036400;
+				text-align: center
+			}
+
+			.tg .variable .porcentaje-negativo {
+				font-weight: bold;
+				color: #680100;
+				text-align: center
+			}
+
+			.tg .pregunta {
+				font-size: 14px;
+				background-color: #ffffff
+			}
+
+			.tg .pregunta .cantidad-respuestas {
+				font-weight: bold;
+				color: #26ade4;
+				text-align: center
+			}
+
+			.tg .pregunta .promedio-area {
+				font-weight: bold;
+				text-align: center
+			}
+
+			.tg .pregunta .porcentaje-positivo {
+				font-weight: bold;
+				color: #036400;
+				text-align: center
+			}
+
+			.tg .pregunta .porcentaje-negativo {
+				font-weight: bold;
+				color: #680100;
+				text-align: center
+			}
+
+			@media screen and (max-width: 767px) {
+				.tg {
+					width: auto !important;
+				}
+				.tg col {
+					width: auto !important;
+				}
+				.tg-wrap {
+					overflow-x: auto;
+					-webkit-overflow-scrolling: touch;
+					margin: auto 0px;
+				}
+			}
+		</style>
+	</head>
+	<body >
+
+		<!--[if lt IE 9]>
+		<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+		<![endif]-->
+		<!-- .page-navbar -->
+		<div id="header" class="page-navbar">
+			<!-- .navbar-brand -->
+			<a href="/index/" class="navbar-brand hidden-xs hidden-sm"> <img src="static/img/logo.png" class="logo hidden-xs" alt="Dynamic logo" style="margin:5px 0px 0px -10px"> <img src="static/img/logosm.png" class="logo-sm hidden-lg hidden-md" alt="Dynamic logo" style="margin:5px 0px 0px -5px"> </a>
+			<!-- / navbar-brand -->
+			<!-- .no-collapse -->
+			<div id="navbar-no-collapse" class="navbar-no-collapse">
+				<!-- top left nav -->
+				<ul class="nav navbar-nav">
+					<li class="toggle-sidebar">
+						<a href="#"> <i class="fa fa-reorder"></i> <span class="sr-only">Colapsar sidebar</span> </a>
+					</li>
+
+					<li>
+						<a href="#"><i class="fa fa-home"></i></a>
+					</li>
+
+				</ul>
+				<!-- / top left nav -->
+				<!-- top right nav -->
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="/salir/"> <i class="fa fa-power-off"></i> <span class="sr-only">Logout</span> </a>
+					</li>
+				</ul>
+				<!-- / top right nav -->
+			</div>
+			<!-- / collapse -->
+		</div>
+		<!-- / page-navbar -->
+
+		<!-- #wrapper -->
+		<div id="wrapper">
+			<!-- .page-sidebar -->
+			<aside id="sidebar" class="page-sidebar hidden-md hidden-sm hidden-xs">
+				<!-- Start .sidebar-inner -->
+				<div class="sidebar-inner">
+					<!-- Start .sidebar-scrollarea -->
+					<div class="sidebar-scrollarea">
+						<!--  .sidebar-panel -->
+						<div class="sidebar-panel">
+							<h5 class="sidebar-panel-title">Navegación</h5>
+						</div>
+						<!-- / .sidebar-panel -->
+						<!-- .side-nav -->
+						<div class="side-nav">
+							<ul class="nav">
+								<li id="MisProyectos">
+									<a href="/home/"><i class=" l-basic-home"></i><span class="txt">Mis proyectos</span></a>
+								</li>
+
+								<li id="Configuracion">
+									<a href="#"><i class="l-basic-gear"></i> <span class="txt">Configuración</span></a>
+									<ul class="sub">
+										<li>
+											<a id="Empresas" href="/empresas/"><span class="txt">Empresas</span></a>
+										</li>
+										<li>
+											<a id="Usuarios" href="/usuarios/"><span class="txt">Usuarios</span></a>
+										</li>
+										<li>
+											<a id="Logs" href="/logs/"><span class="txt">Registro histórico </span></a>
+										</li>
+										<li>
+											<a id="Cuenta" href="/cuenta/"><span class="txt">Contraseña</span></a>
+										</li>
+										<li>
+											<a id="Licencia" href="/licencia/"><span class="txt">Información de licencia</span></a>
+										</li>
+									</ul>
+								</li>
+
+								<li>
+									<a href="#"><i class="l-basic-flag1"></i> <span class="txt">Centro de ayuda</span></a>
+									<ul class="sub">
+										<li>
+											<a id="Reportar" href="/reportar/"><span class="txt">Soporte</span></a>
+										</li>
+										<li>
+											<a id="Entrenamiento" href="#"><span class="txt">Entrenamiento</span></a>
+										</li>
+										<li>
+											<a id="Preguntas" href="#"><span class="txt">Preguntas frecuentes </span></a>
+										</li>
+									</ul>
+								</li>
+
+								<li>
+									<a href="#"><i class="l-ecommerce-graph3"></i> <span class="txt">Análisis</span></a>
+									<ul class="sub">
+										<li>
+											<a id="Dashboard_uno" href="talenter_dashboard_analisis_ficha_tecnica.html"><span class="txt"> Avance de Participación </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_dos" href="talenter_dashboard_analisis_generales.html"><span class="txt"> Resultados Generales </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_tres" href="talenter_dashboard_analisis_variable.html"><span class="txt"> Resultados por Variable </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_cuatro" href="talenter_dashboard_analisis_focalizado.html"><span class="txt"> Análisis Focalizado </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_cinco" href="talenter_dashboard_analisis_kpi.html"><span class="txt"> Análisis KPI </span></a>
+										</li>
+										<!-- <li>
+										<a id="Dashboard_cinco" href="talenter_dashboard_analisis_colaborador.html"><span class="txt"> Análisis Colaborador </span></a>
+										</li>
+										<li>
+										<a id="Dashboard_cinco" href="cc_dashboard_resultados_clientes.html"><span class="txt"> Análisis Clientes </span></a>
+										</li> -->
+										<li>
+											<a id="Dashboard_cinco" href="change_lab_dashboard_matriz_impacto.html"><span class="txt"> Matriz Impacto </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_seis" href="talenter_dashboard_analisis_word_uno.html"><span class="txt"> Grafo Word Analytics </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_siete" href="talenter_dashboard_analisis_word_dos.html"><span class="txt"> Sentiment Analysis </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_ocho" href="#"><span class="txt"> Perfíl Predictivo </span></a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href="#"><i class="l-arrows-rotate-dashed"></i> <span class="txt">Consultor</span></a>
+									<ul class="sub">
+										<li>
+											<a id="Dashboard_uno" href="talenter_dashboard_exp_consultor.html"><span class="txt"> Construir Planes de Acción </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_dos" href="talenter_dashboard_exp_consultor_millas.html"><span class="txt"> Puntos Talenter </span></a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href="#"><i class="l-basic-share"></i> <span class="txt">Lider</span></a>
+									<ul class="sub">
+										<li>
+											<a id="Dashboard_uno" href="talenter_dashboard_exp_lider.html"><span class="txt"> Mi Liderazgo </span></a>
+										</li>
+										<li>
+											<a id="Dashboard_dos" href="talenter_dashboard_exp_colaborador.html"><span class="txt"> Mi Dashboard </span></a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href="#"><i class="l-basic-star"></i> <span class="txt">Colaborador</span></a>
+									<ul class="sub">
+										<li>
+											<a id="Dashboard_dos" href="talenter_dashboard_exp_colaborador.html"><span class="txt"> Mi Dashboard </span></a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!-- / side-nav -->
+					</div>
+					<!-- End .sidebar-scrollarea -->
+				</div>
+				<!-- End .sidebar-inner -->
+			</aside>
+			<!-- / page-sidebar -->
+
+			<div class="page-content sidebar-page right-sidebar-page clearfix">
+
+				<div class="row">
+					<div class="panel panel-default toggle m-t-xs ml20 mr20">
+						<div class="panel-heading">
+							<h4 class="panel-title"> Bienvenido Juan, proyectos asociados:</h4>
+						</div>
+						<div class="panel-body table-responsive" style="overflow: hidden; width: 100%; height: auto;">
+							<!-- Inicio Dash -->
+							<!-- Sección 1 -->
+							<div class="col-lg-12">
+								<div class="panel panel-default toggle panelMove panelClose panelRefresh">
+									<!-- Inicio .panel -->
+									<div class="panel-body">
+										<div class="col-lg-6">
+											<!-- Grafica -->
+											<div class="panel panel-default toggle panelMove panelClose panelRefresh">
+												<!-- Inicio .panel -->
+												<div class="panel-body">
+													<div class="col-lg-12">
+														<div class="row">
+															<div class="col-lg-12 col-lg-offset-2">
+																<canvas id="myChart" height="195"  ></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- Fin .panel -->
+											</div>
+										</div>
+										<div class="col-lg-6">
+											<div class="panel panel-default toggle panelMove panelClose panelRefresh">
+												<!-- Inicio .panel -->
+												<div class="panel-body">
+													<!-- col-lg-12 start here -->
+
+													<!-- Start .panel -->
+													<div class="col-lg-12">
+														<div style='margin: 0 5px 0 5px' id="chart_div"></div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Fin Sección 1 -->
+							<!-- Sección 2 -->
+							<div class="col-lg-12">
+								<div class="panel panel-default toggle panelMove panelClose panelRefresh">
+									<!-- Inicio .panel -->
+									<div class="panel-body">
+										<div class="tg-wrap">
+											<table class="tg">
+												<tr>
+													<th colspan="2"></th>
+													<th class="encabezado">Cantidad de Respuestas</th>
+													<th class="encabezado">Promedio Área</th>
+													<th class="encabezado">Comportamiento</th>
+													<th class="encabezado">Evolución</th>
+													<th class="encabezado">Relación con el promedio</th>
+												</tr>
+												<tr class="instrumento">
+													<td colspan="2">Clima Laboral</td>
+													<td class="cantidad-respuestas">2554</td>
+													<td class="promedio-area">4.6</td>
+													<td class="porcentaje-positivo">+2%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-negativo">-4%</td>
+												</tr>
+												<tr class="dimension">
+													<td colspan="2">Dimensión: Desempeño</td>
+													<td class="cantidad-respuestas">1350</td>
+													<td class="promedio-area">4.2</td>
+													<td class="porcentaje-positivo">-1%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-negativo">+4%</td>
+												</tr>
+												<tr class="variable">
+													<td class="tg-c7d0">
+													<div id="circle">
+														<img src="img/balance.png" class="img-responsive center-block">
+													</div></td>
+													<td>Variable: Comunicación Asertiva</td>
+													<td class="cantidad-respuestas">1350</td>
+													<td class="promedio-area">3.9</td>
+													<td class="porcentaje-positivo">+1%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-negativo">-5%</td>
+												</tr>
+												<tr class="pregunta">
+													<td></td>
+													<td>Pregunta: ¿Que tan largos haces los e-mail corporativos?</td>
+													<td class="cantidad-respuestas">800</td>
+													<td class="promedio-area">3.7</td>
+													<td class="porcentaje-positivo">+3%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-negativo">-3%</td>
+												</tr>
+												<tr class="pregunta">
+													<td></td>
+													<td>Pregunta: ¿Que piensas cuando llegas al trabajo?</td>
+													<td class="cantidad-respuestas">800</td>
+													<td class="promedio-area">3.9</td>
+													<td class="porcentaje-negativo">-2%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-positivo">+1%</td>
+												</tr>
+												<tr class="variable">
+													<td><div id="circle">
+														<img src="img/leadership.png" class="img-responsive center-block">
+													</div></td>
+													<td>Variable: Liderazgo</td>
+													<td class="cantidad-respuestas">1340</td>
+													<td class="promedio-area">3.8</td>
+													<td class="porcentaje-negativo">-3%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-positivo">+4%</td>
+												</tr>
+												<tr class="pregunta">
+													<td></td>
+													<td>Pregunta: ¿Como te parece liderar?</td>
+													<td class="cantidad-respuestas">750</td>
+													<td class="promedio-area">3.7</td>
+													<td class="porcentaje-positivo">+2%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-negativo">-4%</td>
+												</tr>
+												<tr class="pregunta">
+													<td></td>
+													<td>Pregunta: ¿Que esperas de tus empleados?</td>
+													<td class="cantidad-respuestas">750</td>
+													<td class="promedio-area">3.6</td>
+													<td class="porcentaje-positivo">+2%</td>
+													<td><span class="line">1,4,4,7,5,9,10,8,7,6,5,4,3,6,4,10</span></td>
+													<td class="porcentaje-positivo">+2%</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<!-- Fin Sección 2 -->
+
+							<!-- Fin Dash -->
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		</div>
+
+		</div>
+
+		<div></div>
+
+		</div>
+
+		<!-- End #footer  -->
+		<!-- Back to top -->
+		<div id="back-to-top">
+			<a href="#">Back to Top</a>
+		</div>
+		<!-- Javascripts -->
+		<!-- Load pace first -->
+		<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="/static/js/libs/excanvas.min.js"></script>
+		<script type="text/javascript" src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<script type="text/javascript" src="/static/js/libs/respond.min.js></script>
+		<![endif]-->
+		<script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+		<script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+		<script src="{% static 'plugins/forms/select2/select2.js' %}"></script>
+		<!-- Handle responsive view functions -->
+		<script src="{% static 'js/jRespond.min.js' %}"></script>
+		<!-- Custom scroll for sidebars,tables and etc. -->
+		<script src="{% static 'plugins/core/slimscroll/jquery.slimscroll.min.js' %}"></script>
+		<script src="{% static 'js/jquery.peity.js' %}"></script>
+		<script src="{% static 'js/jquery.sparkline.js' %}"></script>
+		<script src="{% static 'plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js' %}"></script>
+		<!-- Remove click delay in touch -->
+		<script src="{% static 'plugins/core/fastclick/fastclick.min.js' %}"></script>
+		<!-- Increase jquery animation speed -->
+		<script src="{% static 'plugins/core/velocity/jquery.velocity.min.js' %}"></script>
+		<!-- <script src="/static/plugins/ui/bootbox/bootbox.min.js"></script> -->
+		<script src="{% static 'js/jquery.dynamic.js' %}"></script>
+		<script src="{% static 'js/main.js' %}"></script>
+
+		<script>
+			$('#MisProyectos').addClass('highlight-menu');
+			$('#MisProyectos > a').addClass('expand active-state');
+
+		</script>
+
+		<script type="text/javascript">
+			$("span.pie").peity("pie")
+			$("span.line").peity("line")
+			$("span.bar").peity("bar")
+			$('.donut').peity('donut')
+
+			$.fn.peity.defaults.line = {
+				delimiter : ",",
+				fill : "#c6d9fd",
+				height : 20,
+				max : null,
+				min : 0,
+				stroke : "#4d89f9",
+				strokeWidth : 1,
+				width : 60
+			}
+
+			$.fn.peity.defaults.bar = {
+				delimiter : ",",
+				fill : ["#4d89f9"],
+				height : 16,
+				max : null,
+				min : 0,
+				padding : 0.1,
+				width : 32
+			}
+		</script>
+
+		<script type="text/javascript">
+			$(function() {
+				/** This code runs when everything has been loaded on the page */
+				/* Inline sparklines take their values from the contents of the tag */
+				$('.inlinesparkline').sparkline();
+
+				/* Sparklines can also take their values from the first argument
+				 passed to the sparkline() function */
+				var myvalues = [10, 8, 5, 7, 4, 4, 1];
+				$('.dynamicsparkline').sparkline(myvalues);
+
+				/* The second argument gives options such as chart type */
+				$('.dynamicbar').sparkline(myvalues, {
+					type : 'bar',
+					barColor : 'green'
+				});
+
+				/* Use 'html' instead of an array of values to pass options
+				 to a sparkline with data in the tag */
+				$('.inlinebar').sparkline('html', {
+					type : 'bar',
+					barColor : 'red'
+				});
+			});
+		</script>
+
+		<script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$("#pro").dataTable({
+					"columns" : [{
+						className : "center"
+					}, {
+						className : "center"
+					}, {
+						className : "center"
+					}, {
+						className : "center"
+					}],
+					language : {
+						sProcessing : "Procesando...",
+						sLengthMenu : "Mostrar _MENU_ proyectos",
+						sZeroRecords : "No se encontraron resultados",
+						sEmptyTable : "No posees ningún proyecto creado o asociado.",
+						sInfo : "Proyectos del _START_ al _END_ de un total de _TOTAL_",
+						sInfoEmpty : "Proyectos del 0 al 0 de un total de 0",
+						sInfoFiltered : "(filtrado de un total de _MAX_ proyectos)",
+						sInfoPostFix : "",
+						sSearch : "Buscar",
+						sUrl : "",
+						sInfoThousands : ",",
+						sLoadingRecords : "Cargando...",
+						oPaginate : {
+							sFirst : "Primero",
+							sLast : "�ltimo",
+							sNext : "Siguiente",
+							sPrevious : "Anterior"
+						},
+						oAria : {
+							sSortAscending : ": Activar para ordenar la columna de manera ascendente",
+							sSortDescending : ": Activar para ordenar la columna de manera descendente"
+						}
+					}
+				});
+			});
+		</script>
+		<script type="text/javascript">
+			var ctx = $("#myChart").get(0).getContext("2d");
+
+			var data = {
+				labels : ["Dimensión 1", "Dimensión 2", "Dimensión 3", "Dimensión 4", "Dimensión 5"],
+				datasets : [{
+					label : "Resultado General",
+					fillColor : "rgba(220,220,220,0.2)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(220,220,220,1)",
+					data : [65, 59, 90, 81, 56]
+				}, {
+					label : "Resultado por Filtro",
+					fillColor : "rgba(151,187,205,0.2)",
+					strokeColor : "rgba(151,187,205,1)",
+					pointColor : "rgba(151,187,205,1)",
+					pointStrokeColor : "#fff",
+					pointHighlightFill : "#fff",
+					pointHighlightStroke : "rgba(151,187,205,1)",
+					data : [28, 48, 40, 19, 96]
+				}]
+			};
+
+			var options = {
+				//Boolean - Whether to show lines for each scale point
+				scaleShowLine : true,
+
+				//Boolean - Whether we show the angle lines out of the radar
+				angleShowLineOut : true,
+
+				//Boolean - Whether to show labels on the scale
+				scaleShowLabels : false,
+
+				// Boolean - Whether the scale should begin at zero
+				scaleBeginAtZero : true,
+
+				//String - Colour of the angle line
+				angleLineColor : "rgba(0,0,0,.1)",
+
+				//Number - Pixel width of the angle line
+				angleLineWidth : 1,
+
+				//String - Point label font declaration
+				pointLabelFontFamily : "'Arial'",
+
+				//String - Point label font weight
+				pointLabelFontStyle : "normal",
+
+				//Number - Point label font size in pixels
+				pointLabelFontSize : 10,
+
+				//String - Point label font colour
+				pointLabelFontColor : "#666",
+
+				//Boolean - Whether to show a dot for each point
+				pointDot : true,
+
+				//Number - Radius of each point dot in pixels
+				pointDotRadius : 3,
+
+				//Number - Pixel width of point dot stroke
+				pointDotStrokeWidth : 1,
+
+				//Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+				pointHitDetectionRadius : 20,
+
+				//Boolean - Whether to show a stroke for datasets
+				datasetStroke : true,
+
+				//Number - Pixel width of dataset stroke
+				datasetStrokeWidth : 2,
+
+				//Boolean - Whether to fill the dataset with a colour
+				datasetFill : true,
+
+				//String - A legend template
+				
+
+			}
+			var myRadarChart = new Chart(ctx).Radar(data, options);
+		</script>
+
+	</body>
+</html>
