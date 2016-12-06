@@ -136,7 +136,7 @@ def participacion(request):
             #     # print i.instrumento
             #     for j in i.instrumento.dimension.all():
             #         print j.nombre
-            return render_to_response('analisis_instrumento.html',{
+            return render_to_response('analisis.html',{
                 'Activar':'AnalisisResultados','activar':'Participacion',
                 'Proyecto':proyecto,'Permisos':permisos,'Datos':js_data,'Finalizados':finalizados
             }, context_instance=RequestContext(request))
