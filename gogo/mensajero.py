@@ -5,6 +5,15 @@ import time
 import django
 import sys
 import ujson
+sys.path.append('/home/webapps/gogo/')
+sys.path.append('/home/webapps/gogo/gogo/')
+# sys.path.append('/home/suidi/Documentos/gogo/')
+# sys.path.append('/home/suidi/Documentos/gogo/gogo/')
+os.environ["DJANGO_SETTINGS_MODULE"] = "gogo.settings"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
+django.setup()
+
 import sendgrid
 from sendgrid.helpers.mail import *
 
@@ -26,14 +35,6 @@ import email.utils
 import smtplib,cgi,unicodedata
 import datetime
 from django.db import models
-sys.path.append('/home/webapps/gogo/')
-sys.path.append('/home/webapps/gogo/gogo/')
-# sys.path.append('/home/suidi/Documentos/gogo/')
-# sys.path.append('/home/suidi/Documentos/gogo/gogo/')
-os.environ["DJANGO_SETTINGS_MODULE"] = "gogo.settings"
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = '+xtgn6s8(15e#nv)1v5ta7n)*fpt=xq7+gt5o_28$8lzg3=ccm'
-django.setup()
 
 
 
