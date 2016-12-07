@@ -227,5 +227,5 @@ def enviar_360():
 
 enviar()
 enviar_360()
-server.quit()
+# server.quit()
 # print 'Finalizado'
